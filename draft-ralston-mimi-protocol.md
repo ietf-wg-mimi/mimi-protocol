@@ -1,7 +1,7 @@
 ---
 title: "MIMI Protocol"
 abbrev: "MIMI Protocol"
-category: info
+category: std
 
 docname: draft-ralston-mimi-protocol-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
@@ -43,14 +43,16 @@ informative:
 
 --- abstract
 
-TODO Abstract
+This document describes the MIMI protocol, as defined by {{!I-D.barnes-mimi-arch}}.
+
+**TODO**: Probably more words.
 
 
 --- middle
 
 # Introduction
 
-TODO Introduction
+**TODO**: Introduction
 
 
 # Conventions and Definitions
@@ -60,12 +62,14 @@ TODO Introduction
 
 # Security Considerations
 
-TODO Security
+**TODO**: Probably more words.
 
 
 # IANA Considerations
 
 This document has no IANA actions.
+
+**TODO**: This needs content.
 
 
 --- back
@@ -73,4 +77,4 @@ This document has no IANA actions.
 # Acknowledgments
 {:numbered="false"}
 
-TODO acknowledge.
+**TODO**: Acknowledge
