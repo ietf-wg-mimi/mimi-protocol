@@ -47,30 +47,48 @@ This document describes the MIMI protocol, as defined by {{!I-D.barnes-mimi-arch
 
 **TODO**: Probably more words.
 
-
 --- middle
 
 # Introduction
 
 **TODO**: Introduction
 
+# Rooms
+
+**TODO**:
+
+* Persistence?
+
+# Participation
+
+**TODO**:
+
+* In general case, signaling leads encryption
+* Skip policy and consent for now
+
+# Membership
+
+**TODO**:
+
+* MLS
+
+# Transport
+
+**TODO**: This section. Or do we imply it throughout?
 
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
 
-
 # Security Considerations
 
-**TODO**: Probably more words.
-
+**TODO**: Probably more words. (or imply throughout)
 
 # IANA Considerations
 
 This document has no IANA actions.
 
 **TODO**: This needs content.
-
 
 --- back
 
