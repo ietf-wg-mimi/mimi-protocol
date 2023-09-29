@@ -55,9 +55,59 @@ This document describes the MIMI protocol, as defined by {{!I-D.barnes-mimi-arch
 
 # Rooms
 
-**TODO**:
+Described by {{!I-D.barnes-mimi-arch}}, rooms have state which track the policy,
+user participation list, and other metadata. The room additionally contains an
+MLS group for actual conversation flows.
 
-* Persistence?
+Everything in a room is described as a signaling event. Room state information
+is transmitted as a "state event". Each event contains exactly 1 datum.
+
+**TODO**: Talk about history, event chaining, etc.
+
+**TODO**: Talk about event format.
+
+**TODO**: Talk about where rooms are persisted.
+
+# TODO: Scenario content
+
+Incorporate scenario flows.
+
+Alice adds Bob:
+
+1. Alice creates room.
+2. Alice signals invite for Bob.
+3. Hub server (Alice's) contacts Bob's server and sends invite.
+4. Bob's server checks that it is capable of participating.
+5. Bob's clients receive invite.
+6. Later: Bob's client accepts invite by sending a join signaling event through
+   the hub to all other participants.
+7. Bob's client retrieves GroupInfo.
+8. Bob creates and sends an external commit through the hub.
+
+Alice adds Bob (alternative):
+
+1. Alice creates room.
+2. Alice discovers all of Bob's clients.
+3. Alice prepares Welcome messages, attaches them to a signaling join event for
+   Bob.
+4. That package is sent via the hub to Bob's server.
+5. Bob's server verifies it is capable of participating.
+6. Bob's server acks the request as OK, informs Bob that they're now joined and
+   delivers accompanying Welcome messages.
+7. Concurrent to the ack, hub fans out the join.
+8. Bob is now both a participant and a member.
+
+Alice leaves:
+
+1. Alice proposes self-eviction via remove proposals.
+2. Alice leaves via signaling event.
+3. Hub requires Alice's proposals to be committed next.
+
+Alice leaves (alternative):
+
+1. Alice leaves via signaling event.
+2. Hub (or any other member) generates remove proposals for Alice.
+3. Hub requires those proposals to be committed next.
 
 # Participation
 
