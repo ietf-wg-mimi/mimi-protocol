@@ -43,9 +43,9 @@ informative:
 
 --- abstract
 
-This document describes the MIMI protocol, as defined by {{!I-D.barnes-mimi-arch}}.
-
-**TODO**: Probably more words.
+This document describes the transport and messaging protocols required
+for interoperable instant messaging using MLS {{!RFC9420}}, as defined
+by {{!I-D.barnes-mimi-arch}}.
 
 --- middle
 
