@@ -145,4 +145,9 @@ This document has no IANA actions.
 # Acknowledgments
 {:numbered="false"}
 
-**TODO**: Acknowledge
+This document is the consolidation of the following documents:
+
+* {{?I-D.robert-mimi-delivery-service}}
+* {{?I-D.ralston-mimi-signaling}}
+* {{?I-D.ralston-mimi-policy}}
+* {{?I-D.kohbrok-mimi-transport}}
