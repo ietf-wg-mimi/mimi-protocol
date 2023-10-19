@@ -400,7 +400,7 @@ provider-specific API where the user can then accept or decline the invite.
 If the user declines the invite, they are transitioned to the leave state
 described by {{leaves}}. Accepting is done by joining ({{joins}}) the room.
 
-~~~ aavg
+~~~ aasvg
 +---+                            +-----+                         +---+
 | A |                            | Hub |                         | B |
 +---+                            +-----+                         +---+
@@ -436,6 +436,8 @@ described by {{leaves}}. Accepting is done by joining ({{joins}}) the room.
 ## Joins {#joins}
 
 ## Leaves/Kicks {#leaves}
+
+## Bans {#bans}
 
 ## Knocks {#knocks}
 
