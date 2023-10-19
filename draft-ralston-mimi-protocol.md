@@ -328,6 +328,124 @@ struct {
 * The event's `authEventIds` MUST be empty.
 * The event MUST be the first event in the room.
 
+# User Participation and Client Membership {#membership}
+
+In a MIMI room, users are *participants* with an associated
+*participation state* whereas clients of those users are *members* of the MLS
+group. In most scenarios, the user's participation state is updated first or
+simultaneously with the MLS group membership to enforce membership more easily.
+
+Users will always exist in one of the following participation states:
+
+~~~
+enum {
+   invite,  // "Invited" state.
+   join,    // "Joined" state.
+   leave,   // "Left" state (including Kicked).
+   ban,     // "Banned" state.
+   knock,   // "Knocking" state.
+   (65535)
+} ParticipationState;
+~~~
+
+These states allow a user to remain logically "joined" to the conversation when
+they have zero MLS-capable clients available. The user will not be able to see
+messages sent while they had no clients, but can perform an external join at any
+time to get back into the MLS group. A user with zero clients in the MLS group
+is considered to be an *inactive participant*. Users with one or more clients
+in the MLS group are *active participants*.
+
+All servers with at least one user of theirs in the "joined" participation state
+are considered to be "in" or "participating" in the room. By default, all events
+sent to a room are distrubuted by the hub to participating servers. This is
+discussed further in {{fanout}}.
+
+## Invites {#invites}
+
+An *invite* is when a user (or more specifically, a user's client) is attempting
+to introduce *all* of another user's clients to the room and MLS group. This is
+first done by updating the target user's participation state through the hub
+server for the room.
+
+Updating the target user's participation state is done using the following
+steps, and is visualized in {{fig-invites}}.
+
+1. The inviter's server generates an `m.room.user` ({{ev-mroomuser}}) state
+   event to invite the target user. Typically this begins with a
+   client-initiated request to the server using the provider-specific API.
+
+2. The inviter's server sends ({{op-send}}) the `m.room.user` event to the hub
+   server. If the inviter's server is the hub server, it does the steps
+   described in {{op-send}} to complete the event.
+
+3. The hub server validates the event to ensure the following:
+
+   * The target user of the invite MUST NOT already be in the banned or joined
+     states.
+
+   * The sender of the invite MUST already be in the joined state.
+
+4. If the event is invalid, it is rejected. Otherwise, it is forwarded by the
+   hub to the target user's server to give it the opportunity to reject the
+   invite early in the process. This is described by {{op-check}}.
+
+5. If the target server rejected the event, the event is rejected by the hub as
+   well. Otherwise, the event is fanned out ({{fanout}}) to all participating
+   servers, plus the target server if not already participating.
+
+At this stage, the *user* is now invited but their clients are not members of
+the MLS group. The invite is delivered to the target's clients through relevant
+provider-specific API where the user can then accept or decline the invite.
+
+If the user declines the invite, they are transitioned to the leave state
+described by {{leaves}}. Accepting is done by joining ({{joins}}) the room.
+
+~~~ aavg
++---+                            +-----+                         +---+
+| A |                            | Hub |                         | B |
++---+                            +-----+                         +---+
+  |                                 |                              |
+  | Create m.room.user invite       |                              |
+  |--------------------------       |                              |
+  |                         |       |                              |
+  |<-------------------------       |                              |
+  |                                 |                              |
+  | Send event request initiated    |                              |
+  |-------------------------------->|                              |
+  |                                 |                              |
+  |                                 | Validate m.room.user event   |
+  |                                 |---------------------------   |
+  |                                 |                          |   |
+  |                                 |<--------------------------   |
+  |                                 |                              |
+  |    200 OK to send event request |                              |
+  |<--------------------------------|                              |
+  |                                 |                              |
+  |                                 | Check event request          |
+  |                                 |----------------------------->|
+  |                                 |                              |
+  |                                 |                       200 OK |
+  |                                 |<-----------------------------|
+  |                                 |                              |
+  |           Async fanout of event | Async fanout of event        |
+  |<--------------------------------|----------------------------->|
+  |                                 |                              |
+~~~
+{: #fig-invites title="Invite happy path" }
+
+## Joins {#joins}
+
+## Leaves/Kicks {#leaves}
+
+## Knocks {#knocks}
+
+In this state, the sender of a knock is requesting an invite ({{invites}}) to
+the room. They do not have access to the MLS group.
+
+> **TODO**: Discuss if this participation state is desirable, and figure out
+> details for how it works. It'd likely just be an `m.room.user` state event
+> with no MLS interaction, like invites are.
+
 # TODO: Sections
 
 *These headers exist as placeholder anchors.*
@@ -337,6 +455,18 @@ struct {
 ## `m.room.redaction` {#ev-mroomredaction}
 
 ## `m.room.user` {#ev-mroomuser}
+
+## Fanout {#fanout}
+
+*Reference {{membership}}*.
+
+## Operation: Send Event {#op-send}
+
+*Reference "complete fields on event and resume further processing before {{fanout}}"*.
+
+## Operation: Check Event {#op-check}
+
+*Ensure supports policy, encryption, and has consent*.
 
 # TODO: Scenario content
 
@@ -389,7 +519,7 @@ Alice leaves (alternative):
 
 This document has no IANA actions.
 
-> **TODO**: Populate this section.s
+> **TODO**: Populate this section.
 
 --- back
 
@@ -400,8 +530,8 @@ This document is the consolidation of the following documents:
 
 * {{?I-D.robert-mimi-delivery-service}}
 * {{?I-D.ralston-mimi-signaling}}
-* {{?I-D.ralston-mimi-policy}}
-
-  > **TODO**: Verify this was consolidated/relevant.
-
 * {{?I-D.kohbrok-mimi-transport}}
+
+Aspects of {{?I-D.ralston-mimi-policy}} are additionally taken into
+consideration in this document, but is largely unincorporated and may require
+updates to match this document's specifics.
