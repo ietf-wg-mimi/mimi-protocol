@@ -227,7 +227,7 @@ room history.
 
 An event's reference hash is calculated by redacting it, removing the
 `signature` field if present, then serializing the resulting object. The
-serialized binary is then hashed using SHA256 {{RFC6234}}.
+serialized binary is then hashed using SHA256 {{!RFC6234}}.
 
 To further create an event ID, the resulting hash is encoded using URL-Safe
 Unpadded Base64 and prefixed with the `$` sigil.
@@ -255,7 +255,7 @@ first:
 hub server. The content hash is to preserve the origin server's event, not the
 hub server's.
 
-The resulting object is then serialized and hashed using SHA256 {{RFC6234}}.
+The resulting object is then serialized and hashed using SHA256 {{!RFC6234}}.
 
 Note that the event is *not* redacted in the calculation of a content hash. This
 is to ensure that *all* origin-provided fields are protected by a hash and
