@@ -435,6 +435,80 @@ described by {{leaves}}. Accepting is done by joining ({{joins}}) the room.
 
 ## Joins {#joins}
 
+A user can join a room in two ways:
+
+1. Using an external commit to Add themselves to the MLS group.
+2. Receiving a Welcome message from a joined member of the MLS group.
+
+In both cases, a join `m.room.user` ({{ev-mroomuser}}) state event is also sent.
+
+Typically, a client will use the first option when joining a public room or
+responding to an invite because the hub server can assist them in the join.
+Option 2 is generally used as a form of invite, though skipping the explicit
+`m.room.user` invite described by {{invites}}.
+
+The hub server MUST allow proposals and commits to add a user's own clients if
+they're in the joined participation state. Similarly, the hub server MUST NOT
+allow proposals or commits to add clients which are not in the joined
+participation state. These conditions permit the user to add their own clients
+after joining without issue, which may involve an external commit.
+
+### External Commit Flow {#join-external}
+
+The joining user's server first updates the user's participation state (an
+`m.room.user` state event, {{ev-mroomuser}}) and sends that to the hub
+({{op-send}}) for validation. If the joining user's server is the hub server, it
+does the steps described in {{op-send}} to complete the event.
+
+The join event is then validated by the hub as follows:
+
+* The target and sending user of the event MUST be the same.
+* The target user MUST NOT be banned from the room.
+
+> **TODO**: Does requiring the sender and state key to be the same prohibit
+> the Welcome flow from working? (I don't believe so because they still need
+> to Add themselves?)
+
+> **TODO**: Incorporate public and invite-only room conditions from policy.
+
+If the event is valid, it is fanned out ({{fanout}}) to all participating
+servers in the room, which now includes the joining server (if not already).
+
+> **TODO**: It would be helpful if in response to the send request the hub
+> server provided information required to externally join, maybe.
+
+The user's clients are then able to use external commits to join the MLS group.
+This is accomplished using {{op-external-commit-info}}.
+
+### Welcome Flow
+
+> **TODO**: Is this better phrased as an invite rather than join?
+
+This flow is more similar to an invite ({{invites}}), though provides the
+receiving user's clients with enough information to join without external
+commit.
+
+The inviting user's client first requests Key Packages for all of the target
+user's client through {{op-claim}}. The inviting client then uses the Key
+Packages to create Welcome MLS messages for the target user's clients.
+
+The Welcome messages are sent to the hub server alongside an `m.room.user`
+({{ev-mroomuser}}) invite event using {{op-send}}. If the inviting user's server
+is the hub server for the room, it completes the event using the steps described
+by {{op-send}} instead. The event is validated according to {{invites}} and
+fanned out ({{fanout}}) to all participating servers, plus the target user's
+server. The target user's server also receives the Welcome messages to deliver
+to the relevant clients.
+
+The user can then join the room by sending an `m.room.user` join event. The
+process and applied validation are the same as {{join-external}}. The user's
+clients can then Add themselves to the MLS group using the Welcome messages they
+received earlier. If the Welcome messages are no longer valid, the clients can
+use external commits instead.
+
+> **TODO**: Should we permit the join event to be accompanied by the client's
+> Add commits?
+
 ## Leaves/Kicks {#leaves}
 
 ## Bans {#bans}
@@ -469,6 +543,10 @@ the room. They do not have access to the MLS group.
 ## Operation: Check Event {#op-check}
 
 *Ensure supports policy, encryption, and has consent*.
+
+## Operation: Information for External Commit {#op-external-commit-info}
+
+## Operation: Claim Key Packages {#op-claim}
 
 # TODO: Scenario content
 
