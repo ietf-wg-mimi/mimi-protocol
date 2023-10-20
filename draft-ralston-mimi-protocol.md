@@ -328,6 +328,29 @@ struct {
 * The event's `authEventIds` MUST be empty.
 * The event MUST be the first event in the room.
 
+## `m.room.redaction` {#ev-mroomredaction}
+
+**Event type**: `m.room.redaction`
+
+**State key**: Not present.
+
+**Additional event fields**:
+
+~~~
+struct {
+   // The event ID to redact.
+   opaque redactedEventId;
+} RedactionEvent;
+~~~
+
+**Additional authentication rules**:
+
+* The `redactedEventId` MUST be an event in the room.
+* The affected `redactedEventId` is redacted ({{event-auth}}) by the server upon
+  receipt.
+
+Redaction events are sent to the hub server for fanout with {{op-send}}.
+
 # User Participation and Client Membership {#membership}
 
 In a MIMI room, users are *participants* with an associated
@@ -608,8 +631,6 @@ struct {
 
 > **TODO**: This placeholder section should be removed before first publish.
 
-## `m.room.redaction` {#ev-mroomredaction}
-
 ## Fanout {#fanout}
 
 *Reference {{membership}}*.
@@ -632,9 +653,22 @@ struct {
 
 # IANA Considerations
 
-This document has no IANA actions.
+IANA has created the following registries:
 
-> **TODO**: Populate this section.
+* MIMI Event Types
+
+## MIMI Event Types
+
+An event type denotes the nature of a payload contained in an event, in the
+context of the MIMI protocol. The event type is a string composed of substrings
+separated by dots.
+
+The first substring is "m", followed by the logical container being affected
+(typically just "room"), then a number of descriptor strings.
+
+Example: `m.room.create`
+
+> **TODO**: Does IANA need any other information for legal event types?
 
 --- back
 
