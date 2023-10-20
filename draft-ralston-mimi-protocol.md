@@ -328,6 +328,18 @@ struct {
 * The event's `authEventIds` MUST be empty.
 * The event MUST be the first event in the room.
 
+## Hub Server Selection
+
+The hub server for a room is the origin server of the `m.room.create`
+({{ev-mroomcreate}}) event.
+
+> **TODO**: More sophisticated selection, and possibly transfer of
+> responsibility.
+
+## ReInitialization
+
+> **TODO**: This topic requires further discussion around policy and lifecycle.
+
 ## `m.room.redaction` {#ev-mroomredaction}
 
 **Event type**: `m.room.redaction`
@@ -367,7 +379,6 @@ enum {
    leave,   // "Left" state (including Kicked).
    ban,     // "Banned" state.
    knock,   // "Knocking" state.
-   (65535)
 } ParticipationState;
 ~~~
 
@@ -501,9 +512,9 @@ servers in the room, which now includes the joining server (if not already).
 > server provided information required to externally join, maybe.
 
 The user's clients are then able to use external commits to join the MLS group.
-This is accomplished using {{op-external-commit-info}}.
+This is accomplished using {{op-external-join}}.
 
-### Welcome Flow
+### Welcome Flow {#join-welcome}
 
 > **TODO**: Is this better phrased as an invite rather than join?
 
@@ -511,9 +522,9 @@ This flow is more similar to an invite ({{invites}}), though provides the
 receiving user's clients with enough information to join without external
 commit.
 
-The inviting user's client first requests Key Packages for all of the target
-user's client through {{op-claim}}. The inviting client then uses the Key
-Packages to create Welcome MLS messages for the target user's clients.
+The inviting user's client first requests KeyPackages for all of the target
+user's client through {{op-claim}}. The inviting client then uses the
+KeyPackages to create Welcome MLS messages for the target user's clients.
 
 The Welcome messages are sent to the hub server alongside an `m.room.user`
 ({{ev-mroomuser}}) invite event using {{op-send}}. If the inviting user's server
@@ -531,6 +542,9 @@ use external commits instead.
 
 > **TODO**: Should we permit the join event to be accompanied by the client's
 > Add commits?
+
+> **TODO**: Is this Welcome flow correct, specifically the handling of Welcome
+> MLS messages?
 
 ## Leaves/Kicks {#leaves}
 
@@ -659,31 +673,322 @@ struct {
 
 * `message` MUST be an MLS PrivateMessage.
 
-# TODO: Sections
+# Transport
 
-*These headers exist as placeholder anchors.*
+Servers communicate with each other over HTTP {{!RFC9110}}. Endpoints have the
+protocol version embedded into the path for simplified routing between physical
+servers.
 
-> **TODO**: This placeholder section should be removed before first publish.
+## Authentication
 
-## Fanout {#fanout}
+All endpoints, with the exception of `.well-known` endpoints use the mutually
+authenticated mode of TLS {{!RFC5246}}. This provides guarantees that each
+server is speaking to an expected party.
 
-*Reference {{membership}}*.
+> **TODO**: More information specific to how TLS should be used, i.e. mandate
+best practices that make sense in a mutually authenticated scenario that
+involves two WebPKI based certificates.
 
-## Operation: Send Event {#op-send}
+Individual events may transit between multiple servers. TLS provides
+point-to-point security properties while {{event-auth}} provides event security
+guarantees when transiting over multiple servers.
 
-*Reference "complete fields on event and resume further processing before {{fanout}}"*.
+## Endpoint Discovery
 
-## Operation: Check Event {#op-check}
+A messaging provider that wants to query the endpoint of another messaging
+provider first has to discover the fully qualified domain name it can use to
+communicate with that provider. It does so by performing a GET request to
+`https://example.org/.well-known/mimi/domain`. example.org could, for example,
+answer by providing the domain `mimi.example.org` (assuming that this is where
+it responds to the REST endpoints defined in {{rest-api}}).
 
-*Ensure supports policy, encryption, and has consent*.
+The expected response format is simply a `text/plain` body containing the fully
+qualified domain name.
 
-## Operation: Information for External Commit {#op-external-commit-info}
+~~~
+GET https://example.org/.well-known/mimi/domain
 
-## Operation: Claim Key Packages {#op-claim}
+Response
+mimi.example.org
+~~~
+
+## REST Endpoints {#rest-api}
+
+The following REST endpoints can be used to communicate with a MIMI server.
+
+All operations rely on TLS-encoded structs and therefore requests and responses
+SHOULD use a `Content-Type` of `application/octet-stream`.
+
+### Send Event {#op-send}
+
+Asks the server to send an event ({{event-schema}}). Events can take two shapes
+over this endpoint, depending on whether a follower or hub server is doing the
+sending.
+
+When a follower server is sending an event, it MUST only be attempting to send
+to the hub server for the room. Follower servers receiving an event from another
+follower server MUST reject the request with a `400` HTTP status code. The hub
+server MUST populate the `authEventIds` and `prevEventId` fields of the event,
+validate the resulting event, then reply with a `200` HTTP status code and the
+resulting event ID ({{reference-hash}}). The resulting event is then fanned out
+{{fanout}} to relevant servers in the room.
+
+The hub server MUST validate events according to {{event-auth}} and any event
+type-specific validation rules. If the event is malformed in any way, or the
+room is unknown, the server MUST respond with a `400` HTTP status code.
+
+Follower servers SHOULD apply the same validation as hub servers upon receiving
+a send request to identify potentially malicious hub servers.
+
+Follower servers sending an event to the hub server will not include
+`authEventIds` or `prevEventId` because they are populated by the hub server.
+Hub servers MUST employ locking to ensure each event has exactly one child
+implied by `prevEventId`. This locking mechanism MAY cause another request to be
+rejected because the room state was mutated. For example, if the hub receives
+a ban event in one request and a message from the to-be-banned user in another,
+the message may be rejected if the ban is processed first. Hub servers SHOULD
+process requests in the order they were received.
+
+If an event is rejected during processing, the event MUST NOT be fanned out.
+
+~~~
+struct {
+   // The resulting event ID that is about to be fanned out by the hub server.
+   // Not included if the called server is a follower server.
+   opaque [[eventId]];
+} SendEndpointResponse;
+~~~
+
+~~~
+POST /v1/send
+Content-Type: application/octet-stream
+
+Body
+TLS-serialized Event (including additional fields, such as CreateEvent)
+
+Response
+TLS-serialized SendEndpointResponse
+~~~
+
+Servers SHOULD retry this request with exponential backoff (to a limit) if they
+receive timeout/network errors.
+
+#### Fanout {#fanout}
+
+A hub server fans an event out by using the send endpoint described above on all
+participating servers in the room. A server is considered "participating" if it
+has at least one user in the joined participation state, described by
+{{membership}}.
+
+Additional servers MAY have the event sent to them if required by the steps
+leading up to fanout.
+
+### Check Invite Event {#op-check}
+
+Used by the hub server to ensure a follower server can (and is willing to)
+process an incoming invite. The called server MAY use this opportunity to ensure
+the inviting user has general consent to invite the target user. For example,
+ensuring the invite does not appear spammy in nature and if the inviter already
+has a connection with the invitee.
+
+If the server does not recognize the event format of the `m.room.create`
+({{ev-mroomcreate}}) event, or does not understand the policy/encryption
+configuration contained within, it MUST reject the request.
+
+The request MAY be rejected with a `400` HTTP status code. If everything looks
+OK to the server, it responds with a `200` HTTP status code.
+
+~~~
+struct {
+   // The `m.room.user` invite event.
+   UserEvent invite;
+
+   // The `m.room.create` event for the room.
+   CreateEvent roomCreate;
+} CheckInviteRequest;
+~~~
+
+~~~
+POST /v1/check-invite
+Content-Type: application/octet-stream
+
+Body
+TLS-serialized CheckInviteRequest
+
+Response
+Any meaningful information. The pass/fail is identified by the HTTP response
+status code, not the response body.
+~~~
+
+The hub server SHOULD consider a network error as a rejection. It is expected
+that the original sender will attempt to re-send the invite once the server is
+reachable again.
+
+### Retrieve Event {#op-get-event}
+
+> **TODO**: What specific APIs does a follower server need to operate? Some
+> options include:
+>
+> * `GET /v1/event/:eventId`
+> * `GET /v1/room/:roomId/state` (current room state events)
+> * `GET /v1/room/:roomId/state/:eventType/:stateKey`
+> * `GET /v1/event/:eventId/child`
+
+### Retrieve KeyPackages {#op-claim}
+
+Asks the server for KeyPackages belonging to a user's clients. Like with
+{{op-check}}, if the requesting user does not have general consent to invite the
+target user, the request is rejected.
+
+To ensure requests do not fail while clients are offline or otherwise
+unreachable, KeyPackages SHOULD be uploaded by the generating client to their
+local server for later usage.
+
+> **TODO**: Mark KeyPackages of last resort somehow.
+
+This request is always sent to the hub server which then proxies the request
+directly to the relevant follower server.
+
+~~~
+struct {
+   // The user ID to retrieve KeyPackages for. This will download 1 KeyPackage
+   // for each of the user's clients.
+   opaque userId;
+
+   // The user ID requesting the KeyPackages for `userId`.
+   opaque requestingUserId;
+
+   // The room (group) ID where the KeyPackages are valid for.
+   opaque roomId;
+} GetKeyPackagesRequest;
+
+struct {
+   // One KeyPackage for each of the requested user's clients.
+   KeyPackage keyPackages<V>;
+} GetKeyPackagesResponse;
+~~~
+
+> **TODO**: Do we need to sign or otherwise guarantee security on the
+> `requestingUserId`? We do for invite events, so why not here?
+
+~~~
+POST /v1/key_packages
+Content-Type: application/octet-stream
+
+Body
+TLS-serialized GetKeyPackagesRequest
+
+Response
+TLS-serialized GetKeyPackagesResponse
+~~~
+
+### External Group Join {#op-external-join}
+
+When a client wishes to perform an external join to the MLS group, it may
+require assistance from the hub server in order to be successful. This endpoint
+is used by a follower server on a client's behalf to complete the external join.
+
+The hub server is able to provide this service to the requester because it keeps
+track of the information required to generate a GroupInfo object. The requester
+is still required to supply a `Signature` and relevant GroupInfo extensions,
+which are required to complete the GroupInfo object.
+
+~~~
+struct {
+   Extension group_info_extensions<V>;
+   opaque Signature<V>;
+} PartialGroupInfo;
+
+struct {
+   MLSMessage commit;
+   PartialGroupInfo partial_group_info;
+} MLSGroupUpdate;
+~~~
+
+The MLSMessage MUST contain a PublicMessage which contains a commit with sender
+type NewMemberCommit.
+
+~~~
+POST /v1/external_join
+Content-Type: application/octet-stream
+
+Body
+TLS-serialized MLSGroupUpdate
+
+Response
+Any meaningful information. The pass/fail is identified by the HTTP response
+status code, not the response body.
+~~~
+
+### Add, Remove, and Update MLS Group Clients {#op-mls-add}
+
+As described by {{joins}}, users which are joined participants are able to add
+their clients at any time to the MLS group. Clients which do not belong to a
+joined user MUST be rejected from joining the group. Similarly, clients may
+elect to leave the MLS group at any time, as per {{leaves}}.
+
+~~~
+struct {
+   // MUST be a PublicMessage with a commit that only contains Add proposals
+   // for a joined user's clients.
+   //
+   // MUST NOT change the sending client's credential.
+   MLSGroupUpdate group_update;
+   MLSMessage welcome_messages<V>;
+} AddClientsRequest;
+
+struct {
+   // MUST NOT change the sending client's credential.
+   MLSGroupUpdate group_update;
+} RemoveClientsRequest;
+
+struct {
+   // MUST contain a PublicMessage which contains a commit with an UpdatePath,
+   // but not other proposals by value.
+   MLSGroupUpdate group_update;
+} UpdateClientRequest;
+
+enum {
+   add,
+   remove,
+   update,
+} MLSOperation;
+
+struct {
+   MLSOperation operation;
+
+   select (GroupUpdateRequest.operation) {
+      case add:
+         AddClientsRequest request;
+      case remove:
+         RemoveClientsRequest request;
+      case update:
+         UpdateClientRequest request;
+   }
+} GroupUpdateRequest;
+~~~
+
+The group update contained within `RemoveClientsRequest` is additionally subject
+to the requirements of {{leaves}}.
+
+~~~
+POST /v1/group_update
+Content-Type: application/octet-stream
+
+Body
+TLS-serialized GroupUpdateRequest
+
+Response
+Any meaningful information. The pass/fail is identified by the HTTP response
+status code, not the response body.
+~~~
 
 # Security Considerations
 
-> **TODO**: Populate this section.
+Overall, the user participation state leads any possible MLS group state to
+ensure malicious clients are not able to easily get access to messages.
+
+> **TODO**: Other security guarantees? Consensus may be required here.
 
 # IANA Considerations
 
