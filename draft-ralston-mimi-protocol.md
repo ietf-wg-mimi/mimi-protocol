@@ -639,6 +639,8 @@ struct {
 
 > **TODO**: Include auth rules for permissions.
 
+> **TODO**: Somehow link the event to a client identity? (or several)
+
 # Application Messages
 
 Clients engage in messaging through use of a content format
