@@ -574,6 +574,34 @@ the room. They do not have access to the MLS group.
 > details for how it works. It'd likely just be an `m.room.user` state event
 > with no MLS interaction, like invites are.
 
+## `m.room.user` {#ev-mroomuser}
+
+**Event type**: `m.room.user`
+
+**State key**: ID of target user.
+
+**Additional event fields**:
+
+~~~
+struct {
+   // The new participation state for the target user.
+   ParticipationState state;
+
+   // Optional human-readable reason for the change. Typically most
+   // useful on bans and knocks.
+   opaque [[reason]];
+} UserEvent;
+~~~
+
+**Additional authentication rules**:
+
+* The event's `authEventIds` MUST include a reference to the sender's
+  most recent `m.room.user` event, if one exists, and the room's `m.room.create`
+  event.
+* Rules described by {{invites}}, {{joins}}, {{leaves}}, {{bans}}, {{knocks}}.
+
+> **TODO**: Include auth rules for permissions.
+
 # TODO: Sections
 
 *These headers exist as placeholder anchors.*
@@ -581,8 +609,6 @@ the room. They do not have access to the MLS group.
 > **TODO**: This placeholder section should be removed before first publish.
 
 ## `m.room.redaction` {#ev-mroomredaction}
-
-## `m.room.user` {#ev-mroomuser}
 
 ## Fanout {#fanout}
 
