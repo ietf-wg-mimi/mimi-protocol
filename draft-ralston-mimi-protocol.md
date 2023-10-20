@@ -558,6 +558,10 @@ client, unless that client belongs to a user in the leave participation state.
 Bans imply kick, and are operated the same way as {{leaves}}, though with the
 `m.room.user` ({{ev-mroomuser}}) state event using a `ban` participation state.
 
+An added exception on the validation is also applied to permit preemptive bans:
+the target user is not required to be in the joined state to allow the
+participation state change.
+
 Unbans can be performed by transitioning a user from the banned participation
 state to leave with {{leaves}}.
 
@@ -595,49 +599,6 @@ the room. They do not have access to the MLS group.
 ## Operation: Information for External Commit {#op-external-commit-info}
 
 ## Operation: Claim Key Packages {#op-claim}
-
-# TODO: Scenario content
-
-> **TODO**: This placeholder section should be removed before first publish.
-
-> **TODO**: Incorporate these scenario flows.
-
-Alice adds Bob:
-
-1. Alice creates room.
-2. Alice signals invite for Bob.
-3. Hub server (Alice's) contacts Bob's server and sends invite.
-4. Bob's server checks that it is capable of participating.
-5. Bob's clients receive invite.
-6. Later: Bob's client accepts invite by sending a join signaling event through
-   the hub to all other participants.
-7. Bob's client retrieves GroupInfo.
-8. Bob creates and sends an external commit through the hub.
-
-Alice adds Bob (alternative):
-
-1. Alice creates room.
-2. Alice discovers all of Bob's clients.
-3. Alice prepares Welcome messages, attaches them to a signaling join event for
-   Bob.
-4. That package is sent via the hub to Bob's server.
-5. Bob's server verifies it is capable of participating.
-6. Bob's server acks the request as OK, informs Bob that they're now joined and
-   delivers accompanying Welcome messages.
-7. Concurrent to the ack, hub fans out the join.
-8. Bob is now both a participant and a member.
-
-Alice leaves:
-
-1. Alice proposes self-eviction via remove proposals.
-2. Alice leaves via signaling event.
-3. Hub requires Alice's proposals to be committed next.
-
-Alice leaves (alternative):
-
-1. Alice leaves via signaling event.
-2. Hub (or any other member) generates remove proposals for Alice.
-3. Hub requires those proposals to be committed next.
 
 # Security Considerations
 
