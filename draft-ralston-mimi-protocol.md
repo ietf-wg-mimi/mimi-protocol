@@ -511,7 +511,55 @@ use external commits instead.
 
 ## Leaves/Kicks {#leaves}
 
+Leaving a room can signal a user declining an invite, voluntarily leaving the
+room, or being kicked (removed) from the room. When the sender and target of
+an `m.room.user` ({{ev-mroomuser}}) leave event are different, the target user
+is being kicked. Otherwise the event represents a voluntary leave or declined
+invite (if the previous participation state was "invited").
+
+Like with other participation/membership operations, a user's leave is initiated
+by updating their participation state first. This is done by sending
+({{op-send}}) the relevant `m.room.user` ({{ev-mroomuser}}) state event to the
+hub, which validates it as follows:
+
+* If the target and sender are the same, the user MUST be in the invited,
+  joined, or knocking participation state.
+
+* Otherwise:
+
+  * The target user of the kick MUST be in the joined participation state.
+  * The sender for a kick MUST be in the joined participation state.
+
+> **TODO**: Include special case permissions constraints.
+
+If the event is valid, it is fanned out ({{fanout}}) to all particpating
+servers, plus the target user's server.
+
+The next commit in the MLS group MUST remove *all* of the target user's clients.
+If there are multiple users in the leave participation state, all of their
+clients MUST be removed in the same commit. Other proposals MAY be committed
+alongside the removals, however the commit MUST at a minimum remove the affected
+clients.
+
+> **TODO**: Describe how hub server generates proposals? Or do we just require
+> some member in the group to do it?
+
+Prior to a voluntary `m.room.user` leave event, the sender SHOULD send proposals
+to remove their own clients from the MLS group. Where possible, those clients
+SHOULD commit their removal prior to updating their participation state as well.
+
+Clients can propose to remove themselves from the MLS group at any time. The hub
+server MUST allow commits at any time to honor those proposals. The hub server
+MUST NOT allow a commit which contains an inline proposal to remove another
+client, unless that client belongs to a user in the leave participation state.
+
 ## Bans {#bans}
+
+Bans imply kick, and are operated the same way as {{leaves}}, though with the
+`m.room.user` ({{ev-mroomuser}}) state event using a `ban` participation state.
+
+Unbans can be performed by transitioning a user from the banned participation
+state to leave with {{leaves}}.
 
 ## Knocks {#knocks}
 
