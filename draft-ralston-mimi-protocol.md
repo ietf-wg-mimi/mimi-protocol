@@ -625,6 +625,40 @@ struct {
 
 > **TODO**: Include auth rules for permissions.
 
+# Application Messages
+
+Clients engage in messaging through use of a content format
+({{?I-D.ietf-mimi-content-format}}) and MLS Application Messages. The resulting
+`PrivateMessage` is carried in an `m.room.encrypted` ({{ev-mroomencrypted}})
+event.
+
+The client's server sends the event to the hub with {{op-send}}. If the client's
+server is the room's hub server, it completes the events with the steps
+described by {{op-send}} instead. The event is then fanned out ({{fanout}}) by
+the hub to all participating servers in the room, including the sender's.
+
+How the event goes from client to server, and server to client, is out of scope
+for this document.
+
+## `m.room.encrypted` {#ev-mroomencrypted}
+
+**Event type**: `m.room.encrypted`
+
+**State key**: Not present.
+
+**Additional event fields**:
+
+~~~
+struct {
+   // The PrivateMessage
+   MLSMessage message;
+} EncryptedEvent;
+~~~
+
+**Additional authentication rules**:
+
+* `message` MUST be an MLS PrivateMessage.
+
 # TODO: Sections
 
 *These headers exist as placeholder anchors.*
