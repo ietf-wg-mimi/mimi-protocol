@@ -86,6 +86,9 @@ Servers communicate with each other using a mutually authenticated mode of TLS
 for clients to communicate with a server. Instead, clients use provider-specific
 APIs to accomplish "last mile" delivery of events and messages.
 
+> **TODO**: Describe notion of consent, similar to "connection KeyPackages" in
+> Section 6 of {{?I-D.robert-mimi-delivery-service}}.
+
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
@@ -111,6 +114,10 @@ user participation events for users who are in the `leave` state. The hub server
 SHOULD persist all other events for the benefit of other servers in the room.
 
 > **TODO**: Check that this history requirement matches agreed semantics.
+
+> **TODO**: Describe where room state is persisted. With this document's
+> transport, it's stored adjacent to the MLS group. See
+> {{?I-D.robert-mimi-delivery-service}} for possible in-MLS persistence.
 
 ## Event Schema {#event-schema}
 
@@ -581,7 +588,8 @@ alongside the removals, however the commit MUST at a minimum remove the affected
 clients.
 
 > **TODO**: Describe how hub server generates proposals? Or do we just require
-> some member in the group to do it?
+> some member in the group to do it? See also: Section 3.5 of
+> {{?I-D.robert-mimi-delivery-service}}.
 
 Prior to a voluntary `m.room.user` leave event, the sender SHOULD send proposals
 to remove their own clients from the MLS group. Where possible, those clients
@@ -641,7 +649,8 @@ struct {
 
 > **TODO**: Include auth rules for permissions.
 
-> **TODO**: Somehow link the event to a client identity? (or several)
+> **TODO**: Somehow link the event to a client identity? (or several clients)
+> See also: Section 3.8 of {{?I-D.robert-mimi-delivery-service}}.
 
 # Application Messages
 
@@ -1026,9 +1035,8 @@ This document is the consolidation of the following documents:
   subsections of {{rest-api}} (per transport draft), {{reinit}}, and
   considerations for {{ev-mroomencrypted}}.
 
-* {{?I-D.ralston-mimi-signaling}} describes details for {{event-schema}},
-  {{event-auth}}, {{room-creation}}, parts of {{membership}}, and subsections
-  of {{rest-api}}.
+* {{?I-D.ralston-mimi-signaling}} describes {{event-schema}}, {{event-auth}},
+  {{room-creation}}, details of {{membership}}, and subsections of {{rest-api}}.
 
 Aspects of {{?I-D.ralston-mimi-policy}} are additionally taken into
 consideration in this document through subsections of {{membership}}, but is
