@@ -675,7 +675,7 @@ struct {
 
 * `message` MUST be an MLS PrivateMessage.
 
-# Transport {#tansport}
+# Transport {#transport}
 
 Servers communicate with each other over HTTP {{!RFC9110}}. Endpoints have the
 protocol version embedded into the path for simplified routing between physical
