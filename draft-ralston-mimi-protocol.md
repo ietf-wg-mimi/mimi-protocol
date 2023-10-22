@@ -644,7 +644,7 @@ struct {
 # Application Messages
 
 Clients engage in messaging through use of a content format
-({{?I-D.mimi-content-format}}) and MLS Application Messages. The resulting
+({{?I-D.ietf-mimi-content}}) and MLS Application Messages. The resulting
 `PrivateMessage` is carried in an `m.room.encrypted` ({{ev-mroomencrypted}})
 event.
 
@@ -675,7 +675,7 @@ struct {
 
 * `message` MUST be an MLS PrivateMessage.
 
-# Transport
+# Transport {#tansport}
 
 Servers communicate with each other over HTTP {{!RFC9110}}. Endpoints have the
 protocol version embedded into the path for simplified routing between physical
@@ -1018,10 +1018,12 @@ Example: `m.room.create`
 
 This document is the consolidation of the following documents:
 
-* {{?I-D.robert-mimi-delivery-service}}
-* {{?I-D.ralston-mimi-signaling}}
-* {{?I-D.kohbrok-mimi-transport}}
+* {{?I-D.robert-mimi-delivery-service}} - Used primarily for {{membership}} and
+  subsections of {{rest-api}}.
+* {{?I-D.ralston-mimi-signaling}} - Used primarily for {{event-schema}}.
+* {{?I-D.kohbrok-mimi-transport}} - Used primarily for {{transport}}.
 
 Aspects of {{?I-D.ralston-mimi-policy}} are additionally taken into
-consideration in this document, but is largely unincorporated and may require
-updates to match this document's specifics.
+consideration in this document through subsections of {{membership}}, but is
+largely unincorporated and may require updates to match this document's
+specifics.
