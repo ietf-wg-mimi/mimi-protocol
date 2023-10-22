@@ -644,7 +644,7 @@ struct {
 # Application Messages
 
 Clients engage in messaging through use of a content format
-({{?I-D.ietf-mimi-content-format}}) and MLS Application Messages. The resulting
+({{?I-D.mimi-content-format}}) and MLS Application Messages. The resulting
 `PrivateMessage` is carried in an `m.room.encrypted` ({{ev-mroomencrypted}})
 event.
 
