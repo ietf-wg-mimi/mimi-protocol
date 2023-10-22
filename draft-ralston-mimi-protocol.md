@@ -336,9 +336,11 @@ The hub server for a room is the origin server of the `m.room.create`
 > **TODO**: More sophisticated selection, and possibly transfer of
 > responsibility.
 
-## ReInitialization
+## ReInitialization {#reinit}
 
 > **TODO**: This topic requires further discussion around policy and lifecycle.
+> See also: Section 3.11 and Section 10.15 of
+> {{?I-D.robert-mimi-delivery-service}}.
 
 ## `m.room.redaction` {#ev-mroomredaction}
 
@@ -1018,12 +1020,20 @@ Example: `m.room.create`
 
 This document is the consolidation of the following documents:
 
-* {{?I-D.robert-mimi-delivery-service}} - Used primarily for {{membership}} and
-  subsections of {{rest-api}}.
-* {{?I-D.ralston-mimi-signaling}} - Used primarily for {{event-schema}}.
-* {{?I-D.kohbrok-mimi-transport}} - Used primarily for {{transport}}.
+* {{?I-D.kohbrok-mimi-transport}} forms the majority of {{transport}}.
+
+* {{?I-D.robert-mimi-delivery-service}} describes details for {{membership}},
+  subsections of {{rest-api}} (per transport draft), {{reinit}}, and
+  considerations for {{ev-mroomencrypted}}.
+
+* {{?I-D.ralston-mimi-signaling}} describes details for {{event-schema}},
+  {{event-auth}}, {{room-creation}}, parts of {{membership}}, and subsections
+  of {{rest-api}}.
 
 Aspects of {{?I-D.ralston-mimi-policy}} are additionally taken into
 consideration in this document through subsections of {{membership}}, but is
 largely unincorporated and may require updates to match this document's
 specifics.
+
+{{!I-D.barnes-mimi-architecture}} was additionally used throughout the writing
+of this document.
