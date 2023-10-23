@@ -29,18 +29,19 @@ author:
     fullname: Travis Ralston
     organization: The Matrix.org Foundation C.I.C.
     email: travisr@matrix.org
- -
-    fullname: Konrad Kohbrok
-    organization: Phoenix R&D
-    email: konrad.kohbrok@datashrine.de
- -
-    fullname: Raphael Robert
-    organization: Phoenix R&D
-    email: ietf@raphaelrobert.com
- -
-    fullname: Matthew Hodgson
-    organization: The Matrix.org Foundation C.I.C.
-    email: matthew@matrix.org
+    role: editor
+#  -
+#     fullname: Konrad Kohbrok
+#     organization: Phoenix R&D
+#     email: konrad.kohbrok@datashrine.de
+#  -
+#     fullname: Raphael Robert
+#     organization: Phoenix R&D
+#     email: ietf@raphaelrobert.com
+#  -
+#     fullname: Matthew Hodgson
+#     organization: The Matrix.org Foundation C.I.C.
+#     email: matthew@matrix.org
 
 normative:
 
