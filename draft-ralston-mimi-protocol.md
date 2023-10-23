@@ -30,6 +30,9 @@ author:
     organization: The Matrix.org Foundation C.I.C.
     email: travisr@matrix.org
     role: editor
+
+# These folks wrote much of the content, which has been aggregated into this
+# doc:
 #  -
 #     fullname: Konrad Kohbrok
 #     organization: Phoenix R&D
