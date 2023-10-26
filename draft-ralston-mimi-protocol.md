@@ -528,8 +528,10 @@ best practices that make sense in a mutually authenticated scenario that
 involves two WebPKI based certificates.
 
 Individual events may transit between multiple servers. TLS provides
-point-to-point security properties while {{event-auth}} provides event security
-guarantees when transiting over multiple servers.
+point-to-point security properties. MLS's `aad` provides authentication for
+the accepted room state.
+
+> **TODO**: Describe exactly what `aad` does. This may be a DS draft concern.
 
 ## Endpoint Discovery
 
@@ -567,11 +569,10 @@ When a follower server is sending an event, it MUST only be attempting to send
 to the hub server for the room. Follower servers receiving an event from another
 follower server MUST reject the request with a `400` HTTP status code. The hub
 server MUST populate the `authEventIds` and `prevEventId` fields of the event,
-validate the resulting event, then reply with a `200` HTTP status code and the
-resulting event ID ({{reference-hash}}). The resulting event is then fanned out
-{{fanout}} to relevant servers in the room.
+validate the resulting event, then reply with a `200` HTTP status code.
+The resulting event is then fanned out {{fanout}} to relevant servers in the room.
 
-The hub server MUST validate events according to {{event-auth}} and any event
+The hub server MUST validate events according to any event
 type-specific validation rules. If the event is malformed in any way, or the
 room is unknown, the server MUST respond with a `400` HTTP status code.
 
