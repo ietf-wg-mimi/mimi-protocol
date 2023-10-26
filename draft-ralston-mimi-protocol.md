@@ -1047,5 +1047,5 @@ consideration in this document through subsections of {{membership}}, but is
 largely unincorporated and may require updates to match this document's
 specifics.
 
-{{!I-D.barnes-mimi-architecture}} was additionally used throughout the writing
+{{!I-D.barnes-mimi-arch}} was additionally used throughout the writing
 of this document.
