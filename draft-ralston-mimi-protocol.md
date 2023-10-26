@@ -196,20 +196,6 @@ struct {
 > **TODO**: Include fields for encryption information. Possibly ciphersuite and
 > similar so a server can check to ensure it supports the MLS dialect?
 
-## Hub Server Selection
-
-The hub server for a room is the origin server of the `m.room.create`
-({{ev-mroomcreate}}) event.
-
-> **TODO**: More sophisticated selection, and possibly transfer of
-> responsibility.
-
-## ReInitialization {#reinit}
-
-> **TODO**: This topic requires further discussion around policy and lifecycle.
-> See also: Section 3.11 and Section 10.15 of
-> {{?I-D.robert-mimi-delivery-service}}.
-
 # User Participation and Client Membership {#membership}
 
 In a MIMI room, users are *participants* with an associated
@@ -867,7 +853,7 @@ This document is the consolidation of the following documents:
 * {{?I-D.kohbrok-mimi-transport}} forms the majority of {{transport}}.
 
 * {{?I-D.robert-mimi-delivery-service}} describes details for {{membership}},
-  subsections of {{rest-api}} (per transport draft), {{reinit}}, and
+  subsections of {{rest-api}} (per transport draft), and
   considerations for {{ev-mroomencrypted}}.
 
 * {{?I-D.ralston-mimi-signaling}} describes {{event-schema}},
