@@ -54,6 +54,8 @@ informative:
 
 --- abstract
 
+> **TODO**: Refactor abstract to match actual document scope.
+
 The More Instant Messaging Interoperability (MIMI) working group is chartered to
 use Messaging Layer Security (MLS) {{!RFC9420}} for its encryption/security
 layers. This document implements the architecture described by {{!I-D.barnes-mimi-arch}},
@@ -63,6 +65,8 @@ interoperability.
 --- middle
 
 # Introduction
+
+> **TODO**: Refactor introduction to match actual document scope.
 
 The More Instant Messaging Interoperability (MIMI) working group is responsible
 for specifying the set of protocols required to achieve secure, modern,
