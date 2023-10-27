@@ -54,6 +54,8 @@ informative:
 
 --- abstract
 
+> **TODO**: Refactor abstract to match actual document scope.
+
 The More Instant Messaging Interoperability (MIMI) working group is chartered to
 use Messaging Layer Security (MLS) {{!RFC9420}} for its encryption/security
 layers. This document implements the architecture described by {{!I-D.barnes-mimi-arch}},
@@ -63,6 +65,8 @@ interoperability.
 --- middle
 
 # Introduction
+
+> **TODO**: Refactor introduction to match actual document scope.
 
 The More Instant Messaging Interoperability (MIMI) working group is responsible
 for specifying the set of protocols required to achieve secure, modern,
@@ -106,26 +110,20 @@ associated MLS group for encryption operations. State events are used to frame
 information and operations which exist outside of the MLS group, such as the
 user participation list, room policy, and other metadata.
 
-Events are sent in context of a room, authenticated against the room's policy,
+Events are sent in context of a room, validated against the room's policy,
 and ordered by the hub server. Each event additionally contains an *event type*
 to differentiate its payload format from other events. A state event is an event
 with a *state key*. The combination of the event type and state key form a tuple
 to establish *current state*: the most recently sent state events with distinct
 type and state key pairs.
 
-The hub server MUST persist at least the current room state, and MAY discard
-user participation events for users who are in the `leave` state. The hub server
-SHOULD persist all other events for the benefit of other servers in the room.
-
-> **TODO**: Check that this history requirement matches agreed semantics.
-
-> **TODO**: Describe where room state is persisted. With this document's
+> **TODO**: Describe where room state is persisted, if at all. With this document's
 > transport, it's stored adjacent to the MLS group. See
 > {{?I-D.robert-mimi-delivery-service}} for possible in-MLS persistence.
 
 ## Event Schema {#event-schema}
 
-Events are authenticated against their TLS presentation language format
+Events are validated against their TLS presentation language format
 ({{Section 3 of RFC8446}}):
 
 ~~~
@@ -146,152 +144,22 @@ struct {
    // Who or what sent this event.
    opaque sender;
 
-   // The origin server's content hash of the event.
-   // See the "Content Hashes" section for information.
-   uint8 contentHash[32];
-
-   // The origin server's signature over the event.
-   // See the "Signatures" section for information.
-   opaque signature<V>;
-
-   // The event IDs which authorize this event to be sent in the room,
-   // as defined by the policy.
-   // See the "[Event] Authentication" section for information.
-   opaque authEventIds[];
-
-   // The event ID of the parent event. This will be an empty string if
-   // the `type` is `m.room.create`.
-   opaque prevEventId;
-
    // Additional fields may be present as dependent on event type.
+   select (Event.type) {
+      case "m.room.user":
+         UserEvent content; // see later in doc
+      // more cases as required by registry
+   }
 } Event;
 ~~~
 
-Note an "event ID" is not specified on the object. The event ID for an event is
-the sigil `$` followed by the URL-Safe Unpadded Base64-encoded reference hash
-({{reference-hash}}) of the event.
+Note an "event ID" is not specified on the object. Events are sent ephemerally
+and bound to the underlying cryptographic group state rather than referenced by
+a consistent identifier.
 
 The "origin server" of an event is the server implied by the `sender` field.
 
-Events are immutable once sent, but may be redacted ({{event-auth}}) to remove
-non-critical information.
-
-## Authentication {#event-auth}
-
-Events simultaneously carry information which is critical for the protocol to
-operate, and other information which is less essential. The less essential
-information is often user-supplied, and ideally can be removed without
-"breaking" the room. MIMI supports removing non-critical information from events
-through *redaction*.
-
-Redaction creates a consistent representation of an event suitable for signing.
-It is not an approach for "deleting" an event. Deletions are instead handled by
-the content format for application messages in MIMI.
-
-There are two scenarios where a redaction is applied:
-
-1. When a mismatched content hash ({{content-hash}}) for an event is received.
-2. When an `m.room.redaction` ({{ev-mroomredaction}}) message event is received,
-   targeting an event.
-
-When applying a redaction, all fields described by {{event-schema}} MUST NOT be
-removed. Individual event types MAY describe additional fields to retain. All
-other fields MUST be removed.
-
-Events are authenticated against their redacted form. If an event fails
-authentication, it is *rejected*. Rejected events are dropped and not forwarded
-any further. For example, a hub rejecting an event would not send it to follower
-servers. A follower server rejecting an event sent by a hub would not forward it
-to local clients.
-
-The redacted event is signed ({{event-signing}}) to verify that the event was
-sent by the referenced originating server. If the signature verification fails,
-the event is rejected.
-
-Each event references a set of "auth events" which permit the event to be sent.
-This field is populated by the hub server upon receipt of a partial event to
-send. The specific event types required to be referenced in this field are
-described by the room policy, but are typically the `m.room.create` ({{ev-mroomcreate}}),
-and `m.room.user` ({{ev-mroomuser}}) state events at a minimum. If an event is
-missing a required auth event, or contains a reference to an unknown/rejected
-event, the event is rejected.
-
-If the event's content hash does not match the calculated content hash, the
-event is redacted before being sent any further. Note that if an event is
-already manually redacted with a redaction event, it will in most cases fail a
-content hash check.
-
-Individual event types MAY specify additional authentication requirements, such
-as field validation or ordering requirements.
-
-### Reference Hash {#reference-hash}
-
-Events are referenced by ID in relation to each other, forming the room history
-and auth chain. If the event ID was a sender-generated value, any server along
-the send or receive path could "replace" that event with another perfectly legal
-event, both using the same ID.
-
-By using a calculated value, namely the reference hash, if a server does try to
-replace the event then it would result in a completely different event ID. That
-event ID becomes impossible to reference as it wouldn't be part of the proper
-room history.
-
-An event's reference hash is calculated by redacting it, removing the
-`signature` field if present, then serializing the resulting object. The
-serialized binary is then hashed using SHA256 {{!RFC6234}}.
-
-To further create an event ID, the resulting hash is encoded using URL-Safe
-Unpadded Base64 and prefixed with the `$` sigil.
-
-> **TODO**: Reference "URL-Safe Unpadded Base64" specification.
-
-### Content Hash {#content-hash}
-
-An event's content hash prevents servers from modifying details of the event not
-covered by the reference hash itself. For example, a room name state event
-doesn't have the name itself covered by a reference hash because it's redacted,
-so it's instead covered by the content hash, which is in turn covered by the
-reference hash. This allows the event to later be redacted without affecting the
-event ID of that event.
-
-To calculate a content hash, the following fields are removed from the event
-first:
-
-* `contentHash`
-* `signature`
-* `authEventIds`
-* `prevEventId`
-
-`authEventIds` and `prevEventId` are removed because they are populated by the
-hub server. The content hash is to preserve the origin server's event, not the
-hub server's.
-
-The resulting object is then serialized and hashed using SHA256 {{!RFC6234}}.
-
-Note that the event is *not* redacted in the calculation of a content hash. This
-is to ensure that *all* origin-provided fields are protected by a hash and
-trigger redaction if a field changed along the send path.
-
-The content hash is additionally covered by the reference hash and event
-signature.
-
-### Signatures {#event-signing}
-
-An event's content hash covers the unredacted contents, and it's reference hash
-covers the redacted event contents (including the content hash). The hashes
-alone are not authenticated and require an additional verification mechanism.
-Signatures provide the needed authentication mechanism, and are applied by the
-event's origin server.
-
-Signatures are computed by first redacting the event, then removing the
-`signature`, `authEventIds`, and `prevEventId` fields if present. The resulting
-object is then serialized and signed using the server's key.
-
-> **TODO**: Use mTLS keys? Source drafts use Ed25519 keys, but then we need to
-> distribute keys all over the place.
-
-Like content hashes ({{content-hash}}), `authEventIds` and `prevEventId` are
-removed from the event because they are populated by the hub server.
+Events are immutable once sent.
 
 ## Creation {#room-creation}
 
@@ -327,54 +195,10 @@ struct {
 ~~~
 
 > **TODO**: Include fields for policy information (previously called a "policy
-> ID" in ralston-mimi-signaling). Protect this new field from redaction.
+> ID" in ralston-mimi-signaling).
 
 > **TODO**: Include fields for encryption information. Possibly ciphersuite and
-> similar so a server can check to ensure it supports the MLS dialect? Protect
-> this new field from redaction.
-
-**Additional authentication rules**:
-
-* The event's `prevEventId` MUST be a zero byte length string.
-* The event's `authEventIds` MUST be empty.
-* The event MUST be the first event in the room.
-
-## Hub Server Selection
-
-The hub server for a room is the origin server of the `m.room.create`
-({{ev-mroomcreate}}) event.
-
-> **TODO**: More sophisticated selection, and possibly transfer of
-> responsibility.
-
-## ReInitialization {#reinit}
-
-> **TODO**: This topic requires further discussion around policy and lifecycle.
-> See also: Section 3.11 and Section 10.15 of
-> {{?I-D.robert-mimi-delivery-service}}.
-
-## `m.room.redaction` {#ev-mroomredaction}
-
-**Event type**: `m.room.redaction`
-
-**State key**: Not present.
-
-**Additional event fields**:
-
-~~~
-struct {
-   // The event ID to redact.
-   opaque redactedEventId;
-} RedactionEvent;
-~~~
-
-**Additional authentication rules**:
-
-* The `redactedEventId` MUST be an event in the room.
-* The affected `redactedEventId` is redacted ({{event-auth}}) by the server upon
-  receipt.
-
-Redaction events are sent to the hub server for fanout with {{op-send}}.
+> similar so a server can check to ensure it supports the MLS dialect?
 
 # User Participation and Client Membership {#membership}
 
@@ -644,14 +468,11 @@ struct {
 } UserEvent;
 ~~~
 
-**Additional authentication rules**:
+**Additional validation rules**:
 
-* The event's `authEventIds` MUST include a reference to the sender's
-  most recent `m.room.user` event, if one exists, and the room's `m.room.create`
-  event.
 * Rules described by {{invites}}, {{joins}}, {{leaves}}, {{bans}}, {{knocks}}.
 
-> **TODO**: Include auth rules for permissions.
+> **TODO**: Include validation rules for permissions.
 
 > **TODO**: Somehow link the event to a client identity? (or several clients)
 > See also: Section 3.8 of {{?I-D.robert-mimi-delivery-service}}.
@@ -686,7 +507,7 @@ struct {
 } EncryptedEvent;
 ~~~
 
-**Additional authentication rules**:
+**Additional validation rules**:
 
 * `message` MUST be an MLS PrivateMessage.
 
@@ -707,8 +528,10 @@ best practices that make sense in a mutually authenticated scenario that
 involves two WebPKI based certificates.
 
 Individual events may transit between multiple servers. TLS provides
-point-to-point security properties while {{event-auth}} provides event security
-guarantees when transiting over multiple servers.
+point-to-point security properties. MLS's `aad` provides authentication for
+the accepted room state.
+
+> **TODO**: Describe exactly what `aad` does. This may be a DS draft concern.
 
 ## Endpoint Discovery
 
@@ -746,11 +569,10 @@ When a follower server is sending an event, it MUST only be attempting to send
 to the hub server for the room. Follower servers receiving an event from another
 follower server MUST reject the request with a `400` HTTP status code. The hub
 server MUST populate the `authEventIds` and `prevEventId` fields of the event,
-validate the resulting event, then reply with a `200` HTTP status code and the
-resulting event ID ({{reference-hash}}). The resulting event is then fanned out
-{{fanout}} to relevant servers in the room.
+validate the resulting event, then reply with a `200` HTTP status code.
+The resulting event is then fanned out {{fanout}} to relevant servers in the room.
 
-The hub server MUST validate events according to {{event-auth}} and any event
+The hub server MUST validate events according to any event
 type-specific validation rules. If the event is malformed in any way, or the
 room is unknown, the server MUST respond with a `400` HTTP status code.
 
@@ -1036,10 +858,10 @@ This document is the consolidation of the following documents:
 * {{?I-D.kohbrok-mimi-transport}} forms the majority of {{transport}}.
 
 * {{?I-D.robert-mimi-delivery-service}} describes details for {{membership}},
-  subsections of {{rest-api}} (per transport draft), {{reinit}}, and
+  subsections of {{rest-api}} (per transport draft), and
   considerations for {{ev-mroomencrypted}}.
 
-* {{?I-D.ralston-mimi-signaling}} describes {{event-schema}}, {{event-auth}},
+* {{?I-D.ralston-mimi-signaling}} describes {{event-schema}},
   {{room-creation}}, details of {{membership}}, and subsections of {{rest-api}}.
 
 Aspects of {{?I-D.ralston-mimi-policy}} are additionally taken into
