@@ -673,8 +673,7 @@ This document is the consolidation of the following documents:
 * {{?I-D.kohbrok-mimi-transport}} forms the majority of {{transport}}.
 
 * {{?I-D.robert-mimi-delivery-service}} describes details for {{membership}},
-  subsections of {{rest-api}} (per transport draft), and
-  considerations for {{ev-mroomencrypted}}.
+  subsections of {{rest-api}} (per transport draft).
 
 * {{?I-D.ralston-mimi-signaling}} describes {{event-schema}},
   {{room-creation}}, details of {{membership}}, and subsections of {{rest-api}}.
