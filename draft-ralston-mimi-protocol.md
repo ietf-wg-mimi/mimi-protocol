@@ -106,8 +106,8 @@ Terms and definitions are inherited from {{!I-D.barnes-mimi-arch}}.
 # Rooms and Events {#rooms-and-events}
 
 Rooms, described by {{!I-D.barnes-mimi-arch}}, consist of a user participation
-list, any relevant cryptographic state (such as an MLS group), policy, and other
-metadata as needed.
+list, a cryptographic representation of the room as defined by
+{{!I-D.robert-mimi-delivery-service}}, policy, and other metadata as needed.
 
 > **TODO**: Consider renaming "event" to something else.
 
@@ -119,12 +119,13 @@ signed to ensure authenticity over all network hops.
 
 This document defines events to track and manage user-level participation in a
 room. The cryptographic security layer defines additional events as needed to
-manage and track its operations. For example, adding clients to an MLS group or
-requesting single-use keys for another user.
+manage and track its operations. For example, adding clients to a room's
+underlying MLS group or requesting single-use key material for another user's
+clients.
 
-Events are used to carry information, and are not required to be persisted. The
-current participation and policy state is confirmed by the cryptographic
-security layer rather than being confirmed in events specifically.
+Events carry information, and are not required to be persisted. The current
+participation and policy state is confirmed by the cryptographic security layer
+rather than being confirmed in events specifically.
 
 ## Event Schema {#event-schema}
 
@@ -166,6 +167,8 @@ struct {
          UserEvent content; // see later in doc
       case "m.room.participant_list":
          ParticipantListEvent content; // see later in doc
+      case "ds.group":
+         DSEvent ds_event; // see later in doc
       // more cases as required by registry
    }
 } Event;
@@ -181,10 +184,148 @@ by a consistent identifier.
 
 The "origin server" of an event is the server implied by the `sender` field.
 
+
+## Cryptographic Room Representation {#mimi-ds}
+
+> **TODO**: Decide on terminology on how to reference the cryptographic building
+> block throughout the document.
+> **TODO**: We might want to move this section elsewhere.
+
+Each room is represented cryptographically by an MLS group and the Hub that
+manages the room acts as the DS as defined in the MIMI DS protocol specified in
+{{!I-D.robert-mimi-delivery-service}}.
+
+In particular, the cryptographic room state holds the list of clients currently
+in the room.
+
+### Proposal-commit paradigm
+
+MLS follows a proposal-commit paradigm, which means that any party involved in a
+room (follower server, Hub or clients) can send proposals (e.g. to
+add/remove/update clients of a user or to re-initialize the group with different
+parameters). However, only clients can send commits, which contain all valid
+previously sent proposals and apply them to the MLS group state. All proposals
+are initially sent to the Hub, which verifies that they are valid in the context
+of the current room state and any previously received proposals.
+
+The MIMI DS protocol ensures that the Hub, all follower servers and the clients
+of all participants agree on the same room state, which specifically includes
+the participant list, the client list and the key material used for message
+encryption (the last of which is only available to clients).
+
+### Cryptographically anchoring room state {#anchoring}
+
+To allow all parties involved to agree on the state of the room, the room state
+is anchored in the MLS group via a GroupContext extension.
+
+~~~ tls
+struct {
+   opaque user_id;
+   opaque role;
+   ParticipationState state;
+} ParticipantData
+
+struct {
+  opaque room_id;
+  UserData participants<V>;
+  // TODO: Add any remaining room data
+} RoomState;
+~~~
+
+Whenever a client creates a commit, it includes an UpdateRoom proposal that
+contains all events since the preceeding commit and updates the ParticipantData
+extension accordingly as part of the commit.
+
+~~~ tls
+struct {
+  UserEvent user_event<V>;
+  // TODO: Other events that change room state
+} UpdateRoom;
+~~~
+
+> **TODO**: This is a new proposal type that would have to be specified as part
+> of an extension by the MLS WG.
+
+The Hub is the arbiter of which event is sent in which epoch and verifies that
+the UpdateRoom proposal in each commit is complete.
+
+> **TODO**: Client should be able to staple events to a commit to create an
+> atomically processable message.
+
+### DSEvents
+
+All events that pertain to the MLS group that underlies a room are wrapped into
+a DSEvent and sent as an Event of type `ds.group`.
+
+~~~ tls
+struct {
+   DSRequest ds_request;
+} DSEvent
+~~~
+
+The MIMI DS protocol deals with authentication and upon successful processing
+returns a DSResponse to be sent to the sender of the DSEvent, optionally an
+MLSMessage for full fan-out and optionally one or more Welcome messages for
+delivery to new group members.
+
+TODO: Integrate DSResponse into the MIMI Response type
+
+#### Client and group state management
+
+The MIMI DS protocol allows parties to update the state of the MLS group, either
+through proposals or commits.
+
+Through proposals, parties involved in the group can change the members of the
+group by:
+
+* adding a client,
+* removing a client, or
+* updating a client.
+
+Note that proposing the addition of a client requires the KeyPackage of said
+client (see {{state-provisioning}}).
+
+Additionally, parties can propose to re-initialize a group (e.g. to change the
+version or ciphersuite of the group).
+
+Clients can create commits, which have to include all valid proposals sent since
+the last commit. In the commit, clients can include additional proposals
+corresponding to the group state changes described above.
+
+In addition to those state changes, a client can also use a commit to add itself
+to a group without being added through the commit of an existing group member.
+For such a commit, the client first needs the current group information (see
+{{state-provisioning}}).
+
+For both proposals and commits (and the proposals therein), all recipients
+including the Hub MUST verify that the following hold.
+
+* The room's policy allows the sender to perform the corresponding operation.
+* The resulting client list is consistent with the participant list of the room.
+
+#### Provisioning of cryptographic state and key material {#state-provisioning}
+
+The MIMI DS protocol also allows parties to send DSRequests that do not change
+the state of the MLS group underlying the state of a given room. A party can
+thus request
+
+* Key material required to add one or more new clients to a group
+* Information required to join a group (via external commit)
+
+> **TODO**: Maybe emphasise that since we store the whole room information in a
+> group context extension, the group info is enough to bootstrap the entire
+> room.
+
+#### Message encryption
+
+The MIMI DS protocol also deals with the sending of encrypted (application)
+messages. Due to the encryption, MIMI DS will only verify the message's header
+data and return a fan-out request.
+
 ## Creation {#room-creation}
 
-Rooms (and therefore MLS groups) are first created within the provider, out of
-scope from MIMI. When the room is exposed to another server over the MIMI
+Rooms (and the underlying MLS groups) are first created within the provider, out
+of scope from MIMI. When the room is exposed to another server over the MIMI
 protocol, such as with an explicit invite to another user, the creating server
 MUST produce the following details:
 
@@ -254,10 +395,8 @@ are considered to be "in" or "participating" in the room. Events which require
 full fanout ({{fanout}}) are sent to all participating servers by default. Some
 events MAY be sent to additional servers as needed by their fanout considerations.
 
-After any participation state change, the cryptographic state for a room MUST
-confirm that the participation state change happened. For example, by committing
-a hash of the current user participation list alongside the addition of a user's
-clients.
+The participant list is anchored in the cryptographic state of the room as
+described in {{anchoring}}.
 
 ## Invites {#invites}
 
