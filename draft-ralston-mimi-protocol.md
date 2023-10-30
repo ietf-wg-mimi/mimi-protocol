@@ -127,7 +127,6 @@ Events carry information, and are not required to be persisted. The current
 participation and policy state is confirmed by the cryptographic security layer
 rather than being confirmed in events specifically.
 
-
 ## Event Schema {#event-schema}
 
 Events are validated against their TLS presentation language format
@@ -240,6 +239,7 @@ extension accordingly as part of the commit.
 ~~~ tls
 struct {
   UserEvent user_event<V>;
+  // TODO: Other events that change room state
 } UpdateRoom;
 ~~~
 
@@ -268,12 +268,15 @@ returns a DSResponse to be sent to the sender of the DSEvent, optionally an
 MLSMessage for full fan-out and optionally one or more Welcome messages for
 delivery to new group members.
 
+TODO: Integrate DSResponse into the MIMI Response type
+
 #### Client and group state management
 
 The MIMI DS protocol allows parties to update the state of the MLS group, either
 through proposals or commits.
 
-Through proposals, parties involved in the group can change the members of the group by:
+Through proposals, parties involved in the group can change the members of the
+group by:
 
 * adding a client,
 * removing a client, or
