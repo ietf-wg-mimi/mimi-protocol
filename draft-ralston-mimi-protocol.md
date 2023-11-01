@@ -600,7 +600,7 @@ the room. They do not have access to the cryptographic state.
 > details for how it works. It'd likely just be an `m.room.user` state event
 > with no MLS interaction, like invites are.
 
-## `m.room.user` {#ev-mroomuser} 
+## `m.room.user` {#ev-mroomuser}
 
 **Event type**: `m.room.user`
 
