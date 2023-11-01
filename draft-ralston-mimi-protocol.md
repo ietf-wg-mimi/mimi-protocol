@@ -265,6 +265,22 @@ change during anepoch based on room-state changing events. The changes of these
 events are applied to the room state even if the commits that carry the event
 information have not yet been committed.
 
+### Authenticating proposals
+
+The MLS specification {{!RFC9420}} requires that MLS proposals from the Hub and
+from follower servers (external senders in MLS terminology) be authenticated
+using key material contained in the `external_senders` extension of the MLS
+group. Each MLS group associated with a MIMI room MUST therefore contain an
+`external_senders` extension. That extension MUST contain at least the
+Certificate of the Hub.
+
+When a user from a follower server becomes a participant in the room, the
+Certificate of the follower server MAY be added to the extension. When the last
+participant belonging to a follower server leaves the room, the certificate of
+that user MUST be removed from the list. Changes to the `external_senders`
+extension only take effect when the MLS proposal containing the event is
+committed by a MIMI DS commit. See {{ev-mroomuser}} for more information.
+
 ### DSEvents
 
 All events that pertain to the MLS group that underlies a room are wrapped into
@@ -584,7 +600,7 @@ the room. They do not have access to the cryptographic state.
 > details for how it works. It'd likely just be an `m.room.user` state event
 > with no MLS interaction, like invites are.
 
-## `m.room.user` {#ev-mroomuser}
+## `m.room.user` {#ev-mroomuser} 
 
 **Event type**: `m.room.user`
 
@@ -593,7 +609,16 @@ participant.
 
 > **TODO**: Do we also want this to be able to change a participant's role?
 
-It is transported via an MLS proposal of type UserEvent.
+It is transported via an MLS proposal of type UserEvent. If the event adds a
+user to the room and it is the first user in the room that belongs to the
+sending follower server, the UserEvent MAY contain the Certificate that can be
+used to validate external proposals from that follower server. If it does, the
+commit that contains the proposal adds the Certificate to `external_senders`
+extension of the underlying MLS group.
+
+If the event removes the last user of a follower server from a room, the commit
+that contains the MLS proposal that carries the event removes the Certificate of
+that follower server from the extension.
 
 > **TODO**: This proposal needs to be added to the IANA proposal list, or
 > specified as an extension proposal as specified in the MLS extensions
@@ -611,12 +636,15 @@ struct {
    // Optional human-readable reason for the change. Typically most
    // useful on bans and knocks.
    opaque [[reason]];
+   optional<Certificate> follower_server_certificate;
 } UserEvent;
 ~~~
 
 **Additional validation rules**:
 
 * Rules described by {{invites}}, {{joins}}, {{leaves}}, {{bans}}, {{knocks}}.
+* The proposal MUST be authenticated as an MLS message based on the room's
+  underlying MLS group.
 
 > **TODO**: Include validation rules for permissions.
 
