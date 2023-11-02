@@ -161,19 +161,19 @@ struct {
    select (Event.type) {
       case "m.room.user":
          // MLSMessage containing a UserEvent proposal
-         MLSMessage user_event_proposal; 
+         MLSMessage user_event_proposal;
       case "m.room.participant_list":
-         ParticipantListEvent content; 
+         ParticipantListEvent content;
       case "ds.proposal":
-         DSRequest ds_proposal; 
+         DSRequest ds_proposal;
       case "ds.commit":
-         DSRequest ds_commit; 
+         DSRequest ds_commit;
       case "ds.fetch_key_package":
-         DSRequest fetch_key_package; 
+         DSRequest fetch_key_package;
       case "ds.fetch_group_info":
-         DSRequest fetch_group_info; 
+         DSRequest fetch_group_info;
       case "ds.send_message":
-         DSRequest send_message; 
+         DSRequest send_message;
       // more cases as required by registry
    }
 } Event;
