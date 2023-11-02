@@ -340,7 +340,8 @@ group updates without proposing them separately through the `ds.propose_update`
 event.
 
 Note that this event can also be used by a client to add itself to the group. To
-do that, the sender requires the current group and room information (see {ev-fetchgroupinfo} and {ev-mroomparticipant_list})
+do that, the sender requires the current group information (see
+{ev-fetchgroupinfo}).
 
 ~~~tls
 struct {
@@ -363,8 +364,9 @@ fanned out to the follower servers of the added clients.
 
 **Event type**: `ds.fetch_keypackage`
 
-TODO: For now, we assume that KeyPackages are fetched in the context of a room.
-This might change in the future.
+TODO: For now, we assume that KeyPackages are fetched directly, i.e. not in the
+context of a room and via a Hub. This might change in the future. If it does
+change, this event needs an additional authentication mechanism.
 
 Group members, the Hub or follower servers can use this event to request a
 KeyPackage from the Hub or another follower server.
@@ -383,16 +385,14 @@ None
 
 TBD
 
-#### Fetch GroupInfo {#ev-fetchgroupinfo}
+#### Fetch group information {#ev-fetchgroupinfo}
 
 **Event type**: `ds.fetch_groupinfo`
 
-TODO: Note that this is not a proposal
-
-Group members or follower servers can use this event to request a GroupInfo
-object from the Hub. The GroupInfo object allows clients to join a room, either
-via Welcome (if the clients have received a Welcome message), or via external
-commit.
+Group members or follower servers can use this event to request group
+information from the Hub. Up-to-date group information is required for clients
+to be able to add themselves to a group via the `ds.group_update` event. The
+group info returned to the sender includes any pending proposals.
 
 ~~~tls
 struct {
@@ -411,7 +411,9 @@ by the MIMI DS protocol, however, is returned to the sender of the event.
 
 **Event type**: `ds.send_message`
 
-TODO: Note that this is not a proposal
+TODO: This is not a proposal and there is no way for the Hub or follower servers
+to authenticate this event at the moment. We might want to a way to do that
+later.
 
 Group members can use this event to request to send an encrypted (application)
 message to the other group members.
