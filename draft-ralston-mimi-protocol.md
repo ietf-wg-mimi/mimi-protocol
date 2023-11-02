@@ -344,7 +344,7 @@ do that, the sender requires the current group information (see
 
 ~~~tls
 struct {
-  DSRequest commit;
+  DSRequest commitBundle;
 } DSCommit
 ~~~
 
