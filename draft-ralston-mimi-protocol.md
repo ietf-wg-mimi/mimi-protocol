@@ -261,7 +261,7 @@ by the Hub during the current epoch. This includes both proposals that carry
 room-state changes, as well as proposals sent as part of MIMI DS events.
 
 Note that the validity of a proposal depend on the current room state, which may
-change during anepoch based on room-state changing events. The changes of these
+change during an epoch based on room-state changing events. The changes of these
 events are applied to the room state even if the commits that carry the event
 information have not yet been committed.
 
@@ -685,8 +685,7 @@ the room. They do not have access to the cryptographic state.
 
 **Event type**: `m.room.user`
 
-An `m.room.user` event can be used to change the participation state of a room's
-participant.
+An `m.room.user` event can be used to change the participation state of a user.
 
 > **TODO**: Do we also want this to be able to change a participant's role?
 
@@ -712,7 +711,7 @@ struct {
    opaque targetUserId;
 
    // The new participation state for the target user.
-   Participan state;
+   ParticipationState state;
 
    // Optional human-readable reason for the change. Typically most
    // useful on bans and knocks.
