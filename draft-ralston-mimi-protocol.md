@@ -161,19 +161,25 @@ struct {
    select (Event.type) {
       case "m.room.user":
          // MLSMessage containing a UserEvent proposal
-         MLSMessage user_event_proposal; // see later in doc
+         MLSMessage user_event_proposal; 
       case "m.room.participant_list":
-         ParticipantListEvent content; // see later in doc
-      case "ds.group":
-         DSEvent ds_event; // see later in doc
+         ParticipantListEvent content; 
+      case "ds.proposal":
+         DSRequest ds_proposal; 
+      case "ds.commit":
+         DSRequest ds_commit; 
+      case "ds.fetch_key_package":
+         DSRequest fetch_key_package; 
+      case "ds.fetch_group_info":
+         DSRequest fetch_group_info; 
+      case "ds.send_message":
+         DSRequest send_message; 
       // more cases as required by registry
    }
 } Event;
 ~~~
 
 > **TODO**: Consider splitting `sender` into an object of `{type, identifier}`.
-
-> **TODO**: Determine server signing key details (Ed25519?)
 
 > **TODO**: The `sender` field might be a bit redundant now that signaling is
 > largely handled through MLS proposals.
@@ -297,17 +303,14 @@ Depending on the event, a DSResponse either indicates successful processing, the
 requested data (e.g. group information required for joins), or an error message.
 
 Messages meant for fan-out are DSFanoutRequests, which contain an MLS message,
-as well as some MIMI DS protocol-specific header information.
-
-TODO: Add that DSFanoutRequests will yield a list of recipients to which they
-should be fanned out.
+as well as information to which clients messages should be fanned out to.
 
 TODO: Update the MIMI DS doc to allow for messages to contain more than one
 proposal and a generic "commit" action.
 
 #### Propose group update {#ev-proposeupdate}
 
-**Event type**: `ds.propose_update`
+**Event type**: `ds.proposal`
 
 Group members, the Hub, and follower servers can use this event to propose
 updates to the group. Each such event contains one or more proposals that can be
@@ -317,8 +320,8 @@ group.
 
 ~~~tls
 struct {
-  DSRequest group_update_proposal;
-} DSProposeUpdates
+  DSRequest proposal;
+} DSProposal
 ~~~
 
 **Additional validation rules**:
@@ -326,17 +329,13 @@ struct {
 * Clients can only be added to the group if the associated user is on the
   participant list and in the `join` state.
 
-**Fanout considerations**: After processing the DSRequest, the MIMI DS protocol
-will return a message that MUST be fanned out to all follower servers with users
-on the participant list that are in the `join` state.
-
 #### Commit group update {#ev-commitupdate}
 
-**Event type**: `ds.commit_update`
+**Event type**: `ds.commit`
 
 Group members can use this event to commit any pending proposals (including both
 group updates and room updates). The sender of this event can include additional
-group updates without proposing them separately through the `ds.propose_update`
+group updates without proposing them separately through the `ds.proposal`
 event.
 
 Note that this event can also be used by a client to add itself to the group. To
@@ -345,8 +344,8 @@ do that, the sender requires the current group information (see
 
 ~~~tls
 struct {
-  DSRequest group_update_commit;
-} DSCommitUpdates
+  DSRequest commit;
+} DSCommit
 ~~~
 
 **Additional validation rules**:
@@ -354,15 +353,9 @@ struct {
 * Clients can only be added to the group if the associated user is on the
   participant list and in the `join` state.
 
-**Fanout considerations**: After processing the DSRequest, the MIMI DS protocol
-will return a message that MUST be fanned out to all follower servers with users
-on the participant list. If any new clients are added as part of the commit, the
-MIMI DS protocol will also return one or more DSFanoutMessages that have to be
-fanned out to the follower servers of the added clients.
-
 #### Fetch KeyPackage {#ev-fetchkeypackage}
 
-**Event type**: `ds.fetch_keypackage`
+**Event type**: `ds.fetch_key_package`
 
 TODO: For now, we assume that KeyPackages are fetched directly, i.e. not in the
 context of a room and via a Hub. This might change in the future. If it does
@@ -381,17 +374,13 @@ struct {
 
 None
 
-**Fanout considerations**:
-
-TBD
-
 #### Fetch group information {#ev-fetchgroupinfo}
 
-**Event type**: `ds.fetch_groupinfo`
+**Event type**: `ds.fetch_group_info`
 
 Group members or follower servers can use this event to request group
 information from the Hub. Up-to-date group information is required for clients
-to be able to add themselves to a group via the `ds.group_update` event. The
+to be able to add themselves to a group via the `ds.commit` event. The
 group info returned to the sender includes any pending proposals.
 
 ~~~tls
@@ -403,9 +392,6 @@ struct {
 **Additional validation rules**:
 
 None
-
-**Fanout considerations**: This event is not fanned out. The DSResponse produced
-by the MIMI DS protocol, however, is returned to the sender of the event.
 
 #### Send Message {#ev-sendmessage}
 
@@ -427,10 +413,6 @@ struct {
 **Additional validation rules**:
 
 None
-
-**Fanout considerations**: After processing the DSRequest, the MIMI DS protocol
-will return a message that MUST be fanned out to all follower servers with
-clients in the group.
 
 ## Creation {#room-creation}
 
