@@ -713,18 +713,18 @@ that follower server from the extension.
 
 ~~~tls
 enum {
-   invite,  
-   join,    
-   leave,   
-   ban,     
-   knock,   
+   invite,
+   join,
+   leave,
+   ban,
+   knock,
 } ParticipationStateChange;
 
 struct {
    // The user ID being affected by this participation state change.
    opaque targetUserId;
 
-   // The new participation state for the target user. "Leave" removes 
+   // The new participation state for the target user. "Leave" removes
    // the user from the list.
    ParticipationStateChange state;
 
