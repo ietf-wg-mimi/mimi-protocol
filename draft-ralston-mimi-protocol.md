@@ -128,6 +128,14 @@ Bob, and Cathy:
 - Alice adds Cathy to the room
 - Alice removes Bob from the room
 
+Throughout this section, we will detail the individual operations through
+Alice's lense. All actions by Alice are taken through Alice's client and her
+server's proprietary API. While some parts of the individual messages originate
+from Alice's clients, the MIMI protocol is only concerned with the communication
+between Alice's server and Bob's server. So whenever Alice and Bob are
+referenced throughout this section, it is implied that both are communicating
+with their respective servers, which then communicate with one-another.
+
 † is a placeholder for a later discovery mechanism.
 
 †† there is no consensus in the design team about the full extent of
@@ -138,75 +146,13 @@ action, which is out of scope of MIMI.
 
 ## Get internal identifier for Bob
 
-This is a placeholder for a possibly more sophisticated discovery
-mechanism. It is not intended to be directly implemented.
+> **TODO**: Details will follow once the WG has concensus on identifiers, their
+> mapping and their retrieval/discovery. The format of specific identifiers is
+> discussed in {{?I-D.mahy-mimi-identity}}. Any specific conventions which are
+> needed should be merged into this document.
 
-Alice fetches the internal identifier for some field of Bob's, in
-this example his handle.
-
-~~~
-GET /identifierDiscovery/{domain}
-~~~
-
-The request body is described as:
-
-~~~ tls
-enum {
-  reserved(0),
-  handle(1),
-  nick(2),
-  email(3),
-  phone(4),
-  partialName(5),
-  wholeProfile(6),
-  oidcStdClaim(7),
-  vcardField(8),
-  (255)
-} IdentifierType;
-
-struct {
-  IdentifierType type;
-  string searchValue;
-  select(type) {
-     case oidcStdClaim:
-       string claimName;
-    case vcardField:
-       string fieldName;
-  };
-} IdentifierRequest;
-
-~~~
-
-The response body is described as:
-
-~~~ tls
-enum {
-  success(0),
-  notFound(1),
-  ambiguous(2),
-  forbidden(3),
-  unsupportedField(4),
-  (255)
-} IdentifierDiscoveryCode;
-
-struct {
-  IdentifierDiscoverCode responseCode;
-  IdentifierUri uri;
-} IdentifierResponse;
-~~~
-
-**TODO**: The format of specific identifiers is discussed in
-{{?I-D.mahy-mimi-identity}}. Any specific conventions which are needed
-should be merged into this document.
-
-## Get consent for Bob
-
-Alice sends a message requesting consent to add him to a room. At some
-later time, Bob grants consent to Alice.
-
-Still **TODO** based on lack of consensus of consent scope.
-See Section 6.1 of {{?I-D.mahy-mimi-transport-design-reqs}} for
-some requirements.
+Alice obtains Bob's internal identifier. In the course of discovering Bob, Alice
+obtains a list of Bob's clients.
 
 ## Fetch initial key material for Bob
 
@@ -217,287 +163,62 @@ reused unless identified as "last resort" keying material.
 If the protocol is MLS 1.0 (mls10) the initial key materials are MLS
 KeyPackages.
 
-~~~
-POST /claim-keymaterial/{domain}
-~~~
+Alice sends an Event (framed in a MIMIMessage) of type `ds.fetch_key_packages`
+for each of Bob's clients to Bob's server.
 
-The request body has the following form.
+See {{event-schema}} for the definition of Events in general and
+{{ev-fetchkeypackage}} for the `ds.fetch_key_packages` event.
 
-~~~ tls
-enum {
-    reserved(0),
-    mls10(1),
-    (255)
-} Protocol;
+> **TODO**: For now, the event fetches key packages based on client identifiers,
+> not user identifiers. This is because KeyPackage fetching is part of MIMI DS,
+> which doesn't know what a user is. We could, however, send multiple MIMI DS
+> requests in a single MIMI protocol request.
 
-struct {
-    opaque uri<V>;
-} IdentifierUri;
+If the request was successful, the response contains a list of KeyPackages, one
+for each client.
 
-struct {
-    Protocol protocol;
-    IdentifierUri requestingUser;
-    IdentifierUri targetUsers<V>;
-    IdentifierUri roomId;
-    select(protocol) {
-        case mls10:
-            CipherSuite acceptableCiphersuites<V>;
-            RequiredCapabilities requiredCapabilities<V>;
-            bool lastResortAllowed;
-    };
-} KeyMaterialRequest;
-~~~
+> **TODO**: For now, responses are simple, we can improve granularity when we
+> start optimizing.
 
-The response contains a list of users which contain a list of clients.
-Each client provides keying material or returns a (client) error code.
-Each user provides a list of clients (codes or material), and fully succeeds
-(all clients succeed), partially succeed (some clients succeed), or returns
-a (user) error code.
-
-~~~ tls
-enum {
-    success(0);
-    partialSuccess(1);
-    incompatibleProtocol(2);
-    noCompatibleMaterial(3);
-    userUnknown(4);
-    noConsent(5);
-    noConsentForThisRoom(6);
-    userDeleted(7);
-    (255)
-} KeyMaterialUserCode;
-
-enum {
-    success(0);
-    keyMaterialExhausted(1);
-    onlyLastResort(2);
-    nothingComptible(3);
-    (255)
-} KeyMaterialClientCode;
-
-
-struct {
-    KeyMaterialClientCode clientStatus;
-    IdentifierUri clientUri;
-    select(protocol) {
-        case mls10:
-            KeyPackage keyPackage;
-    };
-} ClientKeyMaterial;
-
-struct {
-    KeyMaterialUserCode userStatus;
-    IdentifiedUri userUri;
-    ClientKeyMaterial clients<V>;
-} UserKeyMaterial;
-
-struct {
-    Protocol protocol;
-    UserKeyMaterial users<V>;
-} KeyMaterialResponse;
-~~~
-
-**ISSUE**: Do we want key material requests to be combined for multiple users?
+> **TODO**: Once we have framing for MIMIResponses, add a reference here.
 
 ## Create a room
 
 Creating a room is done between a client and its local provider and is
-out of scope of MIMI. However, we assume that the room has the following
-policy document:
+out of scope of MIMI.
 
-~~~
-membershipStyle = membersOnly;
-multiDevice = true;
-moderated = false;
-canAddUsers = [admin, owner];
-canRemoveUsers = [admin, owner];
+> **TODO**: Add information on room policy here once we have consensus on what
+> that looks like.
 
-~~~
+## Alice invites Bob
 
-We also assume that Alice is the owner, and therefore an administrator,
-of the room.
+Management of the participants list (i.e. the list of users in the room) is done
+through `m.room.user` events. To invite Bob to the room, Alice sends an
+`m.room.user` event to Bob. Alice's server, which is now the Hub for this room,
+puts Bob into the "invite" state. See {ev-mroomuser} for more information on
+user state changes.
 
-~~~
-ownerRole = ["Alice@a.example"];
-adminRole = ["Alice@a.example"];
-activeParticipants = ["Alice@a.example"];
-~~~
+Room state is anchored in the room's underlying MLS group through a GroupContext
+Extension, which contains all of the room's state variables.
 
+`m.room.user` events are MLS proposals, which change the room state immediately
+outside of the MLS group immediately and align the mirror of the room state in
+the MLS group upon the next `ds.commit` event. See {anchoring} for more
+information on proposals, commits and how the room state is cryptographically
+anchored.
 
-## Alice adds Bob
+## Bob accepts the invitation
 
-Adds, removes, and policy changes to the room are all forms of updating the
-room state. They are accomplished using the updateRoom transaction which is
-used for updating the room or its underlying MLS group.
+Once Bob has received the invitation event, he sends an `m.room.user` event to
+accept the invitation by changing his participation state to "joined".
 
-~~~
-POST /updateRoom/{roomId}
-~~~
+In this case, Bob also wants to add his client to the room, so instead of
+sending a standalone `m.room.user` event, he sends a `ds.commit` event that
+includes the `m.room.user` event as a proposal, as well as a proposal to add his
+client.
 
-In MLS 1.0, any change to the room policy document is always expressed
-using a `GroupContextExtensions` proposal. Likewise, any change to the
-participant list is always communicated via a `ParticipantListPatch`
-proposal type. The policy change needed to add a user MUST happen either
-before or simultaneously with the corresponding MLS operation.
-
-~~~ tls
-enum {
-  reserved(0),
-  system(1),
-  owner(2),
-  admin(3),
-  regular_user(4),
-  visitor(5),
-  banned(6),
-  (255)
-} Role;
-
-struct {
-  IdentifierUri user;
-  Role roles<V>;
-} UserRoles;
-
-struct {
-    UserRoles addUsers<V>;
-    UserRoles updateUsers<V>;
-    IdentifierUri removeUsers<V>;
-} ParticipantListPatch;
-~~~
-
-Each user can be added with one or more roles. This list of roles can be
-updated. Note that removing a user does not ban the user. To ban a user,
-update their role to `banned`.
-
-The updateRoom request body is described below:
-
-~~~ tls
-select(room.protocol) {
-  case mls10:
-    PublicMessage proposalOrCommit;
-      select (proposalOrCommit.content.content_type) {
-        case commit:
-          optional<Welcome> welcome;
-          GroupInfo groupInfo;   /* without embedded ratchet_tree */
-          RatchetTreeOption ratchetTreeOption;
-      };
-};
-~~~
-
-In this case Alice creates a Commit containing a ParticipantListPatch
-proposal adding Bob@b.example, and Add proposals for all Bob's MLS clients.
-Alice includes the Welcome message which will be sent for Bob, a
-GroupInfo object for the hub provider, and complete `ratchet_tree` extension.
-
-~~~ tls
-enum {
-  reserved(0),
-  full(1),
-  compressed(2),
-  delta(3),
-  patch(4),
-  byReference(5)
-  (255)
-} RatchetTreeRepresentation;
-
-struct {
-  RatchetTreeRepresentation representation;
-  select (representation) {
-    case full:
-      Node ratchet_tree<V>;
-  };
-} RatchetTreeOption;
-~~~
-
-The response body is described below:
-
-~~~ tls
-enum {
-  success(0),
-  wrongEpoch(1),
-  notAllowed(2),
-  hubUnresponsive(3),
-  invalidProposal(4),
-  (255)
-} UpdateResponseCode;
-
-struct {
-    UpdateResponseCode responseCode;
-    string errorDescription;
-} UpdateRoomResponse
-~~~
-
-## Alice sends a message to the room
-
-Alice creates a message using the MIMI content format {{?I-D.ietf-mimi-content}},
-and sends it to the provisionalMessage endpoint for the target room.
-
-~~~
-POST /provisionalMessage/{roomId}
-~~~
-
-If the protocol is MLS 1.0, the request body is an MLS PrivateMessage
-(an application message).
-
-The response merely indicates if the message was accepted by the hub
-provider.
-
-## The hub/owning provider fans out the message
-
-If the hub provider accepts the message it fans the message out
-
-The hub provider also fans out any messages which originate from itself
-(ex: removing deleted users) and messages which modify the policy or
-participant list.
-
-~~~
-POST /fanout/{roomId}
-~~~
-
-If the protocol is MLS 1.0, the request body is an MLSMessage with wire_format
-one of PrivateMessage (application message), PublicMessage (Commit or
-Proposal), or Welcome.
-
-## Bob sends a message to the room
-
-This is no different from Alice sending a message, which is fanned out in
-exactly the same way.
-
-## Bob adds a new client
-
-For Bob's new client to join the MLS group and therefore fully participate
-in the room with Alice, Bob needs to fetch the MLS GroupInfo (or analogous).
-
-~~~
-POST /claimGroupInfo/{roomId}
-~~~
-
-In the case of MLS 1.0, Bob provides a credential proving his client's
-real or pseudonymous identity (for permission to join the group).
-
-~~~ tls
-
-struct {
-  select (protocol) {
-    case mls10:
-      SignaturePublicKey requestingSignatureKey;
-      Credential requestingCredential;
-  };
-} GroupInfoRequest;
-
-~~~
-
-The response body contains the GroupInfo and a way to get the ratchet_tree.
-
-~~~ tls
-struct {
-  GroupInfoCode status;
-  select (protocol) {
-    case mls10:
-      GroupInfo groupInfo;   /* without embedded ratchet_tree */
-      RatchetTreeOption ratchetTreeOption;
-  };
-} GroupInfoResponse;
-~~~
+To create the commit, Bob first needs to fetch the required information from the
+Hub via a `ds.fetch_group_info` event ({ev-fetchgroupinfo}).
 
 **ISSUE**: in the MLS case, what security properties are needed to protect a
 GroupInfo object in the MIMI context are still under discussion. It is
@@ -506,19 +227,35 @@ key. The GroupInfo in another context might be sufficiently sensitive that
 it should be encrypted from the end client to the hub provider (unreadable
 by the local provider).
 
+## Alice sends a message to the room
+
+After Bob has joined the room, Alice creates a message using the MIMI content
+format {{?I-D.ietf-mimi-content}}, and sends a `ds.send_message`
+({ev-sendmessage}) event to the Hub.
+
+## The hub/owning provider fans out the message
+
+If the hub provider accepts the message it fans the message out to all guest
+servers, which in this case is Bob's server.
+
+The hub provider also fans out any messages which originate from itself (ex:
+removing clients of deleted users).
+
+## Bob sends a message to the room
+
+This is no different from Alice sending a message, which is fanned out in
+exactly the same way.
+
 ## Alice adds Cathy
 
-Alice gets the identifier for Cathy, obtains consent, claims initial
-keying material for her clients, and adds her to the room in exactly
-the same way as in previous steps.
+Alice gets the identifier for Cathy and waits for her to join the room in
+exactly the same way as in previous steps.
 
 ## Alice removes Bob from the room
 
-Alice removes Bob by sending an updateRoom transaction. In MLS 1.0
-it contains a Commit with a ParticipantListPatch proposal (removing
-Bob@b.example) and Remove proposals for Bob's client, no Welcome,
-a GroupInfo object, and a full `ratchet_tree` extension.
-
+Alice removes Bob by sending an `ds.commit` event, which in turn contains an
+`m.room.user` event which removes Bob from the participant list. The same commit
+also contains proposals to remove Bob's client.
 
 # Rooms and Events {#rooms-and-events}
 
@@ -585,8 +322,8 @@ struct {
          DSRequest ds_proposal;
       case "ds.commit":
          DSRequest ds_commit;
-      case "ds.fetch_key_package":
-         DSRequest fetch_key_package;
+      case "ds.fetch_key_packages":
+         DSRequest fetch_key_packages;
       case "ds.fetch_group_info":
          DSRequest fetch_group_info;
       case "ds.send_message":
@@ -772,7 +509,7 @@ struct {
 
 #### Fetch KeyPackage {#ev-fetchkeypackage}
 
-**Event type**: `ds.fetch_key_package`
+**Event type**: `ds.fetch_key_packages`
 
 TODO: For now, we assume that KeyPackages are fetched directly, i.e. not in the
 context of a room and via a Hub. This might change in the future. If it does
@@ -783,8 +520,8 @@ KeyPackage from the Hub or another follower server.
 
 ~~~tls
 struct {
-  DSRequest fetch_key_package;
-} DSFetchKeyPackage
+  DSRequest fetch_key_packages;
+} DSFetchKeyPackages
 ~~~
 
 **Additional validation rules**:
