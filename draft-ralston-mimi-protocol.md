@@ -279,8 +279,8 @@ paradigm and the role of the MIMI DS protocol see {{mimi-ds}}.
 ## Cryptographic room representation {#mimi-ds}
 
 Each room is represented cryptographically by an MLS group and the Hub that
-manages the room acts as the delivery service (DS) as defined in the MIMI DS
-protocol specified in {{!I-D.robert-mimi-delivery-service}}.
+manages the room uses the MIMI DS protocol specified in
+{{!I-D.robert-mimi-delivery-service}} to manage that group.
 
 In particular, the MIMI DS protocol manages the list of group members, i.e. the
 list of clients belonging to users currently in the room.
