@@ -749,27 +749,6 @@ Each `m.room.user` event is fanned out as normal ({{fanout}}). The event MAY be
 sent to additional servers, as required by {{invites}}, {{joins}}, {{leaves}},
 {{bans}}, {{knocks}}.
 
-## `m.room.participant_list` {#ev-mroomparticipant_list}
-
-> **TODO**: We probably won't need this event, as `ds.fetch_group_info` contains
-> all the info clients need.
-
-Used by a follower server to request the user participation list from the hub
-server. The event is sent via {{op-send}} *without* a `users` list, and is
-returned by the hub in the same request *with* a `users` list.
-
-**Event type**: `m.room.participant_list`
-
-**Additional event fields**:
-
-~~~
-struct {
-   // The users which are currently participating in the room. This is populated
-   // in response to `/send`ing the event. This field is otherwise ignored.
-   UserEvent [[users]]<V>;
-} ParticipantListEvent;
-~~~
-
 **Additional validation rules**:
 
 None.
