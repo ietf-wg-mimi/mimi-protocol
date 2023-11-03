@@ -489,6 +489,38 @@ events MAY be sent to additional servers as needed by their fanout consideration
 The participant list is anchored in the cryptographic state of the room as
 described in {{anchoring}}.
 
+## Adds {#adds}
+
+> **TODO**: We will probably want some kind of mechanism here that allows the
+> adder to signal that they are authorized (by the added user) to add the added
+> user to the room.
+
+An *add* is when a user adds another user to the list of participants in the
+*join* state. The `m.room.user` event that effects this change is typically sent
+as part of a commit that also adds the user's clients to the room's MLS group.
+
+1. The adder generates an `m.room.user` ({{ev-mroomuser}}) event to add the
+   target user.
+
+2. The adder sends ({{op-send}}) the `m.room.user` event to the hub server. If
+   the adder is a client, the event is likely sent as part of a `ds.commit`
+   event.
+
+3. The hub server validates the event to ensure the following:
+
+   * The target user of the add MUST NOT already be in the banned or joined
+     states.
+
+   * The sender of the invite MUST already be in the joined state.
+
+4. If the event is invalid, it is rejected. Otherwise, it is forwarded by the
+   hub to the servers of all participants in the joined state. This includes the
+   server of the user added by the event.
+
+5. The target user (or its server) can reject the addition by sending an
+   `m.room.user` event that proposes the removal of the user and its clients
+   ({{leaves}}).
+
 ## Invites {#invites}
 
 > **TODO**: For now, the invite flow implies that the user has to explicitly
