@@ -578,19 +578,25 @@ struct {
    select (Event.type) {
       case "m.room.user":
          // MLSMessage containing a UserEvent proposal
-         MLSMessage user_event_proposal; // see later in doc
+         MLSMessage user_event_proposal;
       case "m.room.participant_list":
-         ParticipantListEvent content; // see later in doc
-      case "ds.group":
-         DSEvent ds_event; // see later in doc
+         ParticipantListEvent content;
+      case "ds.proposal":
+         DSRequest ds_proposal;
+      case "ds.commit":
+         DSRequest ds_commit;
+      case "ds.fetch_key_package":
+         DSRequest fetch_key_package;
+      case "ds.fetch_group_info":
+         DSRequest fetch_group_info;
+      case "ds.send_message":
+         DSRequest send_message;
       // more cases as required by registry
    }
 } Event;
 ~~~
 
 > **TODO**: Consider splitting `sender` into an object of `{type, identifier}`.
-
-> **TODO**: Determine server signing key details (Ed25519?)
 
 > **TODO**: The `sender` field might be a bit redundant now that signaling is
 > largely handled through MLS proposals.
@@ -698,75 +704,132 @@ that user MUST be removed from the list. Changes to the `external_senders`
 extension only take effect when the MLS proposal containing the event is
 committed by a MIMI DS commit. See {{ev-mroomuser}} for more information.
 
-### DSEvents
+### MIMI DS events
 
-All events that pertain to the MLS group that underlies a room are wrapped into
-a DSEvent and sent as an Event of type `ds.group`.
+The MIMI DS protocol operations are encapsulated in DSRequest structs and
+contain a `request_type` field that details the operation in question. To
+disambiguate MIMI DS operations on the event-level, each operation is assigned
+its own distinct event type.
 
-~~~ tls
+The MIMI DS protocol deals with authentication of each request and upon
+successful processing returns a DSResponse to be sent to the sender of the
+event, optionally an MLSMessage for full fan-out and optionally one or more
+Welcome messages for fan-out to individual follower servers.
+
+Depending on the event, a DSResponse either indicates successful processing, the
+requested data (e.g. group information required for joins), or an error message.
+
+Messages meant for fan-out are DSFanoutRequests, which contain an MLS message,
+as well as information to which clients messages should be fanned out to.
+
+TODO: Update the MIMI DS doc to allow for messages to contain more than one
+proposal and a generic "commit" action.
+
+#### Propose group update {#ev-proposeupdate}
+
+**Event type**: `ds.proposal`
+
+Group members, the Hub, and follower servers can use this event to propose
+updates to the group. Each such event contains one or more proposals that can be
+committed to update the state of the MLS group associated with the room. In
+particular, this event can be used to add, remove or update clients in the
+group.
+
+~~~tls
 struct {
-   DSRequest ds_request;
-} DSEvent
+  DSRequest proposal;
+} DSProposal
 ~~~
 
-The MIMI DS protocol deals with authentication and upon successful processing
-returns a DSResponse to be sent to the sender of the DSEvent, optionally an
-MLSMessage for full fan-out and optionally one or more Welcome messages for
-delivery to new group members.
+**Additional validation rules**:
 
-> **TODO**: Integrate DSResponse into the MIMI Response type
+* Clients can only be added to the group if the associated user is on the
+  participant list and in the `join` state.
 
-#### Client and group state management
+#### Commit group update {#ev-commitupdate}
 
-The MIMI DS protocol allows parties to update the state of the MLS group, either
-through proposals or commits.
+**Event type**: `ds.commit`
 
-Through proposals, parties involved in the group can change the members of the
-group by:
+Group members can use this event to commit any pending proposals (including both
+group updates and room updates). The sender of this event can include additional
+group updates without proposing them separately through the `ds.proposal`
+event.
 
-* adding a client,
-* removing a client, or
-* updating a client.
+Note that this event can also be used by a client to add itself to the group. To
+do that, the sender requires the current group information (see
+{ev-fetchgroupinfo}).
 
-Note that proposing the addition of a client requires the KeyPackage of said
-client (see {{state-provisioning}}).
+~~~tls
+struct {
+  DSRequest commitBundle;
+} DSCommit
+~~~
 
-Additionally, parties can propose to re-initialize a group (e.g. to change the
-version or ciphersuite of the group).
+**Additional validation rules**:
 
-Clients can create commits, which have to include all valid proposals sent since
-the last commit. In the commit, clients can include additional proposals
-corresponding to the group state changes described above.
+* Clients can only be added to the group if the associated user is on the
+  participant list and in the `join` state.
 
-In addition to those state changes, a client can also use a commit to add itself
-to a group without being added through the commit of an existing group member.
-For such a commit, the client first needs the current group information (see
-{{state-provisioning}}).
+#### Fetch KeyPackage {#ev-fetchkeypackage}
 
-For both proposals and commits (and the proposals therein), all recipients
-including the Hub MUST verify that the following hold.
+**Event type**: `ds.fetch_key_package`
 
-* The room's policy allows the sender to perform the corresponding operation.
-* The resulting client list is consistent with the participant list of the room.
+TODO: For now, we assume that KeyPackages are fetched directly, i.e. not in the
+context of a room and via a Hub. This might change in the future. If it does
+change, this event needs an additional authentication mechanism.
 
-#### Provisioning of cryptographic state and key material {#state-provisioning}
+Group members can use this event to request a
+KeyPackage from the Hub or another follower server.
 
-The MIMI DS protocol also allows parties to send DSRequests that do not change
-the state of the MLS group underlying the state of a given room. A party can
-thus request
+~~~tls
+struct {
+  DSRequest fetch_key_package;
+} DSFetchKeyPackage
+~~~
 
-* Key material required to add one or more new clients to a group
-* Information required to join a group (via external commit)
+**Additional validation rules**:
 
-> **TODO**: Maybe emphasise that since we store the whole room information in a
-> group context extension, the group info is enough to bootstrap the entire
-> room.
+None
 
-#### Message encryption
+#### Fetch group information {#ev-fetchgroupinfo}
 
-The MIMI DS protocol also deals with the sending of encrypted (application)
-messages. Due to the encryption, MIMI DS will only verify the message's header
-data and return a fan-out request.
+**Event type**: `ds.fetch_group_info`
+
+Group members or follower servers can use this event to request group
+information from the Hub. Up-to-date group information is required for clients
+to be able to add themselves to a group via the `ds.commit` event. The
+group info returned to the sender includes any pending proposals.
+
+~~~tls
+struct {
+  DSRequest fetch_group_info;
+} DSFetchGroupInfo
+~~~
+
+**Additional validation rules**:
+
+None
+
+#### Send Message {#ev-sendmessage}
+
+**Event type**: `ds.send_message`
+
+TODO: This is not a proposal and there is no way for the Hub or follower servers
+to authenticate this event at the moment. We might want to a way to do that
+later.
+
+Group members can use this event to request to send an encrypted (application)
+message to the other group members.
+
+~~~tls
+struct {
+  DSRequest send_message;
+} DSSendMessage
+~~~
+
+**Additional validation rules**:
+
+None
 
 ## Creation {#room-creation}
 
