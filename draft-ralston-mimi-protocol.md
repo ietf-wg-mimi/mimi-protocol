@@ -103,6 +103,46 @@ APIs to accomplish "last mile" delivery of events and messages.
 
 Terms and definitions are inherited from {{!I-D.barnes-mimi-arch}}.
 
+# Framing
+
+MIMI protocol messages are sent described using the TLS presentation language
+format ({{Section 3 of RFC8446}}).
+
+All MIMI protocol messages are framed by a MIMIMessage.
+
+~~~ tls
+enum {
+   reserved(0),
+   mimi10(1), // MIMI 1.0
+   (65535)
+} ProtocolVersion;
+
+enum {
+   reserverd(0),
+   event(1),
+   event_response(2),
+} MIMIMessageType;
+
+struct {
+   // The protocol version this event is created for.
+   ProtocolVersion version;
+
+   // The room ID where the event is sent in context of.
+   opaque roomId;
+
+   // Who or what sent this event. For example, a user ID.
+   opaque sender;
+
+   MIMIMessageType message_type;
+   select (MIMIMessage.message_type) {
+      case event:
+        Event event;
+      case event_response:
+        EventResponse response;
+   }
+} MIMIMessage
+~~~
+
 # Rooms and Events {#rooms-and-events}
 
 Rooms, described by {{!I-D.barnes-mimi-arch}}, consist of a user participation
@@ -138,32 +178,15 @@ Events are validated against their TLS presentation language format
 // Example: "m.room.create"
 opaque EventType;
 
-enum {
-   reserved(0),
-   mimi10(1), // MIMI 1.0
-   (65535)
-} ProtocolVersion;
-
 struct {
-   // The protocol version this event is created for.
-   ProtocolVersion version;
-
-   // The room ID where the event is sent in context of.
-   opaque roomId;
-
    // The event type.
    EventType type;
-
-   // Who or what sent this event. For example, a user ID.
-   opaque sender;
 
    // Additional fields may be present as dependent on event type.
    select (Event.type) {
       case "m.room.user":
          // MLSMessage containing a UserEvent proposal
          MLSMessage user_event_proposal;
-      case "m.room.participant_list":
-         ParticipantListEvent content;
       case "ds.proposal":
          DSRequest ds_proposal;
       case "ds.commit":
@@ -190,6 +213,46 @@ by a consistent identifier.
 
 The "origin server" of an event is the server implied by the `sender` field.
 
+Recipients of an event respond with a MIMIMessage of type event_response.
+
+~~~ tls
+enum {
+  reserved(0),
+  ok(1),
+  key_package(2),
+  group_info(3),
+  error(4),
+} EventResponseType
+
+enum {
+  // TODO
+} EventErrorType
+
+struct {
+  EventErrorType type;
+
+   select (EventResponse.type) {
+      // TODO
+   }
+} EventError
+
+struct {
+   EventResponseType type;
+
+   // Additional fields may be present as dependent on event type.
+   select (EventResponse.type) {
+      case ok:
+         struct {};
+      case key_package:
+         DSResponse key_package;
+      case group_info:
+         DSResponse group_info;
+      case error:
+         EventError error;
+   }
+} EventResponse
+~~~
+
 ## Room state
 
 The state of a room consists of the room's RoomID, its policy, and the
@@ -212,7 +275,6 @@ implementing the event was not yet committed by a client. Note that this only
 applies to events changing the room state, but not for MIMI DS specific events
 that change the group state. For more information on the proposal-commit
 paradigm and the role of the MIMI DS protocol see {{mimi-ds}}.
-
 
 ## Cryptographic room representation {#mimi-ds}
 
