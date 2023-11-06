@@ -114,10 +114,10 @@ This section shows how three users (Alice, Bob and Cathy) from different
 providers can use the protocol specified in this document to join the same room
 and send messages to one-another:
 
-- Alice get the internal identifier for Bob †
-- Alice gains consent to talk to Bob ††
+- Alice get the internal identifier for Bob
+- Alice gains consent to talk to Bob
 - Alice fetches initial keying material for Bob's clients
-- (Alice create a room) †††
+- (Alice create a room) †
 - Alice adds Bob to a room
 - Alice sends a message to the room
 - Bob sends a message to the room
@@ -135,12 +135,7 @@ between Alice's, Bob's and Cathy's servers. So whenever users are referenced
 throughout this section, it is implied that they are communicating with their
 respective servers, which then communicate with one-another.
 
-† is a placeholder for a later discovery mechanism.
-
-†† there is no consensus in the design team about the full extent of
-consent requirements, but there is agreement that they will exist.
-
-††† as mentioned in the text, creating a room is a local provider
+† as mentioned in the text, creating a room is a local provider
 action, which is out of scope of MIMI.
 
 ## Get internal identifier for Bob
