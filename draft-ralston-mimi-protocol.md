@@ -30,21 +30,23 @@ author:
     organization: The Matrix.org Foundation C.I.C.
     email: travisr@matrix.org
     role: editor
+ -
+    fullname: Konrad Kohbrok
+    organization: Phoenix R&D
+    email: konrad.kohbrok@datashrine.de
+ -
+    fullname: Raphael Robert
+    organization: Phoenix R&D
+    email: ietf@raphaelrobert.com
+ -
+    fullname: Matthew Hodgson
+    organization: The Matrix.org Foundation C.I.C.
+    email: matthew@matrix.org
 
-# These folks wrote much of the content, which has been aggregated into this
-# doc:
-#  -
-#     fullname: Konrad Kohbrok
-#     organization: Phoenix R&D
-#     email: konrad.kohbrok@datashrine.de
-#  -
-#     fullname: Raphael Robert
-#     organization: Phoenix R&D
-#     email: ietf@raphaelrobert.com
-#  -
-#     fullname: Matthew Hodgson
-#     organization: The Matrix.org Foundation C.I.C.
-#     email: matthew@matrix.org
+contributor:
+- name: Rohan Mahy
+  org: Wire
+  email: rohan.mahy@wire.com
 
 normative:
 
