@@ -520,6 +520,46 @@ Bob@b.example) and Remove proposals for Bob's client, no Welcome,
 a GroupInfo object, and a full `ratchet_tree` extension.
 
 
+# Framing
+
+MIMI protocol messages are sent described using the TLS presentation language
+format ({{Section 3 of RFC8446}}).
+
+All MIMI protocol messages are framed by a MIMIMessage.
+
+~~~ tls
+enum {
+   reserved(0),
+   mimi10(1), // MIMI 1.0
+   (65535)
+} ProtocolVersion;
+
+enum {
+   reserverd(0),
+   event(1),
+   event_response(2),
+} MIMIMessageType;
+
+struct {
+   // The protocol version this event is created for.
+   ProtocolVersion version;
+
+   // The room ID where the event is sent in context of.
+   opaque roomId;
+
+   // Who or what sent this event. For example, a user ID.
+   opaque sender;
+
+   MIMIMessageType message_type;
+   select (MIMIMessage.message_type) {
+      case event:
+        Event event;
+      case event_response:
+        EventResponse response;
+   }
+} MIMIMessage
+~~~
+
 # Rooms and Events {#rooms-and-events}
 
 Rooms, described by {{!I-D.barnes-mimi-arch}}, consist of a user participation
@@ -555,42 +595,31 @@ Events are validated against their TLS presentation language format
 // Example: "m.room.create"
 opaque EventType;
 
-enum {
-   reserved(0),
-   mimi10(1), // MIMI 1.0
-   (65535)
-} ProtocolVersion;
-
 struct {
-   // The protocol version this event is created for.
-   ProtocolVersion version;
-
-   // The room ID where the event is sent in context of.
-   opaque roomId;
-
    // The event type.
    EventType type;
-
-   // Who or what sent this event. For example, a user ID.
-   opaque sender;
 
    // Additional fields may be present as dependent on event type.
    select (Event.type) {
       case "m.room.user":
          // MLSMessage containing a UserEvent proposal
-         MLSMessage user_event_proposal; // see later in doc
-      case "m.room.participant_list":
-         ParticipantListEvent content; // see later in doc
-      case "ds.group":
-         DSEvent ds_event; // see later in doc
+         MLSMessage user_event_proposal;
+      case "ds.proposal":
+         DSRequest ds_proposal;
+      case "ds.commit":
+         DSRequest ds_commit;
+      case "ds.fetch_key_package":
+         DSRequest fetch_key_package;
+      case "ds.fetch_group_info":
+         DSRequest fetch_group_info;
+      case "ds.send_message":
+         DSRequest send_message;
       // more cases as required by registry
    }
 } Event;
 ~~~
 
 > **TODO**: Consider splitting `sender` into an object of `{type, identifier}`.
-
-> **TODO**: Determine server signing key details (Ed25519?)
 
 > **TODO**: The `sender` field might be a bit redundant now that signaling is
 > largely handled through MLS proposals.
@@ -600,6 +629,46 @@ and confirmed by the underlying cryptographic group state rather than referenced
 by a consistent identifier.
 
 The "origin server" of an event is the server implied by the `sender` field.
+
+Recipients of an event respond with a MIMIMessage of type event_response.
+
+~~~ tls
+enum {
+  reserved(0),
+  ok(1),
+  key_package(2),
+  group_info(3),
+  error(4),
+} EventResponseType
+
+enum {
+  // TODO
+} EventErrorType
+
+struct {
+  EventErrorType type;
+
+   select (EventResponse.type) {
+      // TODO
+   }
+} EventError
+
+struct {
+   EventResponseType type;
+
+   // Additional fields may be present as dependent on event type.
+   select (EventResponse.type) {
+      case ok:
+         struct {};
+      case key_package:
+         DSResponse key_package;
+      case group_info:
+         DSResponse group_info;
+      case error:
+         EventError error;
+   }
+} EventResponse
+~~~
 
 ## Room state
 
@@ -624,12 +693,11 @@ applies to events changing the room state, but not for MIMI DS specific events
 that change the group state. For more information on the proposal-commit
 paradigm and the role of the MIMI DS protocol see {{mimi-ds}}.
 
-
 ## Cryptographic room representation {#mimi-ds}
 
 Each room is represented cryptographically by an MLS group and the Hub that
-manages the room acts as the delivery service (DS) as defined in the MIMI DS
-protocol specified in {{!I-D.robert-mimi-delivery-service}}.
+manages the room uses the MIMI DS protocol specified in
+{{!I-D.robert-mimi-delivery-service}} to manage that group.
 
 In particular, the MIMI DS protocol manages the list of group members, i.e. the
 list of clients belonging to users currently in the room.
@@ -698,75 +766,132 @@ that user MUST be removed from the list. Changes to the `external_senders`
 extension only take effect when the MLS proposal containing the event is
 committed by a MIMI DS commit. See {{ev-mroomuser}} for more information.
 
-### DSEvents
+### MIMI DS events
 
-All events that pertain to the MLS group that underlies a room are wrapped into
-a DSEvent and sent as an Event of type `ds.group`.
+The MIMI DS protocol operations are encapsulated in DSRequest structs and
+contain a `request_type` field that details the operation in question. To
+disambiguate MIMI DS operations on the event-level, each operation is assigned
+its own distinct event type.
 
-~~~ tls
+The MIMI DS protocol deals with authentication of each request and upon
+successful processing returns a DSResponse to be sent to the sender of the
+event, optionally an MLSMessage for full fan-out and optionally one or more
+Welcome messages for fan-out to individual follower servers.
+
+Depending on the event, a DSResponse either indicates successful processing, the
+requested data (e.g. group information required for joins), or an error message.
+
+Messages meant for fan-out are DSFanoutRequests, which contain an MLS message,
+as well as information to which clients messages should be fanned out to.
+
+TODO: Update the MIMI DS doc to allow for messages to contain more than one
+proposal and a generic "commit" action.
+
+#### Propose group update {#ev-proposeupdate}
+
+**Event type**: `ds.proposal`
+
+Group members, the Hub, and follower servers can use this event to propose
+updates to the group. Each such event contains one or more proposals that can be
+committed to update the state of the MLS group associated with the room. In
+particular, this event can be used to add, remove or update clients in the
+group.
+
+~~~tls
 struct {
-   DSRequest ds_request;
-} DSEvent
+  DSRequest proposal;
+} DSProposal
 ~~~
 
-The MIMI DS protocol deals with authentication and upon successful processing
-returns a DSResponse to be sent to the sender of the DSEvent, optionally an
-MLSMessage for full fan-out and optionally one or more Welcome messages for
-delivery to new group members.
+**Additional validation rules**:
 
-> **TODO**: Integrate DSResponse into the MIMI Response type
+* Clients can only be added to the group if the associated user is on the
+  participant list and in the `join` state.
 
-#### Client and group state management
+#### Commit group update {#ev-commitupdate}
 
-The MIMI DS protocol allows parties to update the state of the MLS group, either
-through proposals or commits.
+**Event type**: `ds.commit`
 
-Through proposals, parties involved in the group can change the members of the
-group by:
+Group members can use this event to commit any pending proposals (including both
+group updates and room updates). The sender of this event can include additional
+group updates without proposing them separately through the `ds.proposal`
+event.
 
-* adding a client,
-* removing a client, or
-* updating a client.
+Note that this event can also be used by a client to add itself to the group. To
+do that, the sender requires the current group information (see
+{ev-fetchgroupinfo}).
 
-Note that proposing the addition of a client requires the KeyPackage of said
-client (see {{state-provisioning}}).
+~~~tls
+struct {
+  DSRequest commitBundle;
+} DSCommit
+~~~
 
-Additionally, parties can propose to re-initialize a group (e.g. to change the
-version or ciphersuite of the group).
+**Additional validation rules**:
 
-Clients can create commits, which have to include all valid proposals sent since
-the last commit. In the commit, clients can include additional proposals
-corresponding to the group state changes described above.
+* Clients can only be added to the group if the associated user is on the
+  participant list and in the `join` state.
 
-In addition to those state changes, a client can also use a commit to add itself
-to a group without being added through the commit of an existing group member.
-For such a commit, the client first needs the current group information (see
-{{state-provisioning}}).
+#### Fetch KeyPackage {#ev-fetchkeypackage}
 
-For both proposals and commits (and the proposals therein), all recipients
-including the Hub MUST verify that the following hold.
+**Event type**: `ds.fetch_key_package`
 
-* The room's policy allows the sender to perform the corresponding operation.
-* The resulting client list is consistent with the participant list of the room.
+TODO: For now, we assume that KeyPackages are fetched directly, i.e. not in the
+context of a room and via a Hub. This might change in the future. If it does
+change, this event needs an additional authentication mechanism.
 
-#### Provisioning of cryptographic state and key material {#state-provisioning}
+Group members can use this event to request a
+KeyPackage from the Hub or another follower server.
 
-The MIMI DS protocol also allows parties to send DSRequests that do not change
-the state of the MLS group underlying the state of a given room. A party can
-thus request
+~~~tls
+struct {
+  DSRequest fetch_key_package;
+} DSFetchKeyPackage
+~~~
 
-* Key material required to add one or more new clients to a group
-* Information required to join a group (via external commit)
+**Additional validation rules**:
 
-> **TODO**: Maybe emphasise that since we store the whole room information in a
-> group context extension, the group info is enough to bootstrap the entire
-> room.
+None
 
-#### Message encryption
+#### Fetch group information {#ev-fetchgroupinfo}
 
-The MIMI DS protocol also deals with the sending of encrypted (application)
-messages. Due to the encryption, MIMI DS will only verify the message's header
-data and return a fan-out request.
+**Event type**: `ds.fetch_group_info`
+
+Group members or follower servers can use this event to request group
+information from the Hub. Up-to-date group information is required for clients
+to be able to add themselves to a group via the `ds.commit` event. The
+group info returned to the sender includes any pending proposals.
+
+~~~tls
+struct {
+  DSRequest fetch_group_info;
+} DSFetchGroupInfo
+~~~
+
+**Additional validation rules**:
+
+None
+
+#### Send Message {#ev-sendmessage}
+
+**Event type**: `ds.send_message`
+
+TODO: This is not a proposal and there is no way for the Hub or follower servers
+to authenticate this event at the moment. We might want to a way to do that
+later.
+
+Group members can use this event to request to send an encrypted (application)
+message to the other group members.
+
+~~~tls
+struct {
+  DSRequest send_message;
+} DSSendMessage
+~~~
+
+**Additional validation rules**:
+
+None
 
 ## Creation {#room-creation}
 
@@ -843,12 +968,53 @@ events MAY be sent to additional servers as needed by their fanout consideration
 The participant list is anchored in the cryptographic state of the room as
 described in {{anchoring}}.
 
+## Adds {#adds}
+
+> **TODO**: We will probably want some kind of mechanism here that allows the
+> adder to signal that they are authorized (by the added user) to add the added
+> user to the room.
+
+An *add* is when a user adds another user to the list of participants in the
+*join* state. The `m.room.user` event that effects this change is typically sent
+as part of a commit that also adds the user's clients to the room's MLS group.
+
+1. The adder generates an `m.room.user` ({{ev-mroomuser}}) event to add the
+   target user.
+
+2. The adder sends ({{op-send}}) the `m.room.user` event to the hub server. If
+   the adder is a client, the event is likely sent as part of a `ds.commit`
+   event.
+
+3. The hub server validates the event to ensure the following:
+
+   * The target user of the add MUST NOT already be in the banned or joined
+     states.
+
+   * The sender of the invite MUST already be in the joined state.
+
+4. If the event is invalid, it is rejected. Otherwise, it is forwarded by the
+   hub to the servers of all participants in the joined state. This includes the
+   server of the user added by the event.
+
+5. The target user (or its server) can reject the addition by sending an
+   `m.room.user` event that proposes the removal of the user and its clients
+   ({{leaves}}).
+
 ## Invites {#invites}
 
-An *invite* is when a user (or more specifically, a user's client) is attempting
-to introduce *all* of another user's clients to the room and cryptographic state.
-This is first done by updating the target user's participation state through the hub
-server for the room.
+> **TODO**: For now, the invite flow implies that the user has to explicitly
+> accept by adding one or more clients via external commit as part of the "Join"
+> flow. In the future, we can either make the "Invite" flow more versatile and
+> allow for Welcome based invitations, or create an additional "Add" flow, that
+> allows participants to add other users (and their clients) directly via
+> Welcome.
+
+An *invite* is when a user (or more specifically, a user's client) adds another
+user to the list of participants in the `invite` state.
+
+Once the user is on the participant list (and has been notified of this fact by
+the Hub), one of the user's clients can add itself, as well as any other clients
+to the room's underlying group.
 
 Updating the target user's participation state is done using the following
 steps, and is visualized in {{fig-invites}}.
@@ -879,8 +1045,8 @@ At this stage, the *user* is now invited but their clients are not members of
 the cryptographic state. The invite is delivered to the target's clients through
 relevant provider-specific API where the user can then accept or decline the invite.
 
-If the user declines the invite, they are transitioned to the leave state
-described by {{leaves}}. Accepting is done by joining ({{joins}}) the room.
+If the user declines the invite, they are removed from the participant list.
+Accepting is done by joining ({{joins}}) the room.
 
 ~~~ aasvg
 +---+                            +-----+                         +---+
@@ -915,31 +1081,40 @@ described by {{leaves}}. Accepting is done by joining ({{joins}}) the room.
 ~~~
 {: #fig-invites title="Invite happy path" }
 
-> **TODO**: KeyPackage and Welcome exchange happen here, if not requiring the
-> other user's clients to externally commit themselves to the group? To fully
-> complete the Welcome, the user needs to transition to the joined participation
-> state, as per the next section.
-
 ## Joins {#joins}
 
 Users join a room either in response to an invite (therefore accepting it) or
 after discovering it as a public room. In both cases, the user first updates
 their participation state before the cryptographic security layer is engaged to
-add their clients.
+add their clients. Note that both of these actions can be performed either
+sequentially, or through a single `ds.commit` event.
 
 > **TODO**: Describe policy considerations for what makes a room "public".
 
+> **TODO**: Move the following paragraph to the MIMI DS subsection describing
+> `ds.commit`.
+
 A user already in the join participation state MAY add and remove their own
-clients from the cryptographic state at will. For MLS specifically, clients
-are unable to remove themselves specifically, however they are able to propose
-that they be removed in the next commit.
+clients from the cryptographic state at will. Clients are unable to remove
+themselves via `ds.commit`, however they are able to propose that they be
+removed in the next commit via `ds.proposal`.
 
-The joining user updates their participation state as follows:
+The joining user can follow one of two flows. Either it first updates the
+participation state and then adds their clients, or it perfoms both actions in
+the same event.
 
-1. The joiner's server generates an `m.room.user` ({{ev-mroomuser}})
+The two-step flow looks as follows:
+
+1. Option a: The joiner's server generates an `m.room.user` ({{ev-mroomuser}})
    event to add the user.
 
-2. The joiners's server sends ({{op-send}}) the `m.room.user` event to the hub
+   Option b: The joiner's client generates a commit that contains an
+   `m.room.user` event, as well as an Add proposal for itself (this requires
+   that the client has previously obtained a the room's group info through a
+   `ds.fetch_group_info` event ({{ev-fetchgroupinfo}})). The joiner's server
+   generates a `ds.commit` event from the commit.
+
+2. The joiners's server sends ({{op-send}}) the generated event to the hub
    server.
 
 3. The hub server validates the event to ensure the following:
@@ -952,10 +1127,10 @@ The joining user updates their participation state as follows:
    ({{fanout}}) to all participating servers, plus the joiner's server as they
    are now participating in the room too.
 
-Afterwards, the user's clients are able to add themselves to the cryptographic
-group state. The follower server may require the current participation state
-for the room, and can be requested using `m.room.participant_list`
-({{ev-mroomparticipant_list}}).
+If the user was added to the room via a standalone `m.room.user` event, the
+user's clients are able to add themselves to the cryptographic group state via
+one or more `ds.commit` events after fetching the room's current information via
+a `ds.fetch_group_info` event.
 
 ## Leaves/Kicks {#leaves}
 
@@ -983,30 +1158,33 @@ hub, which validates it as follows:
 If the event is valid, it is fanned out ({{fanout}}) to all particpating
 servers, plus the target user's server.
 
-The next update to the cryptographic group state MUST remove *all* of the target user's clients.
-If there are multiple users in the leave participation state, all of their
-clients MUST be removed in the same operation. Other cryptographically-relevant changes MAY be committed
-alongside the removals, however the operation MUST at a minimum remove the affected
+The next `ds.commit` event MUST remove *all* of the target user's clients. If
+multiple users leave the room, all of their clients MUST be removed in the same
+operation. Other cryptographically-relevant changes MAY be committed alongside
+the removals, however the operation MUST at a minimum remove the affected
 clients.
 
 The hub server MAY be permitted to generate the needed changes to remove the
 affected clients, requiring that those changes be confirmed/accepted by a client
 remaining in the group promptly.
 
-Mentioned in {{joins}}, a user already in the join participation state MAY add
-and remove their own clients from the cryptographic state at will.
+As mentioned in {{joins}}, a user already in the join participation state MAY
+add and remove their own clients from the cryptographic state at will.
 
 ## Bans {#bans}
 
 Bans imply kick, and are operated the same way as {{leaves}}, though with the
 `m.room.user` ({{ev-mroomuser}}) state event using a `ban` participation state.
 
+In contrast to leaving users, banned users remain on the participant list in the
+`ban` state.
+
 An added exception on the validation is also applied to permit preemptive bans:
 the target user is not required to be in the joined state to allow the
 participation state change.
 
-Unbans can be performed by transitioning a user from the banned participation
-state to leave with {{leaves}}.
+Unbans can be performed by removing a user in the banned participation
+state from the participant list {{leaves}}.
 
 ## Knocks {#knocks}
 
@@ -1016,6 +1194,9 @@ the room. They do not have access to the cryptographic state.
 > **TODO**: Discuss if this participation state is desirable, and figure out
 > details for how it works. It'd likely just be an `m.room.user` state event
 > with no MLS interaction, like invites are.
+
+> **TODO**: If we have an Add event as discussed in a TODO in the "Invites"
+> section, an "Add" would probably be the response to a knock.
 
 ## `m.room.user` {#ev-mroomuser}
 
@@ -1041,13 +1222,22 @@ that follower server from the extension.
 > document. We might want to have one MIMIProposal type that in turn can
 > encapsulate more than just this event.
 
-~~~
+~~~tls
+enum {
+   invite,
+   join,
+   leave,
+   ban,
+   knock,
+} ParticipationStateChange;
+
 struct {
    // The user ID being affected by this participation state change.
    opaque targetUserId;
 
-   // The new participation state for the target user.
-   ParticipationState state;
+   // The new participation state for the target user. "Leave" removes
+   // the user from the list.
+   ParticipationStateChange state;
 
    // Optional human-readable reason for the change. Typically most
    // useful on bans and knocks.
@@ -1069,24 +1259,6 @@ struct {
 Each `m.room.user` event is fanned out as normal ({{fanout}}). The event MAY be
 sent to additional servers, as required by {{invites}}, {{joins}}, {{leaves}},
 {{bans}}, {{knocks}}.
-
-## `m.room.participant_list` {#ev-mroomparticipant_list}
-
-Used by a follower server to request the user participation list from the hub
-server. The event is sent via {{op-send}} *without* a `users` list, and is
-returned by the hub in the same request *with* a `users` list.
-
-**Event type**: `m.room.participant_list`
-
-**Additional event fields**:
-
-~~~
-struct {
-   // The users which are currently participating in the room. This is populated
-   // in response to `/send`ing the event. This field is otherwise ignored.
-   UserEvent [[users]]<V>;
-} ParticipantListEvent;
-~~~
 
 **Additional validation rules**:
 
