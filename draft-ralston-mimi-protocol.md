@@ -114,7 +114,8 @@ placeholder a set of binary encoding mechanism and transport semantics.
 
 This section shows how three users (Alice, Bob and Cathy) from different
 providers can use the protocol specified in this document to join the same room
-and send messages to one-another:
+and send messages to one-another. (Not all of these steps are part of the MIMI
+transport protocol):
 
 - Alice get the internal identifier for Bob
 - Alice gains consent to talk to Bob
