@@ -254,7 +254,7 @@ We also assume that Alice has both the `owner` and `admin` roles within the room
 
 Management of the participants list (i.e. the list of users in the room) is done
 through `m.room.user` events. To add Bob to the room, Alice creates an
-`m.room.user` event. See {ev-mroomuser} for more information on user state
+`m.room.user` event. See {{ev-mroomuser}} for more information on user state
 changes.
 
 Room state is anchored in the room's underlying MLS group through a GroupContext
@@ -263,9 +263,9 @@ Extension, which mirrors all of the room's state variables.
 `m.room.user` events are MLS proposals, which change the room state outside of
 the MLS group immediately upon reception and align the mirror of the room state
 in the extension (which is part of the group state) upon the next `ds.commit`
-event. This reflects MLS' proposal-commit paradigm that allows members and
+event. This reflects the MLS proposal-commit paradigm that allows members and
 external parties to propose changes, but only members to commit them. See
-{anchoring} for more information on how the room state is cryptographically
+{{anchoring}} for more information on how the room state is cryptographically
 anchored.
 
 Alice does not only want to add Bob as a participant, but also Bob's client. To
@@ -290,7 +290,7 @@ Finally, the Hub fans out the commit event to Bob.
 
 After Bob has joined the room, Alice creates a message using the MIMI content
 format {{?I-D.ietf-mimi-content}}, and sends a `ds.send_message`
-({ev-sendmessage}) event to the Hub.
+({{ev-sendmessage}}) event to the Hub.
 
 ## The hub/owning provider fans out the message
 
@@ -632,7 +632,7 @@ event.
 
 Note that this event can also be used by a client to add itself to the group. To
 do that, the sender requires the current group information (see
-{ev-fetchgroupinfo}).
+{{ev-fetchgroupinfo}}).
 
 ~~~tls
 struct {
