@@ -50,51 +50,46 @@ normative:
 
 informative:
 
-
 --- abstract
 
-> **TODO**: Refactor abstract to match actual document scope.
+This document specifies the More Instant Messaging Interoperability (MIMI)
+protocol, which allows users of different messaging providers to share
+membership in rooms and send messages to one-another.
 
-The More Instant Messaging Interoperability (MIMI) working group is chartered to
-use Messaging Layer Security (MLS) {{!RFC9420}} for its encryption/security
-layers. This document implements the architecture described by {{!I-D.barnes-mimi-arch}},
-detailing the components required to achieve MLS-secured messaging
-interoperability.
+More specifically, the MIMI protocol defines message formats and conventions
+that allows the servers of different providers to interoperate, leaving the
+provider-internal client-server communication up to the provider.
+
+To ensure that communications between users are confidential and authentic, the
+MIMI protocol relies on MLS ({{!RFC9420}}, through the MIMI DS protocol
+{{!I-D.robert-mimi-delivery-service}}) to protect messages end-to-end.
 
 --- middle
 
 # Introduction
 
-> **TODO**: Refactor introduction to match actual document scope.
+Providers of secure messaging services typically allow their users to only
+communicate with other users of the same provider. This can be limiting for
+users, who frequently have to run clients of multiple messaging applications in
+parallel, each for a different secure messaging provider.
 
-The More Instant Messaging Interoperability (MIMI) working group is responsible
-for specifying the set of protocols required to achieve secure, modern,
-messaging interoperability using MLS {{!RFC9420}}. {{!I-D.barnes-mimi-arch}}
-outlines an overall architecture for interoperable communications, and this
-document implements those components using MLS and HTTP for the security and
-specific transport details.
+The More Instant Messaging Interoperability (MIMI) protocol specified in this
+document allows interoperability on the provider level based on rooms. Each MIMI
+protocol room is hosted at a single provider, but allows users from different
+providers to become participants in the room.
 
-Each MIMI room uses state events to track user-level participation and
-interaction with the room, and an accompanied MLS group for client-level
-membership and messaging. The MLS group's membership consists of the clients
-which belong to the participating users in the MIMI room.
+Users and providers can use events to interact with the provider hosting the
+room and with one-another, for example, to add or remove users from the room.
 
-MLS describes an abstract concept of a "Delivery Service" (DS) that is
-specifically responsible for ordering handshake messages and more generally
-delivering messages to the intended recipients. Collectively, all of the servers
-in a MIMI room fulfill the Delivery Service role, with the hub server performing
-the ordering of handshake messages. The hub server is additionally responsible
-for tracking details about the room to assist clients in joining, validating
-events and handshake messages, and enforcing the required policy against the
-room and MLS group states.
+Each user can have clients in the room, who can then communicate with
+one-another, where messages are end-to-end encrypted using the Messaging Layer
+Security (MLS) protocol ({{!RFC9420}}).
 
-Servers communicate with each other using a mutually authenticated mode of TLS
-{{!RFC5246}} over HTTP {{!RFC9110}}. This document does not describe a protocol
-for clients to communicate with a server. Instead, clients use provider-specific
-APIs to accomplish "last mile" delivery of events and messages.
+An MLS group (through the MIMI DS protocol
+{{!I-D.robert-mimi-delivery-service}}) forms the cryptographic core of each room
+and ensures that clients in the room agree on room state and group state such as
+user and client level membership.
 
-> **TODO**: Describe notion of consent, similar to "connection KeyPackages" in
-> Section 6 of {{?I-D.robert-mimi-delivery-service}}.
 
 # Conventions and Definitions
 
