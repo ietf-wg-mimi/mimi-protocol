@@ -208,8 +208,8 @@ struct {
 } IdentifierResponse;
 ~~~
 
-**ISSUE** In the course of discovering Bob, Alice might or might not
-obtain a list of Bob's clients.
+> **ISSUE**: In the course of discovering Bob, Alice might or might not
+> obtain a list of Bob's clients.
 
 ## Fetch initial key material for Bob
 
@@ -596,8 +596,8 @@ requested data (e.g. group information required for joins), or an error message.
 Messages meant for fan-out are DSFanoutRequests, which contain an MLS message,
 as well as information to which clients messages should be fanned out to.
 
-TODO: Update the MIMI DS doc to allow for messages to contain more than one
-proposal and a generic "commit" action.
+> **TODO**: Update the MIMI DS doc to allow for messages to contain more than one
+> proposal and a generic "commit" action.
 
 #### Propose group update {#ev-proposeupdate}
 
@@ -648,9 +648,9 @@ struct {
 
 **Event type**: `ds.fetch_key_packages`
 
-TODO: For now, we assume that KeyPackages are fetched directly, i.e. not in the
-context of a room and via a Hub. This might change in the future. If it does
-change, this event needs an additional authentication mechanism.
+> **TODO**: For now, we assume that KeyPackages are fetched directly, i.e. not in the
+> context of a room and via a Hub. This might change in the future. If it does
+> change, this event needs an additional authentication mechanism.
 
 Group members can use this event to request a
 KeyPackage from the Hub or another follower server.
@@ -688,9 +688,9 @@ None
 
 **Event type**: `ds.send_message`
 
-TODO: This is not a proposal and there is no way for the Hub or follower servers
-to authenticate this event at the moment. We might want to a way to do that
-later.
+> **TODO**: This is not a proposal and there is no way for the Hub or follower servers
+> to authenticate this event at the moment. We might want to a way to do that
+> later.
 
 Group members can use this event to request to send an encrypted (application)
 message to the other group members.
@@ -714,7 +714,7 @@ MUST produce the following details:
 
 * An `m.room.info` ({{ev-mroomcreate}}) event describing the encryption
   and policy details for the room.
-* A universally unique room ID (represented by the create event).
+* A universally unique room ID (represented by the room info event).
 * An `m.room.user` ({{ev-mroomuser}}) event which invites the desired user.
 * Any relevant cryptographic state needed to verify the invite is legitimate.
   For example, the ciphersuite used by the cryptographic security layer.
@@ -747,7 +747,7 @@ struct {
 **Fanout considerations**:
 
 `InfoEvent` is *unsigned* in all cases it is used, but authenticated implicitly
-through the transport layer ({{transport}}). The room into event is used during
+through the transport layer ({{transport}}). The room info event is used during
 invites to ensure the server is capable of participating in the room and is not
 fanned out more generally. See {{op-check}} for usage.
 
@@ -755,8 +755,8 @@ fanned out more generally. See {{op-check}} for usage.
 
 In a MIMI room, users are *participants* with an associated
 *participation state* whereas clients of those users are *members* of the
-cryptographic state. The user's participation state is updated before changes
-to the cryptographic state are made.
+cryptographic state. The user's participation state is updated concurrent to or
+before changes are made to the cryptographic state.
 
 Users will always exist in one of the following participation states:
 
@@ -1096,8 +1096,8 @@ authenticated mode of TLS {{!RFC5246}}. This provides guarantees that each
 server is speaking to an expected party.
 
 > **TODO**: More information specific to how TLS should be used, i.e. mandate
-best practices that make sense in a mutually authenticated scenario that
-involves two WebPKI based certificates.
+> best practices that make sense in a mutually authenticated scenario that
+> involves two WebPKI based certificates.
 
 Individual events MAY transit between multiple servers. TLS provides
 point-to-point security properties while an event's `signature` provides
