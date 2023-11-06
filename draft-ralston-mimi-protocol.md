@@ -21,8 +21,8 @@ venue:
   type: "Working Group"
   mail: "mimi@ietf.org"
   arch: "https://mailarchive.ietf.org/arch/browse/mimi/"
-  github: "turt2live/ietf-mimi-protocol"
-  latest: "https://turt2live.github.io/ietf-mimi-protocol/draft-ralston-mimi-protocol.html"
+  github: "bifurcation/ietf-mimi-protocol"
+  latest: "https://bifurcation.github.io/ietf-mimi-protocol/draft-ralston-mimi-protocol.html"
 
 author:
  -
