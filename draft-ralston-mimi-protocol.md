@@ -140,12 +140,71 @@ action, which is out of scope of MIMI.
 
 ## Get internal identifier for Bob
 
+This is an example/placeholder for a possibly more sophisticated discovery
+mechanism. It is not intended to be directly implemented.
+
+> **TODO**: Replace with or reference a discovery mechanism with WG consensus
+
 > **TODO**: Details will follow once the WG has concensus on identifiers, their
 > mapping and their retrieval/discovery. The format of specific identifiers is
 > discussed in {{?I-D.mahy-mimi-identity}}. Any specific conventions which are
 > needed should be merged into this document.
 
 Alice obtains Bob's internal identifier.
+
+Alice fetches the internal identifier for some field of Bob's, in
+this example his handle.
+
+~~~
+GET /identifierDiscovery/{domain}
+~~~
+
+The request body is described as:
+
+~~~ tls
+enum {
+  reserved(0),
+  handle(1),
+  nick(2),
+  email(3),
+  phone(4),
+  partialName(5),
+  wholeProfile(6),
+  oidcStdClaim(7),
+  vcardField(8),
+  (255)
+} IdentifierType;
+
+struct {
+  IdentifierType type;
+  string searchValue;
+  select(type) {
+     case oidcStdClaim:
+       string claimName;
+    case vcardField:
+       string fieldName;
+  };
+} IdentifierRequest;
+
+~~~
+
+The response body is described as:
+
+~~~ tls
+enum {
+  success(0),
+  notFound(1),
+  ambiguous(2),
+  forbidden(3),
+  unsupportedField(4),
+  (255)
+} IdentifierDiscoveryCode;
+
+struct {
+  IdentifierDiscoverCode responseCode;
+  IdentifierUri uri;
+} IdentifierResponse;
+~~~
 
 **ISSUE** In the course of discovering Bob, Alice might or might not
 obtain a list of Bob's clients.
