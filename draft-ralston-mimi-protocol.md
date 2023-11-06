@@ -29,7 +29,6 @@ author:
     fullname: Travis Ralston
     organization: The Matrix.org Foundation C.I.C.
     email: travisr@matrix.org
-    role: editor
  -
     fullname: Konrad Kohbrok
     organization: Phoenix R&D
