@@ -100,16 +100,22 @@ user and client level membership.
 Terms and definitions are inherited from {{!I-D.barnes-mimi-arch}}.
 
 Throughout this document, the examples use the TLS Presentation Language
-{{!RFC8446}} and the semantics of HTTP {{!RFC7231}}. It is still an
-open issue what binary encoding the MIMI transport protocol will use,
-and there is at least one member of the design team who believes that
-HTTP semantics are not-appropriate.
+{{!RFC8446}} and the semantics of HTTP {{!RFC7231}} respectively as 
+placeholder a set of binary encoding mechanism and transport semantics. 
+
+> **ISSUE**: Come to consensus on a specific binary encoding for the MIMI
+> transport protocol.
+
+> **ISSUE**: Come to consensus on a specific set of MIMI transport protocol
+> semantics.
+
 
 # Example protocol flow
 
 This section shows how three users (Alice, Bob and Cathy) from different
 providers can use the protocol specified in this document to join the same room
-and send messages to one-another:
+and send messages to one-another. (Not all of these steps are part of the MIMI
+transport protocol):
 
 - Alice get the internal identifier for Bob
 - Alice gains consent to talk to Bob
@@ -235,7 +241,11 @@ for each client.
 
 Creating a room is done between a client and its local provider and is out of
 scope of MIMI. Since Alice creates the room on the server of her local provider,
-it becomes the Hub for the room.
+it becomes the Hub for the room. However, the room policy format is in scope for MIMI.
+We assume that this room is a members-only room, and that only users who have
+the admin or owner role can add and remove users.
+
+We also assume that Alice has both the `owner` and `admin` roles within the room.
 
 > **TODO**: Add information on room policy here once we have consensus on what
 > that looks like.
@@ -244,7 +254,7 @@ it becomes the Hub for the room.
 
 Management of the participants list (i.e. the list of users in the room) is done
 through `room.user` events. To add Bob to the room, Alice creates an
-`room.user` event. See {ev-mroomuser} for more information on user state
+`room.user` event. See {{ev-mroomuser}} for more information on user state
 changes.
 
 Room state is anchored in the room's underlying MLS group through a GroupContext
@@ -253,9 +263,9 @@ Extension, which mirrors all of the room's state variables.
 `room.user` events are MLS proposals, which change the room state outside of
 the MLS group immediately upon reception and align the mirror of the room state
 in the extension (which is part of the group state) upon the next `ds.commit`
-event. This reflects MLS' proposal-commit paradigm that allows members and
+event. This reflects the MLS proposal-commit paradigm that allows members and
 external parties to propose changes, but only members to commit them. See
-{anchoring} for more information on how the room state is cryptographically
+{{anchoring}} for more information on how the room state is cryptographically
 anchored.
 
 Alice does not only want to add Bob as a participant, but also Bob's client. To
@@ -280,7 +290,7 @@ Finally, the Hub fans out the commit event to Bob.
 
 After Bob has joined the room, Alice creates a message using the MIMI content
 format {{?I-D.ietf-mimi-content}}, and sends a `ds.send_message`
-({ev-sendmessage}) event to the Hub.
+({{ev-sendmessage}}) event to the Hub.
 
 ## The hub/owning provider fans out the message
 
@@ -622,7 +632,7 @@ event.
 
 Note that this event can also be used by a client to add itself to the group. To
 do that, the sender requires the current group information (see
-{ev-fetchgroupinfo}).
+{{ev-fetchgroupinfo}}).
 
 ~~~tls
 struct {
