@@ -241,7 +241,11 @@ for each client.
 
 Creating a room is done between a client and its local provider and is out of
 scope of MIMI. Since Alice creates the room on the server of her local provider,
-it becomes the Hub for the room.
+it becomes the Hub for the room. However, the room policy format is in scope for MIMI.
+We assume that this room is a members-only room, and that only users who have
+the admin or owner role can add and remove users.
+
+We also assume that Alice has both the `owner` and `admin` roles within the room.
 
 > **TODO**: Add information on room policy here once we have consensus on what
 > that looks like.
