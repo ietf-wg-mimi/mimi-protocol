@@ -151,8 +151,10 @@ action, which is out of scope of MIMI.
 > discussed in {{?I-D.mahy-mimi-identity}}. Any specific conventions which are
 > needed should be merged into this document.
 
-Alice obtains Bob's internal identifier. In the course of discovering Bob, Alice
-obtains a list of Bob's clients.
+Alice obtains Bob's internal identifier. 
+
+**ISSUE** In the course of discovering Bob, Alice might or might not
+obtain a list of Bob's clients.
 
 ## Fetch initial key material for Bob
 
