@@ -406,7 +406,7 @@ do that, the sender requires the current group information (see
 
 ~~~tls
 struct {
-  DSRequest commit;
+  DSRequest commitBundle;
 } DSCommit
 ~~~
 
@@ -423,7 +423,7 @@ TODO: For now, we assume that KeyPackages are fetched directly, i.e. not in the
 context of a room and via a Hub. This might change in the future. If it does
 change, this event needs an additional authentication mechanism.
 
-Group members, the Hub or follower servers can use this event to request a
+Group members can use this event to request a
 KeyPackage from the Hub or another follower server.
 
 ~~~tls
