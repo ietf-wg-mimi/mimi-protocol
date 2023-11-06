@@ -241,14 +241,14 @@ it becomes the Hub for the room.
 ## Alice adds Bob
 
 Management of the participants list (i.e. the list of users in the room) is done
-through `m.room.user` events. To add Bob to the room, Alice creates an
-`m.room.user` event. See {ev-mroomuser} for more information on user state
+through `room.user` events. To add Bob to the room, Alice creates an
+`room.user` event. See {ev-mroomuser} for more information on user state
 changes.
 
 Room state is anchored in the room's underlying MLS group through a GroupContext
 Extension, which mirrors all of the room's state variables.
 
-`m.room.user` events are MLS proposals, which change the room state outside of
+`room.user` events are MLS proposals, which change the room state outside of
 the MLS group immediately upon reception and align the mirror of the room state
 in the extension (which is part of the group state) upon the next `ds.commit`
 event. This reflects MLS' proposal-commit paradigm that allows members and
@@ -259,7 +259,7 @@ anchored.
 Alice does not only want to add Bob as a participant, but also Bob's client. To
 do that, she sends a `ds.commit` event ({{ev-commitupdate}}) to the group. As
 `ds.commit` events can contain an arbitrary number of proposals, Alice includes
-the `m.room.user` proposal, as well as a proposal to add Bob's client. She
+the `room.user` proposal, as well as a proposal to add Bob's client. She
 creates the latter by using the key material she previously fetched from Bob's
 server.
 
@@ -318,7 +318,7 @@ exactly the same way as in previous steps.
 ## Alice removes Bob from the room
 
 Alice removes Bob by sending an `ds.commit` event. The `ds.commit` event
-contains an `m.room.user` event which removes Bob from the participant list, as
+contains an `room.user` event which removes Bob from the participant list, as
 well as proposals to remove Bob's clients.
 
 # Framing
@@ -393,7 +393,7 @@ Events are validated against their TLS presentation language format
 
 ~~~
 // See the "MIMI Event Types" IANA registry for values.
-// Example: "m.room.create"
+// Example: "room.create"
 opaque EventType;
 
 struct {
@@ -402,7 +402,7 @@ struct {
 
    // Additional fields may be present as dependent on event type.
    select (Event.type) {
-      case "m.room.user":
+      case "room.user":
          // MLSMessage containing a UserEvent proposal
          MLSMessage user_event_proposal;
       case "ds.proposal":
@@ -701,10 +701,10 @@ of scope from MIMI. When the room is exposed to another server over the MIMI
 protocol, such as with an explicit invite to another user, the creating server
 MUST produce the following details:
 
-* An `m.room.create` ({{ev-mroomcreate}}) event describing the encryption
+* An `room.create` ({{ev-mroomcreate}}) event describing the encryption
   and policy details for the room.
 * A universally unique room ID (represented by the create event).
-* An `m.room.user` ({{ev-mroomuser}}) event which invites the desired user.
+* An `room.user` ({{ev-mroomuser}}) event which invites the desired user.
 * Any relevant cryptographic state needed to verify the invite is legitimate.
   For example, the ciphersuite used by the cryptographic security layer.
 
@@ -712,9 +712,9 @@ This is the minimum state required by a MIMI room. Room creators MAY wish to
 include additional details in the initial state, such as configuration of the
 room's policy, adding the creator's other clients to the MLS group state, etc.
 
-### `m.room.create` {#ev-mroomcreate}
+### `room.create` {#ev-mroomcreate}
 
-**Event type**: `m.room.create`
+**Event type**: `room.create`
 
 **Additional event fields**:
 
@@ -776,13 +776,13 @@ described in {{anchoring}}.
 > user to the room.
 
 An *add* is when a user adds another user to the list of participants in the
-*join* state. The `m.room.user` event that effects this change is typically sent
+*join* state. The `room.user` event that effects this change is typically sent
 as part of a commit that also adds the user's clients to the room's MLS group.
 
-1. The adder generates an `m.room.user` ({{ev-mroomuser}}) event to add the
+1. The adder generates an `room.user` ({{ev-mroomuser}}) event to add the
    target user.
 
-2. The adder sends ({{op-send}}) the `m.room.user` event to the hub server. If
+2. The adder sends ({{op-send}}) the `room.user` event to the hub server. If
    the adder is a client, the event is likely sent as part of a `ds.commit`
    event.
 
@@ -798,7 +798,7 @@ as part of a commit that also adds the user's clients to the room's MLS group.
    server of the user added by the event.
 
 5. The target user (or its server) can reject the addition by sending an
-   `m.room.user` event that proposes the removal of the user and its clients
+   `room.user` event that proposes the removal of the user and its clients
    ({{leaves}}).
 
 ## Invites {#invites}
@@ -820,11 +820,11 @@ to the room's underlying group.
 Updating the target user's participation state is done using the following
 steps, and is visualized in {{fig-invites}}.
 
-1. The inviter's server generates an `m.room.user` ({{ev-mroomuser}})
+1. The inviter's server generates an `room.user` ({{ev-mroomuser}})
    event to invite the target user. Typically this begins with a
    client-initiated request to the server using the provider-specific API.
 
-2. The inviter's server sends ({{op-send}}) the `m.room.user` event to the hub
+2. The inviter's server sends ({{op-send}}) the `room.user` event to the hub
    server.
 
 3. The hub server validates the event to ensure the following:
@@ -854,7 +854,7 @@ Accepting is done by joining ({{joins}}) the room.
 | A |                            | Hub |                         | B |
 +---+                            +-----+                         +---+
   |                                 |                              |
-  | Create m.room.user invite       |                              |
+  | Create room.user invite       |                              |
   |-------------------------+       |                              |
   |                         |       |                              |
   |<------------------------+       |                              |
@@ -862,7 +862,7 @@ Accepting is done by joining ({{joins}}) the room.
   | Send event request initiated    |                              |
   |-------------------------------->|                              |
   |                                 |                              |
-  |                                 | Validate m.room.user event   |
+  |                                 | Validate room.user event   |
   |                                 |--------------------------+   |
   |                                 |                          |   |
   |                                 |<-------------------------+   |
@@ -906,11 +906,11 @@ the same event.
 
 The two-step flow looks as follows:
 
-1. Option a: The joiner's server generates an `m.room.user` ({{ev-mroomuser}})
+1. Option a: The joiner's server generates an `room.user` ({{ev-mroomuser}})
    event to add the user.
 
    Option b: The joiner's client generates a commit that contains an
-   `m.room.user` event, as well as an Add proposal for itself (this requires
+   `room.user` event, as well as an Add proposal for itself (this requires
    that the client has previously obtained a the room's group info through a
    `ds.fetch_group_info` event ({{ev-fetchgroupinfo}})). The joiner's server
    generates a `ds.commit` event from the commit.
@@ -928,7 +928,7 @@ The two-step flow looks as follows:
    ({{fanout}}) to all participating servers, plus the joiner's server as they
    are now participating in the room too.
 
-If the user was added to the room via a standalone `m.room.user` event, the
+If the user was added to the room via a standalone `room.user` event, the
 user's clients are able to add themselves to the cryptographic group state via
 one or more `ds.commit` events after fetching the room's current information via
 a `ds.fetch_group_info` event.
@@ -937,13 +937,13 @@ a `ds.fetch_group_info` event.
 
 Leaving a room can signal a user declining an invite, voluntarily leaving the
 room, or being kicked (removed) from the room. When the sender and target of
-an `m.room.user` ({{ev-mroomuser}}) leave event are different, the target user
+an `room.user` ({{ev-mroomuser}}) leave event are different, the target user
 is being kicked. Otherwise the event represents a voluntary leave or declined
 invite (if the previous participation state was "invited").
 
 Like with other participation/membership operations, a user's leave is initiated
 by updating their participation state first. This is done by sending
-({{op-send}}) the relevant `m.room.user` ({{ev-mroomuser}}) state event to the
+({{op-send}}) the relevant `room.user` ({{ev-mroomuser}}) state event to the
 hub, which validates it as follows:
 
 * If the target and sender are the same, the user MUST be in the invited,
@@ -975,7 +975,7 @@ add and remove their own clients from the cryptographic state at will.
 ## Bans {#bans}
 
 Bans imply kick, and are operated the same way as {{leaves}}, though with the
-`m.room.user` ({{ev-mroomuser}}) state event using a `ban` participation state.
+`room.user` ({{ev-mroomuser}}) state event using a `ban` participation state.
 
 In contrast to leaving users, banned users remain on the participant list in the
 `ban` state.
@@ -993,17 +993,17 @@ In this state, the sender of a knock is requesting an invite ({{invites}}) to
 the room. They do not have access to the cryptographic state.
 
 > **TODO**: Discuss if this participation state is desirable, and figure out
-> details for how it works. It'd likely just be an `m.room.user` state event
+> details for how it works. It'd likely just be an `room.user` state event
 > with no MLS interaction, like invites are.
 
 > **TODO**: If we have an Add event as discussed in a TODO in the "Invites"
 > section, an "Add" would probably be the response to a knock.
 
-## `m.room.user` {#ev-mroomuser}
+## `room.user` {#ev-mroomuser}
 
-**Event type**: `m.room.user`
+**Event type**: `room.user`
 
-An `m.room.user` event can be used to change the participation state of a user.
+An `room.user` event can be used to change the participation state of a user.
 
 > **TODO**: Do we also want this to be able to change a participant's role?
 
@@ -1057,7 +1057,7 @@ struct {
 
 **Fanout considerations**:
 
-Each `m.room.user` event is fanned out as normal ({{fanout}}). The event MAY be
+Each `room.user` event is fanned out as normal ({{fanout}}). The event MAY be
 sent to additional servers, as required by {{invites}}, {{joins}}, {{leaves}},
 {{bans}}, {{knocks}}.
 
@@ -1168,7 +1168,7 @@ leading up to fanout.
 
 ### Check Invite Event {#op-check}
 
-> **TODO**: Consider reducing this down to `m.room.check_invite` or something,
+> **TODO**: Consider reducing this down to `room.check_invite` or something,
 > to reuse `/send`.
 
 Used by the hub server to ensure a follower server can (and is willing to)
@@ -1186,7 +1186,7 @@ OK to the server, it responds with a `200` HTTP status code.
 
 ~~~
 struct {
-   // The `m.room.user` invite event.
+   // The `room.user` invite event.
    Event invite;
 
    // The room creation information.
@@ -1235,7 +1235,7 @@ separated by dots.
 The first substring is "m", followed by the logical container being affected
 (typically just "room"), then a number of descriptor strings.
 
-Example: `m.room.create`
+Example: `room.create`
 
 > **TODO**: Does IANA need any other information for legal event types?
 
