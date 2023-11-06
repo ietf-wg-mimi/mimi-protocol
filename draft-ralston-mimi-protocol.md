@@ -184,48 +184,40 @@ for each client.
 
 ## Create a room
 
-Creating a room is done between a client and its local provider and is
-out of scope of MIMI.
+Creating a room is done between a client and its local provider and is out of
+scope of MIMI. Since Alice creates the room on the server of her local provider,
+it becomes the Hub for the room.
 
 > **TODO**: Add information on room policy here once we have consensus on what
 > that looks like.
 
-## Alice invites Bob
+## Alice adds Bob
 
 Management of the participants list (i.e. the list of users in the room) is done
-through `m.room.user` events. To invite Bob to the room, Alice sends an
-`m.room.user` event to Bob. Alice's server, which is now the Hub for this room,
-puts Bob into the "invite" state. See {ev-mroomuser} for more information on
-user state changes.
+through `m.room.user` events. To add Bob to the room, Alice creates an
+`m.room.user`. See {ev-mroomuser} for more information on user state changes.
 
 Room state is anchored in the room's underlying MLS group through a GroupContext
 Extension, which contains all of the room's state variables.
 
-`m.room.user` events are MLS proposals, which change the room state immediately
-outside of the MLS group immediately and align the mirror of the room state in
-the MLS group upon the next `ds.commit` event. See {anchoring} for more
-information on proposals, commits and how the room state is cryptographically
-anchored.
+`m.room.user` events are MLS proposals, which change the room state outside of
+the MLS group immediately and align the mirror of the room state in the
+extension (which is part of the group state) upon the next `ds.commit` event.
+See {anchoring} for more information on proposals, commits and how the room
+state is cryptographically anchored.
 
-## Bob accepts the invitation
+Alice does not only want to add Bob as a participant, but also Bob's client. To
+do that, she sends a `ds.commit` event ({{ev-commitupdate}}) to the group. As
+`ds.commit` events can contain an arbitrary number of proposals, Alice includes
+the `m.room.user` proposal, as well as a proposal to add Bob's client. She
+creates the latter by using the key material she previously fetched from Bob's
+server.
 
-Once Bob has received the invitation event, he sends an `m.room.user` event to
-accept the invitation by changing his participation state to "joined".
+She sends the `ds.commit` to the Hub, which in turn processes it updating the
+room state to add Bob to the participant list and the underlying MLS group state
+to add Bob's client to the list.
 
-In this case, Bob also wants to add his client to the room, so instead of
-sending a standalone `m.room.user` event, he sends a `ds.commit` event that
-includes the `m.room.user` event as a proposal, as well as a proposal to add his
-client.
-
-To create the commit, Bob first needs to fetch the required information from the
-Hub via a `ds.fetch_group_info` event ({ev-fetchgroupinfo}).
-
-**ISSUE**: in the MLS case, what security properties are needed to protect a
-GroupInfo object in the MIMI context are still under discussion. It is
-possible that the requester only needs to prove possession of their private
-key. The GroupInfo in another context might be sufficiently sensitive that
-it should be encrypted from the end client to the hub provider (unreadable
-by the local provider).
+Finally, the Hub fans out the commit event to Bob.
 
 ## Alice sends a message to the room
 
@@ -245,6 +237,23 @@ removing clients of deleted users).
 
 This is no different from Alice sending a message, which is fanned out in
 exactly the same way.
+
+## Bob adds a new client
+
+For Bob's new client to join the MLS group and therefore fully participate in
+the room with Alice, Bob needs to fetch the current group and room information
+through a `ds.fetch_group_info` event ({{ev-fetchgroupinfo}}), which he sends to
+the Hub.
+
+**ISSUE**: in the MLS case, what security properties are needed to protect a
+GroupInfo object in the MIMI context are still under discussion. It is
+possible that the requester only needs to prove possession of their private
+key. The GroupInfo in another context might be sufficiently sensitive that
+it should be encrypted from the end client to the hub provider (unreadable
+by the local provider).
+
+The new client can use the information to add itself to the group via a
+`ds.commit` that contains an MLS ExternalInit proposal.
 
 ## Alice adds Cathy
 
