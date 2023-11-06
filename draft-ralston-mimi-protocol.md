@@ -393,7 +393,7 @@ Events are validated against their TLS presentation language format
 
 ~~~
 // See the "MIMI Event Types" IANA registry for values.
-// Example: "m.room.create"
+// Example: "m.room.info"
 opaque EventType;
 
 struct {
@@ -701,7 +701,7 @@ of scope from MIMI. When the room is exposed to another server over the MIMI
 protocol, such as with an explicit invite to another user, the creating server
 MUST produce the following details:
 
-* An `m.room.create` ({{ev-mroomcreate}}) event describing the encryption
+* An `m.room.info` ({{ev-mroomcreate}}) event describing the encryption
   and policy details for the room.
 * A universally unique room ID (represented by the create event).
 * An `m.room.user` ({{ev-mroomuser}}) event which invites the desired user.
@@ -712,29 +712,33 @@ This is the minimum state required by a MIMI room. Room creators MAY wish to
 include additional details in the initial state, such as configuration of the
 room's policy, adding the creator's other clients to the MLS group state, etc.
 
-### `m.room.create` {#ev-mroomcreate}
+### `m.room.info` {#ev-mroomcreate}
 
-**Event type**: `m.room.create`
+The `m.room.info` event contains the current room state, thus allowing servers
+to bootstrap the room. Note that this event does not contain any of the
+cryptographic state of the underlying MIMI DS group. Clients that want to join a
+room need to use a `ds.fetch_group_info` event to obtain the information
+required to join the room.
+
+**Event type**: `m.room.info`
 
 **Additional event fields**:
 
 ~~~
 struct {
-   // TODO
-} CreateEvent;
+  RoomState room_state;
+} InfoEvent;
 ~~~
 
 > **TODO**: Include fields for policy information (previously called a "policy
 > ID" in ralston-mimi-signaling).
 
-> **TODO**: Include fields for encryption information. Possibly ciphersuite and
-> similar so a server can check to ensure it supports the MLS dialect?
-
 **Fanout considerations**:
 
-`CreateEvent` is *unsigned* in all cases it is used. The create event is used
-during invites to ensure the server is capable of participating in the room and
-is not fanned out more generally. See {{op-check}} for usage.
+`InfoEvent` is *unsigned* in all cases it is used, but authenticated implicitly
+through the transport layer ({{transport}}). The room into event is used during
+invites to ensure the server is capable of participating in the room and is not
+fanned out more generally. See {{op-check}} for usage.
 
 # User Participation and Client Membership {#membership}
 
@@ -1177,7 +1181,7 @@ the inviting user has general consent to invite the target user. For example,
 ensuring the invite does not appear spammy in nature and if the inviter already
 has a connection with the invitee.
 
-If the server does not recognize the event format of the `CreateEvent`
+If the server does not recognize the event format of the `InfoEvent`
 ({{ev-mroomcreate}}) event, or does not understand the policy/encryption
 configuration contained within, it MUST reject the request.
 
@@ -1190,7 +1194,7 @@ struct {
    Event invite;
 
    // The room creation information.
-   CreateEvent roomCreate;
+   InfoEvent roomInfo;
 } CheckInviteRequest;
 ~~~
 
@@ -1235,7 +1239,7 @@ separated by dots.
 The first substring is "m", followed by the logical container being affected
 (typically just "room"), then a number of descriptor strings.
 
-Example: `m.room.create`
+Example: `m.room.info`
 
 > **TODO**: Does IANA need any other information for legal event types?
 
