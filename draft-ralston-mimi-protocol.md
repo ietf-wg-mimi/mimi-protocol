@@ -108,8 +108,7 @@ open issue what binary encoding the MIMI transport protocol will use,
 and there is at least one member of the design team who believes that
 HTTP semantics are not-appropriate.
 
-
-# Basic Operations
+# Example protocol flow
 
 This section walks a user through operations in the transport protocol in
 the order they are necessary to show a basic messaging flow between Alice,
@@ -129,12 +128,12 @@ Bob, and Cathy:
 - Alice removes Bob from the room
 
 Throughout this section, we will detail the individual operations through
-Alice's lense. All actions by Alice are taken through Alice's client and her
+Alice's lens. All actions by Alice are taken through Alice's client and her
 server's proprietary API. While some parts of the individual messages originate
 from Alice's clients, the MIMI protocol is only concerned with the communication
-between Alice's server and Bob's server. So whenever Alice and Bob are
-referenced throughout this section, it is implied that both are communicating
-with their respective servers, which then communicate with one-another.
+between Alice's, Bob's and Cathy's servers. So whenever users are referenced
+throughout this section, it is implied that they are communicating with their
+respective servers, which then communicate with one-another.
 
 † is a placeholder for a later discovery mechanism.
 
