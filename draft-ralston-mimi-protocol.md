@@ -100,8 +100,8 @@ user and client level membership.
 Terms and definitions are inherited from {{!I-D.barnes-mimi-arch}}.
 
 Throughout this document, the examples use the TLS Presentation Language
-{{!RFC8446}} and the semantics of HTTP {{!RFC7231}} respectively as 
-placeholder a set of binary encoding mechanism and transport semantics. 
+{{!RFC8446}} and the semantics of HTTP {{!RFC7231}} respectively as
+placeholder a set of binary encoding mechanism and transport semantics.
 
 > **ISSUE**: Come to consensus on a specific binary encoding for the MIMI
 > transport protocol.
