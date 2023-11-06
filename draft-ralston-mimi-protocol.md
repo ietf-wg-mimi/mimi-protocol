@@ -110,9 +110,9 @@ HTTP semantics are not-appropriate.
 
 # Example protocol flow
 
-This section walks a user through operations in the transport protocol in
-the order they are necessary to show a basic messaging flow between Alice,
-Bob, and Cathy:
+This section shows how three users (Alice, Bob and Cathy) from different
+providers can use the protocol specified in this document to join the same room
+and send messages to one-another:
 
 - Alice get the internal identifier for Bob †
 - Alice gains consent to talk to Bob ††
@@ -150,7 +150,7 @@ action, which is out of scope of MIMI.
 > discussed in {{?I-D.mahy-mimi-identity}}. Any specific conventions which are
 > needed should be merged into this document.
 
-Alice obtains Bob's internal identifier. 
+Alice obtains Bob's internal identifier.
 
 **ISSUE** In the course of discovering Bob, Alice might or might not
 obtain a list of Bob's clients.
@@ -161,11 +161,8 @@ The action attempts to claim initial keying material for all the clients
 of a list of users at a single provider. The keying material may not be
 reused unless identified as "last resort" keying material.
 
-If the protocol is MLS 1.0 (mls10) the initial key materials are MLS
-KeyPackages.
-
 Alice sends an Event (framed in a MIMIMessage) of type `ds.fetch_key_packages`
-for each of Bob's clients to Bob's server.
+to Bob's server, requesting key material for each of Bob's clients.
 
 See {{event-schema}} for the definition of Events in general and
 {{ev-fetchkeypackage}} for the `ds.fetch_key_packages` event.
@@ -196,16 +193,19 @@ it becomes the Hub for the room.
 
 Management of the participants list (i.e. the list of users in the room) is done
 through `m.room.user` events. To add Bob to the room, Alice creates an
-`m.room.user`. See {ev-mroomuser} for more information on user state changes.
+`m.room.user` event. See {ev-mroomuser} for more information on user state
+changes.
 
 Room state is anchored in the room's underlying MLS group through a GroupContext
-Extension, which contains all of the room's state variables.
+Extension, which mirrors all of the room's state variables.
 
 `m.room.user` events are MLS proposals, which change the room state outside of
-the MLS group immediately and align the mirror of the room state in the
-extension (which is part of the group state) upon the next `ds.commit` event.
-See {anchoring} for more information on proposals, commits and how the room
-state is cryptographically anchored.
+the MLS group immediately upon reception and align the mirror of the room state
+in the extension (which is part of the group state) upon the next `ds.commit`
+event. This reflects MLS' proposal-commit paradigm that allows members and
+external parties to propose changes, but only members to commit them. See
+{anchoring} for more information on how the room state is cryptographically
+anchored.
 
 Alice does not only want to add Bob as a participant, but also Bob's client. To
 do that, she sends a `ds.commit` event ({{ev-commitupdate}}) to the group. As
@@ -214,11 +214,16 @@ the `m.room.user` proposal, as well as a proposal to add Bob's client. She
 creates the latter by using the key material she previously fetched from Bob's
 server.
 
-She sends the `ds.commit` to the Hub, which in turn processes it updating the
-room state to add Bob to the participant list and the underlying MLS group state
-to add Bob's client to the list.
+She then sends the resulting `ds.commit` to the Hub. Upon reception, the Hub
+processes the commit and the proposals therein by updating the participant list
+to include Bob and the underlying MLS group state to add Bob's client.
 
 Finally, the Hub fans out the commit event to Bob.
+
+> **TODO**: Especially when adding new clients, we will want to forward a
+> `ds.commit` event selectively, as existing group members will only be
+> interested in the actual commit, whereas new group members only need the
+> Welcome.
 
 ## Alice sends a message to the room
 
@@ -228,10 +233,10 @@ format {{?I-D.ietf-mimi-content}}, and sends a `ds.send_message`
 
 ## The hub/owning provider fans out the message
 
-If the hub provider accepts the message it fans the message out to all guest
-servers, which in this case is Bob's server.
+If the Hub accepts the message it fans the message out to all guest servers,
+which in this case is Bob's server.
 
-The hub provider also fans out any messages which originate from itself (ex:
+Generally, the Hub also fans out any messages which originate from itself (ex:
 removing clients of deleted users).
 
 ## Bob sends a message to the room
@@ -246,12 +251,12 @@ the room with Alice, Bob needs to fetch the current group and room information
 through a `ds.fetch_group_info` event ({{ev-fetchgroupinfo}}), which he sends to
 the Hub.
 
-**ISSUE**: in the MLS case, what security properties are needed to protect a
-GroupInfo object in the MIMI context are still under discussion. It is
-possible that the requester only needs to prove possession of their private
-key. The GroupInfo in another context might be sufficiently sensitive that
-it should be encrypted from the end client to the hub provider (unreadable
-by the local provider).
+> **TODO**: in the MLS case, what security properties are needed to protect a
+> GroupInfo object in the MIMI context are still under discussion. It is
+> possible that the requester only needs to prove possession of their private
+> key. The GroupInfo in another context might be sufficiently sensitive that it
+> should be encrypted from the end client to the hub provider (unreadable by the
+> local provider).
 
 The new client can use the information to add itself to the group via a
 `ds.commit` that contains an MLS ExternalInit proposal.
@@ -263,9 +268,9 @@ exactly the same way as in previous steps.
 
 ## Alice removes Bob from the room
 
-Alice removes Bob by sending an `ds.commit` event, which in turn contains an
-`m.room.user` event which removes Bob from the participant list. The same commit
-also contains proposals to remove Bob's client.
+Alice removes Bob by sending an `ds.commit` event. The `ds.commit` event
+contains an `m.room.user` event which removes Bob from the participant list, as
+well as proposals to remove Bob's clients.
 
 # Framing
 
