@@ -818,13 +818,6 @@ as part of a commit that also adds the user's clients to the room's MLS group.
 
 ## Invites {#invites}
 
-> **TODO**: For now, the invite flow implies that the user has to explicitly
-> accept by adding one or more clients via external commit as part of the "Join"
-> flow. In the future, we can either make the "Invite" flow more versatile and
-> allow for Welcome based invitations, or create an additional "Add" flow, that
-> allows participants to add other users (and their clients) directly via
-> Welcome.
-
 An *invite* is when a user (or more specifically, a user's client) adds another
 user to the list of participants in the `invite` state.
 
