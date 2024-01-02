@@ -1,0 +1,2581 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2024-01-02T00:03:19.520223+00:00",
+  "repo": "bifurcation/ietf-mimi-protocol",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    },
+    {
+      "name": "consensus-required",
+      "description": "",
+      "color": "C2EE85"
+    }
+  ],
+  "issues": [
+    {
+      "number": 6,
+      "id": "I_kwDOKZ8QO851kCPb",
+      "title": "Prepare document for IETF 118",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/6",
+      "state": "OPEN",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "kkohbrok"
+      ],
+      "labels": [],
+      "body": "Tasks:\r\n\r\n- [x] #7\r\n- [x] #9\r\n- [ ] Merge m.room.create event and m.room.participant_list into single event?\r\n- [ ] #11\r\n- [ ] Define struct to use for fan-out messages, or better even a general MIMI message struct, which can contain an event or a fan-out message\r\n- [ ] Update #3 by replacing the individual structs with links to various parts of the document\r\n- [ ] Go over introduction and abstract\r\n\r\nMaybe move to after IETF 118\r\n- [ ] Change event naming scheme away from `m.xxx.yyy`?\r\n- [ ] Add section on Adds (representing a \"forced join\")\r\n- [ ] Allow patch-style operation instead of the current one-change-at-a time mechanism in m.room.user event\r\n- [ ] Figure out if KeyPackage retrieval should be tied to a room (at least optionally)",
+      "createdAt": "2023-11-01T13:26:46Z",
+      "updatedAt": "2023-11-03T10:25:57Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 7,
+      "id": "I_kwDOKZ8QO851kCSU",
+      "title": "Move to MLS proposals as struct for room-state changing events",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/7",
+      "state": "CLOSED",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-01T13:26:53Z",
+      "updatedAt": "2023-11-02T14:48:17Z",
+      "closedAt": "2023-11-02T14:48:17Z",
+      "comments": []
+    },
+    {
+      "number": 9,
+      "id": "I_kwDOKZ8QO851plgi",
+      "title": "Split MIMI DS operations into multiple events",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/9",
+      "state": "CLOSED",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "kkohbrok"
+      ],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-02T09:24:25Z",
+      "updatedAt": "2023-11-03T10:25:28Z",
+      "closedAt": "2023-11-03T10:25:28Z",
+      "comments": []
+    },
+    {
+      "number": 11,
+      "id": "I_kwDOKZ8QO851qU9n",
+      "title": "Change language in Section on \"Invites\" to reflect that atomic operations are possible",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/11",
+      "state": "OPEN",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-02T11:17:26Z",
+      "updatedAt": "2023-11-02T11:17:26Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 23,
+      "id": "I_kwDOKZ8QO852UXde",
+      "title": "Tracking arbitary state?",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/23",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "consensus-required"
+      ],
+      "body": "Room name, etc",
+      "createdAt": "2023-11-09T08:05:59Z",
+      "updatedAt": "2023-11-12T13:32:40Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Do we want to support this? How arbitrary is arbitrary?",
+          "createdAt": "2023-11-09T12:55:44Z",
+          "updatedAt": "2023-11-09T12:55:44Z"
+        },
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Proposal would be to include a new event: `m.room.state`. That event carries a \"state key\" and arbitrary blob of data (with a limit?). The state key would be namespaced so we can add reserved values, like room name, topic, etc, as well as support metadata appended by messaging providers/clients/users. \r\n\r\nThe state included by `m.room.state` is shared in the same places a user participant list is shared, and would be subject to policy on who can add/update the arbitrary state. For example, when becoming involved in a room, the follower server would have visibility on it.\r\n\r\nOpen question on whether it should be encrypted or not. Suggestion is *optionally* encrypted, to more easily allow providers to attach provider-specific (but useful to others) metadata.",
+          "createdAt": "2023-11-10T09:09:29Z",
+          "updatedAt": "2023-11-10T09:09:29Z"
+        },
+        {
+          "author": "dkg",
+          "authorAssociation": "NONE",
+          "body": "We should clearly support encrypted room state.  Yes, that means that changing epochs will require some sort of update of the encrypted room state.\r\n\r\nIf we have arbitrary named attributes for room state (e.g. \"name\", \"avatar\", etc...), be aware that any non-encrypted attributes will be visible to the server.  Furthermore, if encryption is done on a per-attribute basis, the names themselves are likely to be visible to the server, which can itself be an unwanted leak.  Better to have one encrypted bundle for room metadata that has arbitrary named attributes within it.",
+          "createdAt": "2023-11-10T14:44:08Z",
+          "updatedAt": "2023-11-10T14:44:08Z"
+        },
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think we should first have a discussion about what information goes into room policy and room state. \r\n\r\nwe also need to enumerate what information we are talking about and decide if it needs to be inspected by the hub, and if it needs to be inspected by other providers.",
+          "createdAt": "2023-11-12T13:32:40Z",
+          "updatedAt": "2023-11-12T13:32:40Z"
+        }
+      ]
+    },
+    {
+      "number": 24,
+      "id": "I_kwDOKZ8QO852VBff",
+      "title": "Support external media requests",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/24",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Where we assume the external attachment blob (\"media\") is stored on a follower server, another server/the hub needs a way to fetch that media on behalf of its local clients.\r\n\r\nWe do not want to support clients requesting the media directly.\r\n\r\nTODO: Discuss authentication/right to download.",
+      "createdAt": "2023-11-09T09:37:53Z",
+      "updatedAt": "2023-11-09T09:37:53Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 25,
+      "id": "I_kwDOKZ8QO852WF9h",
+      "title": "Binary encoding for MIMI transport",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/25",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "consensus-required"
+      ],
+      "body": "> **ISSUE**: Come to consensus on a specific binary encoding for the MIMI\r\n> transport protocol.\r\n\r\nCurrently we use TLS-serialized structs.",
+      "createdAt": "2023-11-09T12:17:51Z",
+      "updatedAt": "2023-12-27T17:15:33Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "anoadragon453",
+          "authorAssociation": "NONE",
+          "body": "The following four encoding options were mentioned in @rohan-wire's IETF 118 slides:\r\n\r\n* [TLS Presentation Language](https://datatracker.ietf.org/doc/html/rfc8446#section-3) (RFC8446)\r\n* [CBOR](https://datatracker.ietf.org/doc/html/rfc7049) (RFC7049)\r\n* [Protobuf](https://protobuf.dev/programming-guides/encoding/) (which [edition](https://protobuf.dev/editions/overview/)?)\r\n* [MessagePack](https://github.com/msgpack/msgpack/blob/master/spec.md)\r\n\r\n## Language support\r\n\r\nPart of our goals with MIMI is to create a protocol that is easy for people to implement in order to drive rapid adoption (and developer happiness!). A mature, well-tested encoding library ensures correctness and speed when deployed at scale.\r\n\r\n* TLS Presentation Language: library availability in programming languages is very underwhelming. Searching for \"TLS presentation language\" on crates.io, npm and PyPI yield zero relevant results. Presumably TLS libraries have support for this encoding, but it's unlikely that they'll expose that bit as a general interface.\r\n* CBOR: Healthy library support. Numerous libraries (some focusing on speed, others on correctness) appear on npm, PyPi and crates.io.\r\n* Protobuf: Healthy library support, with many implementations maintained by Google themselves.\r\n* MessagePack: Healthy library support. [msgpack-rust](https://github.com/3Hren/msgpack-rust) for Rust, [msgpackr](https://github.com/kriszyp/msgpackr) for JS and [msgpack](https://pypi.org/project/msgpack/) for Python.\r\n\r\n## Encoded output size and schema-required encodings\r\n\r\nEncoding schemes which do not include the structure as part of the encoded output will naturally have a small footprint. The downside is that the receiver must know the schema before decoding the payload.\r\n\r\nThis can cause issues in some areas regarding forwards-compatibility. For instance, if we have the following struct (taken from [draft-ietf-mimi-content-01](https://www.ietf.org/archive/id/draft-ietf-mimi-content-01.html#section-4.1)):\r\n\r\n```c++\r\nstruct MimiContent {\r\n    MessageId messageId;\r\n    uint64 timestamp;\r\n    MessageId replaces;\r\n    Octets topicId;\r\n    uint32 expires;\r\n    ReplyToInfo inReplyTo;\r\n    NestablePart body;\r\n};\r\n```\r\n\r\nand want to add a new field:\r\n\r\n```\r\n    std::vector<MessageId> lastSeen;\r\n```\r\n\r\n...old clients will not be able to deserialise a `MimiContent` struct with the new field. Adding new fields to top-level structs is likely to be an infrequent affair however. We can also scope these changes to a specific version of a chat room (similar to how Matrix [room versions](https://spec.matrix.org/v1.8/rooms/) specify which new features can be used in a room) in order to require clients to update to support the new schemas before participating in a chat room that uses them.\r\n\r\nI was initially more concerned about the extensibility of messaging content, as we would like to support vendors adding custom message types. This is also useful when testing new message types in real implementations before adding them to an upcoming MIMI protocol version.\r\n\r\nHowever, we can get around this by encoding message content using a separate schema struct. The current draft semantics already cover this, where a [`SinglePart`](https://www.ietf.org/archive/id/draft-ietf-mimi-content-01.html#section-4.4) looks like:\r\n\r\n```c++\r\nstruct SinglePart {\r\n    String contentType;   // An IANA media type {10}\r\n    Octets content;       // The actual content\r\n};\r\n```\r\n\r\nwith `content` being opaque to the top-level scheme. An client implementation can look at the `contentType` and check whether it recognises it. If so, it uses the schema it has for that `contentType` to decode `content`. Otherwise, it does not attend to decode it. This is similar to a client looking at a type and refusing to parse the associated JSON body - it doesn't understand the type, so why do so?\r\n\r\nThus I don't believe using an encoding which requires a schema (Protobuf, TLS Presentation Language) is an issue.\r\n\r\n## Types\r\n\r\nCBOR, Protobuf and MessagePack all have types such as `string`, `map`, `boolean` defined. TLS Presentation language does not define these, instead giving the user a `number`, `array`, `enum` and `struct` types to play with. You have the same functionality at the end, but the former are nicer to work with when designing a schema.\r\n\r\n## Field ordering\r\n\r\nWhile not important for deserialising a binary format, this *is* important for MIMI as being able to verify the signature of an encoded message when received at the server level is a useful property. Encodings such as CBOR and MessagePack may struggle here, as ordering of fields is not canonical (you'll end up with different binary representations of the same data). Protobuf's docs also [call this out](https://protobuf.dev/overview/#not-good-fit) as a shortcoming, stating \"You cannot compare two messages for equality without fully parsing them\". Parsing messages before verifying their contents came from the expected source is not efficient.\r\n\r\nWe ran into this problem in Matrix, which currently uses JSON, and solved it by defining [_Canonical_ JSON](https://spec.matrix.org/v1.8/appendices/#canonical-json), thus requiring JSON fields be sorted before sending them over the wire, and when verifying them.\r\n\r\nCBOR has [a suggestion for canonicalisation in the spec](https://datatracker.ietf.org/doc/html/rfc7049#section-3.9), which we could mandate. The `cbor-rust` library has [implemented support](https://github.com/enarx/ciborium/issues/28) for it.\r\n\r\nMessagePack appears to have support for canonical field ordering in [some libraries](https://py-algorand-sdk.readthedocs.io/en/latest/algosdk/encoding.html), but [not others](https://github.com/3Hren/msgpack-rust/issues/299).\r\n\r\nThe spec for TLS Presentation Language does not mandate field order, so library support (hah) for it may be spotty. But if we need to write libraries anyway, then we can mandate a canonical version.\r\n\r\n## Encoding and Decoding Speed\r\n\r\nThis is easy enough to test with a benchmark, but I suspect we should consider other merits initially. I don't believe any of these would be significantly faster or slower than the other.\r\n\r\nA note: I did start to write a micro-benchmark in Python. TLS Presentation Language was the hardest to support as it has no readily-available library!\r\n\r\n## Initial questions\r\n* Do we care about the encoding scheme being defined by an existing RFC?\r\n    * If this is a blocker, why are we considering options other than TLS Presentation Language or CBOR?\r\n    * Similarly, if this is a blocker, it severely limits our options. What would we need to do to use, say, Protobufs. Would we need to get the encoding spec into an I-D?\r\n* Is a canonical representation of the data on the wire a hard requirement?",
+          "createdAt": "2023-11-10T11:30:26Z",
+          "updatedAt": "2023-11-10T12:20:37Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "If I remember correctly, one of the considerations is that it must be defined either by the WG itself or elsewhere in the IETF.",
+          "createdAt": "2023-11-10T11:36:23Z",
+          "updatedAt": "2023-11-10T11:36:23Z"
+        },
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ideally elsewhere, if I remember correctly. While MIMI is specifying protocols for interoperability, it could be considered out of scope to also define an encoding specification.",
+          "createdAt": "2023-11-10T11:37:28Z",
+          "updatedAt": "2023-11-10T11:37:28Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Good point!",
+          "createdAt": "2023-11-10T11:38:07Z",
+          "updatedAt": "2023-11-10T11:38:07Z"
+        },
+        {
+          "author": "anoadragon453",
+          "authorAssociation": "NONE",
+          "body": "I've updated my comment above :)",
+          "createdAt": "2023-11-10T12:20:25Z",
+          "updatedAt": "2023-11-10T12:20:25Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for putting this together! A few comments:\r\n\r\nForward compatibility: The way MLS solves this is by including a protocol version field in the highest level message struct, as well as in the room state, which I think is what you suggest, too. If there should be a need to change structs independent of protocol versions, we could do this via per-room extensions, which would be part of what would be called a room version in Matrix terminology.\r\n\r\nAvailability of libraries: I can't speak for other languages, but there is the `tls_codec` crate that implements the encoding of rust structs. It works quite well in OpenMLS and also (I believe) mls-rs.\r\n\r\nErgonomics: If we feel that it's useful, we should be able to extend the TLS presentation language to a certain degree. At least we've done so for MLS and it didn't turn out to be problematic.\r\n\r\nField order: The TLS presentation language does mandate field order. The way I read it, structs are just a convenient way of representing an (ordered) sequence of fields.\r\n\r\nYou already mentioned the requirement for fields to be ordered for signing and verification. At this point, I don't see an advantage in choosing something that is not ordered.\r\n\r\nI don't have a strong preference for the TLS presentation language, but it's served us well so far in TLS and MLS, so I'm somewhat biased towards that option. Also, MIMI stacks will either already have TLS presentation language encoding/decoding in their stack, because they use MLS, or they will have it in their stack at some point when they make the switch from DR. If we find a better performing option without significant drawbacks, I'm happy to change my mind, though.",
+          "createdAt": "2023-11-10T13:43:12Z",
+          "updatedAt": "2023-11-10T13:43:12Z"
+        },
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> If I remember correctly, one of the considerations is that it must be defined either by the WG itself or elsewhere in the IETF.\r\n\r\nIt requires a \"stable reference\". Protobuf 3 probably does not qualify because it is still being changed. Protobuf 2 probably qualifies.",
+          "createdAt": "2023-11-12T13:40:37Z",
+          "updatedAt": "2023-11-12T13:40:37Z"
+        },
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Cons of TLS:\r\nThis is less an issue for the transport protocol than for the content format, but I was unable to locate a javascript TLS presentation language parser that seems to be actively maintained. The most obvious TLS library for js, [forge](https://github.com/digitalbazaar/forge) still mentions Flash in its README and the last commit was in spring of 2022. \r\nAlso, TLS unfortunately does not have typedefs, so when you define a type for reuse or clarity, you have to access it through the type.\r\n\r\nFrankly, I think none of these 4 encodings is really focused on what we would need for a gatekeeper to gatekeeper implementation, which is parsing speed \u00fcber alles. Protobuf base-128 encodes all its integers. CBOR shares its type and length in many cases in the same byte. These are efficiencies for compactness which are undesirable in the MIMI case.",
+          "createdAt": "2023-11-13T06:24:17Z",
+          "updatedAt": "2023-11-13T06:24:17Z"
+        },
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks Andrew for sending out a nice summary.\r\n\r\nAndrew said:\r\n>    Do we care about the encoding scheme being defined by an existing RFC?\r\n>        If this is a blocker, why are we considering options other than TLS Presentation Language or CBOR?\r\n>        Similarly, if this is a blocker, it severely limits our options. What would we need to do to use, say, Protobufs. Would we need to get the encoding spec into an I-D?\r\n\r\nIf we have a good reason to use non-IETF specs, we can as long as there is a stable reference. The key here is the requirements. \r\n\r\n>    Is a canonical representation of the data on the wire a hard requirement?\r\nYes, I think so.  I want to point out that a solution/compromise to this problem in CBOR is to define an array of the mandatory types (so those fields are always in order), and then a map of extensions (which could be empty). This allows safe extensions with only limited impact on speed (you only look for an extension when you need one). You can probably do this in TLS if you juggle the fields hard enough, but it is not especially natural.\r\n",
+          "createdAt": "2023-11-13T06:32:32Z",
+          "updatedAt": "2023-11-13T06:32:32Z"
+        },
+        {
+          "author": "Alexis211",
+          "authorAssociation": "NONE",
+          "body": "This is my first time posting in a MIMI discussion, so please bear with me if I write things that are wrong or irrelevant, but I would still like to share my opinion as a developer of distributed systems.\r\n\r\nI would put a strong emphasis on using a serialization protocol that is defined by an RFC or another formal standard published by a recognized organism, which leaves CBOR and TLS presentation language (TLS-PL) as good options.\r\n\r\nGiven the scope of the task that MIMI aims for, I think we would all agree that making a protocol that can be upgraded and extended is a strong requirement. At first glance, CBOR looks like it would be a good option, as field names are serialized with the data, and new fields can therefore be added easily. However this is relatively dangerous and can break down when the interpretation of existing fields change, leading to the following rule : _the context in which a message should be interpreted must be specified outside of the message itself_. This can be done using protocol versions, but I believe this outcome can be achieved in a much more versatile way by standardizing individual message structures (the equivalent of protobuf schemas), and assigning IDs to these types in the RFCs, which would then be prepended to each individual message. Once a message type has been published with its corresponding schema and type identifier, it cannot be changed anymore, and updated/extended versions must be published as separate schemas with a different type identifier. This does not need to be coordinated on a global scale using protocol versions (only the attribution of non-overlapping type IDs has to be coordinated), and individual RFCs could be published with specific extensions or updated message types (with such a process, the RFC numbers could be embedded in type identifiers to ensure that they are non-overlapping). Implementations would be required to still support older message type (unless they are specifically made obsolete by a new RFC), and their semantics can be upgraded on-the-fly to newer protocol semantics. This is the solution I've converged to in [the software I develop](https://garagehq.deuxfleurs.fr), albeit for internal data storage formats with support for migration, and not for a public interchange protocol.\r\n\r\nAs a consequence of using exterior type identifiers to determine the semantics of encoded messages, the value proposition of CBOR that encodes fields names is much less relevant and TLS-PL becomes a compelling option as well. Since both are standardized, I believe they are relatively equivalent in their merits, and the remaining distinctions are relatively minor. I'd argue that CBOR might be a better option due to seemingly better library availability for many mainstream programming languages, and semantics that are quite similar to JSON, which is known by everyone, so it might be a better choice to ease the implementation of the MIMI standard and help it to be deployed widely as soon as possible. While TLS-PL might have better compactness and encoding/decoding performance, I'm not sure this is is a very relevant argument, given that CBOR is already orders of magnitude faster than JSON, and there will be many costs at other places (storage access times, network delays, conversion to other formats including JSON in the various proprietary client-server APIs, ...).\r\n\r\nConcerning the need for a canonical representation in order to be able to compute and verify signatures, I feel that this whole mess is fundamentally caused by misuse of serialization and signing primitives, and could be totally avoided by storing the signature outside and next to the serialized message, in a second layer of serialization. A signed message would always be a tuple (signature, data bytes), serialized in any relevant way (potentially embedded in a larger struct with other data), where the data bytes would always be a byte slice of the signed message, serialized previously in a separate step, and that would always be transmitted as a single unit next to its signature and never modified. Not respecting this principle when building serialization formats is the cause for needless headaches such as needing to determine what a \"canonical representation\" means, and also exposes to higher risk of security flaws by misuse of cryptographic primitives. Of course, there would be significant performance issues when doing this with text-based encoding formats such as JSON, but for binary encoding formats that support inline byte slices, this can be very efficiently implemented without the need for binary encoding/decoding such as base64 and excessive memory copies. In fact, this could even help achieve better performance as sub-serialized fields would not need to be deserialized in all cases, and in particular not when interpreting their content is not needed.\r\n\r\nHope this helps.",
+          "createdAt": "2023-12-27T17:10:55Z",
+          "updatedAt": "2023-12-27T17:15:33Z"
+        }
+      ]
+    },
+    {
+      "number": 26,
+      "id": "I_kwDOKZ8QO852WHQd",
+      "title": "Transport semantics",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/26",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "consensus-required"
+      ],
+      "body": "> **ISSUE**: Come to consensus on a specific set of MIMI transport protocol\r\n> semantics.",
+      "createdAt": "2023-11-09T12:21:07Z",
+      "updatedAt": "2023-11-09T12:21:07Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 27,
+      "id": "I_kwDOKZ8QO852WOFo",
+      "title": "Notions of consent",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/27",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "consensus-required"
+      ],
+      "body": "Can Alice see Bob's clients? Under what conditions? Other forms of consent?",
+      "createdAt": "2023-11-09T12:37:37Z",
+      "updatedAt": "2023-11-09T12:37:37Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 28,
+      "id": "I_kwDOKZ8QO852WPWq",
+      "title": "Request key packages based on user ID? (or send many DSRequests)",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/28",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "consensus-required"
+      ],
+      "body": "> **TODO**: For now, the event fetches key packages based on client identifiers,\r\n> not user identifiers. This is because KeyPackage fetching is part of MIMI DS,\r\n> which doesn't know what a user is. We could, however, send multiple MIMI DS\r\n> requests in a single MIMI protocol request.",
+      "createdAt": "2023-11-09T12:40:49Z",
+      "updatedAt": "2023-11-09T12:40:49Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 29,
+      "id": "I_kwDOKZ8QO852WP3r",
+      "title": "Shape of policy",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/29",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "consensus-required"
+      ],
+      "body": "Incorporate mahy-group-chat and ralston-policy documents, deduplicate ideas.",
+      "createdAt": "2023-11-09T12:42:09Z",
+      "updatedAt": "2023-11-09T12:44:06Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Related questions include how to communicate the policy to servers/users. This could be an IANA registry to contain descriptors for policy as a whole.",
+          "createdAt": "2023-11-09T12:44:06Z",
+          "updatedAt": "2023-11-09T12:44:06Z"
+        }
+      ]
+    },
+    {
+      "number": 30,
+      "id": "I_kwDOKZ8QO852WQ7n",
+      "title": "Clarify fanout throughout",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/30",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "turt2live"
+      ],
+      "labels": [],
+      "body": "Which events are sent to who, and how? Specifically DS Welcome events.",
+      "createdAt": "2023-11-09T12:44:45Z",
+      "updatedAt": "2023-11-09T12:47:10Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> **TODO**: Especially when adding new clients, we will want to forward a\r\n> `ds.commit` event selectively, as existing group members will only be\r\n> interested in the actual commit, whereas new group members only need the\r\n> Welcome.",
+          "createdAt": "2023-11-09T12:47:10Z",
+          "updatedAt": "2023-11-09T12:47:10Z"
+        }
+      ]
+    },
+    {
+      "number": 31,
+      "id": "I_kwDOKZ8QO852WSKb",
+      "title": "Security properties of GroupInfo",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/31",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "consensus-required"
+      ],
+      "body": "> **TODO**: in the MLS case, what security properties are needed to protect a\r\n> GroupInfo object in the MIMI context are still under discussion. It is\r\n> possible that the requester only needs to prove possession of their private\r\n> key. The GroupInfo in another context might be sufficiently sensitive that it\r\n> should be encrypted from the end client to the hub provider (unreadable by the\r\n> local provider).",
+      "createdAt": "2023-11-09T12:47:50Z",
+      "updatedAt": "2023-11-10T09:33:56Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The same security should probably apply to an `m.room.info` event proposed in #23.",
+          "createdAt": "2023-11-10T09:33:56Z",
+          "updatedAt": "2023-11-10T09:33:56Z"
+        }
+      ]
+    },
+    {
+      "number": 32,
+      "id": "I_kwDOKZ8QO852WSr7",
+      "title": "Event sender changes",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/32",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "consensus-required"
+      ],
+      "body": "> **TODO**: Consider splitting `sender` into an object of `{type, identifier}`.\r\n\r\n> **TODO**: The `sender` field might be a bit redundant now that signaling is\r\n> largely handled through MLS proposals.",
+      "createdAt": "2023-11-09T12:49:07Z",
+      "updatedAt": "2023-11-09T12:49:07Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 33,
+      "id": "I_kwDOKZ8QO852WTGV",
+      "title": "Continue fetching key packages directly?",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/33",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "consensus-required"
+      ],
+      "body": "> **TODO**: For now, we assume that KeyPackages are fetched directly, i.e. not in the\r\n> context of a room and via a Hub. This might change in the future. If it does\r\n> change, this event needs an additional authentication mechanism.",
+      "createdAt": "2023-11-09T12:50:08Z",
+      "updatedAt": "2023-11-21T15:32:19Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In previous discussions, the working group indicated that it's preferred to route everything through the hub: does this still hold true? \r\n\r\nProposal from my side would be to route traffic through the hub, though authentication of the proxied material may require direct pokes. This would likely apply for #24 as well (with authentication being a hash in the message, to prevent modified downloads)",
+          "createdAt": "2023-11-10T09:03:09Z",
+          "updatedAt": "2023-11-10T09:03:09Z"
+        },
+        {
+          "author": "beltram",
+          "authorAssociation": "NONE",
+          "body": "tl;dr: fetch KeyPackages from the Hub.\r\n\r\nConsider the case of expirable credentials (X509, VCs): they have to be rotated at some point.\r\n\r\nIf a KeyPackage is not fetched from the Hub consistently then a client might fetch a KeyPackage which corresponding private key has been deleted by the emitter. This would lead to the creation of a Welcome whose receiver would be unable to decrypt, becoming a ghost client.",
+          "createdAt": "2023-11-13T10:06:28Z",
+          "updatedAt": "2023-11-13T10:06:28Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I don't see where the routing (i.e. via the Hub or directly) makes a difference in the context of KeyPackage or Credential expiration. In both cases the KeyPackage from Bob's server will reach Alice at almost the same time.\r\n\r\nFrom what I understood, the biggest concern is that direct fetching \"violates\" star-shaped topology and can thus lead to situations, where Alice wants to fetch a KeyPackage from Bob, but her provider doesn't allow direct contact. Alice would thus have to fetch through a Hub. However, if Alice and Bob can only connect through that Hub, the Alice probably shouldn't be able to obtain KeyPackages from Bob in the first place.\r\n\r\nFor authentication key material, I suggest (for now) we assume that the credential in each KeyPackage contains a full chain that everyone can verify against their local (web) root of trust.",
+          "createdAt": "2023-11-13T12:59:18Z",
+          "updatedAt": "2023-11-13T12:59:18Z"
+        },
+        {
+          "author": "beltram",
+          "authorAssociation": "NONE",
+          "body": "Here is the scenario I have in mind. If we want to strictly prevent ghost clients we have to fetch KeyPackages from the Hub. We could relax that rule for Basic KeyPackages or in the presence of a `PreventGhostClients=false` RoomPolicy.\r\n\r\n```mermaid\r\nsequenceDiagram\r\n  participant B as Bob\r\n  participant HP as Hub Provider\r\n  participant GP as Guest Provider\r\n  participant A as Alice\r\n  B ->>+ HP: Replace its KeyPackages\r\n  HP ->>- B: Ok KeyPackages replaced\r\n  B ->> B: Deletes asociated private keys\r\n  A ->>+ GP: Fetch Bob (old) KeyPackage\r\n  GP ->>- A: Here is 1 KeyPackage from Bob\r\n  HP ->>+ GP: Bob's KeyPackage have changed\r\n  A ->> A: Create Add Commit + Welcome\r\n  A ->> GP: Send Welcome\r\n  GP ->> HP: Fanout Welcome\r\n  HP ->> B: Receive Welcome\r\n  B ->> B: Decryption error\r\n```",
+          "createdAt": "2023-11-13T14:37:16Z",
+          "updatedAt": "2023-11-13T14:37:16Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "What I don't understand is why the guest provider would buffer Bob's KeyPackages instead of just forwarding Alice's Query to Bob's server (which in this case is the Hub)? KeyPackages are (for the most part) single-use. Or are you talking about last-resort KeyPackages?",
+          "createdAt": "2023-11-13T15:22:46Z",
+          "updatedAt": "2023-11-13T15:22:46Z"
+        },
+        {
+          "author": "beltram",
+          "authorAssociation": "NONE",
+          "body": "You're right it does not make sense for Alice's Provider to buffer other Provider's KeyPackage. Let me redact my example. Here if the Hub is not responsible for the KeyPackages of the room, then it would validate the Add Commit of an already deleted KeyPackage. I concede this example is an edge-case but it could still occur.\r\n\r\n```mermaid\r\nsequenceDiagram\r\n  participant B as Bob\r\n  participant GPB as Guest Provider Bob\r\n  participant HP as Hub Provider\r\n  participant GPA as Guest Provider Alice\r\n  participant A as Alice\r\n  A ->>+ GPB: Fetch Bob KeyPackage\r\n  GPB ->>- A: Bob KeyPackage\r\n  A ->> A: Create Add Commit + Welcome\r\n  B ->>+ GPB: Replace its KeyPackages\r\n  A ->> HP: Send Add Commit + Welcome\r\n  GPB ->>- B: Ok KeyPackages replaced\r\n  B ->> B: Deletes asociated private keys\r\n  HP ->> GPB: Fanout Welcome\r\n  GPB ->> B: Receive Welcome\r\n  B ->> B: Decryption error\r\n```",
+          "createdAt": "2023-11-13T17:31:23Z",
+          "updatedAt": "2023-11-13T17:31:23Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ah, I see now what you mean, thanks! A few comments:\r\n\r\nIf we follow what I think you suggest, then Bob would have to upload KeyPackages to every Hub he is involved in and, more generally, Hubs would (have to) manage key material for every client that is in one of their groups. This introduces quite a bit of complexity as Bob now has to track where he uploaded which KeyPackages.\r\n\r\nEven if we implement that solution, we would still have the same problem in cases where Bob doesn't have any KeyPackages on Alice's Hub (because he is not a participant of any groups there). Then Alice has to fetch KeyPackages from Bob's server (through her Hub) and Bob can replace that KeyPackage while Alice is creating the Add, leading to the same situation.\r\n\r\nI don't think we can completely solve this issue. However, Bob can recover from this situation by doing an external commit. He may have missed a few messages, but he can recover. Also, Bob can mitigate this issue by keeping the key material around for a short while after replacing KeyPackages on the server. After all, Alice is not going to wait a very long time between fetching a KeyPackage and performing the Add operation.\r\n\r\nTo summarize, I don't think the problem is that bad, because there is a mitigation and a recovery mechanism. Instead of taking the complexity hit of keeping KeyPackages on every Hub, we should instead focus on a simpler solution (fetching via the Hub, or fetching directly from Bob's server).",
+          "createdAt": "2023-11-14T07:33:02Z",
+          "updatedAt": "2023-11-14T07:33:02Z"
+        },
+        {
+          "author": "dkasak",
+          "authorAssociation": "NONE",
+          "body": "It seems to me that the problem presented here would largely be avoided if instead of key package replacement we were talking about key package *replenishment*.\r\n\r\nReplacement implies we're dropping already published but supposedly unused key packages, which then turn out to have actually been used, triggering the issue. On the other hand, replenishment (up to a given max total) never drops already published key packages before they're used, only adds new ones. This then mostly avoids the problem of dropping key packages prematurely.\r\n\r\nUnder this view, the key package fetching operation is to be considered to be consuming the key package, thereby reducing the number of available key packages on the guest provider, instructing the user (Bob in the diagram above) to replenish a larger number of key packages in order to reach the max total.",
+          "createdAt": "2023-11-21T15:12:20Z",
+          "updatedAt": "2023-11-21T15:12:20Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "While it would certainly make things simpler, I don't think we can assume that clients will never need to remove/revoke KeyPackages. For example, if a client rotates its credential for some reason, it won't want to wait until all previously published KeyPackages have expired.",
+          "createdAt": "2023-11-21T15:20:08Z",
+          "updatedAt": "2023-11-21T15:20:08Z"
+        },
+        {
+          "author": "dkasak",
+          "authorAssociation": "NONE",
+          "body": "You're right, of course. A client could also simply lose its private key material for the published key packages due to an error or failure. This makes it obvious removal needs to be supported.\r\n\r\nHowever, I maintain that the default case should be to non-destructively replenish rather than replace, and for the fetching operation to be considered to be consuming (reducing the available total), which in practice makes this problem *much* less likely to occur.",
+          "createdAt": "2023-11-21T15:32:18Z",
+          "updatedAt": "2023-11-21T15:32:18Z"
+        }
+      ]
+    },
+    {
+      "number": 34,
+      "id": "I_kwDOKZ8QO852WTd9",
+      "title": "Fix `ds.send_message`",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/34",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "consensus-required"
+      ],
+      "body": "> **TODO**: This is not a proposal and there is no way for the Hub or follower servers\r\n> to authenticate this event at the moment. We might want to a way to do that\r\n> later.\r\n\r\n(thoughts welcome)",
+      "createdAt": "2023-11-09T12:51:02Z",
+      "updatedAt": "2023-11-10T09:32:04Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Some context: Application messages are signed, but the sender data is encrypted to protect the associated metadata. Only clients can decrypt the sender data and thus authenticate the message.",
+          "createdAt": "2023-11-10T09:32:04Z",
+          "updatedAt": "2023-11-10T09:32:04Z"
+        }
+      ]
+    },
+    {
+      "number": 35,
+      "id": "I_kwDOKZ8QO852WTtP",
+      "title": "Do we need `m.room.info`?",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/35",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "see title",
+      "createdAt": "2023-11-09T12:51:37Z",
+      "updatedAt": "2023-11-10T09:30:50Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "For context: If the room state is included fully (and not just as a hash) in the group state, it can be retrieved it via `ds.fetch_group_info`. `m.room.info` is thus somewhat redundant.",
+          "createdAt": "2023-11-10T09:30:49Z",
+          "updatedAt": "2023-11-10T09:30:49Z"
+        }
+      ]
+    },
+    {
+      "number": 36,
+      "id": "I_kwDOKZ8QO852WUF-",
+      "title": "`Add` authorization",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/36",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "consensus-required"
+      ],
+      "body": "> **TODO**: We will probably want some kind of mechanism here that allows the\r\n> adder to signal that they are authorized (by the added user) to add the added\r\n> user to the room.",
+      "createdAt": "2023-11-09T12:52:31Z",
+      "updatedAt": "2023-11-09T12:52:31Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 37,
+      "id": "I_kwDOKZ8QO852WUZl",
+      "title": "Refactor invites?",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/37",
+      "state": "CLOSED",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "consensus-required"
+      ],
+      "body": "> **TODO**: For now, the invite flow implies that the user has to explicitly\r\n> accept by adding one or more clients via external commit as part of the \"Join\"\r\n> flow. In the future, we can either make the \"Invite\" flow more versatile and\r\n> allow for Welcome based invitations, or create an additional \"Add\" flow, that\r\n> allows participants to add other users (and their clients) directly via\r\n> Welcome.",
+      "createdAt": "2023-11-09T12:53:14Z",
+      "updatedAt": "2023-11-14T07:21:15Z",
+      "closedAt": "2023-11-14T07:21:15Z",
+      "comments": [
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "That TODO is a bit outdated (meaning I forgot to remove it as part of the PR that added the Add flow). We now have an \"Add\" section in the document, so I think we can close this. ",
+          "createdAt": "2023-11-10T09:29:28Z",
+          "updatedAt": "2023-11-10T09:29:28Z"
+        }
+      ]
+    },
+    {
+      "number": 38,
+      "id": "I_kwDOKZ8QO852WU23",
+      "title": "Do we need knocks?",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/38",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "consensus-required"
+      ],
+      "body": "> **TODO**: Discuss if this participation state is desirable, and figure out\r\n> details for how it works. It'd likely just be an `m.room.user` state event\r\n> with no MLS interaction, like invites are.\r\n\r\n> **TODO**: If we have an Add event as discussed in a TODO in the \"Invites\"\r\n> section, an \"Add\" would probably be the response to a knock.",
+      "createdAt": "2023-11-09T12:54:20Z",
+      "updatedAt": "2023-11-13T18:31:13Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "A response to a knock could be an Add or an Invite or a Ban IMO.",
+          "createdAt": "2023-11-12T13:28:35Z",
+          "updatedAt": "2023-11-12T13:28:35Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Just so we agree on what we're talking about: The knocking functionality is meant to allow a user (or its server) to request to be added to a given room, correct? In that context, do we really need an invite as additional step? I'd say an Add would be a positive response and a kick or ban the negative ones.",
+          "createdAt": "2023-11-13T12:30:42Z",
+          "updatedAt": "2023-11-13T12:30:42Z"
+        },
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Knocking is intended to be a \"please add me\" stage, yes. It could be argued to be pure signaling without group operations, similar to invites. \r\n\r\nThe requirement to be invited (accepted knock) is largely an artifact from Matrix, where the concept of an \"Add\" doesn't necessarily exist in the signaling flow. For MIMI, an Add is more appropriate (and if worded slightly differently, is an invite in terms of signaling anyways). \r\n\r\nThe question here is mostly whether we need a protocol feature for \"request Add\", or if this could be considered excess bulk.",
+          "createdAt": "2023-11-13T18:31:13Z",
+          "updatedAt": "2023-11-13T18:31:13Z"
+        }
+      ]
+    },
+    {
+      "number": 40,
+      "id": "I_kwDOKZ8QO854hf7_",
+      "title": "XMPP compatibility?",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/40",
+      "state": "OPEN",
+      "author": "haansn08",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I feel like it's a missed opportunity by the MIMI WG to essentially ignore the prior art created with the XMPP standard and make no effort to be compatible with the existing XMPP internet standard.\r\n\r\nI'm not sure why an entirely new transport protocol and message format that is not compatible with XMPP is being considered, instead of a XMPP protocol extension for MLS.\r\n\r\nThe advantages of Matrix were eventual consistency and more decentralized rooms, but the protocol proposal makes no mention of those features and the scaling issues Matrix has show that they're probably a bad idea too. Is it really worth breaking compatibility with XMPP just to replace XML with JSON?",
+      "createdAt": "2023-12-02T13:48:21Z",
+      "updatedAt": "2023-12-27T16:19:50Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "*For the record: I'm directly affiliated with Matrix as a Spec Core Team member.*\r\n\r\nThe MIMI charter mentions XMPP as a prior attempt to achieve interoperability, though implies that it's insufficient in some way. MIMI is aiming to *learn from* XMPP rather than implement XMPP. I'm not sure the concerns regarding XMPP have been enumerated, though this issue may be a good place to cover some of them as they relate to the protocol document specifically. \r\n\r\nThe protocol document's purpose is to be as compatible as possible with existing messaging providers, which inherently includes compatibility with existing messaging(-ish) protocols too. The document does *not* use JSON or XML, and indeed doesn't have features that Matrix does either. This doesn't make it incompatible, however, as that would be counter to the point of MIMI. Both Matrix and XMPP can interact with MIMI through this protocol with relative ease, and should feel like that's in fact possible. \r\n\r\nFor Matrix, initial compatibility would be defining a room version which is capable of representing MIMI's policies. Openly available exploration into some of the ideas MIMI has for policy are underway as [MSC4056](https://github.com/matrix-org/matrix-spec-proposals/pull/4056), [MSC4049](https://github.com/matrix-org/matrix-spec-proposals/pull/4049), [MSC4080](https://github.com/matrix-org/matrix-spec-proposals/pull/4080), etc. More rich compatibility might be extending MIMI RFCs when they exist, or further room version alterations, or both. None of this is important for MIMI to track directly, however. \r\n\r\nXMPP, alongside other existing messaging providers, may have to undergo a similar transition in their own systems. XMPP specifically might choose to write up an extension which is MIMI-compatible, or similar. Other messaging providers might implement a dual-stack service in their infrastructure which speaks MIMI on one side and their internal systems on the other. The protocol document's lack of history retention specifically gives the fire-and-forget protocols/providers a chance at interoperating, even if the network they're talking to supports history (like Matrix). \r\n\r\nRegarding Matrix's scalability briefly, it's worth noting that many of the concerns folks have are largely with the organic implementations rather than the protocol. The protocol requires very little to be persisted, though those organic implementations definitely are persist-heavy. As the network grows, the server implementations will become more efficient as well. Regardless, the protocol document being discussed here has been specifically designed with scalability in mind, particularly for the billions of users scenario.\r\n\r\nOverall, I feel as though the level of compatibility we've reached in this document is sufficient for what MIMI hopes to achieve. Existing providers are able to use it relatively quickly, as are both Matrix and XMPP if they choose. The scalability of the protocol is unproven but feels correct, though may still need adjusting while implementations are written and evaluated. \r\n\r\nIf you have specific concerns with the compatibility or scalability, I'm happy to address them here or with [proposed] edits to the document as required.",
+          "createdAt": "2023-12-05T20:51:05Z",
+          "updatedAt": "2023-12-05T20:51:05Z"
+        },
+        {
+          "author": "haansn08",
+          "authorAssociation": "NONE",
+          "body": "> MIMI is aiming to learn from XMPP rather than implement XMPP.\r\n\r\nI don't see how MIMI has learned from XMPP, in particular a good reason why MIMI is not implemented as an extension for XMPP in the first place.\r\n\r\nThe choice of HTTP as the transport protocol also strikes me as odd for an IM protocol, the streaming XML part of XMPP seems much more appropriate for IM providers.",
+          "createdAt": "2023-12-16T03:12:50Z",
+          "updatedAt": "2023-12-16T03:12:50Z"
+        },
+        {
+          "author": "Alexis211",
+          "authorAssociation": "NONE",
+          "body": "> The choice of HTTP as the transport protocol also strikes me as odd for an IM protocol, the streaming XML part of XMPP seems much more appropriate for IM providers.\r\n\r\nHere are some of the advantages of using a protocol based on HTTP that I see as a developer of distributed systems (note that this is my first time posting on discussions about the IETF MIMI effort, although I've been following it from afar for quite some time) :\r\n\r\n- A streaming protocol using a single TCP connection would be subject to reliability issues such as head-of-line blocking (the situation where a dropped packet slows down the entire flow of data in a TCP connection, including unrelated traffic that could have gone through regardless), and the necessity for specific handling of restart logic when an existing connection is dropped/interrupted and a new connection has to be started. With HTTP, independent messages can be submitted through separate TCP connections, which are stateless by definition, and not subject to global head-of-line blocking.\r\n\r\n- The reliability requirements on messaging applications match very well to the transactional nature of HTTP requests: when sending a message to a remote server using a PUT (or POST) request, a response code of 200 indicates that the recipient server has successfully received and stored the message, whereas any other result (error response code, connection reset, timeout, etc.) indicates that the message could not be transmitted, and should be queued for retry. Other features of IM applications, such as retrieving channel state (history, member list) or interacting with objects in any kind of ways generally map very well to HTTP semantics as well.\r\n\r\n- By forcing the design of a protocol that uses separate, stateless HTTP requests for each message, we will naturally end up building a protocol that is idempotent, i.e. if we are not sure that a message was sent correctly, we just re-send it, and even if the first one did actually go through, the message will not be duplicated when the second requests is received as well. (This can be implemented using unique IDs on messages, and is an expected behavior of HTTP PUT requests).\r\n\r\n- HTTP library support is excellent in most mainstream programming languages, and many developers are already familiar with HTTP semantics (which is not the case with XMPP), which could help MIMI to be adopted much more easily / much faster.\r\n\r\nAll in all, I am a strong believer in building a protocol that makes use of HTTP. The only downside I can see is that, technically, this would make for a slightly more heavyweight protocol than a streaming protocol using long-running statefull TCP connections. However I believe that these potential performance issues can generally be overcome by designing a protocol that is minimalistic / not bloated, and allowing for optimizations such as connection reuse, header compression, etc, all of which are features of the now-standard HTTP3. From what I've heard from a large public XMPP server that is currently running, the bottlenecks are not CPU or networking but rather on storage (for the loading of chat room history), so I believe the costs of using an HTTP-based protocol would be totally bearable and largely outweighted by the benefits which I mentioned above.",
+          "createdAt": "2023-12-27T16:19:49Z",
+          "updatedAt": "2023-12-27T16:19:49Z"
+        }
+      ]
+    }
+  ],
+  "pulls": [
+    {
+      "number": 1,
+      "id": "PR_kwDOKZ8QO85d62SL",
+      "title": "[WIP] Cut out excess signaling components",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/1",
+      "state": "MERGED",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "[Rendered](https://turt2live.github.io/ietf-mimi-protocol/travis/refactor-1/draft-ralston-mimi-protocol.html)",
+      "createdAt": "2023-10-26T23:19:14Z",
+      "updatedAt": "2023-10-27T14:06:02Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "688fdcfeee972630881d4535b305fb80def1c658",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "travis/refactor-1",
+      "headRefOid": "1e7fb575a9f5bce35e0edfc13cc897873734a878",
+      "closedAt": "2023-10-27T14:05:58Z",
+      "mergedAt": "2023-10-27T14:05:58Z",
+      "mergedBy": "turt2live",
+      "mergeCommit": {
+        "oid": "f0422982ac7e16a31ff320843b6af8f082278e46"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85lZFrL",
+          "commit": {
+            "abbreviatedOid": "1e7fb57"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-27T06:28:54Z",
+          "updatedAt": "2023-10-27T06:49:18Z",
+          "comments": [
+            {
+              "originalPosition": 300,
+              "body": "What kind of guarantee are we aiming for here?",
+              "createdAt": "2023-10-27T06:28:54Z",
+              "updatedAt": "2023-10-27T06:49:18Z"
+            },
+            {
+              "originalPosition": 309,
+              "body": "I think those fields are gone now.",
+              "createdAt": "2023-10-27T06:29:35Z",
+              "updatedAt": "2023-10-27T06:49:18Z"
+            },
+            {
+              "originalPosition": 314,
+              "body": "We might want to define the set of relevant servers a little more clearly. I think somewhere else in the doc, you define them as the servers who have users in the `join` state. Maybe we should have some terminology for the servers involved in the room. Guest/follower servers?",
+              "createdAt": "2023-10-27T06:31:22Z",
+              "updatedAt": "2023-10-27T06:49:18Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "PR_kwDOKZ8QO85eA0jT",
+      "title": "Remove major MLS/DS components; Update event approach",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/2",
+      "state": "MERGED",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-10-27T22:37:55Z",
+      "updatedAt": "2023-10-30T18:20:56Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "f0422982ac7e16a31ff320843b6af8f082278e46",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "travis/events-pt2",
+      "headRefOid": "0b4a3ed65f9692cffe80b42466e3f0a868364450",
+      "closedAt": "2023-10-30T18:20:56Z",
+      "mergedAt": "2023-10-30T18:20:56Z",
+      "mergedBy": "turt2live",
+      "mergeCommit": {
+        "oid": "48c2527f52abbd1d65cd9a6ba7da4679197a7864"
+      },
+      "comments": [
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Hi Travis,\r\n\r\nI don't think this particular list of events is helping us move forward. \r\n\r\nThe m.room.create event is out of scope of MIMI.\r\n\r\nIn the MLS case, I think we had strong consensus to use an MLS Proposal to update the participant list. So, we don't need the m.room.user event.  \r\n\r\nSending an application message does not require a signature, and sending an MLS handshake (and therefore participant list modification) in MLS does not require a signature. Therefore, we should remove them from every event. We can add a signature to the specific events that need them (ex: consent).",
+          "createdAt": "2023-10-29T16:43:21Z",
+          "updatedAt": "2023-10-30T00:15:28Z"
+        },
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Why do other mimi providers need to be notified about a created? It doesn't\r\nseem actionable by a remote provider. Can't they just become aware of a\r\nroom the first time one of their users is added to it?\r\n\r\nOn Sun, Oct 29, 2023, 10:06 Travis Ralston ***@***.***> wrote:\r\n\r\n> ***@***.**** commented on this pull request.\r\n> ------------------------------\r\n>\r\n> In draft-ralston-mimi-protocol.md\r\n> <https://github.com/bifurcation/ietf-mimi-protocol/pull/2#discussion_r1375474716>\r\n> :\r\n>\r\n> > @@ -200,12 +217,18 @@ struct {\r\n>  > **TODO**: Include fields for encryption information. Possibly ciphersuite and\r\n>  > similar so a server can check to ensure it supports the MLS dialect?\r\n>\r\n> +**Fanout considerations**:\r\n> +\r\n> +`CreateEvent` is *unsigned* in all cases it is used. The create event is used\r\n>\r\n> This is not being used as an advertisement to other providers. It's used\r\n> to carry information over the API because the framing is an Event. See\r\n> \"check invite\" API.\r\n>\r\n> \u2014\r\n> Reply to this email directly, view it on GitHub\r\n> <https://github.com/bifurcation/ietf-mimi-protocol/pull/2#discussion_r1375474716>,\r\n> or unsubscribe\r\n> <https://github.com/notifications/unsubscribe-auth/AVXAIJZS7XRGONEZ7QRD62DYB2EHVAVCNFSM6AAAAAA6TONZUOVHI2DSMVQWIX3LMV43YUDVNRWFEZLROVSXG5CSMV3GSZLXHMYTOMBSHE4TMNJXGA>\r\n> .\r\n> You are receiving this because you were mentioned.Message ID:\r\n> ***@***.***>\r\n>\r\n",
+          "createdAt": "2023-10-29T20:41:38Z",
+          "updatedAt": "2023-10-30T00:15:18Z"
+        },
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Your statement is about *users*. Users of a MIMI-capable provider can\r\ncertainly create rooms and MLS groups as they like. Why is this\r\ncontroversial? By the time users on foreign providers start to get involved\r\nthere will be a room and a group, but we need to ne clear about how users\r\nend up in groups because the other users need to authorize them.\r\n-r\r\n\r\n\r\nOn Sun, Oct 29, 2023, 10:06 Travis Ralston ***@***.***> wrote:\r\n\r\n> ***@***.**** commented on this pull request.\r\n> ------------------------------\r\n>\r\n> In draft-ralston-mimi-protocol.md\r\n> <https://github.com/bifurcation/ietf-mimi-protocol/pull/2#discussion_r1375474774>\r\n> :\r\n>\r\n> > @@ -304,84 +331,47 @@ described by {{leaves}}. Accepting is done by joining ({{joins}}) the room.\r\n>  ~~~\r\n>  {: #fig-invites title=\"Invite happy path\" }\r\n>\r\n> -## Joins {#joins}\r\n> -\r\n> -A user can join a room in two ways:\r\n> -\r\n> -1. Using an external commit to Add themselves to the MLS group.\r\n> -2. Receiving a Welcome message from a joined member of the MLS group.\r\n> -\r\n>\r\n> MIMI requires signaling, which does not permit the creation of an MLS\r\n> group outside of a room.\r\n>\r\n> \u2014\r\n> Reply to this email directly, view it on GitHub\r\n> <https://github.com/bifurcation/ietf-mimi-protocol/pull/2#discussion_r1375474774>,\r\n> or unsubscribe\r\n> <https://github.com/notifications/unsubscribe-auth/AVXAIJY23BCAC4HNHCCVB6DYB2EJRAVCNFSM6AAAAAA6TONZUOVHI2DSMVQWIX3LMV43YUDVNRWFEZLROVSXG5CSMV3GSZLXHMYTOMBSHE4TMNRSG4>\r\n> .\r\n> You are receiving this because you were mentioned.Message ID:\r\n> ***@***.***>\r\n>\r\n",
+          "createdAt": "2023-10-29T23:45:11Z",
+          "updatedAt": "2023-10-30T00:18:51Z"
+        },
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Regardless what protocol you use, you will need some binding between\r\nparticipant list changes and the e2e encryption protocol. For MLS, Konrad\r\nand Raphael suggested a proposal, Tom chimed in that they do that too, and\r\nRichard and I both responded favorably. Nobody raised any objection or gave\r\na reason why we would should not.\r\nThanks,\r\n-rohan\r\n\r\nOn Sun, Oct 29, 2023, 10:10 Travis Ralston ***@***.***> wrote:\r\n\r\n> ***@***.**** commented on this pull request.\r\n> ------------------------------\r\n>\r\n> On draft-ralston-mimi-protocol.md\r\n> <https://github.com/bifurcation/ietf-mimi-protocol/pull/2#discussion_r1375475447>\r\n> :\r\n>\r\n> The m.room.create event is out of scope of MIMI.\r\n>\r\n> See\r\n> https://github.com/bifurcation/ietf-mimi-protocol/pull/2/files#r1375474716\r\n>\r\n> In the MLS case, I think we had strong consensus to use an MLS Proposal to\r\n> update the participant list. So, we don't need the m.room.user event.\r\n>\r\n> I don't agree that we had consensus on using MLS Proposals for participant\r\n> list changes. This document is shaped independently of MLS though, so\r\n> events *could* run over MLS Proposals in a different document if desired.\r\n> We should discuss this as a Design Team.\r\n>\r\n> Sending an application message does not require a signature, and sending\r\n> an MLS handshake (and therefore participant list modification) in MLS does\r\n> not require a signature. Therefore, we should remove them from every event.\r\n> We can add a signature to the specific events that need them (ex: consent).\r\n>\r\n> The application message is not signed by the protocol document (in fact,\r\n> it's been removed in this PR). Participant list events are required to be\r\n> signed because they transit multiple hops, however redactions and hash\r\n> chaining were removed in an earlier PR already.\r\n>\r\n> \u2014\r\n> Reply to this email directly, view it on GitHub\r\n> <https://github.com/bifurcation/ietf-mimi-protocol/pull/2#discussion_r1375475447>,\r\n> or unsubscribe\r\n> <https://github.com/notifications/unsubscribe-auth/AVXAIJ3JRMCI42ZDL5EXLC3YB2EYVAVCNFSM6AAAAAA6TONZUOVHI2DSMVQWIX3LMV43YUDVNRWFEZLROVSXG5CSMV3GSZLXHMYTOMBSHE4TONBXG4>\r\n> .\r\n> You are receiving this because you were mentioned.Message ID:\r\n> ***@***.***>\r\n>\r\n",
+          "createdAt": "2023-10-29T23:56:02Z",
+          "updatedAt": "2023-10-30T00:25:17Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85lgZ3u",
+          "commit": {
+            "abbreviatedOid": "0b4a3ed"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-29T16:46:09Z",
+          "updatedAt": "2023-10-29T16:46:09Z",
+          "comments": [
+            {
+              "originalPosition": 136,
+              "body": "We don't require other providers to be notified when a new room is created. I don't see why we have a create event.",
+              "createdAt": "2023-10-29T16:46:09Z",
+              "updatedAt": "2023-10-29T16:46:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lgZ5K",
+          "commit": {
+            "abbreviatedOid": "0b4a3ed"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-29T16:46:46Z",
+          "updatedAt": "2023-10-29T16:46:47Z",
+          "comments": [
+            {
+              "originalPosition": 225,
+              "body": "3. Create a group and add others to it.",
+              "createdAt": "2023-10-29T16:46:47Z",
+              "updatedAt": "2023-10-29T16:46:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lgafM",
+          "commit": {
+            "abbreviatedOid": "0b4a3ed"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-29T17:04:29Z",
+          "updatedAt": "2023-10-29T17:04:30Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "(moving to a thread for replies)\r\n\r\n@rohan-wire says:\r\n\r\n> Hi Travis,\r\n> \r\n> I don't think this particular list of events is helping us move forward.\r\n> \r\n> The m.room.create event is out of scope of MIMI.\r\n> \r\n> In the MLS case, I think we had strong consensus to use an MLS Proposal to update the participant list. So, we don't need the m.room.user event.\r\n> \r\n> Sending an application message does not require a signature, and sending an MLS handshake (and therefore participant list modification) in MLS does not require a signature. Therefore, we should remove them from every event. We can add a signature to the specific events that need them (ex: consent).\r\n\r\n",
+              "createdAt": "2023-10-29T17:04:30Z",
+              "updatedAt": "2023-10-29T17:04:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lgapa",
+          "commit": {
+            "abbreviatedOid": "0b4a3ed"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-29T17:05:51Z",
+          "updatedAt": "2023-10-29T17:05:51Z",
+          "comments": [
+            {
+              "originalPosition": 136,
+              "body": "This is not being used as an advertisement to other providers. It's used to carry information over the API because the framing is an Event. See \"check invite\" API.",
+              "createdAt": "2023-10-29T17:05:51Z",
+              "updatedAt": "2023-10-29T17:05:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lgaqT",
+          "commit": {
+            "abbreviatedOid": "0b4a3ed"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-29T17:06:21Z",
+          "updatedAt": "2023-10-29T17:06:22Z",
+          "comments": [
+            {
+              "originalPosition": 225,
+              "body": "MIMI requires signaling, which does not permit the creation of an MLS group outside of a room.",
+              "createdAt": "2023-10-29T17:06:21Z",
+              "updatedAt": "2023-10-29T17:06:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lga3l",
+          "commit": {
+            "abbreviatedOid": "0b4a3ed"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-29T17:10:23Z",
+          "updatedAt": "2023-10-29T17:10:23Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "> The m.room.create event is out of scope of MIMI.\r\n\r\nSee https://github.com/bifurcation/ietf-mimi-protocol/pull/2/files#r1375474716\r\n\r\n> In the MLS case, I think we had strong consensus to use an MLS Proposal to update the participant list. So, we don't need the m.room.user event.\r\n\r\nI don't agree that we had consensus on using MLS Proposals for participant list changes. This document is shaped independently of MLS though, so events *could* run over MLS Proposals in a different document if desired. We should discuss this as a Design Team.\r\n\r\n> Sending an application message does not require a signature, and sending an MLS handshake (and therefore participant list modification) in MLS does not require a signature. Therefore, we should remove them from every event. We can add a signature to the specific events that need them (ex: consent).\r\n\r\nThe application message is not signed by the protocol document (in fact, it's been removed in this PR). Participant list events are required to be signed because they transit multiple hops, however redactions and hash chaining were removed in an earlier PR already.",
+              "createdAt": "2023-10-29T17:10:23Z",
+              "updatedAt": "2023-10-29T17:10:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lgxif",
+          "commit": {
+            "abbreviatedOid": "0b4a3ed"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-30T00:14:24Z",
+          "updatedAt": "2023-10-30T00:14:24Z",
+          "comments": [
+            {
+              "originalPosition": 136,
+              "body": "(looks like replying via email doesn't work with threads)\r\n\r\n@rohan-wire says:\r\n> Why do other mimi providers need to be notified about a created room? It doesn't seem actionable by a remote provider. Can't they just become aware of a room the first time one of their users is added to it?\r\n\r\n",
+              "createdAt": "2023-10-30T00:14:24Z",
+              "updatedAt": "2023-10-30T18:12:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lgxl8",
+          "commit": {
+            "abbreviatedOid": "0b4a3ed"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-30T00:15:07Z",
+          "updatedAt": "2023-10-30T00:15:07Z",
+          "comments": [
+            {
+              "originalPosition": 136,
+              "body": "Other providers are *not* notified. This is how they become aware of the room - there's still more work to be done on the create event contents before this is ready for review.",
+              "createdAt": "2023-10-30T00:15:07Z",
+              "updatedAt": "2023-10-30T00:15:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lgxrQ",
+          "commit": {
+            "abbreviatedOid": "0b4a3ed"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-30T00:16:12Z",
+          "updatedAt": "2023-10-30T00:16:12Z",
+          "comments": [
+            {
+              "originalPosition": 225,
+              "body": "@rohan-wire says:\r\n\r\n> Your statement is about *users*. Users of a MIMI-capable provider can certainly create rooms and MLS groups as they like. Why is this controversial? By the time users on foreign providers start to get involved there will be a room and a group, but we need to ne clear about how users end up in groups because the other users need to authorize them. -r\r\n\r\n",
+              "createdAt": "2023-10-30T00:16:12Z",
+              "updatedAt": "2023-10-30T00:16:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lgx3N",
+          "commit": {
+            "abbreviatedOid": "0b4a3ed"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-30T00:18:37Z",
+          "updatedAt": "2023-10-30T00:18:37Z",
+          "comments": [
+            {
+              "originalPosition": 225,
+              "body": "I wouldn't say it's controversial yet, but I'm having trouble understanding the motivation for the initial comment. It's on a deleted line, and doesn't include much detail. \r\n\r\nMLS groups can of course be created, but joins (where this comment is placed) happen within signaling. There's already text to permit/allow the addition of clients without user signaling messages.",
+              "createdAt": "2023-10-30T00:18:37Z",
+              "updatedAt": "2023-10-30T00:18:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lgx7o",
+          "commit": {
+            "abbreviatedOid": "0b4a3ed"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-30T00:19:31Z",
+          "updatedAt": "2023-10-30T00:19:32Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "@rohan-wire says:\r\n\r\n> Regardless what protocol you use, you will need some binding between participant list changes and the e2e encryption protocol. For MLS, Konrad and Raphael suggested [using an MLS `Proposal`], Tom chimed in that they do that too, and Richard and I both responded favorably. Nobody raised any objection or gave a reason why we would should not. Thanks, -rohan\r\n\r\n",
+              "createdAt": "2023-10-30T00:19:31Z",
+              "updatedAt": "2023-10-30T18:13:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lgyVI",
+          "commit": {
+            "abbreviatedOid": "0b4a3ed"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-30T00:25:10Z",
+          "updatedAt": "2023-10-30T00:25:10Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "There is still a binding between participant list and MLS group, though not in this document specifically. We've talked several times as a design team about how this could be done, and Konrad and I are working on formalizing that in the DS and protocol documents. We should have something up for review on Tuesday by the design team.\r\n\r\nWhat specific proposal are you speaking to? Thursday's design meeting is the state of decisions this PR is based upon (pending a re-review on Tuesday with the whole design team).",
+              "createdAt": "2023-10-30T00:25:10Z",
+              "updatedAt": "2023-10-30T00:25:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lh49T",
+          "commit": {
+            "abbreviatedOid": "0b4a3ed"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thanks for the PR! I think this is fine to merge for now. I'll put any changes I'd propose into a follow up PR.",
+          "createdAt": "2023-10-30T07:05:28Z",
+          "updatedAt": "2023-10-30T07:46:44Z",
+          "comments": [
+            {
+              "originalPosition": 136,
+              "body": "I think the name is a bit misleading at this point, as it's a bit of a vestige from when room state was event based. Now, the \"CreateEvent\" contains the static information of the room required for a new provider/user to join the room. Since the provider also needs the GroupInfo and the participant list, I think we'll condense this down to one or maybe two events.",
+              "createdAt": "2023-10-30T07:05:28Z",
+              "updatedAt": "2023-10-30T07:46:44Z"
+            },
+            {
+              "originalPosition": 276,
+              "body": "While it's fine to link limitations to MLS, we should probably not allude to non-MLS versions in this doc. ",
+              "createdAt": "2023-10-30T07:09:03Z",
+              "updatedAt": "2023-10-30T07:46:44Z"
+            },
+            {
+              "originalPosition": 1,
+              "body": "I'm working on the next set of changes that will ensure the participant list is anchored in the room's underlying MLS group state.",
+              "createdAt": "2023-10-30T07:45:44Z",
+              "updatedAt": "2023-10-30T07:46:44Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "id": "PR_kwDOKZ8QO85eDRbJ",
+      "title": "Add Basic Operations section with Alice and Bob flow.",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/3",
+      "state": "MERGED",
+      "author": "rohan-wire",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-10-29T16:25:57Z",
+      "updatedAt": "2023-11-06T11:31:45Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "d7858010d4cda7f568abbae3fc59e53cc4db6f1f",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "rohan/basic-operations",
+      "headRefOid": "b07d56bb904b3c5efda5de4aa633f087c31cdf65",
+      "closedAt": "2023-11-06T11:31:45Z",
+      "mergedAt": "2023-11-06T11:31:45Z",
+      "mergedBy": "kkohbrok",
+      "mergeCommit": {
+        "oid": "8ab7addb6d4b6ed4b67737225e1418200a195203"
+      },
+      "comments": [
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "For the record: a lot of this PR's content may be different or superceded by what Konrad and I are working on in preparation for the Design Team meeting in a couple of days.",
+          "createdAt": "2023-10-29T16:31:48Z",
+          "updatedAt": "2023-10-29T16:31:48Z"
+        },
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> For the record: a lot of this PR's content may be different or superceded by what Konrad and I are working on in preparation for the Design Team meeting in a couple of days.\r\n\r\nFair enough. I just wanted to have two things from this PR:\r\n\r\n- a narrative/example walkthrough of the Alice and Bob case (which can point to things defined elsewhere)\r\n- an existence proof that we can make this work for the MLS case, and that the boundary between MLS and everything is a relatively clean boundary.\r\n\r\n",
+          "createdAt": "2023-10-30T18:10:30Z",
+          "updatedAt": "2023-10-30T18:11:06Z"
+        },
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "for the public record: Konrad is working on a PR which proposes an Alice adds Bob flow using the newly-decided MLS Proposal-framed signaling approach. It may be different from this PR, but should also be relatively similar.",
+          "createdAt": "2023-10-31T19:30:54Z",
+          "updatedAt": "2023-10-31T19:30:54Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85loF2h",
+          "commit": {
+            "abbreviatedOid": "1036847"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "Thanks for putting this together. I do think there's value in an \"Alice adds Bob then Cathy\" flow, though I'm concerned that this PR goes into details not appropriate for this document (or already handled by other PRs/plans).\r\n\r\nIn the meantime, I've put some suggestions down to match editorial style more than anything. Very happy to discuss what's in and out of scope for the document at the design team meeting tomorrow.",
+          "createdAt": "2023-10-30T20:28:18Z",
+          "updatedAt": "2023-10-30T20:45:45Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\nThroughout this document, the examples use the TLS Presentation Language\r\n{{!RFC8446}} and the semantics of HTTP {{!RFC7231}}. \r\n\r\n> **TODO**: Decide on binary encoding and set of transport semantics.\r\n```",
+              "createdAt": "2023-10-30T20:28:18Z",
+              "updatedAt": "2023-10-30T20:45:45Z"
+            },
+            {
+              "originalPosition": 25,
+              "body": "This is out of scope for the design team's considerations, for now. We assume going into this document that an internal identifier has already been discovered through some means.\r\n\r\nLater we may incorporate discovery, after the working group adopts a suitable document (or set of documents).",
+              "createdAt": "2023-10-30T20:29:18Z",
+              "updatedAt": "2023-10-30T20:45:45Z"
+            },
+            {
+              "originalPosition": 41,
+              "body": "I don't think we need to highlight the design team's decisions like this in the doc. For consistency, let's use the `> **TODO**: Words` syntax.",
+              "createdAt": "2023-10-30T20:30:35Z",
+              "updatedAt": "2023-10-30T20:45:45Z"
+            },
+            {
+              "originalPosition": 27,
+              "body": "This is just one possible flow: Alice can also create the room and *invite* Bob to it without ever requesting key material.",
+              "createdAt": "2023-10-30T20:31:23Z",
+              "updatedAt": "2023-10-30T20:45:45Z"
+            },
+            {
+              "originalPosition": 32,
+              "body": "The participation changes are additionally fanned out, as is Alice's message. Which message is \"the\" message here?",
+              "createdAt": "2023-10-30T20:32:17Z",
+              "updatedAt": "2023-10-30T20:45:45Z"
+            },
+            {
+              "originalPosition": 46,
+              "body": "As discussed, this is out of scope for now. Let's remove it until we have an agreed working group item to work from.",
+              "createdAt": "2023-10-30T20:32:49Z",
+              "updatedAt": "2023-10-30T20:45:45Z"
+            },
+            {
+              "originalPosition": 116,
+              "body": "```suggestion\r\n> **TODO**: Add mechanism to achieve this. See Section 6.1 \r\nof {{?I-D.mahy-mimi-transport-design-reqs}} for thoughts.\r\n```",
+              "createdAt": "2023-10-30T20:34:35Z",
+              "updatedAt": "2023-10-30T20:45:45Z"
+            },
+            {
+              "originalPosition": 118,
+              "body": "This feels overly specific for this document. It's covered by MIMI-DS, and referenced by https://github.com/bifurcation/ietf-mimi-protocol/pull/4 per the agreed document layout.\r\n\r\nThis section should be removed.",
+              "createdAt": "2023-10-30T20:35:32Z",
+              "updatedAt": "2023-10-30T20:45:45Z"
+            },
+            {
+              "originalPosition": 209,
+              "body": "Room creation is covered elsewhere in the document. Can we add relevant detail to that instead, please?",
+              "createdAt": "2023-10-30T20:36:12Z",
+              "updatedAt": "2023-10-30T20:45:45Z"
+            },
+            {
+              "originalPosition": 234,
+              "body": "I'm not sure this needs to be a dedicated section, but much/all of the text contained within feels overly specified compared to the rest of the document. Can we merge relevant details into the other sections, please?\r\n\r\nThis comment applies to the section headers below as well.",
+              "createdAt": "2023-10-30T20:37:04Z",
+              "updatedAt": "2023-10-30T20:45:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85luo0g",
+          "commit": {
+            "abbreviatedOid": "1036847"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-31T16:12:11Z",
+          "updatedAt": "2023-10-31T16:12:12Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "Just documenting one flow seems fine for this document, for now.",
+              "createdAt": "2023-10-31T16:12:11Z",
+              "updatedAt": "2023-10-31T16:12:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lwEix",
+          "commit": {
+            "abbreviatedOid": "1036847"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-31T19:29:41Z",
+          "updatedAt": "2023-10-31T19:29:41Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "(we should at least mention that there's other possible flows though, if we still have them after our latest Alice and Bob discussions)",
+              "createdAt": "2023-10-31T19:29:41Z",
+              "updatedAt": "2023-10-31T19:29:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mIpGE",
+          "commit": {
+            "abbreviatedOid": "1036847"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-03T21:15:48Z",
+          "updatedAt": "2023-11-03T21:15:49Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "Whether we address it or not, that step needs to happen, and an example flow needs to acknowledge that.",
+              "createdAt": "2023-11-03T21:15:48Z",
+              "updatedAt": "2023-11-03T21:15:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mIpeM",
+          "commit": {
+            "abbreviatedOid": "1036847"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-03T21:17:36Z",
+          "updatedAt": "2023-11-03T21:17:36Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "We should document the most common flow *first* (Alice adds Bob), because with most messengers, if Alice \"adds\" Bob, she can send a message immediately which Bob can read after coming online (without any history passing mechanism).",
+              "createdAt": "2023-11-03T21:17:36Z",
+              "updatedAt": "2023-11-03T21:17:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mIpjO",
+          "commit": {
+            "abbreviatedOid": "1036847"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-03T21:17:57Z",
+          "updatedAt": "2023-11-03T21:17:58Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "good point. it could be either.",
+              "createdAt": "2023-11-03T21:17:57Z",
+              "updatedAt": "2023-11-03T21:17:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mN3Cz",
+          "commit": {
+            "abbreviatedOid": "b07d56b"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "We will merge this PR as is and any changes will follow as part of #14.",
+          "createdAt": "2023-11-06T11:31:34Z",
+          "updatedAt": "2023-11-06T11:31:34Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "id": "PR_kwDOKZ8QO85eJMJY",
+      "title": "Describe how MIMI protocol interacts with MIMI DS",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/4",
+      "state": "MERGED",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "kkohbrok"
+      ],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-10-30T16:40:36Z",
+      "updatedAt": "2023-10-31T06:10:11Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "f0422982ac7e16a31ff320843b6af8f082278e46",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "konrad/mls_integration",
+      "headRefOid": "edf04deb328b29cdf555331865bc51a871ae9fa6",
+      "closedAt": "2023-10-30T18:59:58Z",
+      "mergedAt": "2023-10-30T18:59:58Z",
+      "mergedBy": "rohan-wire",
+      "mergeCommit": {
+        "oid": "1036c881ded6fcf48fa724e1f83516e925818b13"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85lnl5l",
+          "commit": {
+            "abbreviatedOid": "edf04de"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "I still have issues with the text, but it is substantially better.\r\n\r\nOne suggestion, is we rename the \"user\" in `m.room.user` to \"invite\"",
+          "createdAt": "2023-10-30T18:59:45Z",
+          "updatedAt": "2023-10-30T18:59:45Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85ln9s5",
+          "commit": {
+            "abbreviatedOid": "edf04de"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "from a first pass of review",
+          "createdAt": "2023-10-30T20:03:57Z",
+          "updatedAt": "2023-10-30T20:27:01Z",
+          "comments": [
+            {
+              "originalPosition": 118,
+              "body": "From an API design perspective, ideally we split `DSRequest` out to individual events.",
+              "createdAt": "2023-10-30T20:03:57Z",
+              "updatedAt": "2023-10-30T20:27:01Z"
+            },
+            {
+              "originalPosition": 94,
+              "body": "All events sounds like a lot. Do we just need specific event types here? `m.room.user` primarily. ",
+              "createdAt": "2023-10-30T20:06:16Z",
+              "updatedAt": "2023-10-30T20:27:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lqAPo",
+          "commit": {
+            "abbreviatedOid": "846143a"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-31T06:09:41Z",
+          "updatedAt": "2023-10-31T06:09:41Z",
+          "comments": [
+            {
+              "originalPosition": 118,
+              "body": "Not a strong opinion, but I thought this was a good way of maintaining the abstraction of a cryptographic building block.",
+              "createdAt": "2023-10-31T06:09:41Z",
+              "updatedAt": "2023-10-31T06:09:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85lqAXL",
+          "commit": {
+            "abbreviatedOid": "846143a"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-31T06:10:10Z",
+          "updatedAt": "2023-10-31T06:10:11Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "It should probably be \"all events that change the room state\", which currently is only m.room.user.",
+              "createdAt": "2023-10-31T06:10:10Z",
+              "updatedAt": "2023-10-31T06:10:11Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "id": "PR_kwDOKZ8QO85eVXVp",
+      "title": "events via MLS proposals",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/5",
+      "state": "MERGED",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "kkohbrok"
+      ],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-01T13:19:55Z",
+      "updatedAt": "2023-11-02T15:28:56Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "1036c881ded6fcf48fa724e1f83516e925818b13",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "konrad/mls_proposals",
+      "headRefOid": "eaccd9007a1fc919618652c189d4aa1f55c44789",
+      "closedAt": "2023-11-02T14:48:16Z",
+      "mergedAt": "2023-11-02T14:48:16Z",
+      "mergedBy": "rohan-wire",
+      "mergeCommit": {
+        "oid": "966cd0bd15b7a128de24efb8e0a9383123e39f7a"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85l2M0X",
+          "commit": {
+            "abbreviatedOid": "ddfa781"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Overall this is looking good. We should probably spin up a plausible DoubleRatchet implementation of this document to ensure compatibility, but that doesn't need to happen for working group purposes. ",
+          "createdAt": "2023-11-01T17:32:53Z",
+          "updatedAt": "2023-11-01T17:45:19Z",
+          "comments": [
+            {
+              "originalPosition": 158,
+              "body": "```suggestion\r\nchange during an epoch based on room-state changing events. The changes of these\r\n```",
+              "createdAt": "2023-11-01T17:32:54Z",
+              "updatedAt": "2023-11-01T17:45:19Z"
+            },
+            {
+              "originalPosition": 182,
+              "body": "Is this to provide the follower an ability to propose removal of their own users' clients? It feels like a path towards hub portability, which I'm very happy to include, though not sure if we want to open that can of worms yet.",
+              "createdAt": "2023-11-01T17:39:59Z",
+              "updatedAt": "2023-11-01T17:45:19Z"
+            },
+            {
+              "originalPosition": 211,
+              "body": "Role and participation are very different concepts imo. They could be part of the atomic operations though, where we add a user, their clients, and promote them to admin in a single transaction/frame. \r\n\r\nDefinitely worth leaving as a TODO for now \ud83d\ude07 ",
+              "createdAt": "2023-11-01T17:41:46Z",
+              "updatedAt": "2023-11-01T17:45:19Z"
+            },
+            {
+              "originalPosition": 209,
+              "body": "```suggestion\r\nAn `m.room.user` event can be used to change the participation state of a user.\r\n```\r\n\r\nto avoid \"participation\" appearing twice.",
+              "createdAt": "2023-11-01T17:42:23Z",
+              "updatedAt": "2023-11-01T17:45:19Z"
+            },
+            {
+              "originalPosition": 236,
+              "body": "accidental edit?\r\n```suggestion\r\n   ParticipationState state;\r\n```",
+              "createdAt": "2023-11-01T17:43:08Z",
+              "updatedAt": "2023-11-01T17:45:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85l5jQz",
+          "commit": {
+            "abbreviatedOid": "eaccd90"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Thanks for the review and the suggestions! I'll leave this open for a bit longer before merging, but I think it's decent enough to start building the next PR on top of it.",
+          "createdAt": "2023-11-02T07:16:47Z",
+          "updatedAt": "2023-11-02T07:18:05Z",
+          "comments": [
+            {
+              "originalPosition": 182,
+              "body": "Kind of. It's for the follower server to be able to send signaling messages at all (or rather for everyone else to be able to authenticate them). This is a limitation stemming from the way that proposals from external senders (i.e. senders who are not group members) are authenticated. My thinking was that if a user is part of a room, its server might want to be able to send signaling messages independent of the user's clients. If it wants to do that, it needs to be added to the list. This has to happen before the server can send any signaling messages (or at least those implemented by MLS proposals) and it can only happen via commit by a client.",
+              "createdAt": "2023-11-02T07:16:47Z",
+              "updatedAt": "2023-11-02T07:18:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85l801g",
+          "commit": {
+            "abbreviatedOid": "eaccd90"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-02T14:27:20Z",
+          "updatedAt": "2023-11-02T14:47:09Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "```suggestion\r\nmessages, for example, to\r\n```",
+              "createdAt": "2023-11-02T14:27:20Z",
+              "updatedAt": "2023-11-02T14:47:09Z"
+            },
+            {
+              "originalPosition": 37,
+              "body": "```suggestion\r\n         Proposal user_event_proposal; // see later in doc\r\n```",
+              "createdAt": "2023-11-02T14:27:58Z",
+              "updatedAt": "2023-11-02T14:47:09Z"
+            },
+            {
+              "originalPosition": 79,
+              "body": "This is still very awkward. I'd just add a TODO to reword it and I can work on some proposed text later.",
+              "createdAt": "2023-11-02T14:30:22Z",
+              "updatedAt": "2023-11-02T14:47:09Z"
+            },
+            {
+              "originalPosition": 87,
+              "body": "Isn't the DS supposed to be spread across all the clients and all the providers?  Maybe something like the \"the arbiter of the delivery service (DS)\"?\r\n\r\nFeel free to ignore this comment until later.",
+              "createdAt": "2023-11-02T14:43:18Z",
+              "updatedAt": "2023-11-02T14:47:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85l9beo",
+          "commit": {
+            "abbreviatedOid": "eaccd90"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-02T15:28:56Z",
+          "updatedAt": "2023-11-02T15:28:56Z",
+          "comments": [
+            {
+              "originalPosition": 87,
+              "body": "Fair point. I'll clarify that in the next PR.",
+              "createdAt": "2023-11-02T15:28:56Z",
+              "updatedAt": "2023-11-02T15:28:56Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "id": "PR_kwDOKZ8QO85eaNNw",
+      "title": "Split DS event into multiple events",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/8",
+      "state": "MERGED",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "kkohbrok"
+      ],
+      "labels": [],
+      "body": "This PR restructures the MIMI DS section and splits the DSEvent struct into multiple events. ",
+      "createdAt": "2023-11-02T09:07:24Z",
+      "updatedAt": "2023-11-02T15:01:09Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "konrad/mls_proposals",
+      "baseRefOid": "eaccd9007a1fc919618652c189d4aa1f55c44789",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "konrad/multiple_ds_events",
+      "headRefOid": "8c9d38de6e9bf08e7c433920a450bbd2e6e7f324",
+      "closedAt": "2023-11-02T15:01:08Z",
+      "mergedAt": "2023-11-02T15:01:08Z",
+      "mergedBy": "rohan-wire",
+      "mergeCommit": {
+        "oid": "c21cb9292e6edb0ef3753b00917e98654b13b09e"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85l9FPf",
+          "commit": {
+            "abbreviatedOid": "78aea2a"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-02T14:55:30Z",
+          "updatedAt": "2023-11-02T15:00:07Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "```suggestion\r\n  DSRequest commitBundle;\r\n```",
+              "createdAt": "2023-11-02T14:55:30Z",
+              "updatedAt": "2023-11-02T15:00:07Z"
+            },
+            {
+              "originalPosition": 146,
+              "body": "providers can`t use KeyPackages\r\n\r\n```suggestion\r\nGroup members can use this event to request a\r\nKeyPackage from the Hub or another follower server.\r\n```",
+              "createdAt": "2023-11-02T14:59:24Z",
+              "updatedAt": "2023-11-02T15:00:07Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "id": "PR_kwDOKZ8QO85ea59c",
+      "title": "Adapt flows to previous changes",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/10",
+      "state": "MERGED",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "kkohbrok"
+      ],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-02T11:07:23Z",
+      "updatedAt": "2023-11-03T21:03:02Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "konrad/multiple_ds_events",
+      "baseRefOid": "78aea2a254313dc70104ceb4341ec01ccf21cf2c",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "konrad/invite_flow",
+      "headRefOid": "cde6ff2dd079f55356604dc6080d0e78bc8f0d14",
+      "closedAt": "2023-11-03T21:03:02Z",
+      "mergedAt": "2023-11-03T21:03:02Z",
+      "mergedBy": "rohan-wire",
+      "mergeCommit": {
+        "oid": "721df0de2d710830d652d5ae61014859bbe08e54"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85l9guD",
+          "commit": {
+            "abbreviatedOid": "06c2fd5"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2023-11-02T15:37:58Z",
+          "updatedAt": "2023-11-02T15:41:36Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "This is the opposite of the normal flow in most messengers. We need an Add flow and it should be first.",
+              "createdAt": "2023-11-02T15:37:59Z",
+              "updatedAt": "2023-11-02T15:41:36Z"
+            },
+            {
+              "originalPosition": 185,
+              "body": "Just delete the section please",
+              "createdAt": "2023-11-02T15:41:27Z",
+              "updatedAt": "2023-11-02T15:41:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mAlWe",
+          "commit": {
+            "abbreviatedOid": "06c2fd5"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-02T23:51:19Z",
+          "updatedAt": "2023-11-02T23:51:20Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "The user visible behavior is that Alice adds Bob and immediately sends a message. The expectation in most messengers is that Bob's clients can view the message that Alice just sent.",
+              "createdAt": "2023-11-02T23:51:19Z",
+              "updatedAt": "2023-11-02T23:51:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mDvHA",
+          "commit": {
+            "abbreviatedOid": "06c2fd5"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-03T10:07:11Z",
+          "updatedAt": "2023-11-03T10:07:11Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "There are two distinct flows here that I think we should cover.\r\n\r\n1. The \"invite\" flow, where Alice invites Bob and Bob only becomes part of the room once he has accepted the invitation, and\r\n2. the \"add\" flow, where Alice adds Bob and Bob immediately becomes a part of the room without any additional involvement by Bob.\r\n\r\nFlow 1 would be based on external commit and corresponds, for example, to Signal's flow with invite links. Flow 2 is the flow you allude to, based on Welcome, and is based on Signal's flow, where once Alice has a connection with Bob, she can add him to other groups without Bob's involvement.",
+              "createdAt": "2023-11-03T10:07:11Z",
+              "updatedAt": "2023-11-03T10:07:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mDxHb",
+          "commit": {
+            "abbreviatedOid": "06c2fd5"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-03T10:12:17Z",
+          "updatedAt": "2023-11-03T10:12:17Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "The issue I see with the \"Add\" flow is that we probably want to add some degree of consent signaling, s.t. the Hub and other participants can verify that Alice has Bob's permission to Add Bob to the room. ",
+              "createdAt": "2023-11-03T10:12:17Z",
+              "updatedAt": "2023-11-03T10:12:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mD2xE",
+          "commit": {
+            "abbreviatedOid": "06c2fd5"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-03T10:25:05Z",
+          "updatedAt": "2023-11-03T10:25:06Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "I've added an \"Add\" flow. Let me know what you think.",
+              "createdAt": "2023-11-03T10:25:05Z",
+              "updatedAt": "2023-11-03T10:25:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mIM1S",
+          "commit": {
+            "abbreviatedOid": "cde6ff2"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-03T19:43:35Z",
+          "updatedAt": "2023-11-03T19:43:35Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mINGA",
+          "commit": {
+            "abbreviatedOid": "06c2fd5"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-03T19:44:28Z",
+          "updatedAt": "2023-11-03T19:44:28Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "looks good",
+              "createdAt": "2023-11-03T19:44:28Z",
+              "updatedAt": "2023-11-03T19:44:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mIl49",
+          "commit": {
+            "abbreviatedOid": "cde6ff2"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-03T21:02:50Z",
+          "updatedAt": "2023-11-03T21:02:50Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "id": "PR_kwDOKZ8QO85eii29",
+      "title": "Generalize framing and add Response struct",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/12",
+      "state": "MERGED",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "kkohbrok"
+      ],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-03T13:46:29Z",
+      "updatedAt": "2023-11-03T21:07:01Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "konrad/invite_flow",
+      "baseRefOid": "cde6ff2dd079f55356604dc6080d0e78bc8f0d14",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "konrad/fan_out_framing",
+      "headRefOid": "00e90a1bb8df6d8817771b32438236844286eb94",
+      "closedAt": "2023-11-03T21:07:01Z",
+      "mergedAt": "2023-11-03T21:07:01Z",
+      "mergedBy": "rohan-wire",
+      "mergeCommit": {
+        "oid": "5d7c78c1d7b7e62769acf4d1226455e2f8322563"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85mIm7a",
+          "commit": {
+            "abbreviatedOid": "00e90a1"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-03T21:06:33Z",
+          "updatedAt": "2023-11-03T21:06:33Z",
+          "comments": [
+            {
+              "originalPosition": 119,
+              "body": "In general, I think we need to handle \"provisional\" messages that are sent to the hub, and fanned out messages differently. The meaning of an error response to a fanout message means \"something happened and I can't deal with this fanout message now\" but the hub is at that point fully \"committed\" and could reach other clients. Whereas a message en route to the hub could be rejected and won't make it to any clients.",
+              "createdAt": "2023-11-03T21:06:33Z",
+              "updatedAt": "2023-11-03T21:06:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mIm-W",
+          "commit": {
+            "abbreviatedOid": "00e90a1"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-03T21:06:39Z",
+          "updatedAt": "2023-11-03T21:06:39Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "id": "PR_kwDOKZ8QO85eio-K",
+      "title": "Split MIMI DS event",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/13",
+      "state": "MERGED",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "kkohbrok"
+      ],
+      "labels": [],
+      "body": "Re-creating this PR, because it got lost due to weird merge ordering.",
+      "createdAt": "2023-11-03T14:00:56Z",
+      "updatedAt": "2023-11-03T14:01:03Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "966cd0bd15b7a128de24efb8e0a9383123e39f7a",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "konrad/mls_proposals",
+      "headRefOid": "c21cb9292e6edb0ef3753b00917e98654b13b09e",
+      "closedAt": "2023-11-03T14:01:03Z",
+      "mergedAt": "2023-11-03T14:01:03Z",
+      "mergedBy": "kkohbrok",
+      "mergeCommit": {
+        "oid": "c20afb858a2e72342e12facb3322bff732f8d2d2"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 14,
+      "id": "PR_kwDOKZ8QO85ejHdz",
+      "title": "Adapt Alice - Bob flow",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/14",
+      "state": "MERGED",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR changes the Alice Bob flow in #3 to the current state of the document.\r\n\r\nIt changes from an Add based flow to the invite-based flow we discussed in the last interim. This is just to simplify things for the IETF 118 meeting.",
+      "createdAt": "2023-11-03T15:13:18Z",
+      "updatedAt": "2023-11-06T15:02:49Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "d7858010d4cda7f568abbae3fc59e53cc4db6f1f",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "konrad/patch_basic_operations",
+      "headRefOid": "b7d9f2038e0188cb2ef603cf8e73471d3913f70c",
+      "closedAt": "2023-11-06T15:02:49Z",
+      "mergedAt": "2023-11-06T15:02:49Z",
+      "mergedBy": "kkohbrok",
+      "mergeCommit": {
+        "oid": "7df540142940a03925fc66b7727c31301e6b7747"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85mInk0",
+          "commit": {
+            "abbreviatedOid": "0fca48f"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "I suggest we commit PR #3 and modify it to use the correct structs and have the same issues and TODOs. I am willing to do the work to make that happen on the flight to Prague tomorrow",
+          "createdAt": "2023-11-03T21:09:12Z",
+          "updatedAt": "2023-11-03T21:14:37Z",
+          "comments": [
+            {
+              "originalPosition": 62,
+              "body": "```suggestion\r\nAlice obtains Bob's internal identifier. \r\n\r\n**ISSUE** In the course of discovering Bob, Alice might or might not\r\nobtain a list of Bob's clients.\r\n```",
+              "createdAt": "2023-11-03T21:09:12Z",
+              "updatedAt": "2023-11-03T21:14:37Z"
+            },
+            {
+              "originalPosition": 135,
+              "body": "The add case is *much* more common than the invite case. We need to support both, but the example should start with the add case, and can optionally include the invite case (for example, to invite Cathy).",
+              "createdAt": "2023-11-03T21:12:44Z",
+              "updatedAt": "2023-11-03T21:14:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mPs3V",
+          "commit": {
+            "abbreviatedOid": "2273474"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-06T14:49:12Z",
+          "updatedAt": "2023-11-06T14:49:13Z",
+          "comments": [
+            {
+              "originalPosition": 61,
+              "body": "```suggestion\r\n\r\nAlice fetches the internal identifier for some field of Bob's, in\r\nthis example his handle.\r\n\r\n~~~\r\nGET /identifierDiscovery/{domain}\r\n~~~\r\n\r\nThe request body is described as:\r\n\r\n~~~ tls\r\nenum {\r\n  reserved(0),\r\n  handle(1),\r\n  nick(2),\r\n  email(3),\r\n  phone(4),\r\n  partialName(5),\r\n  wholeProfile(6),\r\n  oidcStdClaim(7),\r\n  vcardField(8),\r\n  (255)\r\n} IdentifierType;\r\n\r\nstruct {\r\n  IdentifierType type;\r\n  string searchValue;\r\n  select(type) {\r\n     case oidcStdClaim:\r\n       string claimName;\r\n    case vcardField:\r\n       string fieldName;\r\n  };\r\n} IdentifierRequest;\r\n\r\n~~~\r\n\r\nThe response body is described as:\r\n\r\n~~~ tls\r\nenum {\r\n  success(0),\r\n  notFound(1),\r\n  ambiguous(2),\r\n  forbidden(3),\r\n  unsupportedField(4),\r\n  (255)\r\n} IdentifierDiscoveryCode;\r\n\r\nstruct {\r\n  IdentifierDiscoverCode responseCode;\r\n  IdentifierUri uri;\r\n} IdentifierResponse;\r\n~~~\r\n\r\n```",
+              "createdAt": "2023-11-06T14:49:13Z",
+              "updatedAt": "2023-11-06T14:49:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mPuFm",
+          "commit": {
+            "abbreviatedOid": "2273474"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-06T14:51:13Z",
+          "updatedAt": "2023-11-06T14:51:14Z",
+          "comments": [
+            {
+              "originalPosition": 54,
+              "body": "```suggestion\r\n\r\nThis is an example/placeholder for a possibly more sophisticated discovery\r\nmechanism. It is not intended to be directly implemented.\r\n\r\n> **TODO**: Replace with or reference a discovery mechanism with WG consensus\r\n\r\n```",
+              "createdAt": "2023-11-06T14:51:14Z",
+              "updatedAt": "2023-11-06T14:51:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mPv6_",
+          "commit": {
+            "abbreviatedOid": "2273474"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-06T14:53:51Z",
+          "updatedAt": "2023-11-06T14:53:51Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mPxkt",
+          "commit": {
+            "abbreviatedOid": "2273474"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-06T14:56:37Z",
+          "updatedAt": "2023-11-06T14:57:16Z",
+          "comments": [
+            {
+              "originalPosition": 50,
+              "body": "```suggestion\r\n\u2020 as mentioned in the text, creating a room is a local provider\r\n```",
+              "createdAt": "2023-11-06T14:56:38Z",
+              "updatedAt": "2023-11-06T14:57:16Z"
+            },
+            {
+              "originalPosition": 27,
+              "body": "```suggestion\r\n- Alice get the internal identifier for Bob\r\n- Alice gains consent to talk to Bob\r\n- Alice fetches initial keying material for Bob's clients\r\n- (Alice create a room) \u2020\r\n```",
+              "createdAt": "2023-11-06T14:56:55Z",
+              "updatedAt": "2023-11-06T14:57:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mPy2y",
+          "commit": {
+            "abbreviatedOid": "5db00f0"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-06T14:58:42Z",
+          "updatedAt": "2023-11-06T14:58:42Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "id": "PR_kwDOKZ8QO85epewm",
+      "title": "Re-merge PR due to wrong merge order ",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/15",
+      "state": "MERGED",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "kkohbrok"
+      ],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-06T06:31:34Z",
+      "updatedAt": "2023-11-06T06:32:15Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "c20afb858a2e72342e12facb3322bff732f8d2d2",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "konrad/fan_out_framing",
+      "headRefOid": "3f338070cfd33cbd8cf2de26c1f69901a7bd7835",
+      "closedAt": "2023-11-06T06:32:15Z",
+      "mergedAt": "2023-11-06T06:32:15Z",
+      "mergedBy": "kkohbrok",
+      "mergeCommit": {
+        "oid": "d7858010d4cda7f568abbae3fc59e53cc4db6f1f"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 16,
+      "id": "PR_kwDOKZ8QO85eqDsi",
+      "title": "Update links and metadata for new repo location",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/16",
+      "state": "MERGED",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-06T08:22:28Z",
+      "updatedAt": "2023-11-06T19:46:37Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "d7858010d4cda7f568abbae3fc59e53cc4db6f1f",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "travis/metadata",
+      "headRefOid": "e93168538d8f509f7b8875d2146a176fe51d2481",
+      "closedAt": "2023-11-06T10:57:32Z",
+      "mergedAt": "2023-11-06T10:57:32Z",
+      "mergedBy": "kkohbrok",
+      "mergeCommit": {
+        "oid": "56ed1ca1a0b5f1cca20a1155ea66f5333fafe63d"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85mNNOH",
+          "commit": {
+            "abbreviatedOid": "e931685"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-06T10:20:40Z",
+          "updatedAt": "2023-11-06T10:20:40Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 17,
+      "id": "PR_kwDOKZ8QO85erDAl",
+      "title": "Rename create event and add more information",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/17",
+      "state": "MERGED",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "kkohbrok"
+      ],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-06T10:56:41Z",
+      "updatedAt": "2023-11-06T15:10:38Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "d7858010d4cda7f568abbae3fc59e53cc4db6f1f",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "konrad/create_rename",
+      "headRefOid": "35a5fba63511c7cff68d4ecebdcd1b90c110dc48",
+      "closedAt": "2023-11-06T15:10:38Z",
+      "mergedAt": "2023-11-06T15:10:38Z",
+      "mergedBy": "rohan-wire",
+      "mergeCommit": {
+        "oid": "26a85ec49f9f387b7667660725620cff666c0659"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85mP20q",
+          "commit": {
+            "abbreviatedOid": "35a5fba"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "I'm still not convinced we need this event, but info is a better name.",
+          "createdAt": "2023-11-06T15:05:26Z",
+          "updatedAt": "2023-11-06T15:05:26Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "id": "PR_kwDOKZ8QO85eswpF",
+      "title": "Rewrite abstract and intro",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/18",
+      "state": "MERGED",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "kkohbrok"
+      ],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-06T14:49:00Z",
+      "updatedAt": "2023-11-06T15:03:07Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "8ab7addb6d4b6ed4b67737225e1418200a195203",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "konrad/intro_abstract",
+      "headRefOid": "a5b994ac8fae41dfbf14ab623285086426a7e291",
+      "closedAt": "2023-11-06T15:03:07Z",
+      "mergedAt": "2023-11-06T15:03:06Z",
+      "mergedBy": "rohan-wire",
+      "mergeCommit": {
+        "oid": "46f4a959473dc32dba7a90dca218f914c67b3422"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85mP0f7",
+          "commit": {
+            "abbreviatedOid": "a5b994a"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-06T15:01:35Z",
+          "updatedAt": "2023-11-06T15:01:35Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "id": "PR_kwDOKZ8QO85es3c2",
+      "title": "Authors and contributors",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/19",
+      "state": "MERGED",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "kkohbrok"
+      ],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-06T15:03:55Z",
+      "updatedAt": "2023-11-06T15:11:29Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "46f4a959473dc32dba7a90dca218f914c67b3422",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "konrad/authors_and_contributors",
+      "headRefOid": "2b9271acbd4dc829963cab0d57693dbc8dc139bf",
+      "closedAt": "2023-11-06T15:11:29Z",
+      "mergedAt": "2023-11-06T15:11:29Z",
+      "mergedBy": "rohan-wire",
+      "mergeCommit": {
+        "oid": "60b7abc90a11256e3ba71ba39c562ebc29f6595d"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85mP6a-",
+          "commit": {
+            "abbreviatedOid": "2b9271a"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-06T15:11:21Z",
+          "updatedAt": "2023-11-06T15:11:21Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "id": "PR_kwDOKZ8QO85es6P4",
+      "title": "Remove extraneous m. in front of room events",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/20",
+      "state": "OPEN",
+      "author": "rohan-wire",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "consensus-required"
+      ],
+      "body": "globally replace `m.room.` with `room.` in event names.",
+      "createdAt": "2023-11-06T15:09:57Z",
+      "updatedAt": "2023-11-09T12:56:03Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "cf29470de209e35fbdb7db010a572fe59adaec54",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "rohan/event-namespace",
+      "headRefOid": "b2d8061fba74b709538b2d0ebd8e36a7d41fb1c5",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "body": "Yeah, I'm inclined to leave this for the WG to comment on.  The traditional IETF approach to something like this would be to have an IANA registry where certain values are registered (those that would be `m.` here) and certain values would be vendor space (I believe the Matrix pattern for these is `com.example.foo`).  If we were talking about numerical code points, the analogy would be exact, since if you know the range of numbers reserved for vendor usage (\u2248 non-`m.` here), you can look at a value and tell if it's registered or vendor.\r\n\r\nFor text-like registries, things are a little less clear.  Traditionally, these registries don't have an explicit vendor reservation, since space is not constrained.  (See, e.g., the [ACME directory metadata fields registry](https://www.iana.org/assignments/acme/acme.xhtml#acme-directory-metadata-fields).)  If you want a value for some proprietary thing, you just choose one and use it, and if some official thing later collides with it, oh well.  And in cases where there were explicit affordances for experimental (e.g., `X-` and `P-` in HTTP/SIP headers), those affordances [are now deprecated](https://datatracker.ietf.org/doc/html/rfc6648).\r\n\r\nSo it's not immediately clear to me what the right answer is here, and how to do extensibility seems like a good question for the WG to weigh in on.",
+          "createdAt": "2023-11-06T20:12:25Z",
+          "updatedAt": "2023-11-06T20:12:25Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85mShQi",
+          "commit": {
+            "abbreviatedOid": "b2d8061"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "see threaded comment",
+          "createdAt": "2023-11-06T19:54:09Z",
+          "updatedAt": "2023-11-06T19:54:27Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "The prefix exists to ensure namespacing is possible, as folks may want to add their own event types to the protocol. For example, to accomplish DoubleRatchet use cases. \r\n\r\nIt was my intention to also prefix the DS events with `m.` for consistency and building the official namespace. The namespace needs to be codified in the IANA registry still, but that was largely assumed to be a later problem.\r\n\r\n`m.` is shorthand for `mimi.`, which we can expand if needed.",
+              "createdAt": "2023-11-06T19:54:09Z",
+              "updatedAt": "2023-11-06T19:54:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mTHFe",
+          "commit": {
+            "abbreviatedOid": "b2d8061"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-06T21:37:40Z",
+          "updatedAt": "2023-11-06T21:37:40Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "I propose we use `private.` and a reverse domain name label for namespacing of private events. \r\nMIMI  events then can use room for room events, ds for ds events, etc. ",
+              "createdAt": "2023-11-06T21:37:40Z",
+              "updatedAt": "2023-11-06T21:37:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mTKyd",
+          "commit": {
+            "abbreviatedOid": "b2d8061"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-06T21:40:08Z",
+          "updatedAt": "2023-11-06T21:40:08Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "To clarify, you're suggesting the protocol document use `room.user`, and others use `private.org.example.dr.whatever`?",
+              "createdAt": "2023-11-06T21:40:08Z",
+              "updatedAt": "2023-11-06T21:40:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mV1sE",
+          "commit": {
+            "abbreviatedOid": "b2d8061"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-07T07:36:21Z",
+          "updatedAt": "2023-11-07T07:36:21Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "yes",
+              "createdAt": "2023-11-07T07:36:21Z",
+              "updatedAt": "2023-11-07T07:36:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mV3J6",
+          "commit": {
+            "abbreviatedOid": "b2d8061"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-07T07:38:25Z",
+          "updatedAt": "2023-11-07T07:38:26Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "and if we use an enum managed by IANA then we can use `room` and `dr` but the `dr` constant might be initially in the private range.",
+              "createdAt": "2023-11-07T07:38:25Z",
+              "updatedAt": "2023-11-07T07:38:26Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mYNR5",
+          "commit": {
+            "abbreviatedOid": "b2d8061"
+          },
+          "author": "ara4n",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-07T13:00:17Z",
+          "updatedAt": "2023-11-07T13:00:17Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "> you're suggesting the protocol document use `room.user`, and others use `private.org.example.dr.whatever`?\r\n\r\nthis feels clunky in the extreme, imo. the privileged reversed-DNS namespace for 'official' specced types is a well understood pattern which works well for Java (`java.*`) and friends - while giving a warm branding fuzzy to everyone else who then goes off-spec on their own domain (`com.acme.*`) without having to beat them over the head with `private.` every time they send a message.  I'd just call it `m.room.foo` (which has the advantage that `m` can never become a gTLD,  unlike `mimi` or similar).\r\n\r\nI assume the rationale here (which seems to be missing on the PR?) is to save 2 bytes for all the `m.` prefixes flying around, frankly removing the namespace entirely for specced identifiers feels like a recipe for folks to fail to realise that a privileged space exists at all `m.`, and that they should go play in their own reverse-dns space.  Or to not realise that `private.com.foo` is a reverse-dns namespace in the first place like Java.",
+              "createdAt": "2023-11-07T13:00:17Z",
+              "updatedAt": "2023-11-07T13:00:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85mY839",
+          "commit": {
+            "abbreviatedOid": "b2d8061"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-07T14:21:16Z",
+          "updatedAt": "2023-11-07T14:21:16Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "If we use an enum instead for the IANA registry then we get the best of both worlds",
+              "createdAt": "2023-11-07T14:21:16Z",
+              "updatedAt": "2023-11-07T14:21:16Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 21,
+      "id": "PR_kwDOKZ8QO85euxri",
+      "title": "Consistently identify authors",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/21",
+      "state": "MERGED",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Per https://github.com/bifurcation/ietf-mimi-protocol/pull/19",
+      "createdAt": "2023-11-06T19:40:55Z",
+      "updatedAt": "2023-11-06T20:08:48Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "790b99e249d98851ca8b478db9cafbcc15f123b0",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "travis/authors",
+      "headRefOid": "735045dac03d86291c0848c1385d010533444aa4",
+      "closedAt": "2023-11-06T20:08:44Z",
+      "mergedAt": "2023-11-06T20:08:44Z",
+      "mergedBy": "turt2live",
+      "mergeCommit": {
+        "oid": "a4ea56cb0a9ddc5aab3050f9cdec61505ae58876"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85mSmIv",
+          "commit": {
+            "abbreviatedOid": "735045d"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-06T20:07:21Z",
+          "updatedAt": "2023-11-06T20:07:21Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "id": "PR_kwDOKZ8QO85evDJc",
+      "title": "Formatting consistency and typo fixes",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/22",
+      "state": "MERGED",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-06T20:33:27Z",
+      "updatedAt": "2023-11-06T20:34:44Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "a4ea56cb0a9ddc5aab3050f9cdec61505ae58876",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "travis/editorial",
+      "headRefOid": "6d8e23d3629f14244501966b4ae581e1ce6ce96b",
+      "closedAt": "2023-11-06T20:34:13Z",
+      "mergedAt": "2023-11-06T20:34:13Z",
+      "mergedBy": "turt2live",
+      "mergeCommit": {
+        "oid": "4142c96d80511a35880c2c536031928072dbc20d"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85mSwyP",
+          "commit": {
+            "abbreviatedOid": "6d8e23d"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-06T20:34:02Z",
+          "updatedAt": "2023-11-06T20:34:02Z",
+          "comments": [
+            {
+              "originalPosition": 73,
+              "body": "calling this out specifically as something we discussed in the design team and was relatively easy to add here. Wording may need further adjustment.",
+              "createdAt": "2023-11-06T20:34:02Z",
+              "updatedAt": "2023-11-06T20:34:03Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 39,
+      "id": "PR_kwDOKZ8QO85fTFO3",
+      "title": "Remove outdated TODO",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/39",
+      "state": "MERGED",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "kkohbrok"
+      ],
+      "labels": [],
+      "body": "Closes #37.\r\n\r\nWe already have an Add and an Invite flow, which I think solves this TODO.",
+      "createdAt": "2023-11-13T13:04:41Z",
+      "updatedAt": "2023-11-14T07:21:14Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "4142c96d80511a35880c2c536031928072dbc20d",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "konrad/remove_todo",
+      "headRefOid": "3c5a1f54ef5fa04ec152444fd2ea9041ea785dd5",
+      "closedAt": "2023-11-14T07:21:14Z",
+      "mergedAt": "2023-11-14T07:21:14Z",
+      "mergedBy": "kkohbrok",
+      "mergeCommit": {
+        "oid": "af62be86e01834c228d8bfc068fb383c0cdd20b2"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85m_nOX",
+          "commit": {
+            "abbreviatedOid": "3c5a1f5"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "thanks!",
+          "createdAt": "2023-11-13T18:24:56Z",
+          "updatedAt": "2023-11-13T18:24:56Z",
+          "comments": []
+        }
+      ]
+    }
+  ]
+}
