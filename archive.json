@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-01-14T00:03:56.408411+00:00",
+  "timestamp": "2024-01-16T00:03:31.032872+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -660,7 +660,7 @@
       "labels": [],
       "body": "I feel like it's a missed opportunity by the MIMI WG to essentially ignore the prior art created with the XMPP standard and make no effort to be compatible with the existing XMPP internet standard.\r\n\r\nI'm not sure why an entirely new transport protocol and message format that is not compatible with XMPP is being considered, instead of a XMPP protocol extension for MLS.\r\n\r\nThe advantages of Matrix were eventual consistency and more decentralized rooms, but the protocol proposal makes no mention of those features and the scaling issues Matrix has show that they're probably a bad idea too. Is it really worth breaking compatibility with XMPP just to replace XML with JSON?",
       "createdAt": "2023-12-02T13:48:21Z",
-      "updatedAt": "2024-01-13T23:57:09Z",
+      "updatedAt": "2024-01-15T18:21:23Z",
       "closedAt": null,
       "comments": [
         {
@@ -687,9 +687,23 @@
         {
           "author": "tibequadorian",
           "authorAssociation": "NONE",
-          "body": "As far as I understand and please correct me if I am wrong but I think MIMI tries to be as abstract as possible and only defines server-to-server communication whereas XMPP and Matrix also define client-to-server communication.\r\nSo MIMI can also be implemented by proprietary messengers, like ActivityPub by Threads (Meta), to be able to comply with interoperable messaging required by DMA in a standardized way while keeping their own way of handling client-to-server communication.",
+          "body": "As stated in this draft\r\n>the MIMI protocol defines message formats and conventions that allows the servers of different providers to interoperate, leaving the provider-internal client-server communication up to the provider.\r\n\r\nXMPP and Matrix define both server-server and client-server communication in its core whereas MIMI tries to be as abstract and simple as possible so it can also be implemented by proprietary messengers (e.g. WhatsApp, Discord, etc. just like ActivityPub gets implemented by Threads) to handle well encrypted interoperable messaging in a standardized way. It is not intended to fully replace any existing protocol but to define a simple interface rather than building upon the complicated mess that XMPP and Matrix have become.",
           "createdAt": "2024-01-13T23:55:35Z",
-          "updatedAt": "2024-01-13T23:57:09Z"
+          "updatedAt": "2024-01-14T15:27:24Z"
+        },
+        {
+          "author": "tibequadorian",
+          "authorAssociation": "NONE",
+          "body": ">Is it really worth breaking compatibility with XMPP just to replace XML with JSON?\r\n\r\n[This](https://datatracker.ietf.org/doc/draft-ietf-mimi-content/) draft currently states:\r\n>we do not want to base64 encode body parts with binary media types (ex: images).  This rules out using JSON to carry the binary data.",
+          "createdAt": "2024-01-14T00:16:52Z",
+          "updatedAt": "2024-01-14T00:16:52Z"
+        },
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "To clarify the client-server detail: it's generally understood that if MIMI were to be founded on another protocol, that protocol's client-server API would be excluded from scope. Matrix's APIs are able to be separated in this way, and I believe XMPP can as well.",
+          "createdAt": "2024-01-15T18:21:23Z",
+          "updatedAt": "2024-01-15T18:21:23Z"
         }
       ]
     }
