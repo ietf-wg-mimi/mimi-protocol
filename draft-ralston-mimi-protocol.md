@@ -96,18 +96,12 @@ user and client level membership.
 
 {::boilerplate bcp14-tagged}
 
-Terms and definitions are inherited from {{!I-D.barnes-mimi-arch}}.
+Terms and definitions are inherited from {{!I-D.barnes-mimi-arch}}.  We also
+make use of terms from the MLS protocol {{!RFC9420}}.
 
 Throughout this document, the examples use the TLS Presentation Language
 {{!RFC8446}} and the semantics of HTTP {{!RFC7231}} respectively as
 placeholder a set of binary encoding mechanism and transport semantics.
-
-> **ISSUE**: Come to consensus on a specific binary encoding for the MIMI
-> transport protocol.
-
-> **ISSUE**: Come to consensus on a specific set of MIMI transport protocol
-> semantics.
-
 
 # Example protocol flow
 
