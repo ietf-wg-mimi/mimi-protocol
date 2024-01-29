@@ -121,12 +121,11 @@ support.
 Consent:
 : In this document, we assume that any required consent has already been
 obtained, e.g., a user consenting to be added to a room by another user.  The
-full protocol will need some mechanisms for establishing this consent.  Some
-initial notes are in {{consent}}
+full protocol will need some mechanisms for establishing this consent.
 
 Identifiers:
 : Certain entities in the MIMI system need to be identified in the protocol.  In
-{{identifiers}}, we define a notional syntax for identifiers, but a more
+this document, we define a notional syntax for identifiers, but a more
 concrete one should be defined.
 
 Abuse reporting:
