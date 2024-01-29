@@ -2,14 +2,14 @@
 
 
 
-More Instant Messaging Interoperability                  T. Ralston, Ed.
+More Instant Messaging Interoperability                       T. Ralston
 Internet-Draft                          The Matrix.org Foundation C.I.C.
 Intended status: Standards Track                              K. Kohbrok
-Expires: 9 May 2024                                            R. Robert
+Expires: 1 August 2024                                         R. Robert
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                         6 November 2023
+                                                         29 January 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -18,18 +18,16 @@ Expires: 9 May 2024                                            R. Robert
 Abstract
 
    This document specifies the More Instant Messaging Interoperability
-   (MIMI) protocol, which allows users of different messaging providers
-   to share membership in rooms and send messages to one-another.
-
-   More specifically, the MIMI protocol defines message formats and
-   conventions that allows the servers of different providers to
-   interoperate, leaving the provider-internal client-server
-   communication up to the provider.
-
-   To ensure that communications between users are confidential and
-   authentic, the MIMI protocol relies on MLS ([RFC9420], through the
-   MIMI DS protocol [I-D.robert-mimi-delivery-service]) to protect
-   messages end-to-end.
+   (MIMI) transport protocol, which allows users of different messaging
+   providers to interoperate in group chats (rooms), including to send
+   and receive messages, share room policy, and add participants to and
+   remove participants from rooms.  MIMI describes messages between
+   providers, leaving most aspects of the provider-internal client-
+   server communication up to the provider.  MIMI integrates the
+   Messaging Layer Security protocol to provide end-to-end security
+   assurances, including authentication of protocol participants,
+   confidentiality of messages exchanged within a room, and agreement on
+   the state of the room.
 
 About This Document
 
@@ -63,11 +61,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 May 2024.
+   This Internet-Draft will expire on 1 August 2024.
 
 Copyright Notice
 
-   Copyright (c) 2023 IETF Trust and the persons identified as the
+   Copyright (c) 2024 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -104,7 +102,7 @@ Table of Contents
        5.3.3.  Authenticating proposals
        5.3.4.  MIMI DS events
      5.4.  Creation
-       5.4.1.  room.info
+       5.4.1.  m.room.info
    6.  User Participation and Client Membership
      6.1.  Adds
      6.2.  Invites
@@ -112,7 +110,7 @@ Table of Contents
      6.4.  Leaves/Kicks
      6.5.  Bans
      6.6.  Knocks
-     6.7.  room.user
+     6.7.  m.room.user
    7.  Transport
      7.1.  Authentication
      7.2.  Endpoint Discovery
@@ -167,16 +165,22 @@ Table of Contents
    Terms and definitions are inherited from [I-D.barnes-mimi-arch].
 
    Throughout this document, the examples use the TLS Presentation
-   Language [RFC8446] and the semantics of HTTP [RFC7231].  It is still
-   an open issue what binary encoding the MIMI transport protocol will
-   use, and there is at least one member of the design team who believes
-   that HTTP semantics are not-appropriate.
+   Language [RFC8446] and the semantics of HTTP [RFC7231] respectively
+   as placeholder a set of binary encoding mechanism and transport
+   semantics.
+
+      *ISSUE*: Come to consensus on a specific binary encoding for the
+      MIMI transport protocol.
+
+      *ISSUE*: Come to consensus on a specific set of MIMI transport
+      protocol semantics.
 
 3.  Example protocol flow
 
    This section shows how three users (Alice, Bob and Cathy) from
    different providers can use the protocol specified in this document
-   to join the same room and send messages to one-another:
+   to join the same room and send messages to one-another.  (Not all of
+   these steps are part of the MIMI transport protocol):
 
    *  Alice get the internal identifier for Bob
 
@@ -277,8 +281,8 @@ Table of Contents
      IdentifierUri uri;
    } IdentifierResponse;
 
-   *ISSUE* In the course of discovering Bob, Alice might or might not
-   obtain a list of Bob's clients.
+      *ISSUE*: In the course of discovering Bob, Alice might or might
+      not obtain a list of Bob's clients.
 
 3.2.  Fetch initial key material for Bob
 
@@ -312,7 +316,13 @@ Table of Contents
 
    Creating a room is done between a client and its local provider and
    is out of scope of MIMI.  Since Alice creates the room on the server
-   of her local provider, it becomes the Hub for the room.
+   of her local provider, it becomes the Hub for the room.  However, the
+   room policy format is in scope for MIMI.  We assume that this room is
+   a members-only room, and that only users who have the admin or owner
+   role can add and remove users.
+
+   We also assume that Alice has both the owner and admin roles within
+   the room.
 
       *TODO*: Add information on room policy here once we have consensus
       on what that looks like.
@@ -320,26 +330,27 @@ Table of Contents
 3.4.  Alice adds Bob
 
    Management of the participants list (i.e. the list of users in the
-   room) is done through room.user events.  To add Bob to the room,
-   Alice creates an room.user event.  See {ev-mroomuser} for more
+   room) is done through m.room.user events.  To add Bob to the room,
+   Alice creates an m.room.user event.  See Section 6.7 for more
    information on user state changes.
 
    Room state is anchored in the room's underlying MLS group through a
    GroupContext Extension, which mirrors all of the room's state
    variables.
 
-   room.user events are MLS proposals, which change the room state
+   m.room.user events are MLS proposals, which change the room state
    outside of the MLS group immediately upon reception and align the
    mirror of the room state in the extension (which is part of the group
-   state) upon the next ds.commit event.  This reflects MLS' proposal-
-   commit paradigm that allows members and external parties to propose
-   changes, but only members to commit them.  See {anchoring} for more
-   information on how the room state is cryptographically anchored.
+   state) upon the next ds.commit event.  This reflects the MLS
+   proposal-commit paradigm that allows members and external parties to
+   propose changes, but only members to commit them.  See Section 5.3.2
+   for more information on how the room state is cryptographically
+   anchored.
 
    Alice does not only want to add Bob as a participant, but also Bob's
    client.  To do that, she sends a ds.commit event (Section 5.3.4.2) to
    the group.  As ds.commit events can contain an arbitrary number of
-   proposals, Alice includes the room.user proposal, as well as a
+   proposals, Alice includes the m.room.user proposal, as well as a
    proposal to add Bob's client.  She creates the latter by using the
    key material she previously fetched from Bob's server.
 
@@ -359,7 +370,7 @@ Table of Contents
 
    After Bob has joined the room, Alice creates a message using the MIMI
    content format [I-D.ietf-mimi-content], and sends a ds.send_message
-   ({ev-sendmessage}) event to the Hub.
+   (Section 5.3.4.5) event to the Hub.
 
 3.6.  The hub/owning provider fans out the message
 
@@ -400,7 +411,7 @@ Table of Contents
 3.10.  Alice removes Bob from the room
 
    Alice removes Bob by sending an ds.commit event.  The ds.commit event
-   contains an room.user event which removes Bob from the participant
+   contains an m.room.user event which removes Bob from the participant
    list, as well as proposals to remove Bob's clients.
 
 4.  Framing
@@ -477,7 +488,7 @@ Table of Contents
    (Section 3 of [RFC8446]):
 
    // See the "MIMI Event Types" IANA registry for values.
-   // Example: "room.info"
+   // Example: "m.room.info"
    opaque EventType;
 
    struct {
@@ -486,7 +497,7 @@ Table of Contents
 
       // Additional fields may be present as dependent on event type.
       select (Event.type) {
-         case "room.user":
+         case "m.room.user":
             // MLSMessage containing a UserEvent proposal
             MLSMessage user_event_proposal;
          case "ds.proposal":
@@ -678,8 +689,8 @@ Table of Contents
    message, as well as information to which clients messages should be
    fanned out to.
 
-   TODO: Update the MIMI DS doc to allow for messages to contain more
-   than one proposal and a generic "commit" action.
+      *TODO*: Update the MIMI DS doc to allow for messages to contain
+      more than one proposal and a generic "commit" action.
 
 5.3.4.1.  Propose group update
 
@@ -711,7 +722,7 @@ Table of Contents
 
    Note that this event can also be used by a client to add itself to
    the group.  To do that, the sender requires the current group
-   information (see {ev-fetchgroupinfo}).
+   information (see Section 5.3.4.4).
 
    struct {
      DSRequest commitBundle;
@@ -726,10 +737,10 @@ Table of Contents
 
    *Event type*: ds.fetch_key_packages
 
-   TODO: For now, we assume that KeyPackages are fetched directly, i.e.
-   not in the context of a room and via a Hub. This might change in the
-   future.  If it does change, this event needs an additional
-   authentication mechanism.
+      *TODO*: For now, we assume that KeyPackages are fetched directly,
+      i.e. not in the context of a room and via a Hub. This might change
+      in the future.  If it does change, this event needs an additional
+      authentication mechanism.
 
    Group members can use this event to request a KeyPackage from the Hub
    or another follower server.
@@ -764,9 +775,9 @@ Table of Contents
 
    *Event type*: ds.send_message
 
-   TODO: This is not a proposal and there is no way for the Hub or
-   follower servers to authenticate this event at the moment.  We might
-   want to a way to do that later.
+      *TODO*: This is not a proposal and there is no way for the Hub or
+      follower servers to authenticate this event at the moment.  We
+      might want to a way to do that later.
 
    Group members can use this event to request to send an encrypted
    (application) message to the other group members.
@@ -787,12 +798,12 @@ Table of Contents
    invite to another user, the creating server MUST produce the
    following details:
 
-   *  An room.info (Section 5.4.1) event describing the encryption and
+   *  An m.room.info (Section 5.4.1) event describing the encryption and
       policy details for the room.
 
-   *  A universally unique room ID (represented by the create event).
+   *  A universally unique room ID (represented by the room info event).
 
-   *  An room.user (Section 6.7) event which invites the desired user.
+   *  An m.room.user (Section 6.7) event which invites the desired user.
 
    *  Any relevant cryptographic state needed to verify the invite is
       legitimate.  For example, the ciphersuite used by the
@@ -803,15 +814,15 @@ Table of Contents
    configuration of the room's policy, adding the creator's other
    clients to the MLS group state, etc.
 
-5.4.1.  room.info
+5.4.1.  m.room.info
 
-   The room.info event contains the current room state, thus allowing
+   The m.room.info event contains the current room state, thus allowing
    servers to bootstrap the room.  Note that this event does not contain
    any of the cryptographic state of the underlying MIMI DS group.
    Clients that want to join a room need to use a ds.fetch_group_info
    event to obtain the information required to join the room.
 
-   *Event type*: room.info
+   *Event type*: m.room.info
 
    *Additional event fields*:
 
@@ -825,7 +836,7 @@ Table of Contents
    *Fanout considerations*:
 
    InfoEvent is _unsigned_ in all cases it is used, but authenticated
-   implicitly through the transport layer (Section 7).  The room into
+   implicitly through the transport layer (Section 7).  The room info
    event is used during invites to ensure the server is capable of
    participating in the room and is not fanned out more generally.  See
    Section 7.3.2 for usage.
@@ -835,7 +846,7 @@ Table of Contents
    In a MIMI room, users are _participants_ with an associated
    _participation state_ whereas clients of those users are _members_ of
    the cryptographic state.  The user's participation state is updated
-   before changes to the cryptographic state are made.
+   concurrent to or before changes are made to the cryptographic state.
 
    Users will always exist in one of the following participation states:
 
@@ -870,14 +881,14 @@ Table of Contents
       user) to add the added user to the room.
 
    An _add_ is when a user adds another user to the list of participants
-   in the _join_ state.  The room.user event that effects this change is
-   typically sent as part of a commit that also adds the user's clients
-   to the room's MLS group.
+   in the _join_ state.  The m.room.user event that effects this change
+   is typically sent as part of a commit that also adds the user's
+   clients to the room's MLS group.
 
-   1.  The adder generates an room.user (Section 6.7) event to add the
+   1.  The adder generates an m.room.user (Section 6.7) event to add the
        target user.
 
-   2.  The adder sends (Section 7.3.1) the room.user event to the hub
+   2.  The adder sends (Section 7.3.1) the m.room.user event to the hub
        server.  If the adder is a client, the event is likely sent as
        part of a ds.commit event.
 
@@ -894,18 +905,10 @@ Table of Contents
        event.
 
    5.  The target user (or its server) can reject the addition by
-       sending an room.user event that proposes the removal of the user
-       and its clients (Section 6.4).
+       sending an m.room.user event that proposes the removal of the
+       user and its clients (Section 6.4).
 
 6.2.  Invites
-
-      *TODO*: For now, the invite flow implies that the user has to
-      explicitly accept by adding one or more clients via external
-      commit as part of the "Join" flow.  In the future, we can either
-      make the "Invite" flow more versatile and allow for Welcome based
-      invitations, or create an additional "Add" flow, that allows
-      participants to add other users (and their clients) directly via
-      Welcome.
 
    An _invite_ is when a user (or more specifically, a user's client)
    adds another user to the list of participants in the invite state.
@@ -917,12 +920,12 @@ Table of Contents
    Updating the target user's participation state is done using the
    following steps, and is visualized in Figure 1.
 
-   1.  The inviter's server generates an room.user (Section 6.7) event
+   1.  The inviter's server generates an m.room.user (Section 6.7) event
        to invite the target user.  Typically this begins with a client-
        initiated request to the server using the provider-specific API.
 
-   2.  The inviter's server sends (Section 7.3.1) the room.user event to
-       the hub server.
+   2.  The inviter's server sends (Section 7.3.1) the m.room.user event
+       to the hub server.
 
    3.  The hub server validates the event to ensure the following:
 
@@ -954,7 +957,7 @@ Table of Contents
   | A |                            | Hub |                         | B |
   +---+                            +-----+                         +---+
     |                                 |                              |
-    | Create room.user invite       |                              |
+    | Create m.room.user invite       |                              |
     |-------------------------+       |                              |
     |                         |       |                              |
     |<------------------------+       |                              |
@@ -962,7 +965,7 @@ Table of Contents
     | Send event request initiated    |                              |
     |-------------------------------->|                              |
     |                                 |                              |
-    |                                 | Validate room.user event   |
+    |                                 | Validate m.room.user event   |
     |                                 |--------------------------+   |
     |                                 |                          |   |
     |                                 |<-------------------------+   |
@@ -1008,11 +1011,11 @@ Table of Contents
 
    The two-step flow looks as follows:
 
-   1.  Option a: The joiner's server generates an room.user
+   1.  Option a: The joiner's server generates an m.room.user
        (Section 6.7) event to add the user.
 
        Option b: The joiner's client generates a commit that contains an
-       room.user event, as well as an Add proposal for itself (this
+       m.room.user event, as well as an Add proposal for itself (this
        requires that the client has previously obtained a the room's
        group info through a ds.fetch_group_info event
        (Section 5.3.4.4)).  The joiner's server generates a ds.commit
@@ -1033,7 +1036,7 @@ Table of Contents
        the joiner's server as they are now participating in the room
        too.
 
-   If the user was added to the room via a standalone room.user event,
+   If the user was added to the room via a standalone m.room.user event,
    the user's clients are able to add themselves to the cryptographic
    group state via one or more ds.commit events after fetching the
    room's current information via a ds.fetch_group_info event.
@@ -1042,15 +1045,15 @@ Table of Contents
 
    Leaving a room can signal a user declining an invite, voluntarily
    leaving the room, or being kicked (removed) from the room.  When the
-   sender and target of an room.user (Section 6.7) leave event are
+   sender and target of an m.room.user (Section 6.7) leave event are
    different, the target user is being kicked.  Otherwise the event
    represents a voluntary leave or declined invite (if the previous
    participation state was "invited").
 
    Like with other participation/membership operations, a user's leave
    is initiated by updating their participation state first.  This is
-   done by sending (Section 7.3.1) the relevant room.user (Section 6.7)
-   state event to the hub, which validates it as follows:
+   done by sending (Section 7.3.1) the relevant m.room.user
+   (Section 6.7) state event to the hub, which validates it as follows:
 
    *  If the target and sender are the same, the user MUST be in the
       invited, joined, or knocking participation state.
@@ -1085,7 +1088,7 @@ Table of Contents
 6.5.  Bans
 
    Bans imply kick, and are operated the same way as Section 6.4, though
-   with the room.user (Section 6.7) state event using a ban
+   with the m.room.user (Section 6.7) state event using a ban
    participation state.
 
    In contrast to leaving users, banned users remain on the participant
@@ -1106,18 +1109,18 @@ Table of Contents
 
       *TODO*: Discuss if this participation state is desirable, and
       figure out details for how it works.  It'd likely just be an
-      room.user state event with no MLS interaction, like invites are.
+      m.room.user state event with no MLS interaction, like invites are.
 
       *TODO*: If we have an Add event as discussed in a TODO in the
       "Invites" section, an "Add" would probably be the response to a
       knock.
 
-6.7.  room.user
+6.7.  m.room.user
 
-   *Event type*: room.user
+   *Event type*: m.room.user
 
-   An room.user event can be used to change the participation state of a
-   user.
+   An m.room.user event can be used to change the participation state of
+   a user.
 
       *TODO*: Do we also want this to be able to change a participant's
       role?
@@ -1173,9 +1176,9 @@ Table of Contents
 
    *Fanout considerations*:
 
-   Each room.user event is fanned out as normal (Section 7.3.1.1).  The
-   event MAY be sent to additional servers, as required by Section 6.2,
-   Section 6.3, Section 6.4, Section 6.5, Section 6.6.
+   Each m.room.user event is fanned out as normal (Section 7.3.1.1).
+   The event MAY be sent to additional servers, as required by
+   Section 6.2, Section 6.3, Section 6.4, Section 6.5, Section 6.6.
 
    *Additional validation rules*:
 
@@ -1284,7 +1287,7 @@ Table of Contents
 
 7.3.2.  Check Invite Event
 
-      *TODO*: Consider reducing this down to room.check_invite or
+      *TODO*: Consider reducing this down to m.room.check_invite or
       something, to reuse /send.
 
    Used by the hub server to ensure a follower server can (and is
@@ -1303,7 +1306,7 @@ Table of Contents
    code.
 
    struct {
-      // The `room.user` invite event.
+      // The `m.room.user` invite event.
       Event invite;
 
       // The room creation information.
@@ -1352,7 +1355,7 @@ status code, not the response body.
    affected (typically just "room"), then a number of descriptor
    strings.
 
-   Example: room.info
+   Example: m.room.info
 
       *TODO*: Does IANA need any other information for legal event
       types?
@@ -1371,9 +1374,9 @@ status code, not the response body.
    [I-D.robert-mimi-delivery-service]
               Robert, R. and K. Kohbrok, "MIMI Delivery Service", Work
               in Progress, Internet-Draft, draft-robert-mimi-delivery-
-              service-05, 23 October 2023,
+              service-06, 6 November 2023,
               <https://datatracker.ietf.org/doc/html/draft-robert-mimi-
-              delivery-service-05>.
+              delivery-service-06>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1474,7 +1477,7 @@ Contributors
 
 Authors' Addresses
 
-   Travis Ralston (editor)
+   Travis Ralston
    The Matrix.org Foundation C.I.C.
    Email: travisr@matrix.org
 

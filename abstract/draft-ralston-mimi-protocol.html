@@ -11,36 +11,36 @@
 <meta content="Matthew Hodgson" name="author">
 <meta content="
        This document specifies the More Instant Messaging Interoperability (MIMI)
-protocol, which allows users of different messaging providers to share
-membership in rooms and send messages to one-another. 
-       More specifically, the MIMI protocol defines message formats and conventions
-that allows the servers of different providers to interoperate, leaving the
-provider-internal client-server communication up to the provider. 
-       To ensure that communications between users are confidential and authentic, the
-MIMI protocol relies on MLS ( , through the MIMI DS protocol
- ) to protect messages end-to-end. 
+transport protocol, which allows users of different messaging providers to
+interoperate in group chats (rooms), including to send and receive messages,
+share room policy, and add participants to and remove participants from rooms.
+MIMI describes messages between providers, leaving most aspects of the
+provider-internal client-server communication up to the provider.  MIMI
+integrates the Messaging Layer Security protocol to provide end-to-end security
+assurances, including authentication of protocol participants, confidentiality
+of messages exchanged within a room, and agreement on the state of the room. 
     " name="description">
-<meta content="xml2rfc 3.18.2" name="generator">
+<meta content="xml2rfc 3.19.1" name="generator">
 <meta content="mimi" name="keyword">
 <meta content="interoperable messaging" name="keyword">
 <meta content="chat" name="keyword">
 <meta content="secure messaging" name="keyword">
 <meta content="draft-ralston-mimi-protocol-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.18.2
+  xml2rfc 3.19.1
     Python 3.11.6
-    ConfigArgParse 1.5.3
+    ConfigArgParse 1.7
     google-i18n-address 3.1.0
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 4.9.3
-    platformdirs 3.11.0
+    platformdirs 4.1.0
     pycountry 22.3.5
-    PyYAML 6.0
+    PyYAML 6.0.1
     requests 2.31.0
-    setuptools 67.7.2
+    setuptools 68.2.2
     six 1.16.0
-    wcwidth 0.2.9
+    wcwidth 0.2.13
 -->
 <link href="draft-ralston-mimi-protocol.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1039,11 +1039,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">MIMI+MLS Protocol</td>
-<td class="right">November 2023</td>
+<td class="right">January 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ralston, et al.</td>
-<td class="center">Expires 9 May 2024</td>
+<td class="center">Expires 1 August 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1056,17 +1056,16 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ralston-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-11-06" class="published">6 November 2023</time>
+<time datetime="2024-01-29" class="published">29 January 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-05-09">9 May 2024</time></dd>
+<dd class="expires"><time datetime="2024-08-01">1 August 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
-      <div class="author-name">T. Ralston, <span class="editor">Ed.</span>
-</div>
+      <div class="author-name">T. Ralston</div>
 <div class="org">The Matrix.org Foundation C.I.C.</div>
 </div>
 <div class="author">
@@ -1088,14 +1087,14 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">This document specifies the More Instant Messaging Interoperability (MIMI)
-protocol, which allows users of different messaging providers to share
-membership in rooms and send messages to one-another.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">More specifically, the MIMI protocol defines message formats and conventions
-that allows the servers of different providers to interoperate, leaving the
-provider-internal client-server communication up to the provider.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
-<p id="section-abstract-3">To ensure that communications between users are confidential and authentic, the
-MIMI protocol relies on MLS (<span>[<a href="#RFC9420" class="cite xref">RFC9420</a>]</span>, through the MIMI DS protocol
-<span>[<a href="#I-D.robert-mimi-delivery-service" class="cite xref">I-D.robert-mimi-delivery-service</a>]</span>) to protect messages end-to-end.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
+transport protocol, which allows users of different messaging providers to
+interoperate in group chats (rooms), including to send and receive messages,
+share room policy, and add participants to and remove participants from rooms.
+MIMI describes messages between providers, leaving most aspects of the
+provider-internal client-server communication up to the provider.  MIMI
+integrates the Messaging Layer Security protocol to provide end-to-end security
+assurances, including authentication of protocol participants, confidentiality
+of messages exchanged within a room, and agreement on the state of the room.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1132,7 +1131,7 @@ MIMI protocol relies on MLS (<span>[<a href="#RFC9420" class="cite xref">RFC9420
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 9 May 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 1 August 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1141,7 +1140,7 @@ MIMI protocol relies on MLS (<span>[<a href="#RFC9420" class="cite xref">RFC9420
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2023 IETF Trust and the persons identified as the
+            Copyright (c) 2024 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1235,7 +1234,7 @@ MIMI protocol relies on MLS (<span>[<a href="#RFC9420" class="cite xref">RFC9420
                 <p id="section-toc.1-1.5.2.4.1"><a href="#section-5.4" class="auto internal xref">5.4</a>.  <a href="#name-creation" class="internal xref">Creation</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4.2.1">
-                    <p id="section-toc.1-1.5.2.4.2.1.1"><a href="#section-5.4.1" class="auto internal xref">5.4.1</a>.  <a href="#name-roominfo" class="internal xref"><code>room.info</code></a></p>
+                    <p id="section-toc.1-1.5.2.4.2.1.1"><a href="#section-5.4.1" class="auto internal xref">5.4.1</a>.  <a href="#name-mroominfo" class="internal xref"><code>m.room.info</code></a></p>
 </li>
                 </ul>
 </li>
@@ -1263,7 +1262,7 @@ MIMI protocol relies on MLS (<span>[<a href="#RFC9420" class="cite xref">RFC9420
                 <p id="section-toc.1-1.6.2.6.1"><a href="#section-6.6" class="auto internal xref">6.6</a>.  <a href="#name-knocks" class="internal xref">Knocks</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.7">
-                <p id="section-toc.1-1.6.2.7.1"><a href="#section-6.7" class="auto internal xref">6.7</a>.  <a href="#name-roomuser" class="internal xref"><code>room.user</code></a></p>
+                <p id="section-toc.1-1.6.2.7.1"><a href="#section-6.7" class="auto internal xref">6.7</a>.  <a href="#name-mroomuser" class="internal xref"><code>m.room.user</code></a></p>
 </li>
             </ul>
 </li>
@@ -1359,10 +1358,20 @@ described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</s
 appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <p id="section-2-2">Terms and definitions are inherited from <span>[<a href="#I-D.barnes-mimi-arch" class="cite xref">I-D.barnes-mimi-arch</a>]</span>.<a href="#section-2-2" class="pilcrow">¶</a></p>
 <p id="section-2-3">Throughout this document, the examples use the TLS Presentation Language
-<span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> and the semantics of HTTP <span>[<a href="#RFC7231" class="cite xref">RFC7231</a>]</span>. It is still an
-open issue what binary encoding the MIMI transport protocol will use,
-and there is at least one member of the design team who believes that
-HTTP semantics are not-appropriate.<a href="#section-2-3" class="pilcrow">¶</a></p>
+<span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> and the semantics of HTTP <span>[<a href="#RFC7231" class="cite xref">RFC7231</a>]</span> respectively as
+placeholder a set of binary encoding mechanism and transport semantics.<a href="#section-2-3" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-2-4.1">
+          <p id="section-2-4.1.1"><strong>ISSUE</strong>: Come to consensus on a specific binary encoding for the MIMI
+transport protocol.<a href="#section-2-4.1.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-2-5.1">
+          <p id="section-2-5.1.1"><strong>ISSUE</strong>: Come to consensus on a specific set of MIMI transport protocol
+semantics.<a href="#section-2-5.1.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
 </section>
 </div>
 <div id="example-protocol-flow">
@@ -1372,7 +1381,8 @@ HTTP semantics are not-appropriate.<a href="#section-2-3" class="pilcrow">¶</a>
       </h2>
 <p id="section-3-1">This section shows how three users (Alice, Bob and Cathy) from different
 providers can use the protocol specified in this document to join the same room
-and send messages to one-another:<a href="#section-3-1" class="pilcrow">¶</a></p>
+and send messages to one-another. (Not all of these steps are part of the MIMI
+transport protocol):<a href="#section-3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3-2.1">
           <p id="section-3-2.1.1">Alice get the internal identifier for Bob<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
@@ -1495,8 +1505,12 @@ struct {
 } IdentifierResponse;
 </pre><a href="#section-3.1-10" class="pilcrow">¶</a>
 </div>
-<p id="section-3.1-11"><strong>ISSUE</strong> In the course of discovering Bob, Alice might or might not
-obtain a list of Bob's clients.<a href="#section-3.1-11" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-11.1">
+            <p id="section-3.1-11.1.1"><strong>ISSUE</strong>: In the course of discovering Bob, Alice might or might not
+obtain a list of Bob's clients.<a href="#section-3.1-11.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 </section>
 </div>
 <div id="fetch-initial-key-material-for-bob">
@@ -1541,11 +1555,14 @@ start optimizing.<a href="#section-3.2-6.1.1" class="pilcrow">¶</a></p>
         </h3>
 <p id="section-3.3-1">Creating a room is done between a client and its local provider and is out of
 scope of MIMI. Since Alice creates the room on the server of her local provider,
-it becomes the Hub for the room.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+it becomes the Hub for the room. However, the room policy format is in scope for MIMI.
+We assume that this room is a members-only room, and that only users who have
+the admin or owner role can add and remove users.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2">We also assume that Alice has both the <code>owner</code> and <code>admin</code> roles within the room.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.3-2.1">
-            <p id="section-3.3-2.1.1"><strong>TODO</strong>: Add information on room policy here once we have consensus on what
-that looks like.<a href="#section-3.3-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal ulEmpty" id="section-3.3-3.1">
+            <p id="section-3.3-3.1.1"><strong>TODO</strong>: Add information on room policy here once we have consensus on what
+that looks like.<a href="#section-3.3-3.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1556,22 +1573,22 @@ that looks like.<a href="#section-3.3-2.1.1" class="pilcrow">¶</a></p>
 <a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-alice-adds-bob" class="section-name selfRef">Alice adds Bob</a>
         </h3>
 <p id="section-3.4-1">Management of the participants list (i.e. the list of users in the room) is done
-through <code>room.user</code> events. To add Bob to the room, Alice creates an
-<code>room.user</code> event. See {ev-mroomuser} for more information on user state
+through <code>m.room.user</code> events. To add Bob to the room, Alice creates an
+<code>m.room.user</code> event. See <a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a> for more information on user state
 changes.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
 <p id="section-3.4-2">Room state is anchored in the room's underlying MLS group through a GroupContext
 Extension, which mirrors all of the room's state variables.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
-<p id="section-3.4-3"><code>room.user</code> events are MLS proposals, which change the room state outside of
+<p id="section-3.4-3"><code>m.room.user</code> events are MLS proposals, which change the room state outside of
 the MLS group immediately upon reception and align the mirror of the room state
 in the extension (which is part of the group state) upon the next <code>ds.commit</code>
-event. This reflects MLS' proposal-commit paradigm that allows members and
+event. This reflects the MLS proposal-commit paradigm that allows members and
 external parties to propose changes, but only members to commit them. See
-{anchoring} for more information on how the room state is cryptographically
+<a href="#anchoring" class="auto internal xref">Section 5.3.2</a> for more information on how the room state is cryptographically
 anchored.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
 <p id="section-3.4-4">Alice does not only want to add Bob as a participant, but also Bob's client. To
 do that, she sends a <code>ds.commit</code> event (<a href="#ev-commitupdate" class="auto internal xref">Section 5.3.4.2</a>) to the group. As
 <code>ds.commit</code> events can contain an arbitrary number of proposals, Alice includes
-the <code>room.user</code> proposal, as well as a proposal to add Bob's client. She
+the <code>m.room.user</code> proposal, as well as a proposal to add Bob's client. She
 creates the latter by using the key material she previously fetched from Bob's
 server.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
 <p id="section-3.4-5">She then sends the resulting <code>ds.commit</code> to the Hub. Upon reception, the Hub
@@ -1595,7 +1612,7 @@ Welcome.<a href="#section-3.4-7.1.1" class="pilcrow">¶</a></p>
         </h3>
 <p id="section-3.5-1">After Bob has joined the room, Alice creates a message using the MIMI content
 format <span>[<a href="#I-D.ietf-mimi-content" class="cite xref">I-D.ietf-mimi-content</a>]</span>, and sends a <code>ds.send_message</code>
-({ev-sendmessage}) event to the Hub.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
+(<a href="#ev-sendmessage" class="auto internal xref">Section 5.3.4.5</a>) event to the Hub.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="the-hubowning-provider-fans-out-the-message">
@@ -1656,7 +1673,7 @@ exactly the same way as in previous steps.<a href="#section-3.9-1" class="pilcro
 <a href="#section-3.10" class="section-number selfRef">3.10. </a><a href="#name-alice-removes-bob-from-the-" class="section-name selfRef">Alice removes Bob from the room</a>
         </h3>
 <p id="section-3.10-1">Alice removes Bob by sending an <code>ds.commit</code> event. The <code>ds.commit</code> event
-contains an <code>room.user</code> event which removes Bob from the participant list, as
+contains an <code>m.room.user</code> event which removes Bob from the participant list, as
 well as proposals to remove Bob's clients.<a href="#section-3.10-1" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1742,7 +1759,7 @@ rather than being confirmed in events specifically.<a href="#section-5-6" class=
 <div class="alignLeft art-text artwork" id="section-5.1-2">
 <pre>
 // See the "MIMI Event Types" IANA registry for values.
-// Example: "room.info"
+// Example: "m.room.info"
 opaque EventType;
 
 struct {
@@ -1751,7 +1768,7 @@ struct {
 
    // Additional fields may be present as dependent on event type.
    select (Event.type) {
-      case "room.user":
+      case "m.room.user":
          // MLSMessage containing a UserEvent proposal
          MLSMessage user_event_proposal;
       case "ds.proposal":
@@ -1949,8 +1966,12 @@ Welcome messages for fan-out to individual follower servers.<a href="#section-5.
 requested data (e.g. group information required for joins), or an error message.<a href="#section-5.3.4-3" class="pilcrow">¶</a></p>
 <p id="section-5.3.4-4">Messages meant for fan-out are DSFanoutRequests, which contain an MLS message,
 as well as information to which clients messages should be fanned out to.<a href="#section-5.3.4-4" class="pilcrow">¶</a></p>
-<p id="section-5.3.4-5">TODO: Update the MIMI DS doc to allow for messages to contain more than one
-proposal and a generic "commit" action.<a href="#section-5.3.4-5" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5.3.4-5.1">
+              <p id="section-5.3.4-5.1.1"><strong>TODO</strong>: Update the MIMI DS doc to allow for messages to contain more than one
+proposal and a generic "commit" action.<a href="#section-5.3.4-5.1.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
 <div id="ev-proposeupdate">
 <section id="section-5.3.4.1">
             <h5 id="name-propose-group-update">
@@ -1990,7 +2011,7 @@ group updates without proposing them separately through the <code>ds.proposal</c
 event.<a href="#section-5.3.4.2-2" class="pilcrow">¶</a></p>
 <p id="section-5.3.4.2-3">Note that this event can also be used by a client to add itself to the group. To
 do that, the sender requires the current group information (see
-{ev-fetchgroupinfo}).<a href="#section-5.3.4.2-3" class="pilcrow">¶</a></p>
+<a href="#ev-fetchgroupinfo" class="auto internal xref">Section 5.3.4.4</a>).<a href="#section-5.3.4.2-3" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.3.4.2-4">
 <pre>
 struct {
@@ -2013,9 +2034,13 @@ participant list and in the <code>join</code> state.<a href="#section-5.3.4.2-6.
 <a href="#section-5.3.4.3" class="section-number selfRef">5.3.4.3. </a><a href="#name-fetch-keypackage" class="section-name selfRef">Fetch KeyPackage</a>
             </h5>
 <p id="section-5.3.4.3-1"><strong>Event type</strong>: <code>ds.fetch_key_packages</code><a href="#section-5.3.4.3-1" class="pilcrow">¶</a></p>
-<p id="section-5.3.4.3-2">TODO: For now, we assume that KeyPackages are fetched directly, i.e. not in the
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5.3.4.3-2.1">
+                <p id="section-5.3.4.3-2.1.1"><strong>TODO</strong>: For now, we assume that KeyPackages are fetched directly, i.e. not in the
 context of a room and via a Hub. This might change in the future. If it does
-change, this event needs an additional authentication mechanism.<a href="#section-5.3.4.3-2" class="pilcrow">¶</a></p>
+change, this event needs an additional authentication mechanism.<a href="#section-5.3.4.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
 <p id="section-5.3.4.3-3">Group members can use this event to request a
 KeyPackage from the Hub or another follower server.<a href="#section-5.3.4.3-3" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.3.4.3-4">
@@ -2056,9 +2081,13 @@ struct {
 <a href="#section-5.3.4.5" class="section-number selfRef">5.3.4.5. </a><a href="#name-send-message" class="section-name selfRef">Send Message</a>
             </h5>
 <p id="section-5.3.4.5-1"><strong>Event type</strong>: <code>ds.send_message</code><a href="#section-5.3.4.5-1" class="pilcrow">¶</a></p>
-<p id="section-5.3.4.5-2">TODO: This is not a proposal and there is no way for the Hub or follower servers
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5.3.4.5-2.1">
+                <p id="section-5.3.4.5-2.1.1"><strong>TODO</strong>: This is not a proposal and there is no way for the Hub or follower servers
 to authenticate this event at the moment. We might want to a way to do that
-later.<a href="#section-5.3.4.5-2" class="pilcrow">¶</a></p>
+later.<a href="#section-5.3.4.5-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
 <p id="section-5.3.4.5-3">Group members can use this event to request to send an encrypted (application)
 message to the other group members.<a href="#section-5.3.4.5-3" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.3.4.5-4">
@@ -2087,14 +2116,14 @@ protocol, such as with an explicit invite to another user, the creating server
 <span class="bcp14">MUST</span> produce the following details:<a href="#section-5.4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5.4-2.1">
-            <p id="section-5.4-2.1.1">An <code>room.info</code> (<a href="#ev-mroomcreate" class="auto internal xref">Section 5.4.1</a>) event describing the encryption
+            <p id="section-5.4-2.1.1">An <code>m.room.info</code> (<a href="#ev-mroomcreate" class="auto internal xref">Section 5.4.1</a>) event describing the encryption
 and policy details for the room.<a href="#section-5.4-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-5.4-2.2">
-            <p id="section-5.4-2.2.1">A universally unique room ID (represented by the create event).<a href="#section-5.4-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-5.4-2.2.1">A universally unique room ID (represented by the room info event).<a href="#section-5.4-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-5.4-2.3">
-            <p id="section-5.4-2.3.1">An <code>room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>) event which invites the desired user.<a href="#section-5.4-2.3.1" class="pilcrow">¶</a></p>
+            <p id="section-5.4-2.3.1">An <code>m.room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>) event which invites the desired user.<a href="#section-5.4-2.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-5.4-2.4">
             <p id="section-5.4-2.4.1">Any relevant cryptographic state needed to verify the invite is legitimate.
@@ -2106,15 +2135,15 @@ include additional details in the initial state, such as configuration of the
 room's policy, adding the creator's other clients to the MLS group state, etc.<a href="#section-5.4-3" class="pilcrow">¶</a></p>
 <div id="ev-mroomcreate">
 <section id="section-5.4.1">
-          <h4 id="name-roominfo">
-<a href="#section-5.4.1" class="section-number selfRef">5.4.1. </a><a href="#name-roominfo" class="section-name selfRef"><code>room.info</code></a>
+          <h4 id="name-mroominfo">
+<a href="#section-5.4.1" class="section-number selfRef">5.4.1. </a><a href="#name-mroominfo" class="section-name selfRef"><code>m.room.info</code></a>
           </h4>
-<p id="section-5.4.1-1">The <code>room.info</code> event contains the current room state, thus allowing servers
+<p id="section-5.4.1-1">The <code>m.room.info</code> event contains the current room state, thus allowing servers
 to bootstrap the room. Note that this event does not contain any of the
 cryptographic state of the underlying MIMI DS group. Clients that want to join a
 room need to use a <code>ds.fetch_group_info</code> event to obtain the information
 required to join the room.<a href="#section-5.4.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.4.1-2"><strong>Event type</strong>: <code>room.info</code><a href="#section-5.4.1-2" class="pilcrow">¶</a></p>
+<p id="section-5.4.1-2"><strong>Event type</strong>: <code>m.room.info</code><a href="#section-5.4.1-2" class="pilcrow">¶</a></p>
 <p id="section-5.4.1-3"><strong>Additional event fields</strong>:<a href="#section-5.4.1-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.4.1-4">
 <pre>
@@ -2131,7 +2160,7 @@ ID" in ralston-mimi-signaling).<a href="#section-5.4.1-5.1.1" class="pilcrow">¶
           </ul>
 <p id="section-5.4.1-6"><strong>Fanout considerations</strong>:<a href="#section-5.4.1-6" class="pilcrow">¶</a></p>
 <p id="section-5.4.1-7"><code>InfoEvent</code> is <em>unsigned</em> in all cases it is used, but authenticated implicitly
-through the transport layer (<a href="#transport" class="auto internal xref">Section 7</a>). The room into event is used during
+through the transport layer (<a href="#transport" class="auto internal xref">Section 7</a>). The room info event is used during
 invites to ensure the server is capable of participating in the room and is not
 fanned out more generally. See <a href="#op-check" class="auto internal xref">Section 7.3.2</a> for usage.<a href="#section-5.4.1-7" class="pilcrow">¶</a></p>
 </section>
@@ -2147,8 +2176,8 @@ fanned out more generally. See <a href="#op-check" class="auto internal xref">Se
       </h2>
 <p id="section-6-1">In a MIMI room, users are <em>participants</em> with an associated
 <em>participation state</em> whereas clients of those users are <em>members</em> of the
-cryptographic state. The user's participation state is updated before changes
-to the cryptographic state are made.<a href="#section-6-1" class="pilcrow">¶</a></p>
+cryptographic state. The user's participation state is updated concurrent to or
+before changes are made to the cryptographic state.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <p id="section-6-2">Users will always exist in one of the following participation states:<a href="#section-6-2" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-6-3">
 <pre>
@@ -2185,15 +2214,15 @@ user to the room.<a href="#section-6.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-6.1-2">An <em>add</em> is when a user adds another user to the list of participants in the
-<em>join</em> state. The <code>room.user</code> event that effects this change is typically sent
+<em>join</em> state. The <code>m.room.user</code> event that effects this change is typically sent
 as part of a commit that also adds the user's clients to the room's MLS group.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-6.1-3">
 <li id="section-6.1-3.1">
-            <p id="section-6.1-3.1.1">The adder generates an <code>room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>) event to add the
+            <p id="section-6.1-3.1.1">The adder generates an <code>m.room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>) event to add the
 target user.<a href="#section-6.1-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-6.1-3.2">
-            <p id="section-6.1-3.2.1">The adder sends (<a href="#op-send" class="auto internal xref">Section 7.3.1</a>) the <code>room.user</code> event to the hub server. If
+            <p id="section-6.1-3.2.1">The adder sends (<a href="#op-send" class="auto internal xref">Section 7.3.1</a>) the <code>m.room.user</code> event to the hub server. If
 the adder is a client, the event is likely sent as part of a <code>ds.commit</code>
 event.<a href="#section-6.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
@@ -2216,7 +2245,7 @@ server of the user added by the event.<a href="#section-6.1-3.4.1" class="pilcro
 </li>
           <li id="section-6.1-3.5">
             <p id="section-6.1-3.5.1">The target user (or its server) can reject the addition by sending an
-<code>room.user</code> event that proposes the removal of the user and its clients
+<code>m.room.user</code> event that proposes the removal of the user and its clients
 (<a href="#leaves" class="auto internal xref">Section 6.4</a>).<a href="#section-6.1-3.5.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
@@ -2227,77 +2256,66 @@ server of the user added by the event.<a href="#section-6.1-3.4.1" class="pilcro
         <h3 id="name-invites">
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-invites" class="section-name selfRef">Invites</a>
         </h3>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-6.2-1.1">
-            <p id="section-6.2-1.1.1"><strong>TODO</strong>: For now, the invite flow implies that the user has to explicitly
-accept by adding one or more clients via external commit as part of the "Join"
-flow. In the future, we can either make the "Invite" flow more versatile and
-allow for Welcome based invitations, or create an additional "Add" flow, that
-allows participants to add other users (and their clients) directly via
-Welcome.<a href="#section-6.2-1.1.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-6.2-2">An <em>invite</em> is when a user (or more specifically, a user's client) adds another
-user to the list of participants in the <code>invite</code> state.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
-<p id="section-6.2-3">Once the user is on the participant list (and has been notified of this fact by
+<p id="section-6.2-1">An <em>invite</em> is when a user (or more specifically, a user's client) adds another
+user to the list of participants in the <code>invite</code> state.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<p id="section-6.2-2">Once the user is on the participant list (and has been notified of this fact by
 the Hub), one of the user's clients can add itself, as well as any other clients
-to the room's underlying group.<a href="#section-6.2-3" class="pilcrow">¶</a></p>
-<p id="section-6.2-4">Updating the target user's participation state is done using the following
-steps, and is visualized in <a href="#fig-invites" class="auto internal xref">Figure 1</a>.<a href="#section-6.2-4" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-6.2-5">
-<li id="section-6.2-5.1">
-            <p id="section-6.2-5.1.1">The inviter's server generates an <code>room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>)
+to the room's underlying group.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
+<p id="section-6.2-3">Updating the target user's participation state is done using the following
+steps, and is visualized in <a href="#fig-invites" class="auto internal xref">Figure 1</a>.<a href="#section-6.2-3" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-6.2-4">
+<li id="section-6.2-4.1">
+            <p id="section-6.2-4.1.1">The inviter's server generates an <code>m.room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>)
 event to invite the target user. Typically this begins with a
-client-initiated request to the server using the provider-specific API.<a href="#section-6.2-5.1.1" class="pilcrow">¶</a></p>
+client-initiated request to the server using the provider-specific API.<a href="#section-6.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-6.2-5.2">
-            <p id="section-6.2-5.2.1">The inviter's server sends (<a href="#op-send" class="auto internal xref">Section 7.3.1</a>) the <code>room.user</code> event to the hub
-server.<a href="#section-6.2-5.2.1" class="pilcrow">¶</a></p>
+          <li id="section-6.2-4.2">
+            <p id="section-6.2-4.2.1">The inviter's server sends (<a href="#op-send" class="auto internal xref">Section 7.3.1</a>) the <code>m.room.user</code> event to the hub
+server.<a href="#section-6.2-4.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-6.2-5.3">
-            <p id="section-6.2-5.3.1">The hub server validates the event to ensure the following:<a href="#section-6.2-5.3.1" class="pilcrow">¶</a></p>
+          <li id="section-6.2-4.3">
+            <p id="section-6.2-4.3.1">The hub server validates the event to ensure the following:<a href="#section-6.2-4.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-6.2-5.3.2.1">
-                <p id="section-6.2-5.3.2.1.1">The target user of the invite <span class="bcp14">MUST NOT</span> already be in the banned or joined
-states.<a href="#section-6.2-5.3.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-6.2-4.3.2.1">
+                <p id="section-6.2-4.3.2.1.1">The target user of the invite <span class="bcp14">MUST NOT</span> already be in the banned or joined
+states.<a href="#section-6.2-4.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-6.2-5.3.2.2">
-                <p id="section-6.2-5.3.2.2.1">The sender of the invite <span class="bcp14">MUST</span> already be in the joined state.<a href="#section-6.2-5.3.2.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-6.2-4.3.2.2">
+                <p id="section-6.2-4.3.2.2.1">The sender of the invite <span class="bcp14">MUST</span> already be in the joined state.<a href="#section-6.2-4.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li id="section-6.2-5.4">
-            <p id="section-6.2-5.4.1">If the event is invalid, it is rejected. Otherwise, it is forwarded by the
+          <li id="section-6.2-4.4">
+            <p id="section-6.2-4.4.1">If the event is invalid, it is rejected. Otherwise, it is forwarded by the
 hub to the target user's server to give it the opportunity to reject the
-invite early in the process. This is described by <a href="#op-check" class="auto internal xref">Section 7.3.2</a>.<a href="#section-6.2-5.4.1" class="pilcrow">¶</a></p>
+invite early in the process. This is described by <a href="#op-check" class="auto internal xref">Section 7.3.2</a>.<a href="#section-6.2-4.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-6.2-5.5">
-            <p id="section-6.2-5.5.1">If the target server rejected the event, the event is rejected by the hub as
+          <li id="section-6.2-4.5">
+            <p id="section-6.2-4.5.1">If the target server rejected the event, the event is rejected by the hub as
 well. Otherwise, the event is fanned out (<a href="#fanout" class="auto internal xref">Section 7.3.1.1</a>) to all participating
-servers, plus the target server if not already participating.<a href="#section-6.2-5.5.1" class="pilcrow">¶</a></p>
+servers, plus the target server if not already participating.<a href="#section-6.2-4.5.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-6.2-6">At this stage, the <em>user</em> is now invited but their clients are not members of
+<p id="section-6.2-5">At this stage, the <em>user</em> is now invited but their clients are not members of
 the cryptographic state. The invite is delivered to the target's clients through
-relevant provider-specific API where the user can then accept or decline the invite.<a href="#section-6.2-6" class="pilcrow">¶</a></p>
-<p id="section-6.2-7">If the user declines the invite, they are removed from the participant list.
-Accepting is done by joining (<a href="#joins" class="auto internal xref">Section 6.3</a>) the room.<a href="#section-6.2-7" class="pilcrow">¶</a></p>
+relevant provider-specific API where the user can then accept or decline the invite.<a href="#section-6.2-5" class="pilcrow">¶</a></p>
+<p id="section-6.2-6">If the user declines the invite, they are removed from the participant list.
+Accepting is done by joining (<a href="#joins" class="auto internal xref">Section 6.3</a>) the room.<a href="#section-6.2-6" class="pilcrow">¶</a></p>
 <span id="name-invite-happy-path"></span><div id="fig-invites">
 <figure id="figure-1">
-          <div id="section-6.2-8.1">
-            <div class="alignLeft art-svg artwork" id="section-6.2-8.1.1">
+          <div id="section-6.2-7.1">
+            <div class="alignLeft art-svg artwork" id="section-6.2-7.1.1">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="496" width="568" viewBox="0 0 568 496" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
                 <path d="M 8,32 L 8,64" fill="none" stroke="black"></path>
                 <path d="M 24,72 L 24,480" fill="none" stroke="black"></path>
                 <path d="M 40,32 L 40,64" fill="none" stroke="black"></path>
                 <path d="M 232,112 L 232,144" fill="none" stroke="black"></path>
                 <path d="M 272,32 L 272,64" fill="none" stroke="black"></path>
-                <path d="M 296,112 L 296,480" fill="none" stroke="black"></path>
+                <path d="M 296,72 L 296,480" fill="none" stroke="black"></path>
                 <path d="M 320,32 L 320,64" fill="none" stroke="black"></path>
                 <path d="M 512,240 L 512,272" fill="none" stroke="black"></path>
                 <path d="M 528,32 L 528,64" fill="none" stroke="black"></path>
-                <path d="M 544,112 L 544,208" fill="none" stroke="black"></path>
-                <path d="M 544,240 L 544,480" fill="none" stroke="black"></path>
+                <path d="M 544,72 L 544,480" fill="none" stroke="black"></path>
                 <path d="M 560,32 L 560,64" fill="none" stroke="black"></path>
                 <path d="M 8,32 L 40,32" fill="none" stroke="black"></path>
                 <path d="M 272,32 L 320,32" fill="none" stroke="black"></path>
@@ -2327,21 +2345,16 @@ Accepting is done by joining (<a href="#joins" class="auto internal xref">Sectio
                   <text x="24" y="52">A</text>
                   <text x="296" y="52">Hub</text>
                   <text x="544" y="52">B</text>
-                  <text x="296" y="84">|</text>
-                  <text x="544" y="84">|</text>
                   <text x="60" y="100">Create</text>
-                  <text x="128" y="100">room.user</text>
-                  <text x="196" y="100">invite</text>
-                  <text x="280" y="100">|</text>
-                  <text x="528" y="100">|</text>
+                  <text x="136" y="100">m.room.user</text>
+                  <text x="212" y="100">invite</text>
                   <text x="52" y="180">Send</text>
                   <text x="96" y="180">event</text>
                   <text x="152" y="180">request</text>
                   <text x="224" y="180">initiated</text>
                   <text x="340" y="228">Validate</text>
-                  <text x="416" y="228">room.user</text>
-                  <text x="480" y="228">event</text>
-                  <text x="528" y="228">|</text>
+                  <text x="424" y="228">m.room.user</text>
+                  <text x="496" y="228">event</text>
                   <text x="72" y="308">200</text>
                   <text x="100" y="308">OK</text>
                   <text x="124" y="308">to</text>
@@ -2362,7 +2375,7 @@ Accepting is done by joining (<a href="#joins" class="auto internal xref">Sectio
                   <text x="420" y="452">of</text>
                   <text x="456" y="452">event</text>
                 </g>
-              </svg><a href="#section-6.2-8.1.1" class="pilcrow">¶</a>
+              </svg><a href="#section-6.2-7.1.1" class="pilcrow">¶</a>
 </div>
 </div>
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
@@ -2402,11 +2415,11 @@ the same event.<a href="#section-6.3-5" class="pilcrow">¶</a></p>
 <p id="section-6.3-6">The two-step flow looks as follows:<a href="#section-6.3-6" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-6.3-7">
 <li id="section-6.3-7.1">
-            <p id="section-6.3-7.1.1">Option a: The joiner's server generates an <code>room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>)
+            <p id="section-6.3-7.1.1">Option a: The joiner's server generates an <code>m.room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>)
 event to add the user.<a href="#section-6.3-7.1.1" class="pilcrow">¶</a></p>
 <p id="section-6.3-7.1.2">
 Option b: The joiner's client generates a commit that contains an
-<code>room.user</code> event, as well as an Add proposal for itself (this requires
+<code>m.room.user</code> event, as well as an Add proposal for itself (this requires
 that the client has previously obtained a the room's group info through a
 <code>ds.fetch_group_info</code> event (<a href="#ev-fetchgroupinfo" class="auto internal xref">Section 5.3.4.4</a>)). The joiner's server
 generates a <code>ds.commit</code> event from the commit.<a href="#section-6.3-7.1.2" class="pilcrow">¶</a></p>
@@ -2432,7 +2445,7 @@ server.<a href="#section-6.3-7.2.1" class="pilcrow">¶</a></p>
 are now participating in the room too.<a href="#section-6.3-7.4.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-6.3-8">If the user was added to the room via a standalone <code>room.user</code> event, the
+<p id="section-6.3-8">If the user was added to the room via a standalone <code>m.room.user</code> event, the
 user's clients are able to add themselves to the cryptographic group state via
 one or more <code>ds.commit</code> events after fetching the room's current information via
 a <code>ds.fetch_group_info</code> event.<a href="#section-6.3-8" class="pilcrow">¶</a></p>
@@ -2445,12 +2458,12 @@ a <code>ds.fetch_group_info</code> event.<a href="#section-6.3-8" class="pilcrow
         </h3>
 <p id="section-6.4-1">Leaving a room can signal a user declining an invite, voluntarily leaving the
 room, or being kicked (removed) from the room. When the sender and target of
-an <code>room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>) leave event are different, the target user
+an <code>m.room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>) leave event are different, the target user
 is being kicked. Otherwise the event represents a voluntary leave or declined
 invite (if the previous participation state was "invited").<a href="#section-6.4-1" class="pilcrow">¶</a></p>
 <p id="section-6.4-2">Like with other participation/membership operations, a user's leave is initiated
 by updating their participation state first. This is done by sending
-(<a href="#op-send" class="auto internal xref">Section 7.3.1</a>) the relevant <code>room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>) state event to the
+(<a href="#op-send" class="auto internal xref">Section 7.3.1</a>) the relevant <code>m.room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>) state event to the
 hub, which validates it as follows:<a href="#section-6.4-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-6.4-3.1">
@@ -2494,7 +2507,7 @@ add and remove their own clients from the cryptographic state at will.<a href="#
 <a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-bans" class="section-name selfRef">Bans</a>
         </h3>
 <p id="section-6.5-1">Bans imply kick, and are operated the same way as <a href="#leaves" class="auto internal xref">Section 6.4</a>, though with the
-<code>room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>) state event using a <code>ban</code> participation state.<a href="#section-6.5-1" class="pilcrow">¶</a></p>
+<code>m.room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>) state event using a <code>ban</code> participation state.<a href="#section-6.5-1" class="pilcrow">¶</a></p>
 <p id="section-6.5-2">In contrast to leaving users, banned users remain on the participant list in the
 <code>ban</code> state.<a href="#section-6.5-2" class="pilcrow">¶</a></p>
 <p id="section-6.5-3">An added exception on the validation is also applied to permit preemptive bans:
@@ -2514,7 +2527,7 @@ the room. They do not have access to the cryptographic state.<a href="#section-6
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-6.6-2.1">
             <p id="section-6.6-2.1.1"><strong>TODO</strong>: Discuss if this participation state is desirable, and figure out
-details for how it works. It'd likely just be an <code>room.user</code> state event
+details for how it works. It'd likely just be an <code>m.room.user</code> state event
 with no MLS interaction, like invites are.<a href="#section-6.6-2.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
@@ -2528,11 +2541,11 @@ section, an "Add" would probably be the response to a knock.<a href="#section-6.
 </div>
 <div id="ev-mroomuser">
 <section id="section-6.7">
-        <h3 id="name-roomuser">
-<a href="#section-6.7" class="section-number selfRef">6.7. </a><a href="#name-roomuser" class="section-name selfRef"><code>room.user</code></a>
+        <h3 id="name-mroomuser">
+<a href="#section-6.7" class="section-number selfRef">6.7. </a><a href="#name-mroomuser" class="section-name selfRef"><code>m.room.user</code></a>
         </h3>
-<p id="section-6.7-1"><strong>Event type</strong>: <code>room.user</code><a href="#section-6.7-1" class="pilcrow">¶</a></p>
-<p id="section-6.7-2">An <code>room.user</code> event can be used to change the participation state of a user.<a href="#section-6.7-2" class="pilcrow">¶</a></p>
+<p id="section-6.7-1"><strong>Event type</strong>: <code>m.room.user</code><a href="#section-6.7-1" class="pilcrow">¶</a></p>
+<p id="section-6.7-2">An <code>m.room.user</code> event can be used to change the participation state of a user.<a href="#section-6.7-2" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-6.7-3.1">
             <p id="section-6.7-3.1.1"><strong>TODO</strong>: Do we also want this to be able to change a participant's role?<a href="#section-6.7-3.1.1" class="pilcrow">¶</a></p>
@@ -2596,7 +2609,7 @@ underlying MLS group.<a href="#section-6.7-9.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-6.7-11"><strong>Fanout considerations</strong>:<a href="#section-6.7-11" class="pilcrow">¶</a></p>
-<p id="section-6.7-12">Each <code>room.user</code> event is fanned out as normal (<a href="#fanout" class="auto internal xref">Section 7.3.1.1</a>). The event <span class="bcp14">MAY</span> be
+<p id="section-6.7-12">Each <code>m.room.user</code> event is fanned out as normal (<a href="#fanout" class="auto internal xref">Section 7.3.1.1</a>). The event <span class="bcp14">MAY</span> be
 sent to additional servers, as required by <a href="#invites" class="auto internal xref">Section 6.2</a>, <a href="#joins" class="auto internal xref">Section 6.3</a>, <a href="#leaves" class="auto internal xref">Section 6.4</a>,
 <a href="#bans" class="auto internal xref">Section 6.5</a>, <a href="#knocks" class="auto internal xref">Section 6.6</a>.<a href="#section-6.7-12" class="pilcrow">¶</a></p>
 <p id="section-6.7-13"><strong>Additional validation rules</strong>:<a href="#section-6.7-13" class="pilcrow">¶</a></p>
@@ -2726,7 +2739,7 @@ leading up to fanout.<a href="#section-7.3.1.1-2" class="pilcrow">¶</a></p>
           </h4>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-7.3.2-1.1">
-              <p id="section-7.3.2-1.1.1"><strong>TODO</strong>: Consider reducing this down to <code>room.check_invite</code> or something,
+              <p id="section-7.3.2-1.1.1"><strong>TODO</strong>: Consider reducing this down to <code>m.room.check_invite</code> or something,
 to reuse <code>/send</code>.<a href="#section-7.3.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
@@ -2743,7 +2756,7 @@ OK to the server, it responds with a <code>200</code> HTTP status code.<a href="
 <div class="alignLeft art-text artwork" id="section-7.3.2-5">
 <pre>
 struct {
-   // The `room.user` invite event.
+   // The `m.room.user` invite event.
    Event invite;
 
    // The room creation information.
@@ -2814,7 +2827,7 @@ context of the MIMI protocol. The event type is a string composed of substrings
 separated by dots.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
 <p id="section-9.1-2">The first substring is "m", followed by the logical container being affected
 (typically just "room"), then a number of descriptor strings.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
-<p id="section-9.1-3">Example: <code>room.info</code><a href="#section-9.1-3" class="pilcrow">¶</a></p>
+<p id="section-9.1-3">Example: <code>m.room.info</code><a href="#section-9.1-3" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-9.1-4.1">
             <p id="section-9.1-4.1.1"><strong>TODO</strong>: Does IANA need any other information for legal event types?<a href="#section-9.1-4.1.1" class="pilcrow">¶</a></p>
@@ -2840,7 +2853,7 @@ separated by dots.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
 <dd class="break"></dd>
 <dt id="I-D.robert-mimi-delivery-service">[I-D.robert-mimi-delivery-service]</dt>
         <dd>
-<span class="refAuthor">Robert, R.</span> and <span class="refAuthor">K. Kohbrok</span>, <span class="refTitle">"MIMI Delivery Service"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-robert-mimi-delivery-service-05</span>, <time datetime="2023-10-23" class="refDate">23 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-robert-mimi-delivery-service-05">https://datatracker.ietf.org/doc/html/draft-robert-mimi-delivery-service-05</a>&gt;</span>. </dd>
+<span class="refAuthor">Robert, R.</span> and <span class="refAuthor">K. Kohbrok</span>, <span class="refTitle">"MIMI Delivery Service"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-robert-mimi-delivery-service-06</span>, <time datetime="2023-11-06" class="refDate">6 November 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-robert-mimi-delivery-service-06">https://datatracker.ietf.org/doc/html/draft-robert-mimi-delivery-service-06</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
@@ -2956,7 +2969,7 @@ of this document.<a href="#appendix-A-5" class="pilcrow">¶</a></p>
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
 <address class="vcard">
-        <div dir="auto" class="left"><span class="fn nameRole">Travis Ralston (<span class="role">editor</span>)</span></div>
+        <div dir="auto" class="left"><span class="fn nameRole">Travis Ralston</span></div>
 <div dir="auto" class="left"><span class="org">The Matrix.org Foundation C.I.C.</span></div>
 <div class="email">
 <span>Email:</span>
