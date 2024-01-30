@@ -5,11 +5,11 @@
 More Instant Messaging Interoperability                       T. Ralston
 Internet-Draft                          The Matrix.org Foundation C.I.C.
 Intended status: Standards Track                              K. Kohbrok
-Expires: 17 May 2024                                           R. Robert
+Expires: 2 August 2024                                         R. Robert
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                        14 November 2023
+                                                         30 January 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -63,11 +63,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 May 2024.
+   This Internet-Draft will expire on 2 August 2024.
 
 Copyright Notice
 
-   Copyright (c) 2023 IETF Trust and the persons identified as the
+   Copyright (c) 2024 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -164,18 +164,13 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-   Terms and definitions are inherited from [I-D.barnes-mimi-arch].
+   Terms and definitions are inherited from [I-D.barnes-mimi-arch].  We
+   also make use of terms from the MLS protocol [RFC9420].
 
    Throughout this document, the examples use the TLS Presentation
    Language [RFC8446] and the semantics of HTTP [RFC7231] respectively
    as placeholder a set of binary encoding mechanism and transport
    semantics.
-
-      *ISSUE*: Come to consensus on a specific binary encoding for the
-      MIMI transport protocol.
-
-      *ISSUE*: Come to consensus on a specific set of MIMI transport
-      protocol semantics.
 
 3.  Example protocol flow
 
