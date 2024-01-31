@@ -69,7 +69,7 @@ MIMI protocol relies on MLS ({{!RFC9420}}, through the MIMI DS protocol
 
 # Introduction
 
-The More Instant Messaging Interoperability (MIMI) protocol enables providers of
+The More Instant Messaging Interoperability (MIMI) transport protocol enables providers of
 end-to-end encrypted instant messaging to interoperate. As described in the MIMI
 architecture {{?I-D.barnes-mimi-arch}}, group chats and direct messages are
 described in terms of "rooms".  Each MIMI protocol room is hosted at a single
@@ -77,7 +77,7 @@ provider (the "hub" provider"), but allows users from different providers to
 become participants in the room.  The hub provider maintains the policy and
 participation for the room, authorizes messages, and is responsible for message
 ordering, the participation list, and policy of its rooms. Each provider also
-stores initial keying material and consent for its users (who may be offline).
+stores initial keying material and consent for its own users (who may be offline).
 
 This document describes the communication among different providers necessary to
 support messaging application functionality, for example:
@@ -96,14 +96,14 @@ Layer Security (MLS) protocol {{!RFC9420}}, and each room is associated with an
 MLS group. MLS also ensures that clients in a room agree on the room policy and
 participation.  MLS is integrated into MIMI in such a way as to ensure that a
 client is joined to a room's MLS group only if the client's user is a
-participant in the group, and that all clients in the group agree on the state
+participant in the room, and that all clients in the group agree on the state
 of the room (including, for example, the room's participant list).
 
 ## Known Gaps
 
 In this version of the document, we have tried to capture enough concrete
 functionality to enable basic application functionality, while defining enough
-of a protocol framework to indicate how other necessary functionality.  The
+of a protocol framework to indicate how to add other necessary functionality.  The
 following functions are likely to be needed by the complete protocol, but are
 not covered here:
 
