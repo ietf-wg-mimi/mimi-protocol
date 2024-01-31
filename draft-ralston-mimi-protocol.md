@@ -88,9 +88,8 @@ support messaging application functionality, for example:
 * Exchanging secure messages
 
 In support of these functions, the protocol also has primitives to fetch initial
-keying material, fetch the current state of the underlying end-to-end encryption
-protocol for the room, and request, grant, and reject consent to communicate
-with users on other providers.
+keying material and fetch the current state of the underlying end-to-end encryption
+protocol for the room.
 
 Messages sent inside each room are end-to-end encrypted using the Messaging
 Layer Security (MLS) protocol {{!RFC9420}}, and each room is associated with an
