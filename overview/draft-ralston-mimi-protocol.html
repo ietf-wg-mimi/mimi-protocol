@@ -11,14 +11,14 @@
 <meta content="Matthew Hodgson" name="author">
 <meta content="
        This document specifies the More Instant Messaging Interoperability (MIMI)
-protocol, which allows users of different messaging providers to share
-membership in rooms and send messages to one-another. 
-       More specifically, the MIMI protocol defines message formats and conventions
-that allows the servers of different providers to interoperate, leaving the
-provider-internal client-server communication up to the provider. 
-       To ensure that communications between users are confidential and authentic, the
-MIMI protocol relies on MLS ( , through the MIMI DS protocol
- ) to protect messages end-to-end. 
+transport protocol, which allows users of different messaging providers to
+interoperate in group chats (rooms), including to send and receive messages,
+share room policy, and add participants to and remove participants from rooms.
+MIMI describes messages between providers, leaving most aspects of the
+provider-internal client-server communication up to the provider.  MIMI
+integrates the Messaging Layer Security (MLS) protocol to provide end-to-end security
+assurances, including authentication of protocol participants, confidentiality
+of messages exchanged within a room, and agreement on the state of the room. 
     " name="description">
 <meta content="xml2rfc 3.19.1" name="generator">
 <meta content="mimi" name="keyword">
@@ -1087,14 +1087,14 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">This document specifies the More Instant Messaging Interoperability (MIMI)
-protocol, which allows users of different messaging providers to share
-membership in rooms and send messages to one-another.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">More specifically, the MIMI protocol defines message formats and conventions
-that allows the servers of different providers to interoperate, leaving the
-provider-internal client-server communication up to the provider.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
-<p id="section-abstract-3">To ensure that communications between users are confidential and authentic, the
-MIMI protocol relies on MLS (<span>[<a href="#RFC9420" class="cite xref">RFC9420</a>]</span>, through the MIMI DS protocol
-<span>[<a href="#I-D.robert-mimi-delivery-service" class="cite xref">I-D.robert-mimi-delivery-service</a>]</span>) to protect messages end-to-end.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
+transport protocol, which allows users of different messaging providers to
+interoperate in group chats (rooms), including to send and receive messages,
+share room policy, and add participants to and remove participants from rooms.
+MIMI describes messages between providers, leaving most aspects of the
+provider-internal client-server communication up to the provider.  MIMI
+integrates the Messaging Layer Security (MLS) protocol to provide end-to-end security
+assurances, including authentication of protocol participants, confidentiality
+of messages exchanged within a room, and agreement on the state of the room.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1167,7 +1167,7 @@ MIMI protocol relies on MLS (<span>[<a href="#RFC9420" class="cite xref">RFC9420
             <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
-            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-protocol-overview" class="internal xref">Protocol Overview</a></p>
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-example-protocol-flow" class="internal xref">Example protocol flow</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
                 <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-alice-creates-a-room" class="internal xref">Alice Creates a Room</a></p>
@@ -1341,60 +1341,48 @@ user and client level membership.<a href="#section-1-5" class="pilcrow">¶</a></
 "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
 described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
 appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<p id="section-2-2">Terms and definitions are inherited from <span>[<a href="#I-D.barnes-mimi-arch" class="cite xref">I-D.barnes-mimi-arch</a>]</span>.<a href="#section-2-2" class="pilcrow">¶</a></p>
+<p id="section-2-2">Terms and definitions are inherited from <span>[<a href="#I-D.barnes-mimi-arch" class="cite xref">I-D.barnes-mimi-arch</a>]</span>.  We also
+make use of terms from the MLS protocol <span>[<a href="#RFC9420" class="cite xref">RFC9420</a>]</span>.<a href="#section-2-2" class="pilcrow">¶</a></p>
 <p id="section-2-3">Throughout this document, the examples use the TLS Presentation Language
 <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> and the semantics of HTTP <span>[<a href="#RFC7231" class="cite xref">RFC7231</a>]</span> respectively as
 placeholder a set of binary encoding mechanism and transport semantics.<a href="#section-2-3" class="pilcrow">¶</a></p>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-2-4.1">
-          <p id="section-2-4.1.1"><strong>ISSUE</strong>: Come to consensus on a specific binary encoding for the MIMI
-transport protocol.<a href="#section-2-4.1.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-2-5.1">
-          <p id="section-2-5.1.1"><strong>ISSUE</strong>: Come to consensus on a specific set of MIMI transport protocol
-semantics.<a href="#section-2-5.1.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
 </section>
 </div>
-<div id="protocol-overview">
+<div id="example-protocol-flow">
 <section id="section-3">
-      <h2 id="name-protocol-overview">
-<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-protocol-overview" class="section-name selfRef">Protocol Overview</a>
+      <h2 id="name-example-protocol-flow">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-example-protocol-flow" class="section-name selfRef">Example protocol flow</a>
       </h2>
-<p id="section-3-1">As shown in <a href="#fig-layers" class="auto internal xref">Figure 1</a>, the overall MIMI protocol is built out of three layers:<a href="#section-3-1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-3-2">
-<li id="section-3-2.1">
-          <p id="section-3-2.1.1">An application layer that enables messaging functionality<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-3-1">
+<li id="section-3-1.1">
+          <p id="section-3-1.1.1">An application layer that enables messaging functionality<a href="#section-3-1.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="section-3-2.2">
-          <p id="section-3-2.2.1">A security layer that provides end-to-end security guarantees:<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
+        <li id="section-3-1.2">
+          <p id="section-3-1.2.1">A security layer that provides end-to-end security guarantees:<a href="#section-3-1.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3-2.2.2.1">
-              <p id="section-3-2.2.2.1.1">Confidentiality for messages<a href="#section-3-2.2.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3-1.2.2.1">
+              <p id="section-3-1.2.2.1.1">Confidentiality for messages<a href="#section-3-1.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-3-2.2.2.2">
-              <p id="section-3-2.2.2.2.1">Authentication of actors making changes to rooms<a href="#section-3-2.2.2.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-3-1.2.2.2">
+              <p id="section-3-1.2.2.2.1">Authentication of actors making changes to rooms<a href="#section-3-1.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-3-2.2.2.3">
-              <p id="section-3-2.2.2.3.1">Agreement on room state across the clients involved in a room<a href="#section-3-2.2.2.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-3-1.2.2.3">
+              <p id="section-3-1.2.2.3.1">Agreement on room state across the clients involved in a room<a href="#section-3-1.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </li>
-        <li id="section-3-2.3">
-          <p id="section-3-2.3.1">A transport layer that provides secure delivery of protocol objects between
-servers.<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
+        <li id="section-3-1.3">
+          <p id="section-3-1.3.1">A transport layer that provides secure delivery of protocol objects between
+servers.<a href="#section-3-1.3.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
-<p id="section-3-3">The MIMI transport is based on HTTPS over mutually-authenticated TLS.  MIMI uses
+<p id="section-3-2">The MIMI transport is based on HTTPS over mutually-authenticated TLS.  MIMI uses
 MLS <span>[<a href="#RFC9420" class="cite xref">RFC9420</a>]</span> for end-to-end security, using the MLS AppSync proposal type to
-efficiently synchronize room state across the clients involved in a room.<a href="#section-3-3" class="pilcrow">¶</a></p>
+efficiently synchronize room state across the clients involved in a room.<a href="#section-3-2" class="pilcrow">¶</a></p>
 <span id="name-mimi-protocol-layering"></span><div id="fig-layers">
 <figure id="figure-1">
-        <div id="section-3-4.1">
-          <div class="alignLeft art-svg artwork" id="section-3-4.1.1">
+        <div id="section-3-3.1">
+          <div class="alignLeft art-svg artwork" id="section-3-3.1.1">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="144" width="216" viewBox="0 0 216 144" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
               <path d="M 8,32 L 8,128" fill="none" stroke="black"></path>
               <path d="M 72,64 L 72,96" fill="none" stroke="black"></path>
@@ -1409,36 +1397,36 @@ efficiently synchronize room state across the clients involved in a room.<a href
                 <text x="156" y="84">Security</text>
                 <text x="112" y="116">Transport</text>
               </g>
-            </svg><a href="#section-3-4.1.1" class="pilcrow">¶</a>
+            </svg><a href="#section-3-3.1.1" class="pilcrow">¶</a>
 </div>
 </div>
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
 <a href="#name-mimi-protocol-layering" class="selfRef">MIMI protocol layering</a>
         </figcaption></figure>
 </div>
-<p id="section-3-5">The remainder of this section walks through a basic scenario that illustrates
+<p id="section-3-4">The remainder of this section walks through a basic scenario that illustrates
 how a room works in the MIMI protocol.  The scenario involves the following
-actors:<a href="#section-3-5" class="pilcrow">¶</a></p>
+actors:<a href="#section-3-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3-6.1">
-          <p id="section-3-6.1.1">Service providers <code>a.example</code>, <code>b.example</code>, and <code>c.example</code> represented by
-servers <code>ServerA</code>, <code>ServerB</code>, and <code>ServerC</code> respectively<a href="#section-3-6.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3-5.1">
+          <p id="section-3-5.1.1">Service providers <code>a.example</code>, <code>b.example</code>, and <code>c.example</code> represented by
+servers <code>ServerA</code>, <code>ServerB</code>, and <code>ServerC</code> respectively<a href="#section-3-5.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-6.2">
-          <p id="section-3-6.2.1">Users Alice (<code>alice@a.example</code>), Bob (<code>bob@b.example</code>) and Cathy
-(<code>cathy@c.example</code>) of the respective service providers<a href="#section-3-6.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-3-5.2">
+          <p id="section-3-5.2.1">Users Alice (<code>alice@a.example</code>), Bob (<code>bob@b.example</code>) and Cathy
+(<code>cathy@c.example</code>) of the respective service providers<a href="#section-3-5.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-6.3">
-          <p id="section-3-6.3.1">Clients <code>ClientA1</code>, <code>ClientA2</code>, <code>ClientB1</code>, etc. belonging to these users<a href="#section-3-6.3.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-3-5.3">
+          <p id="section-3-5.3.1">Clients <code>ClientA1</code>, <code>ClientA2</code>, <code>ClientB1</code>, etc. belonging to these users<a href="#section-3-5.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-6.4">
-          <p id="section-3-6.4.1">A room <code>clubhouse@a.example</code> where the three users interact<a href="#section-3-6.4.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-3-5.4">
+          <p id="section-3-5.4.1">A room <code>clubhouse@a.example</code> where the three users interact<a href="#section-3-5.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-3-7">As noted in <span>[<a href="#I-D.mimi-arch" class="cite xref">I-D.mimi-arch</a>]</span>, the MIMI protocol only defines interactions
+<p id="section-3-6">As noted in <span>[<a href="#I-D.mimi-arch" class="cite xref">I-D.mimi-arch</a>]</span>, the MIMI protocol only defines interactions
 between service providers' servers.  Interactions between clients and servers
 within a service provider domain are shown here for completeness, but
-surrounded by <code>[[ double brackets ]]</code>.<a href="#section-3-7" class="pilcrow">¶</a></p>
+surrounded by <code>[[ double brackets ]]</code>.<a href="#section-3-6" class="pilcrow">¶</a></p>
 <div id="alice-creates-a-room">
 <section id="section-3.1">
         <h3 id="name-alice-creates-a-room">
