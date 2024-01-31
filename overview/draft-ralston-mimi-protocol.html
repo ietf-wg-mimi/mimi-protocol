@@ -1043,7 +1043,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ralston, et al.</td>
-<td class="center">Expires 1 August 2024</td>
+<td class="center">Expires 3 August 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1056,12 +1056,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ralston-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-01-29" class="published">29 January 2024</time>
+<time datetime="2024-01-31" class="published">31 January 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-08-01">1 August 2024</time></dd>
+<dd class="expires"><time datetime="2024-08-03">3 August 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1131,7 +1131,7 @@ MIMI protocol relies on MLS (<span>[<a href="#RFC9420" class="cite xref">RFC9420
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 1 August 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 3 August 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1487,12 +1487,16 @@ participant list<a href="#section-3.2-3.1.1" class="pilcrow">¶</a></p>
 server ServerB.  ServerB stores KeyPackages on behalf of Bob's devices.  ServerA
 performs the key material fetch on Alice's behalf, and delivers the resulting
 KeyPackages to Alice's clients.  Both ServerA and ServerB remember the sources
-of the KeyPackages they handle, so that they can route a Welcome mesasage for
+of the KeyPackages they handle, so that they can route a Welcome message for
 those KeyPackages to the proper recipients -- ServerA to ServerB, and ServerB to
 Bob's clients.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
-<p id="section-3.2-5">[[ NOTE: In the full protocol, it will be necessary to have consent and access
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.2-5.1">
+            <p id="section-3.2-5.1.1"><strong>NOTE:</strong> In the full protocol, it will be necessary to have consent and access
 control on these operations.  We have elided that step here in the interest of
-simplicity. ]]<a href="#section-3.2-5" class="pilcrow">¶</a></p>
+simplicity.<a href="#section-3.2-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 <span id="name-alice-fetches-keypackages-f"></span><div id="fig-ab-kp-fetch">
 <figure id="figure-2">
           <div id="section-3.2-6.1">
@@ -1690,7 +1694,7 @@ simplicity. ]]<a href="#section-3.2-5" class="pilcrow">¶</a></p>
         </h3>
 <p id="section-3.3-1">The process of adding Bob was a bit abbreviated because Alice is a user of the
 hub service provider.  When Bob adds Cathy, we see the full process, involving
-the same two steps (KP fetch followed by add), but this time indirected via the
+the same two steps (KeyPackage fetch followed by Add), but this time indirected via the
 hub server ServerA.  Also, now that there are users on ServerB involved in the
 room, the hub ServerA will have to distribute the Commit adding Cathy and
 Cathy's clients to ServerB as well as forwarding the Welcome to ServerC.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
@@ -2052,8 +2056,9 @@ clients.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
 user performing the removal creates an MLS commit covering Remove proposals for
 all of the removed user's devices, and an AppSync proposal updating the room
 state to remove the removed user from the room's participant list.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
-<p id="section-3.5-2">Leaving is slightly more complicated because the leaving user cannot remove all
-of their devices from the MLS group.  Instead, the leave happens in three steps:<a href="#section-3.5-2" class="pilcrow">¶</a></p>
+<p id="section-3.5-2">One's own user leaving is slightly more complicated than removing another user,
+because the leaving user cannot remove all of their devices from the MLS group.
+Instead, the leave happens in three steps:<a href="#section-3.5-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-3.5-3">
 <li id="section-3.5-3.1">
             <p id="section-3.5-3.1.1">The leaving client constructs MLS Remove proposals for all of the user's
@@ -2061,7 +2066,7 @@ devices (including the leaving client), and an AppSync proposal that removes
 its user from the participant list.<a href="#section-3.5-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.5-3.2">
-            <p id="section-3.5-3.2.1">The leaving client sends this proposals to the hub.  The hub caches the proposals.<a href="#section-3.5-3.2.1" class="pilcrow">¶</a></p>
+            <p id="section-3.5-3.2.1">The leaving client sends these proposals to the hub.  The hub caches the proposals.<a href="#section-3.5-3.2.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.5-3.3">
             <p id="section-3.5-3.3.1">The next time a client attempts to commit, the hub requires the client to
