@@ -207,6 +207,12 @@ Table of Contents
       identifier.  This document provides no mechanism for such
       resolution.
 
+   Authentication  While MLS provides basic message authentication,
+      users should also be able to (cryptographically) tie the identity
+      of other users to their respective providers.  Further
+      authentication such as tying clients to their users (or the user's
+      other clients) may also be desirable.
+
 2.  Conventions and Definitions
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
