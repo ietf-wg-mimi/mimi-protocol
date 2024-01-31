@@ -59,7 +59,7 @@ interoperate in group chats (rooms), including to send and receive messages,
 share room policy, and add participants to and remove participants from rooms.
 MIMI describes messages between providers, leaving most aspects of the
 provider-internal client-server communication up to the provider.  MIMI
-integrates the Messaging Layer Security protocol to provide end-to-end security
+integrates the Messaging Layer Security (MLS) protocol to provide end-to-end security
 assurances, including authentication of protocol participants, confidentiality
 of messages exchanged within a room, and agreement on the state of the room.
 
