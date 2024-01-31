@@ -5,11 +5,11 @@
 More Instant Messaging Interoperability                       T. Ralston
 Internet-Draft                          The Matrix.org Foundation C.I.C.
 Intended status: Standards Track                              K. Kohbrok
-Expires: 1 August 2024                                         R. Robert
+Expires: 3 August 2024                                         R. Robert
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                         29 January 2024
+                                                         31 January 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 August 2024.
+   This Internet-Draft will expire on 3 August 2024.
 
 Copyright Notice
 
@@ -132,17 +132,17 @@ Table of Contents
 
 1.  Introduction
 
-   The More Instant Messaging Interoperability (MIMI) protocol enables
-   providers of end-to-end encrypted instant messaging to interoperate.
-   As described in the MIMI architecture [I-D.barnes-mimi-arch], group
-   chats and direct messages are described in terms of "rooms".  Each
-   MIMI protocol room is hosted at a single provider (the "hub"
-   provider"), but allows users from different providers to become
-   participants in the room.  The hub provider maintains the policy and
-   participation for the room, authorizes messages, and is responsible
-   for message ordering, the participation list, and policy of its
-   rooms.  Each provider also stores initial keying material and consent
-   for its users (who may be offline).
+   The More Instant Messaging Interoperability (MIMI) transport protocol
+   enables providers of end-to-end encrypted instant messaging to
+   interoperate.  As described in the MIMI architecture
+   [I-D.barnes-mimi-arch], group chats and direct messages are described
+   in terms of "rooms".  Each MIMI protocol room is hosted at a single
+   provider (the "hub" provider"), but allows users from different
+   providers to become participants in the room.  The hub provider
+   maintains the policy and participation for the room, authorizes
+   messages, and is responsible for message ordering, the participation
+   list, and policy of its rooms.  Each provider also stores initial
+   keying material and consent for its own users (who may be offline).
 
    This document describes the communication among different providers
    necessary to support messaging application functionality, for
@@ -166,16 +166,16 @@ Table of Contents
    room agree on the room policy and participation.  MLS is integrated
    into MIMI in such a way as to ensure that a client is joined to a
    room's MLS group only if the client's user is a participant in the
-   group, and that all clients in the group agree on the state of the
+   room, and that all clients in the group agree on the state of the
    room (including, for example, the room's participant list).
 
 1.1.  Known Gaps
 
    In this version of the document, we have tried to capture enough
    concrete functionality to enable basic application functionality,
-   while defining enough of a protocol framework to indicate how other
-   necessary functionality.  The following functions are likely to be
-   needed by the complete protocol, but are not covered here:
+   while defining enough of a protocol framework to indicate how to add
+   other necessary functionality.  The following functions are likely to
+   be needed by the complete protocol, but are not covered here:
 
    Authorization policy:  In this document, we assume that all
       participants in a room have equal capability.  Actual messaging
