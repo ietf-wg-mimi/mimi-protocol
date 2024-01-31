@@ -1170,34 +1170,19 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-example-protocol-flow" class="internal xref">Example protocol flow</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
-                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-get-internal-identifier-for" class="internal xref">Get internal identifier for Bob</a></p>
+                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-alice-creates-a-room" class="internal xref">Alice Creates a Room</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
-                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-fetch-initial-key-material-" class="internal xref">Fetch initial key material for Bob</a></p>
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-alice-adds-bob-to-the-room" class="internal xref">Alice adds Bob to the Room</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
-                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-create-a-room" class="internal xref">Create a room</a></p>
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-bob-adds-cathy-to-the-room" class="internal xref">Bob adds Cathy to the Room</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
-                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-alice-adds-bob" class="internal xref">Alice adds Bob</a></p>
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-cathy-sends-a-message" class="internal xref">Cathy Sends a Message</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5">
-                <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-alice-sends-a-message-to-th" class="internal xref">Alice sends a message to the room</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.6">
-                <p id="section-toc.1-1.3.2.6.1"><a href="#section-3.6" class="auto internal xref">3.6</a>.  <a href="#name-the-hub-owning-provider-fan" class="internal xref">The hub/owning provider fans out the message</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.7">
-                <p id="section-toc.1-1.3.2.7.1"><a href="#section-3.7" class="auto internal xref">3.7</a>.  <a href="#name-bob-sends-a-message-to-the-" class="internal xref">Bob sends a message to the room</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.8">
-                <p id="section-toc.1-1.3.2.8.1"><a href="#section-3.8" class="auto internal xref">3.8</a>.  <a href="#name-bob-adds-a-new-client" class="internal xref">Bob adds a new client</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.9">
-                <p id="section-toc.1-1.3.2.9.1"><a href="#section-3.9" class="auto internal xref">3.9</a>.  <a href="#name-alice-adds-cathy" class="internal xref">Alice adds Cathy</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.10">
-                <p id="section-toc.1-1.3.2.10.1"><a href="#section-3.10" class="auto internal xref">3.10</a>. <a href="#name-alice-removes-bob-from-the-" class="internal xref">Alice removes Bob from the room</a></p>
+                <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-bob-leaves-the-room" class="internal xref">Bob Leaves the Room</a></p>
 </li>
             </ul>
 </li>
@@ -1368,302 +1353,842 @@ placeholder a set of binary encoding mechanism and transport semantics.<a href="
       <h2 id="name-example-protocol-flow">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-example-protocol-flow" class="section-name selfRef">Example protocol flow</a>
       </h2>
-<p id="section-3-1">This section shows how three users (Alice, Bob and Cathy) from different
-providers can use the protocol specified in this document to join the same room
-and send messages to one-another. (Not all of these steps are part of the MIMI
-transport protocol):<a href="#section-3-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-3-1">
+<li id="section-3-1.1">
+          <p id="section-3-1.1.1">An application layer that enables messaging functionality<a href="#section-3-1.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-3-1.2">
+          <p id="section-3-1.2.1">A security layer that provides end-to-end security guarantees:<a href="#section-3-1.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3-2.1">
-          <p id="section-3-2.1.1">Alice get the internal identifier for Bob<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3-1.2.2.1">
+              <p id="section-3-1.2.2.1.1">Confidentiality for messages<a href="#section-3-1.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-2.2">
-          <p id="section-3-2.2.1">Alice gains consent to talk to Bob<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-3-1.2.2.2">
+              <p id="section-3-1.2.2.2.1">Authentication of actors making changes to rooms<a href="#section-3-1.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-2.3">
-          <p id="section-3-2.3.1">Alice fetches initial keying material for Bob's clients<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-3-1.2.2.3">
+              <p id="section-3-1.2.2.3.1">Agreement on room state across the clients involved in a room<a href="#section-3-1.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-2.4">
-          <p id="section-3-2.4.1">(Alice create a room) †<a href="#section-3-2.4.1" class="pilcrow">¶</a></p>
+          </ul>
 </li>
-        <li class="normal" id="section-3-2.5">
-          <p id="section-3-2.5.1">Alice adds Bob to a room<a href="#section-3-2.5.1" class="pilcrow">¶</a></p>
+        <li id="section-3-1.3">
+          <p id="section-3-1.3.1">A transport layer that provides secure delivery of protocol objects between
+servers.<a href="#section-3-1.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-2.6">
-          <p id="section-3-2.6.1">Alice sends a message to the room<a href="#section-3-2.6.1" class="pilcrow">¶</a></p>
+      </ol>
+<p id="section-3-2">The MIMI transport is based on HTTPS over mutually-authenticated TLS.  MIMI uses
+MLS <span>[<a href="#RFC9420" class="cite xref">RFC9420</a>]</span> for end-to-end security, using the MLS AppSync proposal type to
+efficiently synchronize room state across the clients involved in a room.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<span id="name-mimi-protocol-layering"></span><div id="fig-layers">
+<figure id="figure-1">
+        <div id="section-3-3.1">
+          <div class="alignLeft art-svg artwork" id="section-3-3.1.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="144" width="216" viewBox="0 0 216 144" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+              <path d="M 8,32 L 8,128" fill="none" stroke="black"></path>
+              <path d="M 72,64 L 72,96" fill="none" stroke="black"></path>
+              <path d="M 208,32 L 208,128" fill="none" stroke="black"></path>
+              <path d="M 8,32 L 208,32" fill="none" stroke="black"></path>
+              <path d="M 72,64 L 208,64" fill="none" stroke="black"></path>
+              <path d="M 8,96 L 208,96" fill="none" stroke="black"></path>
+              <path d="M 8,128 L 208,128" fill="none" stroke="black"></path>
+              <g class="text">
+                <text x="112" y="52">Application</text>
+                <text x="104" y="84">E2E</text>
+                <text x="156" y="84">Security</text>
+                <text x="112" y="116">Transport</text>
+              </g>
+            </svg><a href="#section-3-3.1.1" class="pilcrow">¶</a>
+</div>
+</div>
+<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<a href="#name-mimi-protocol-layering" class="selfRef">MIMI protocol layering</a>
+        </figcaption></figure>
+</div>
+<p id="section-3-4">The remainder of this section walks through a basic scenario that illustrates
+how a room works in the MIMI protocol.  The scenario involves the following
+actors:<a href="#section-3-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3-5.1">
+          <p id="section-3-5.1.1">Service providers <code>a.example</code>, <code>b.example</code>, and <code>c.example</code> represented by
+servers <code>ServerA</code>, <code>ServerB</code>, and <code>ServerC</code> respectively<a href="#section-3-5.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-2.7">
-          <p id="section-3-2.7.1">Bob sends a message to the room<a href="#section-3-2.7.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-3-5.2">
+          <p id="section-3-5.2.1">Users Alice (<code>alice@a.example</code>), Bob (<code>bob@b.example</code>) and Cathy
+(<code>cathy@c.example</code>) of the respective service providers<a href="#section-3-5.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-2.8">
-          <p id="section-3-2.8.1">The hub/owning provider fans out the message<a href="#section-3-2.8.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-3-5.3">
+          <p id="section-3-5.3.1">Clients <code>ClientA1</code>, <code>ClientA2</code>, <code>ClientB1</code>, etc. belonging to these users<a href="#section-3-5.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-2.9">
-          <p id="section-3-2.9.1">Bob adds a new client<a href="#section-3-2.9.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-3-2.10">
-          <p id="section-3-2.10.1">Alice repeats the first three steps for Cathy<a href="#section-3-2.10.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-3-2.11">
-          <p id="section-3-2.11.1">Alice adds Cathy to the room<a href="#section-3-2.11.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-3-2.12">
-          <p id="section-3-2.12.1">Alice removes Bob from the room<a href="#section-3-2.12.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-3-5.4">
+          <p id="section-3-5.4.1">A room <code>clubhouse@a.example</code> where the three users interact<a href="#section-3-5.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-3-3">Throughout this section, we will detail the individual operations through
-Alice's lens. All actions by Alice are taken through Alice's client and her
-server's proprietary API. While some parts of the individual messages originate
-from Alice's clients, the MIMI protocol is only concerned with the communication
-between Alice's, Bob's and Cathy's servers. So whenever users are referenced
-throughout this section, it is implied that they are communicating with their
-respective servers, which then communicate with one-another.<a href="#section-3-3" class="pilcrow">¶</a></p>
-<p id="section-3-4">† as mentioned in the text, creating a room is a local provider
-action, which is out of scope of MIMI.<a href="#section-3-4" class="pilcrow">¶</a></p>
-<div id="get-internal-identifier-for-bob">
+<p id="section-3-6">As noted in <span>[<a href="#I-D.mimi-arch" class="cite xref">I-D.mimi-arch</a>]</span>, the MIMI protocol only defines interactions
+between service providers' servers.  Interactions between clients and servers
+within a service provider domain are shown here for completeness, but
+surrounded by <code>[[ double brackets ]]</code>.<a href="#section-3-6" class="pilcrow">¶</a></p>
+<div id="alice-creates-a-room">
 <section id="section-3.1">
-        <h3 id="name-get-internal-identifier-for">
-<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-get-internal-identifier-for" class="section-name selfRef">Get internal identifier for Bob</a>
+        <h3 id="name-alice-creates-a-room">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-alice-creates-a-room" class="section-name selfRef">Alice Creates a Room</a>
         </h3>
-<p id="section-3.1-1">This is an example/placeholder for a possibly more sophisticated discovery
-mechanism. It is not intended to be directly implemented.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.1-2.1">
-            <p id="section-3.1-2.1.1"><strong>TODO</strong>: Replace with or reference a discovery mechanism with WG consensus<a href="#section-3.1-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-3.1-1">The first step in the lifetime of a MIMI room is its creation on the hub server.
+This operation is local to the service provider, and does not entail any MIMI
+protocol operations.  However, it must establish the initial state of the room,
+which is then the basis for protocol operations related to the room.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">Here, we assume that Alice uses ClientA1 to create a room with the following
+properties:<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.1-3.1">
+            <p id="section-3.1-3.1.1">Identifier: <code>clubhouse@a.example</code><a href="#section-3.1-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.1-3.2">
+            <p id="section-3.1-3.2.1">Participants: <code>[alice@a.example]</code><a href="#section-3.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.1-3.1">
-            <p id="section-3.1-3.1.1"><strong>TODO</strong>: Details will follow once the WG has concensus on identifiers, their
-mapping and their retrieval/discovery. The format of specific identifiers is
-discussed in <span>[<a href="#I-D.mahy-mimi-identity" class="cite xref">I-D.mahy-mimi-identity</a>]</span>. Any specific conventions which are
-needed should be merged into this document.<a href="#section-3.1-3.1.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-3.1-4">Alice obtains Bob's internal identifier.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
-<p id="section-3.1-5">Alice fetches the internal identifier for some field of Bob's, in
-this example his handle.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.1-6">
-<pre>
-GET /identifierDiscovery/{domain}
-</pre><a href="#section-3.1-6" class="pilcrow">¶</a>
-</div>
-<p id="section-3.1-7">The request body is described as:<a href="#section-3.1-7" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-3.1-8">
-<pre>
-enum {
-  reserved(0),
-  handle(1),
-  nick(2),
-  email(3),
-  phone(4),
-  partialName(5),
-  wholeProfile(6),
-  oidcStdClaim(7),
-  vcardField(8),
-  (255)
-} IdentifierType;
-
-struct {
-  IdentifierType type;
-  string searchValue;
-  select(type) {
-     case oidcStdClaim:
-       string claimName;
-    case vcardField:
-       string fieldName;
-  };
-} IdentifierRequest;
-
-</pre><a href="#section-3.1-8" class="pilcrow">¶</a>
-</div>
-<p id="section-3.1-9">The response body is described as:<a href="#section-3.1-9" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-3.1-10">
-<pre>
-enum {
-  success(0),
-  notFound(1),
-  ambiguous(2),
-  forbidden(3),
-  unsupportedField(4),
-  (255)
-} IdentifierDiscoveryCode;
-
-struct {
-  IdentifierDiscoverCode responseCode;
-  IdentifierUri uri;
-} IdentifierResponse;
-</pre><a href="#section-3.1-10" class="pilcrow">¶</a>
-</div>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.1-11.1">
-            <p id="section-3.1-11.1.1"><strong>ISSUE</strong>: In the course of discovering Bob, Alice might or might not
-obtain a list of Bob's clients.<a href="#section-3.1-11.1.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
+<p id="section-3.1-4">ClientA1 also creates an MLS group with group ID <code>clubhouse@a.example</code> and
+ensures via provider-local operations that Alice's other clients are members of
+this MLS group.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="fetch-initial-key-material-for-bob">
+<div id="alice-adds-bob-to-the-room">
 <section id="section-3.2">
-        <h3 id="name-fetch-initial-key-material-">
-<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-fetch-initial-key-material-" class="section-name selfRef">Fetch initial key material for Bob</a>
+        <h3 id="name-alice-adds-bob-to-the-room">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-alice-adds-bob-to-the-room" class="section-name selfRef">Alice adds Bob to the Room</a>
         </h3>
-<p id="section-3.2-1">The action attempts to claim initial keying material for all the clients
-of a list of users at a single provider. The keying material may not be
-reused unless identified as "last resort" keying material.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2">Alice sends an Event (framed in a MIMIMessage) of type <code>ds.fetch_key_packages</code>
-to Bob's server, requesting key material for each of Bob's clients.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.2-3">See <a href="#event-schema" class="auto internal xref">Section 5.1</a> for the definition of Events in general and
-<a href="#ev-fetchkeypackage" class="auto internal xref">Section 5.3.4.3</a> for the <code>ds.fetch_key_packages</code> event.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.2-4.1">
-            <p id="section-3.2-4.1.1"><strong>TODO</strong>: For now, the event fetches key packages based on client identifiers,
-not user identifiers. This is because KeyPackage fetching is part of MIMI DS,
-which doesn't know what a user is. We could, however, send multiple MIMI DS
-requests in a single MIMI protocol request.<a href="#section-3.2-4.1.1" class="pilcrow">¶</a></p>
+<p id="section-3.2-1">Adding Bob to the room entails operations at two levels.  First, Bob's user
+identity must be added to the room's participant list.  Second, Bob's clients
+must be added to the room's MLS group.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">The process of adding Bob to the room thus begins by Alice fetching key material
+for Bob's clients.  Alice then updates the room by sending an MLS Commit over
+the following proposals:<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.2-3.1">
+            <p id="section-3.2-3.1.1">An AppSync proposal updating the room state by adding Bob to the
+participant list<a href="#section-3.2-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.2-3.2">
+            <p id="section-3.2-3.2.1">Add proposals for Bob's clients<a href="#section-3.2-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.2-5">If the request was successful, the response contains a list of KeyPackages, one
-for each client.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
+<p id="section-3.2-4">The MIMI protocol interactions are between Alice's server ServerA and Bob's
+server ServerB.  ServerB stores KeyPackages on behalf of Bob's devices.  ServerA
+performs the key material fetch on Alice's behalf, and delivers the resulting
+KeyPackages to Alice's clients.  Both ServerA and ServerB remember the sources
+of the KeyPackages they handle, so that they can route a Welcome message for
+those KeyPackages to the proper recipients -- ServerA to ServerB, and ServerB to
+Bob's clients.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.2-6.1">
-            <p id="section-3.2-6.1.1"><strong>TODO</strong>: For now, responses are simple, we can improve granularity when we
-start optimizing.<a href="#section-3.2-6.1.1" class="pilcrow">¶</a></p>
+<li class="normal ulEmpty" id="section-3.2-5.1">
+            <p id="section-3.2-5.1.1"><strong>NOTE:</strong> In the full protocol, it will be necessary to have consent and access
+control on these operations.  We have elided that step here in the interest of
+simplicity.<a href="#section-3.2-5.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.2-7.1">
-            <p id="section-3.2-7.1.1"><strong>TODO</strong>: Once we have framing for MIMIResponses, add a reference here.<a href="#section-3.2-7.1.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
+<span id="name-alice-fetches-keypackages-f"></span><div id="fig-ab-kp-fetch">
+<figure id="figure-2">
+          <div id="section-3.2-6.1">
+            <div class="alignLeft art-svg artwork" id="section-3.2-6.1.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="368" width="496" viewBox="0 0 496 368" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,208" fill="none" stroke="black"></path>
+                <path d="M 152,48 L 152,208" fill="none" stroke="black"></path>
+                <path d="M 280,48 L 280,208" fill="none" stroke="black"></path>
+                <path d="M 408,48 L 408,208" fill="none" stroke="black"></path>
+                <path d="M 288,80 Q 290,76.8 292,80 Q 294,83.2 296,80 Q 298,76.8 300,80 Q 302,83.2 304,80 Q 306,76.8 308,80 Q 310,83.2 312,80 Q 314,76.8 316,80 Q 318,83.2 320,80 Q 322,76.8 324,80 Q 326,83.2 328,80 Q 330,76.8 332,80 Q 334,83.2 336,80 Q 338,76.8 340,80 Q 342,83.2 344,80 Q 346,76.8 348,80 Q 350,83.2 352,80 Q 354,76.8 356,80 Q 358,83.2 360,80 Q 362,76.8 364,80 Q 366,83.2 368,80 Q 370,76.8 372,80 Q 374,83.2 376,80 Q 378,76.8 380,80 Q 382,83.2 384,80 Q 386,76.8 388,80 Q 390,83.2 392,80 Q 394,76.8 396,80 Q 398,83.2 400,80 Q 402,76.8 404,80 Q 406,83.2 408,80" fill="none" stroke="black"></path>
+                <path d="M 288,96 Q 290,92.8 292,96 Q 294,99.2 296,96 Q 298,92.8 300,96 Q 302,99.2 304,96 Q 306,92.8 308,96 Q 310,99.2 312,96 Q 314,92.8 316,96 Q 318,99.2 320,96 Q 322,92.8 324,96 Q 326,99.2 328,96 Q 330,92.8 332,96 Q 334,99.2 336,96 Q 338,92.8 340,96 Q 342,99.2 344,96 Q 346,92.8 348,96 Q 350,99.2 352,96 Q 354,92.8 356,96 Q 358,99.2 360,96 Q 362,92.8 364,96 Q 366,99.2 368,96 Q 370,92.8 372,96 Q 374,99.2 376,96 Q 378,92.8 380,96 Q 382,99.2 384,96 Q 386,92.8 388,96 Q 390,99.2 392,96 Q 394,92.8 396,96 Q 398,99.2 400,96 Q 402,92.8 404,96 Q 406,99.2 408,96" fill="none" stroke="black"></path>
+                <path d="M 24,128 Q 26,124.8 28,128 Q 30,131.2 32,128 Q 34,124.8 36,128 Q 38,131.2 40,128 Q 42,124.8 44,128 Q 46,131.2 48,128 Q 50,124.8 52,128 Q 54,131.2 56,128 Q 58,124.8 60,128 Q 62,131.2 64,128 Q 66,124.8 68,128 Q 70,131.2 72,128 Q 74,124.8 76,128 Q 78,131.2 80,128 Q 82,124.8 84,128 Q 86,131.2 88,128 Q 90,124.8 92,128 Q 94,131.2 96,128 Q 98,124.8 100,128 Q 102,131.2 104,128 Q 106,124.8 108,128 Q 110,131.2 112,128 Q 114,124.8 116,128 Q 118,131.2 120,128 Q 122,124.8 124,128 Q 126,131.2 128,128 Q 130,124.8 132,128 Q 134,131.2 136,128 Q 138,124.8 140,128 Q 142,131.2 144,128" fill="none" stroke="black"></path>
+                <path d="M 152,144 L 272,144" fill="none" stroke="black"></path>
+                <path d="M 160,176 L 280,176" fill="none" stroke="black"></path>
+                <path d="M 32,192 Q 34,188.8 36,192 Q 38,195.2 40,192 Q 42,188.8 44,192 Q 46,195.2 48,192 Q 50,188.8 52,192 Q 54,195.2 56,192 Q 58,188.8 60,192 Q 62,195.2 64,192 Q 66,188.8 68,192 Q 70,195.2 72,192 Q 74,188.8 76,192 Q 78,195.2 80,192 Q 82,188.8 84,192 Q 86,195.2 88,192 Q 90,188.8 92,192 Q 94,195.2 96,192 Q 98,188.8 100,192 Q 102,195.2 104,192 Q 106,188.8 108,192 Q 110,195.2 112,192 Q 114,188.8 116,192 Q 118,195.2 120,192 Q 122,188.8 124,192 Q 126,195.2 128,192 Q 130,188.8 132,192 Q 134,195.2 136,192 Q 138,188.8 140,192 Q 142,195.2 144,192 Q 146,188.8 148,192 Q 150,195.2 152,192" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="296,96 284,90.4 284,101.6" fill="black" transform="rotate(180,288,96)"></polygon>
+                <polygon class="arrowhead" points="296,80 284,74.4 284,85.6" fill="black" transform="rotate(180,288,80)"></polygon>
+                <polygon class="arrowhead" points="280,144 268,138.4 268,149.6" fill="black" transform="rotate(0,272,144)"></polygon>
+                <polygon class="arrowhead" points="168,176 156,170.4 156,181.6" fill="black" transform="rotate(180,160,176)"></polygon>
+                <polygon class="arrowhead" points="152,128 140,122.4 140,133.6" fill="black" transform="rotate(0,144,128)"></polygon>
+                <polygon class="arrowhead" points="40,192 28,186.4 28,197.6" fill="black" transform="rotate(180,32,192)"></polygon>
+                <g class="text">
+                  <text x="36" y="36">ClientA1</text>
+                  <text x="152" y="36">ServerA</text>
+                  <text x="280" y="36">ServerB</text>
+                  <text x="412" y="36">ClientB*</text>
+                  <text x="344" y="68">Store</text>
+                  <text x="384" y="68">KPs</text>
+                  <text x="64" y="116">Request</text>
+                  <text x="112" y="116">KPs</text>
+                  <text x="212" y="132">/keyMaterial</text>
+                  <text x="232" y="164">200</text>
+                  <text x="260" y="164">OK</text>
+                  <text x="128" y="180">KPs</text>
+                  <text x="76" y="244">ClientB*-&gt;ServerB:</text>
+                  <text x="164" y="244">[[</text>
+                  <text x="200" y="244">Store</text>
+                  <text x="272" y="244">KeyPackages</text>
+                  <text x="332" y="244">]]</text>
+                  <text x="76" y="260">ClientA1-&gt;ServerA:</text>
+                  <text x="164" y="260">[[</text>
+                  <text x="208" y="260">request</text>
+                  <text x="256" y="260">KPs</text>
+                  <text x="288" y="260">for</text>
+                  <text x="360" y="260">bob@b.example</text>
+                  <text x="428" y="260">]]</text>
+                  <text x="72" y="276">ServerA-&gt;ServerB:</text>
+                  <text x="164" y="276">POST</text>
+                  <text x="236" y="276">/keyMaterial</text>
+                  <text x="364" y="276">KeyMaterialRequest</text>
+                  <text x="36" y="292">ServerB:</text>
+                  <text x="100" y="292">Verify</text>
+                  <text x="148" y="292">that</text>
+                  <text x="192" y="292">Alice</text>
+                  <text x="228" y="292">is</text>
+                  <text x="284" y="292">authorized</text>
+                  <text x="340" y="292">to</text>
+                  <text x="376" y="292">fetch</text>
+                  <text x="448" y="292">KeyPackages</text>
+                  <text x="36" y="308">ServerB:</text>
+                  <text x="92" y="308">Mark</text>
+                  <text x="148" y="308">returned</text>
+                  <text x="200" y="308">KPs</text>
+                  <text x="228" y="308">as</text>
+                  <text x="276" y="308">reserved</text>
+                  <text x="328" y="308">for</text>
+                  <text x="376" y="308">Alice’s</text>
+                  <text x="424" y="308">use</text>
+                  <text x="72" y="324">ServerB-&gt;ServerA:</text>
+                  <text x="160" y="324">200</text>
+                  <text x="188" y="324">OK</text>
+                  <text x="280" y="324">KeyMaterialResponse</text>
+                  <text x="36" y="340">ServerA:</text>
+                  <text x="108" y="340">Remember</text>
+                  <text x="164" y="340">that</text>
+                  <text x="208" y="340">these</text>
+                  <text x="248" y="340">KPs</text>
+                  <text x="276" y="340">go</text>
+                  <text x="300" y="340">to</text>
+                  <text x="352" y="340">b.example</text>
+                  <text x="76" y="356">ServerA-&gt;ClientA1:</text>
+                  <text x="164" y="356">[[</text>
+                  <text x="192" y="356">KPs</text>
+                  <text x="220" y="356">]]</text>
+                </g>
+              </svg><a href="#section-3.2-6.1.1" class="pilcrow">¶</a>
+</div>
+</div>
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
+<a href="#name-alice-fetches-keypackages-f" class="selfRef">Alice Fetches KeyPackages for Bob's Clients</a>
+          </figcaption></figure>
+</div>
+<span id="name-alice-adds-bob-to-the-room-"></span><div id="fig-ab-add">
+<figure id="figure-3">
+          <div id="section-3.2-7.1">
+            <div class="alignLeft art-svg artwork" id="section-3.2-7.1.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="336" width="656" viewBox="0 0 656 336" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,192" fill="none" stroke="black"></path>
+                <path d="M 152,48 L 152,192" fill="none" stroke="black"></path>
+                <path d="M 280,48 L 280,192" fill="none" stroke="black"></path>
+                <path d="M 408,48 L 408,192" fill="none" stroke="black"></path>
+                <path d="M 24,80 Q 26,76.8 28,80 Q 30,83.2 32,80 Q 34,76.8 36,80 Q 38,83.2 40,80 Q 42,76.8 44,80 Q 46,83.2 48,80 Q 50,76.8 52,80 Q 54,83.2 56,80 Q 58,76.8 60,80 Q 62,83.2 64,80 Q 66,76.8 68,80 Q 70,83.2 72,80 Q 74,76.8 76,80 Q 78,83.2 80,80 Q 82,76.8 84,80 Q 86,83.2 88,80 Q 90,76.8 92,80 Q 94,83.2 96,80 Q 98,76.8 100,80 Q 102,83.2 104,80 Q 106,76.8 108,80 Q 110,83.2 112,80 Q 114,76.8 116,80 Q 118,83.2 120,80 Q 122,76.8 124,80 Q 126,83.2 128,80 Q 130,76.8 132,80 Q 134,83.2 136,80 Q 138,76.8 140,80 Q 142,83.2 144,80" fill="none" stroke="black"></path>
+                <path d="M 152,96 L 272,96" fill="none" stroke="black"></path>
+                <path d="M 280,112 Q 282,108.8 284,112 Q 286,115.2 288,112 Q 290,108.8 292,112 Q 294,115.2 296,112 Q 298,108.8 300,112 Q 302,115.2 304,112 Q 306,108.8 308,112 Q 310,115.2 312,112 Q 314,108.8 316,112 Q 318,115.2 320,112 Q 322,108.8 324,112 Q 326,115.2 328,112 Q 330,108.8 332,112 Q 334,115.2 336,112 Q 338,108.8 340,112 Q 342,115.2 344,112 Q 346,108.8 348,112 Q 350,115.2 352,112 Q 354,108.8 356,112 Q 358,115.2 360,112 Q 362,108.8 364,112 Q 366,115.2 368,112 Q 370,108.8 372,112 Q 374,115.2 376,112 Q 378,108.8 380,112 Q 382,115.2 384,112 Q 386,108.8 388,112 Q 390,115.2 392,112 Q 394,108.8 396,112 Q 398,115.2 400,112" fill="none" stroke="black"></path>
+                <path d="M 280,128 Q 282,124.8 284,128 Q 286,131.2 288,128 Q 290,124.8 292,128 Q 294,131.2 296,128 Q 298,124.8 300,128 Q 302,131.2 304,128 Q 306,124.8 308,128 Q 310,131.2 312,128 Q 314,124.8 316,128 Q 318,131.2 320,128 Q 322,124.8 324,128 Q 326,131.2 328,128 Q 330,124.8 332,128 Q 334,131.2 336,128 Q 338,124.8 340,128 Q 342,131.2 344,128 Q 346,124.8 348,128 Q 350,131.2 352,128 Q 354,124.8 356,128 Q 358,131.2 360,128 Q 362,124.8 364,128 Q 366,131.2 368,128 Q 370,124.8 372,128 Q 374,131.2 376,128 Q 378,124.8 380,128 Q 382,131.2 384,128 Q 386,124.8 388,128 Q 390,131.2 392,128 Q 394,124.8 396,128 Q 398,131.2 400,128" fill="none" stroke="black"></path>
+                <path d="M 160,160 L 280,160" fill="none" stroke="black"></path>
+                <path d="M 32,176 Q 34,172.8 36,176 Q 38,179.2 40,176 Q 42,172.8 44,176 Q 46,179.2 48,176 Q 50,172.8 52,176 Q 54,179.2 56,176 Q 58,172.8 60,176 Q 62,179.2 64,176 Q 66,172.8 68,176 Q 70,179.2 72,176 Q 74,172.8 76,176 Q 78,179.2 80,176 Q 82,172.8 84,176 Q 86,179.2 88,176 Q 90,172.8 92,176 Q 94,179.2 96,176 Q 98,172.8 100,176 Q 102,179.2 104,176 Q 106,172.8 108,176 Q 110,179.2 112,176 Q 114,172.8 116,176 Q 118,179.2 120,176 Q 122,172.8 124,176 Q 126,179.2 128,176 Q 130,172.8 132,176 Q 134,179.2 136,176 Q 138,172.8 140,176 Q 142,179.2 144,176 Q 146,172.8 148,176 Q 150,179.2 152,176" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="408,128 396,122.4 396,133.6" fill="black" transform="rotate(0,400,128)"></polygon>
+                <polygon class="arrowhead" points="408,112 396,106.4 396,117.6" fill="black" transform="rotate(0,400,112)"></polygon>
+                <polygon class="arrowhead" points="280,96 268,90.4 268,101.6" fill="black" transform="rotate(0,272,96)"></polygon>
+                <polygon class="arrowhead" points="168,160 156,154.4 156,165.6" fill="black" transform="rotate(180,160,160)"></polygon>
+                <polygon class="arrowhead" points="152,80 140,74.4 140,85.6" fill="black" transform="rotate(0,144,80)"></polygon>
+                <polygon class="arrowhead" points="40,176 28,170.4 28,181.6" fill="black" transform="rotate(180,32,176)"></polygon>
+                <g class="text">
+                  <text x="36" y="36">ClientA1</text>
+                  <text x="152" y="36">ServerA</text>
+                  <text x="280" y="36">ServerB</text>
+                  <text x="412" y="36">ClientB*</text>
+                  <text x="64" y="68">Commit,</text>
+                  <text x="116" y="68">etc.</text>
+                  <text x="192" y="84">/notify</text>
+                  <text x="324" y="100">Welcome,</text>
+                  <text x="380" y="100">Tree</text>
+                  <text x="232" y="148">200</text>
+                  <text x="260" y="148">OK</text>
+                  <text x="108" y="164">Accepted</text>
+                  <text x="40" y="228">ClientA1:</text>
+                  <text x="112" y="228">Prepare</text>
+                  <text x="172" y="228">Commit</text>
+                  <text x="220" y="228">over</text>
+                  <text x="340" y="228">AppSync(+bob@b.example),</text>
+                  <text x="460" y="228">Add*</text>
+                  <text x="76" y="244">ClientA1-&gt;ServerA:</text>
+                  <text x="164" y="244">[[</text>
+                  <text x="208" y="244">Commit,</text>
+                  <text x="276" y="244">Welcome,</text>
+                  <text x="360" y="244">GroupInfo?,</text>
+                  <text x="460" y="244">RatchetTree?</text>
+                  <text x="524" y="244">]]</text>
+                  <text x="36" y="260">ServerA:</text>
+                  <text x="100" y="260">Verify</text>
+                  <text x="148" y="260">that</text>
+                  <text x="204" y="260">AppSync,</text>
+                  <text x="260" y="260">Adds</text>
+                  <text x="296" y="260">are</text>
+                  <text x="344" y="260">allowed</text>
+                  <text x="388" y="260">by</text>
+                  <text x="428" y="260">policy</text>
+                  <text x="36" y="276">ServerA:</text>
+                  <text x="116" y="276">Identifies</text>
+                  <text x="192" y="276">Welcome</text>
+                  <text x="256" y="276">domains</text>
+                  <text x="312" y="276">based</text>
+                  <text x="348" y="276">on</text>
+                  <text x="372" y="276">KP</text>
+                  <text x="404" y="276">hash</text>
+                  <text x="436" y="276">in</text>
+                  <text x="480" y="276">Welcome</text>
+                  <text x="72" y="292">ServerA-&gt;ServerB:</text>
+                  <text x="164" y="292">POST</text>
+                  <text x="296" y="292">/notify/clubhouse@a.example</text>
+                  <text x="436" y="292">Intro{</text>
+                  <text x="500" y="292">Welcome,</text>
+                  <text x="588" y="292">RatchetTree?</text>
+                  <text x="648" y="292">}</text>
+                  <text x="36" y="308">ServerB:</text>
+                  <text x="116" y="308">Recognizes</text>
+                  <text x="180" y="308">that</text>
+                  <text x="232" y="308">Welcome</text>
+                  <text x="276" y="308">is</text>
+                  <text x="316" y="308">adding</text>
+                  <text x="360" y="308">Bob</text>
+                  <text x="388" y="308">to</text>
+                  <text x="420" y="308">room</text>
+                  <text x="520" y="308">clubhouse@a.example</text>
+                  <text x="76" y="324">ServerB-&gt;ClientB*:</text>
+                  <text x="164" y="324">[[</text>
+                  <text x="212" y="324">Welcome,</text>
+                  <text x="300" y="324">RatchetTree?</text>
+                  <text x="364" y="324">]]</text>
+                </g>
+              </svg><a href="#section-3.2-7.1.1" class="pilcrow">¶</a>
+</div>
+</div>
+<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
+<a href="#name-alice-adds-bob-to-the-room-" class="selfRef">Alice Adds Bob to the Room and Bob's Clients to the MLS Group</a>
+          </figcaption></figure>
+</div>
 </section>
 </div>
-<div id="create-a-room">
+<div id="bob-adds-cathy-to-the-room">
 <section id="section-3.3">
-        <h3 id="name-create-a-room">
-<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-create-a-room" class="section-name selfRef">Create a room</a>
+        <h3 id="name-bob-adds-cathy-to-the-room">
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-bob-adds-cathy-to-the-room" class="section-name selfRef">Bob adds Cathy to the Room</a>
         </h3>
-<p id="section-3.3-1">Creating a room is done between a client and its local provider and is out of
-scope of MIMI. Since Alice creates the room on the server of her local provider,
-it becomes the Hub for the room. However, the room policy format is in scope for MIMI.
-We assume that this room is a members-only room, and that only users who have
-the admin or owner role can add and remove users.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
-<p id="section-3.3-2">We also assume that Alice has both the <code>owner</code> and <code>admin</code> roles within the room.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.3-3.1">
-            <p id="section-3.3-3.1.1"><strong>TODO</strong>: Add information on room policy here once we have consensus on what
-that looks like.<a href="#section-3.3-3.1.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
+<p id="section-3.3-1">The process of adding Bob was a bit abbreviated because Alice is a user of the
+hub service provider.  When Bob adds Cathy, we see the full process, involving
+the same two steps (KeyPackage fetch followed by Add), but this time indirected via the
+hub server ServerA.  Also, now that there are users on ServerB involved in the
+room, the hub ServerA will have to distribute the Commit adding Cathy and
+Cathy's clients to ServerB as well as forwarding the Welcome to ServerC.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<span id="name-bob-fetches-keypackages-for"></span><div id="fig-bc-kp-fetch">
+<figure id="figure-4">
+          <div id="section-3.3-2.1">
+            <div class="alignLeft art-svg artwork" id="section-3.3-2.1.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="400" width="576" viewBox="0 0 576 400" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,208" fill="none" stroke="black"></path>
+                <path d="M 152,48 L 152,208" fill="none" stroke="black"></path>
+                <path d="M 280,48 L 280,208" fill="none" stroke="black"></path>
+                <path d="M 408,48 L 408,208" fill="none" stroke="black"></path>
+                <path d="M 536,48 L 536,208" fill="none" stroke="black"></path>
+                <path d="M 416,80 Q 418,76.8 420,80 Q 422,83.2 424,80 Q 426,76.8 428,80 Q 430,83.2 432,80 Q 434,76.8 436,80 Q 438,83.2 440,80 Q 442,76.8 444,80 Q 446,83.2 448,80 Q 450,76.8 452,80 Q 454,83.2 456,80 Q 458,76.8 460,80 Q 462,83.2 464,80 Q 466,76.8 468,80 Q 470,83.2 472,80 Q 474,76.8 476,80 Q 478,83.2 480,80 Q 482,76.8 484,80 Q 486,83.2 488,80 Q 490,76.8 492,80 Q 494,83.2 496,80 Q 498,76.8 500,80 Q 502,83.2 504,80 Q 506,76.8 508,80 Q 510,83.2 512,80 Q 514,76.8 516,80 Q 518,83.2 520,80 Q 522,76.8 524,80 Q 526,83.2 528,80 Q 530,76.8 532,80 Q 534,83.2 536,80" fill="none" stroke="black"></path>
+                <path d="M 416,96 Q 418,92.8 420,96 Q 422,99.2 424,96 Q 426,92.8 428,96 Q 430,99.2 432,96 Q 434,92.8 436,96 Q 438,99.2 440,96 Q 442,92.8 444,96 Q 446,99.2 448,96 Q 450,92.8 452,96 Q 454,99.2 456,96 Q 458,92.8 460,96 Q 462,99.2 464,96 Q 466,92.8 468,96 Q 470,99.2 472,96 Q 474,92.8 476,96 Q 478,99.2 480,96 Q 482,92.8 484,96 Q 486,99.2 488,96 Q 490,92.8 492,96 Q 494,99.2 496,96 Q 498,92.8 500,96 Q 502,99.2 504,96 Q 506,92.8 508,96 Q 510,99.2 512,96 Q 514,92.8 516,96 Q 518,99.2 520,96 Q 522,92.8 524,96 Q 526,99.2 528,96 Q 530,92.8 532,96 Q 534,99.2 536,96" fill="none" stroke="black"></path>
+                <path d="M 24,128 Q 26,124.8 28,128 Q 30,131.2 32,128 Q 34,124.8 36,128 Q 38,131.2 40,128 Q 42,124.8 44,128 Q 46,131.2 48,128 Q 50,124.8 52,128 Q 54,131.2 56,128 Q 58,124.8 60,128 Q 62,131.2 64,128 Q 66,124.8 68,128 Q 70,131.2 72,128 Q 74,124.8 76,128 Q 78,131.2 80,128 Q 82,124.8 84,128 Q 86,131.2 88,128 Q 90,124.8 92,128 Q 94,131.2 96,128 Q 98,124.8 100,128 Q 102,131.2 104,128 Q 106,124.8 108,128 Q 110,131.2 112,128 Q 114,124.8 116,128 Q 118,131.2 120,128 Q 122,124.8 124,128 Q 126,131.2 128,128 Q 130,124.8 132,128 Q 134,131.2 136,128 Q 138,124.8 140,128 Q 142,131.2 144,128" fill="none" stroke="black"></path>
+                <path d="M 152,144 L 400,144" fill="none" stroke="black"></path>
+                <path d="M 160,176 L 408,176" fill="none" stroke="black"></path>
+                <path d="M 32,192 Q 34,188.8 36,192 Q 38,195.2 40,192 Q 42,188.8 44,192 Q 46,195.2 48,192 Q 50,188.8 52,192 Q 54,195.2 56,192 Q 58,188.8 60,192 Q 62,195.2 64,192 Q 66,188.8 68,192 Q 70,195.2 72,192 Q 74,188.8 76,192 Q 78,195.2 80,192 Q 82,188.8 84,192 Q 86,195.2 88,192 Q 90,188.8 92,192 Q 94,195.2 96,192 Q 98,188.8 100,192 Q 102,195.2 104,192 Q 106,188.8 108,192 Q 110,195.2 112,192 Q 114,188.8 116,192 Q 118,195.2 120,192 Q 122,188.8 124,192 Q 126,195.2 128,192 Q 130,188.8 132,192 Q 134,195.2 136,192 Q 138,188.8 140,192 Q 142,195.2 144,192 Q 146,188.8 148,192 Q 150,195.2 152,192" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="424,96 412,90.4 412,101.6" fill="black" transform="rotate(180,416,96)"></polygon>
+                <polygon class="arrowhead" points="424,80 412,74.4 412,85.6" fill="black" transform="rotate(180,416,80)"></polygon>
+                <polygon class="arrowhead" points="408,144 396,138.4 396,149.6" fill="black" transform="rotate(0,400,144)"></polygon>
+                <polygon class="arrowhead" points="296,176 284,170.4 284,181.6" fill="black" transform="rotate(180,288,176)"></polygon>
+                <polygon class="arrowhead" points="280,144 268,138.4 268,149.6" fill="black" transform="rotate(0,272,144)"></polygon>
+                <polygon class="arrowhead" points="168,176 156,170.4 156,181.6" fill="black" transform="rotate(180,160,176)"></polygon>
+                <polygon class="arrowhead" points="152,128 140,122.4 140,133.6" fill="black" transform="rotate(0,144,128)"></polygon>
+                <polygon class="arrowhead" points="40,192 28,186.4 28,197.6" fill="black" transform="rotate(180,32,192)"></polygon>
+                <g class="text">
+                  <text x="36" y="36">ClientB1</text>
+                  <text x="152" y="36">ServerB</text>
+                  <text x="280" y="36">ServerA</text>
+                  <text x="408" y="36">ServerC</text>
+                  <text x="540" y="36">ClientC*</text>
+                  <text x="472" y="68">Store</text>
+                  <text x="512" y="68">KPs</text>
+                  <text x="64" y="116">Request</text>
+                  <text x="112" y="116">KPs</text>
+                  <text x="212" y="132">/keyMaterial</text>
+                  <text x="340" y="132">/keyMaterial</text>
+                  <text x="232" y="164">200</text>
+                  <text x="260" y="164">OK</text>
+                  <text x="360" y="164">200</text>
+                  <text x="388" y="164">OK</text>
+                  <text x="128" y="180">KPs</text>
+                  <text x="76" y="244">ClientC*-&gt;ServerC:</text>
+                  <text x="164" y="244">[[</text>
+                  <text x="200" y="244">Store</text>
+                  <text x="272" y="244">KeyPackages</text>
+                  <text x="332" y="244">]]</text>
+                  <text x="76" y="260">ClientB1-&gt;ServerB:</text>
+                  <text x="164" y="260">[[</text>
+                  <text x="208" y="260">request</text>
+                  <text x="256" y="260">KPs</text>
+                  <text x="288" y="260">for</text>
+                  <text x="360" y="260">bob@b.example</text>
+                  <text x="428" y="260">]]</text>
+                  <text x="72" y="276">ServerB-&gt;ServerA:</text>
+                  <text x="164" y="276">POST</text>
+                  <text x="236" y="276">/keyMaterial</text>
+                  <text x="364" y="276">KeyMaterialRequest</text>
+                  <text x="72" y="292">ServerA-&gt;ServerC:</text>
+                  <text x="164" y="292">POST</text>
+                  <text x="236" y="292">/keyMaterial</text>
+                  <text x="364" y="292">KeyMaterialRequest</text>
+                  <text x="36" y="308">ServerB:</text>
+                  <text x="100" y="308">Verify</text>
+                  <text x="148" y="308">that</text>
+                  <text x="184" y="308">Bob</text>
+                  <text x="212" y="308">is</text>
+                  <text x="268" y="308">authorized</text>
+                  <text x="324" y="308">to</text>
+                  <text x="360" y="308">fetch</text>
+                  <text x="432" y="308">KeyPackages</text>
+                  <text x="36" y="324">ServerB:</text>
+                  <text x="92" y="324">Mark</text>
+                  <text x="148" y="324">returned</text>
+                  <text x="200" y="324">KPs</text>
+                  <text x="228" y="324">as</text>
+                  <text x="276" y="324">reserved</text>
+                  <text x="328" y="324">for</text>
+                  <text x="368" y="324">Bob’s</text>
+                  <text x="408" y="324">use</text>
+                  <text x="72" y="340">ServerC-&gt;ServerA:</text>
+                  <text x="160" y="340">200</text>
+                  <text x="188" y="340">OK</text>
+                  <text x="280" y="340">KeyMaterialResponse</text>
+                  <text x="36" y="356">ServerA:</text>
+                  <text x="108" y="356">Remember</text>
+                  <text x="164" y="356">that</text>
+                  <text x="208" y="356">these</text>
+                  <text x="248" y="356">KPs</text>
+                  <text x="276" y="356">go</text>
+                  <text x="300" y="356">to</text>
+                  <text x="352" y="356">b.example</text>
+                  <text x="72" y="372">ServerA-&gt;ServerB:</text>
+                  <text x="160" y="372">200</text>
+                  <text x="188" y="372">OK</text>
+                  <text x="280" y="372">KeyMaterialResponse</text>
+                  <text x="76" y="388">ServerB-&gt;ClientB1:</text>
+                  <text x="164" y="388">[[</text>
+                  <text x="192" y="388">KPs</text>
+                  <text x="220" y="388">]]</text>
+                </g>
+              </svg><a href="#section-3.3-2.1.1" class="pilcrow">¶</a>
+</div>
+</div>
+<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
+<a href="#name-bob-fetches-keypackages-for" class="selfRef">Bob Fetches KeyPackages for Cathy's Clients</a>
+          </figcaption></figure>
+</div>
+<span id="name-bob-adds-cathy-to-the-room-"></span><div id="fig-bc-add">
+<figure id="figure-5">
+          <div id="section-3.3-3.1">
+            <div class="alignLeft art-svg artwork" id="section-3.3-3.1.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="512" width="736" viewBox="0 0 736 512" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,304" fill="none" stroke="black"></path>
+                <path d="M 152,48 L 152,304" fill="none" stroke="black"></path>
+                <path d="M 280,48 L 280,240" fill="none" stroke="black"></path>
+                <path d="M 280,272 L 280,304" fill="none" stroke="black"></path>
+                <path d="M 408,48 L 408,240" fill="none" stroke="black"></path>
+                <path d="M 536,48 L 536,240" fill="none" stroke="black"></path>
+                <path d="M 616,48 L 616,272" fill="none" stroke="black"></path>
+                <path d="M 696,48 L 696,304" fill="none" stroke="black"></path>
+                <path d="M 24,80 Q 26,76.8 28,80 Q 30,83.2 32,80 Q 34,76.8 36,80 Q 38,83.2 40,80 Q 42,76.8 44,80 Q 46,83.2 48,80 Q 50,76.8 52,80 Q 54,83.2 56,80 Q 58,76.8 60,80 Q 62,83.2 64,80 Q 66,76.8 68,80 Q 70,83.2 72,80 Q 74,76.8 76,80 Q 78,83.2 80,80 Q 82,76.8 84,80 Q 86,83.2 88,80 Q 90,76.8 92,80 Q 94,83.2 96,80 Q 98,76.8 100,80 Q 102,83.2 104,80 Q 106,76.8 108,80 Q 110,83.2 112,80 Q 114,76.8 116,80 Q 118,83.2 120,80 Q 122,76.8 124,80 Q 126,83.2 128,80 Q 130,76.8 132,80 Q 134,83.2 136,80 Q 138,76.8 140,80 Q 142,83.2 144,80" fill="none" stroke="black"></path>
+                <path d="M 152,96 L 272,96" fill="none" stroke="black"></path>
+                <path d="M 160,128 L 280,128" fill="none" stroke="black"></path>
+                <path d="M 32,160 Q 34,156.8 36,160 Q 38,163.2 40,160 Q 42,156.8 44,160 Q 46,163.2 48,160 Q 50,156.8 52,160 Q 54,163.2 56,160 Q 58,156.8 60,160 Q 62,163.2 64,160 Q 66,156.8 68,160 Q 70,163.2 72,160 Q 74,156.8 76,160 Q 78,163.2 80,160 Q 82,156.8 84,160 Q 86,163.2 88,160 Q 90,156.8 92,160 Q 94,163.2 96,160 Q 98,156.8 100,160 Q 102,163.2 104,160 Q 106,156.8 108,160 Q 110,163.2 112,160 Q 114,156.8 116,160 Q 118,163.2 120,160 Q 122,156.8 124,160 Q 126,163.2 128,160 Q 130,156.8 132,160 Q 134,163.2 136,160 Q 138,156.8 140,160 Q 142,163.2 144,160 Q 146,156.8 148,160 Q 150,163.2 152,160" fill="none" stroke="black"></path>
+                <path d="M 280,160 L 400,160" fill="none" stroke="black"></path>
+                <path d="M 408,176 Q 410,172.8 412,176 Q 414,179.2 416,176 Q 418,172.8 420,176 Q 422,179.2 424,176 Q 426,172.8 428,176 Q 430,179.2 432,176 Q 434,172.8 436,176 Q 438,179.2 440,176 Q 442,172.8 444,176 Q 446,179.2 448,176 Q 450,172.8 452,176 Q 454,179.2 456,176 Q 458,172.8 460,176 Q 462,179.2 464,176 Q 466,172.8 468,176 Q 470,179.2 472,176 Q 474,172.8 476,176 Q 478,179.2 480,176 Q 482,172.8 484,176 Q 486,179.2 488,176 Q 490,172.8 492,176 Q 494,179.2 496,176 Q 498,172.8 500,176 Q 502,179.2 504,176 Q 506,172.8 508,176 Q 510,179.2 512,176 Q 514,172.8 516,176 Q 518,179.2 520,176 Q 522,172.8 524,176 Q 526,179.2 528,176" fill="none" stroke="black"></path>
+                <path d="M 408,192 Q 410,188.8 412,192 Q 414,195.2 416,192 Q 418,188.8 420,192 Q 422,195.2 424,192 Q 426,188.8 428,192 Q 430,195.2 432,192 Q 434,188.8 436,192 Q 438,195.2 440,192 Q 442,188.8 444,192 Q 446,195.2 448,192 Q 450,188.8 452,192 Q 454,195.2 456,192 Q 458,188.8 460,192 Q 462,195.2 464,192 Q 466,188.8 468,192 Q 470,195.2 472,192 Q 474,188.8 476,192 Q 478,195.2 480,192 Q 482,188.8 484,192 Q 486,195.2 488,192 Q 490,188.8 492,192 Q 494,195.2 496,192 Q 498,188.8 500,192 Q 502,195.2 504,192 Q 506,188.8 508,192 Q 510,195.2 512,192 Q 514,188.8 516,192 Q 518,195.2 520,192 Q 522,188.8 524,192 Q 526,195.2 528,192" fill="none" stroke="black"></path>
+                <path d="M 160,224 L 280,224" fill="none" stroke="black"></path>
+                <path d="M 152,256 Q 154,252.8 156,256 Q 158,259.2 160,256 Q 162,252.8 164,256 Q 166,259.2 168,256 Q 170,252.8 172,256 Q 174,259.2 176,256 Q 178,252.8 180,256 Q 182,259.2 184,256 Q 186,252.8 188,256 Q 190,259.2 192,256 Q 194,252.8 196,256 Q 198,259.2 200,256 Q 202,252.8 204,256 Q 206,259.2 208,256 Q 210,252.8 212,256 Q 214,259.2 216,256 Q 218,252.8 220,256 Q 222,259.2 224,256 Q 226,252.8 228,256 Q 230,259.2 232,256 Q 234,252.8 236,256 Q 238,259.2 240,256 Q 242,252.8 244,256 Q 246,259.2 248,256 Q 250,252.8 252,256 Q 254,259.2 256,256 Q 258,252.8 260,256 Q 262,259.2 264,256 Q 266,252.8 268,256 Q 270,259.2 272,256 Q 274,252.8 276,256 Q 278,259.2 280,256 Q 282,252.8 284,256 Q 286,259.2 288,256 Q 290,252.8 292,256 Q 294,259.2 296,256 Q 298,252.8 300,256 Q 302,259.2 304,256 Q 306,252.8 308,256 Q 310,259.2 312,256 Q 314,252.8 316,256 Q 318,259.2 320,256 Q 322,252.8 324,256 Q 326,259.2 328,256 Q 330,252.8 332,256 Q 334,259.2 336,256 Q 338,252.8 340,256 Q 342,259.2 344,256 Q 346,252.8 348,256 Q 350,259.2 352,256 Q 354,252.8 356,256 Q 358,259.2 360,256 Q 362,252.8 364,256 Q 366,259.2 368,256 Q 370,252.8 372,256 Q 374,259.2 376,256 Q 378,252.8 380,256 Q 382,259.2 384,256 Q 386,252.8 388,256 Q 390,259.2 392,256 Q 394,252.8 396,256 Q 398,259.2 400,256 Q 402,252.8 404,256 Q 406,259.2 408,256 Q 410,252.8 412,256 Q 414,259.2 416,256 Q 418,252.8 420,256 Q 422,259.2 424,256 Q 426,252.8 428,256 Q 430,259.2 432,256 Q 434,252.8 436,256 Q 438,259.2 440,256 Q 442,252.8 444,256 Q 446,259.2 448,256 Q 450,252.8 452,256 Q 454,259.2 456,256 Q 458,252.8 460,256 Q 462,259.2 464,256 Q 466,252.8 468,256 Q 470,259.2 472,256 Q 474,252.8 476,256 Q 478,259.2 480,256 Q 482,252.8 484,256 Q 486,259.2 488,256 Q 490,252.8 492,256 Q 494,259.2 496,256 Q 498,252.8 500,256 Q 502,259.2 504,256 Q 506,252.8 508,256 Q 510,259.2 512,256 Q 514,252.8 516,256 Q 518,259.2 520,256 Q 522,252.8 524,256 Q 526,259.2 528,256 Q 530,252.8 532,256 Q 534,259.2 536,256 Q 538,252.8 540,256 Q 542,259.2 544,256 Q 546,252.8 548,256 Q 550,259.2 552,256 Q 554,252.8 556,256 Q 558,259.2 560,256 Q 562,252.8 564,256 Q 566,259.2 568,256 Q 570,252.8 572,256 Q 574,259.2 576,256 Q 578,252.8 580,256 Q 582,259.2 584,256 Q 586,252.8 588,256 Q 590,259.2 592,256 Q 594,252.8 596,256 Q 598,259.2 600,256 Q 602,252.8 604,256 Q 606,259.2 608,256" fill="none" stroke="black"></path>
+                <path d="M 280,288 Q 282,284.8 284,288 Q 286,291.2 288,288 Q 290,284.8 292,288 Q 294,291.2 296,288 Q 298,284.8 300,288 Q 302,291.2 304,288 Q 306,284.8 308,288 Q 310,291.2 312,288 Q 314,284.8 316,288 Q 318,291.2 320,288 Q 322,284.8 324,288 Q 326,291.2 328,288 Q 330,284.8 332,288 Q 334,291.2 336,288 Q 338,284.8 340,288 Q 342,291.2 344,288 Q 346,284.8 348,288 Q 350,291.2 352,288 Q 354,284.8 356,288 Q 358,291.2 360,288 Q 362,284.8 364,288 Q 366,291.2 368,288 Q 370,284.8 372,288 Q 374,291.2 376,288 Q 378,284.8 380,288 Q 382,291.2 384,288 Q 386,284.8 388,288 Q 390,291.2 392,288 Q 394,284.8 396,288 Q 398,291.2 400,288 Q 402,284.8 404,288 Q 406,291.2 408,288 Q 410,284.8 412,288 Q 414,291.2 416,288 Q 418,284.8 420,288 Q 422,291.2 424,288 Q 426,284.8 428,288 Q 430,291.2 432,288 Q 434,284.8 436,288 Q 438,291.2 440,288 Q 442,284.8 444,288 Q 446,291.2 448,288 Q 450,284.8 452,288 Q 454,291.2 456,288 Q 458,284.8 460,288 Q 462,291.2 464,288 Q 466,284.8 468,288 Q 470,291.2 472,288 Q 474,284.8 476,288 Q 478,291.2 480,288 Q 482,284.8 484,288 Q 486,291.2 488,288 Q 490,284.8 492,288 Q 494,291.2 496,288 Q 498,284.8 500,288 Q 502,291.2 504,288 Q 506,284.8 508,288 Q 510,291.2 512,288 Q 514,284.8 516,288 Q 518,291.2 520,288 Q 522,284.8 524,288 Q 526,291.2 528,288 Q 530,284.8 532,288 Q 534,291.2 536,288 Q 538,284.8 540,288 Q 542,291.2 544,288 Q 546,284.8 548,288 Q 550,291.2 552,288 Q 554,284.8 556,288 Q 558,291.2 560,288 Q 562,284.8 564,288 Q 566,291.2 568,288 Q 570,284.8 572,288 Q 574,291.2 576,288 Q 578,284.8 580,288 Q 582,291.2 584,288 Q 586,284.8 588,288 Q 590,291.2 592,288 Q 594,284.8 596,288 Q 598,291.2 600,288 Q 602,284.8 604,288 Q 606,291.2 608,288 Q 610,284.8 612,288 Q 614,291.2 616,288 Q 618,284.8 620,288 Q 622,291.2 624,288 Q 626,284.8 628,288 Q 630,291.2 632,288 Q 634,284.8 636,288 Q 638,291.2 640,288 Q 642,284.8 644,288 Q 646,291.2 648,288 Q 650,284.8 652,288 Q 654,291.2 656,288 Q 658,284.8 660,288 Q 662,291.2 664,288 Q 666,284.8 668,288 Q 670,291.2 672,288 Q 674,284.8 676,288 Q 678,291.2 680,288 Q 682,284.8 684,288 Q 686,291.2 688,288" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="696,288 684,282.4 684,293.6" fill="black" transform="rotate(0,688,288)"></polygon>
+                <polygon class="arrowhead" points="616,256 604,250.4 604,261.6" fill="black" transform="rotate(0,608,256)"></polygon>
+                <polygon class="arrowhead" points="536,192 524,186.4 524,197.6" fill="black" transform="rotate(0,528,192)"></polygon>
+                <polygon class="arrowhead" points="536,176 524,170.4 524,181.6" fill="black" transform="rotate(0,528,176)"></polygon>
+                <polygon class="arrowhead" points="408,160 396,154.4 396,165.6" fill="black" transform="rotate(0,400,160)"></polygon>
+                <polygon class="arrowhead" points="280,96 268,90.4 268,101.6" fill="black" transform="rotate(0,272,96)"></polygon>
+                <polygon class="arrowhead" points="168,224 156,218.4 156,229.6" fill="black" transform="rotate(180,160,224)"></polygon>
+                <polygon class="arrowhead" points="168,128 156,122.4 156,133.6" fill="black" transform="rotate(180,160,128)"></polygon>
+                <polygon class="arrowhead" points="152,80 140,74.4 140,85.6" fill="black" transform="rotate(0,144,80)"></polygon>
+                <polygon class="arrowhead" points="40,160 28,154.4 28,165.6" fill="black" transform="rotate(180,32,160)"></polygon>
+                <g class="text">
+                  <text x="36" y="36">ClientB1</text>
+                  <text x="152" y="36">ServerB</text>
+                  <text x="280" y="36">ServerA</text>
+                  <text x="408" y="36">ServerC</text>
+                  <text x="540" y="36">ClientC*</text>
+                  <text x="620" y="36">ClientB*</text>
+                  <text x="700" y="36">ClientA*</text>
+                  <text x="64" y="68">Commit,</text>
+                  <text x="116" y="68">etc.</text>
+                  <text x="192" y="84">/update</text>
+                  <text x="232" y="116">200</text>
+                  <text x="260" y="116">OK</text>
+                  <text x="108" y="148">Accepted</text>
+                  <text x="320" y="148">/notify</text>
+                  <text x="452" y="164">Welcome,</text>
+                  <text x="508" y="164">Tree</text>
+                  <text x="240" y="212">/notify</text>
+                  <text x="188" y="244">Commit</text>
+                  <text x="316" y="276">Commit</text>
+                  <text x="408" y="276">|</text>
+                  <text x="536" y="276">|</text>
+                  <text x="408" y="308">|</text>
+                  <text x="536" y="308">|</text>
+                  <text x="616" y="308">|</text>
+                  <text x="40" y="340">ClientB1:</text>
+                  <text x="112" y="340">Prepare</text>
+                  <text x="172" y="340">Commit</text>
+                  <text x="220" y="340">over</text>
+                  <text x="348" y="340">AppSync(+cathy@c.example),</text>
+                  <text x="476" y="340">Add*</text>
+                  <text x="76" y="356">ClientB1-&gt;ServerB:</text>
+                  <text x="164" y="356">[[</text>
+                  <text x="208" y="356">Commit,</text>
+                  <text x="276" y="356">Welcome,</text>
+                  <text x="360" y="356">GroupInfo?,</text>
+                  <text x="460" y="356">RatchetTree?</text>
+                  <text x="524" y="356">]]</text>
+                  <text x="72" y="372">ServerB-&gt;ServerA:</text>
+                  <text x="164" y="372">POST</text>
+                  <text x="296" y="372">/update/clubhouse@a.example</text>
+                  <text x="460" y="372">CommitBundle</text>
+                  <text x="36" y="388">ServerA:</text>
+                  <text x="100" y="388">Verify</text>
+                  <text x="148" y="388">that</text>
+                  <text x="188" y="388">Adds</text>
+                  <text x="224" y="388">are</text>
+                  <text x="272" y="388">allowed</text>
+                  <text x="316" y="388">by</text>
+                  <text x="356" y="388">policy</text>
+                  <text x="72" y="404">ServerA-&gt;ServerB:</text>
+                  <text x="160" y="404">200</text>
+                  <text x="188" y="404">OK</text>
+                  <text x="72" y="420">ServerA-&gt;ServerC:</text>
+                  <text x="164" y="420">POST</text>
+                  <text x="296" y="420">/notify/clubhouse@a.example</text>
+                  <text x="436" y="420">Intro{</text>
+                  <text x="500" y="420">Welcome,</text>
+                  <text x="588" y="420">RatchetTree?</text>
+                  <text x="648" y="420">}</text>
+                  <text x="36" y="436">ServerC:</text>
+                  <text x="116" y="436">Recognizes</text>
+                  <text x="180" y="436">that</text>
+                  <text x="232" y="436">Welcome</text>
+                  <text x="276" y="436">is</text>
+                  <text x="316" y="436">adding</text>
+                  <text x="368" y="436">Cathy</text>
+                  <text x="404" y="436">to</text>
+                  <text x="496" y="436">clubhouse@a.example</text>
+                  <text x="76" y="452">ServerC-&gt;ClientC*:</text>
+                  <text x="164" y="452">[[</text>
+                  <text x="212" y="452">Welcome,</text>
+                  <text x="300" y="452">RatchetTree?</text>
+                  <text x="364" y="452">]]</text>
+                  <text x="72" y="468">ServerA-&gt;ServerB:</text>
+                  <text x="164" y="468">POST</text>
+                  <text x="296" y="468">/notify/clubhouse@a.example</text>
+                  <text x="436" y="468">Commit</text>
+                  <text x="76" y="484">ServerB-&gt;ClientB*:</text>
+                  <text x="164" y="484">[[</text>
+                  <text x="204" y="484">Commit</text>
+                  <text x="244" y="484">]]</text>
+                  <text x="76" y="500">ServerA-&gt;ClientA*:</text>
+                  <text x="164" y="500">[[</text>
+                  <text x="204" y="500">Commit</text>
+                  <text x="244" y="500">]]</text>
+                </g>
+              </svg><a href="#section-3.3-3.1.1" class="pilcrow">¶</a>
+</div>
+</div>
+<figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
+<a href="#name-bob-adds-cathy-to-the-room-" class="selfRef">Bob Adds Cathy to the Room and Cathy's Clients to the MLS Group</a>
+          </figcaption></figure>
+</div>
 </section>
 </div>
-<div id="alice-adds-bob">
+<div id="cathy-sends-a-message">
 <section id="section-3.4">
-        <h3 id="name-alice-adds-bob">
-<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-alice-adds-bob" class="section-name selfRef">Alice adds Bob</a>
+        <h3 id="name-cathy-sends-a-message">
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-cathy-sends-a-message" class="section-name selfRef">Cathy Sends a Message</a>
         </h3>
-<p id="section-3.4-1">Management of the participants list (i.e. the list of users in the room) is done
-through <code>m.room.user</code> events. To add Bob to the room, Alice creates an
-<code>m.room.user</code> event. See <a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a> for more information on user state
-changes.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.4-2">Room state is anchored in the room's underlying MLS group through a GroupContext
-Extension, which mirrors all of the room's state variables.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
-<p id="section-3.4-3"><code>m.room.user</code> events are MLS proposals, which change the room state outside of
-the MLS group immediately upon reception and align the mirror of the room state
-in the extension (which is part of the group state) upon the next <code>ds.commit</code>
-event. This reflects the MLS proposal-commit paradigm that allows members and
-external parties to propose changes, but only members to commit them. See
-<a href="#anchoring" class="auto internal xref">Section 5.3.2</a> for more information on how the room state is cryptographically
-anchored.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
-<p id="section-3.4-4">Alice does not only want to add Bob as a participant, but also Bob's client. To
-do that, she sends a <code>ds.commit</code> event (<a href="#ev-commitupdate" class="auto internal xref">Section 5.3.4.2</a>) to the group. As
-<code>ds.commit</code> events can contain an arbitrary number of proposals, Alice includes
-the <code>m.room.user</code> proposal, as well as a proposal to add Bob's client. She
-creates the latter by using the key material she previously fetched from Bob's
-server.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
-<p id="section-3.4-5">She then sends the resulting <code>ds.commit</code> to the Hub. Upon reception, the Hub
-processes the commit and the proposals therein by updating the participant list
-to include Bob and the underlying MLS group state to add Bob's client.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
-<p id="section-3.4-6">Finally, the Hub fans out the commit event to Bob.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.4-7.1">
-            <p id="section-3.4-7.1.1"><strong>TODO</strong>: Especially when adding new clients, we will want to forward a
-<code>ds.commit</code> event selectively, as existing group members will only be
-interested in the actual commit, whereas new group members only need the
-Welcome.<a href="#section-3.4-7.1.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
+<p id="section-3.4-1">Now that Alice, Bob, and Cathy are all in the room, Cathy wants to say hello to
+everyone.  Cathy's client encapsulates the message in an MLS PrivateMessage and
+sends it to ServerC, who forwards it to the hub ServerA on Cathy's behalf.
+Assuming Cathy is allowed to speak in the room, ServerA will forward Cathy's
+message to the other servers involved in the room, who distribute it to their
+clients.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<span id="name-cathy-sends-a-message-to-th"></span><div id="fig-c-msg">
+<figure id="figure-6">
+          <div id="section-3.4-2.1">
+            <div class="alignLeft art-svg artwork" id="section-3.4-2.1.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="448" width="736" viewBox="0 0 736 448" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,288" fill="none" stroke="black"></path>
+                <path d="M 152,48 L 152,288" fill="none" stroke="black"></path>
+                <path d="M 280,48 L 280,224" fill="none" stroke="black"></path>
+                <path d="M 280,256 L 280,288" fill="none" stroke="black"></path>
+                <path d="M 408,48 L 408,224" fill="none" stroke="black"></path>
+                <path d="M 536,48 L 536,224" fill="none" stroke="black"></path>
+                <path d="M 616,48 L 616,256" fill="none" stroke="black"></path>
+                <path d="M 696,48 L 696,288" fill="none" stroke="black"></path>
+                <path d="M 24,80 Q 26,76.8 28,80 Q 30,83.2 32,80 Q 34,76.8 36,80 Q 38,83.2 40,80 Q 42,76.8 44,80 Q 46,83.2 48,80 Q 50,76.8 52,80 Q 54,83.2 56,80 Q 58,76.8 60,80 Q 62,83.2 64,80 Q 66,76.8 68,80 Q 70,83.2 72,80 Q 74,76.8 76,80 Q 78,83.2 80,80 Q 82,76.8 84,80 Q 86,83.2 88,80 Q 90,76.8 92,80 Q 94,83.2 96,80 Q 98,76.8 100,80 Q 102,83.2 104,80 Q 106,76.8 108,80 Q 110,83.2 112,80 Q 114,76.8 116,80 Q 118,83.2 120,80 Q 122,76.8 124,80 Q 126,83.2 128,80 Q 130,76.8 132,80 Q 134,83.2 136,80 Q 138,76.8 140,80 Q 142,83.2 144,80" fill="none" stroke="black"></path>
+                <path d="M 152,96 L 272,96" fill="none" stroke="black"></path>
+                <path d="M 160,128 L 280,128" fill="none" stroke="black"></path>
+                <path d="M 32,160 Q 34,156.8 36,160 Q 38,163.2 40,160 Q 42,156.8 44,160 Q 46,163.2 48,160 Q 50,156.8 52,160 Q 54,163.2 56,160 Q 58,156.8 60,160 Q 62,163.2 64,160 Q 66,156.8 68,160 Q 70,163.2 72,160 Q 74,156.8 76,160 Q 78,163.2 80,160 Q 82,156.8 84,160 Q 86,163.2 88,160 Q 90,156.8 92,160 Q 94,163.2 96,160 Q 98,156.8 100,160 Q 102,163.2 104,160 Q 106,156.8 108,160 Q 110,163.2 112,160 Q 114,156.8 116,160 Q 118,163.2 120,160 Q 122,156.8 124,160 Q 126,163.2 128,160 Q 130,156.8 132,160 Q 134,163.2 136,160 Q 138,156.8 140,160 Q 142,163.2 144,160 Q 146,156.8 148,160 Q 150,163.2 152,160" fill="none" stroke="black"></path>
+                <path d="M 280,160 L 400,160" fill="none" stroke="black"></path>
+                <path d="M 408,176 Q 410,172.8 412,176 Q 414,179.2 416,176 Q 418,172.8 420,176 Q 422,179.2 424,176 Q 426,172.8 428,176 Q 430,179.2 432,176 Q 434,172.8 436,176 Q 438,179.2 440,176 Q 442,172.8 444,176 Q 446,179.2 448,176 Q 450,172.8 452,176 Q 454,179.2 456,176 Q 458,172.8 460,176 Q 462,179.2 464,176 Q 466,172.8 468,176 Q 470,179.2 472,176 Q 474,172.8 476,176 Q 478,179.2 480,176 Q 482,172.8 484,176 Q 486,179.2 488,176 Q 490,172.8 492,176 Q 494,179.2 496,176 Q 498,172.8 500,176 Q 502,179.2 504,176 Q 506,172.8 508,176 Q 510,179.2 512,176 Q 514,172.8 516,176 Q 518,179.2 520,176 Q 522,172.8 524,176 Q 526,179.2 528,176" fill="none" stroke="black"></path>
+                <path d="M 160,208 L 280,208" fill="none" stroke="black"></path>
+                <path d="M 152,240 Q 154,236.8 156,240 Q 158,243.2 160,240 Q 162,236.8 164,240 Q 166,243.2 168,240 Q 170,236.8 172,240 Q 174,243.2 176,240 Q 178,236.8 180,240 Q 182,243.2 184,240 Q 186,236.8 188,240 Q 190,243.2 192,240 Q 194,236.8 196,240 Q 198,243.2 200,240 Q 202,236.8 204,240 Q 206,243.2 208,240 Q 210,236.8 212,240 Q 214,243.2 216,240 Q 218,236.8 220,240 Q 222,243.2 224,240 Q 226,236.8 228,240 Q 230,243.2 232,240 Q 234,236.8 236,240 Q 238,243.2 240,240 Q 242,236.8 244,240 Q 246,243.2 248,240 Q 250,236.8 252,240 Q 254,243.2 256,240 Q 258,236.8 260,240 Q 262,243.2 264,240 Q 266,236.8 268,240 Q 270,243.2 272,240 Q 274,236.8 276,240 Q 278,243.2 280,240 Q 282,236.8 284,240 Q 286,243.2 288,240 Q 290,236.8 292,240 Q 294,243.2 296,240 Q 298,236.8 300,240 Q 302,243.2 304,240 Q 306,236.8 308,240 Q 310,243.2 312,240 Q 314,236.8 316,240 Q 318,243.2 320,240 Q 322,236.8 324,240 Q 326,243.2 328,240 Q 330,236.8 332,240 Q 334,243.2 336,240 Q 338,236.8 340,240 Q 342,243.2 344,240 Q 346,236.8 348,240 Q 350,243.2 352,240 Q 354,236.8 356,240 Q 358,243.2 360,240 Q 362,236.8 364,240 Q 366,243.2 368,240 Q 370,236.8 372,240 Q 374,243.2 376,240 Q 378,236.8 380,240 Q 382,243.2 384,240 Q 386,236.8 388,240 Q 390,243.2 392,240 Q 394,236.8 396,240 Q 398,243.2 400,240 Q 402,236.8 404,240 Q 406,243.2 408,240 Q 410,236.8 412,240 Q 414,243.2 416,240 Q 418,236.8 420,240 Q 422,243.2 424,240 Q 426,236.8 428,240 Q 430,243.2 432,240 Q 434,236.8 436,240 Q 438,243.2 440,240 Q 442,236.8 444,240 Q 446,243.2 448,240 Q 450,236.8 452,240 Q 454,243.2 456,240 Q 458,236.8 460,240 Q 462,243.2 464,240 Q 466,236.8 468,240 Q 470,243.2 472,240 Q 474,236.8 476,240 Q 478,243.2 480,240 Q 482,236.8 484,240 Q 486,243.2 488,240 Q 490,236.8 492,240 Q 494,243.2 496,240 Q 498,236.8 500,240 Q 502,243.2 504,240 Q 506,236.8 508,240 Q 510,243.2 512,240 Q 514,236.8 516,240 Q 518,243.2 520,240 Q 522,236.8 524,240 Q 526,243.2 528,240 Q 530,236.8 532,240 Q 534,243.2 536,240 Q 538,236.8 540,240 Q 542,243.2 544,240 Q 546,236.8 548,240 Q 550,243.2 552,240 Q 554,236.8 556,240 Q 558,243.2 560,240 Q 562,236.8 564,240 Q 566,243.2 568,240 Q 570,236.8 572,240 Q 574,243.2 576,240 Q 578,236.8 580,240 Q 582,243.2 584,240 Q 586,236.8 588,240 Q 590,243.2 592,240 Q 594,236.8 596,240 Q 598,243.2 600,240 Q 602,236.8 604,240 Q 606,243.2 608,240" fill="none" stroke="black"></path>
+                <path d="M 280,272 Q 282,268.8 284,272 Q 286,275.2 288,272 Q 290,268.8 292,272 Q 294,275.2 296,272 Q 298,268.8 300,272 Q 302,275.2 304,272 Q 306,268.8 308,272 Q 310,275.2 312,272 Q 314,268.8 316,272 Q 318,275.2 320,272 Q 322,268.8 324,272 Q 326,275.2 328,272 Q 330,268.8 332,272 Q 334,275.2 336,272 Q 338,268.8 340,272 Q 342,275.2 344,272 Q 346,268.8 348,272 Q 350,275.2 352,272 Q 354,268.8 356,272 Q 358,275.2 360,272 Q 362,268.8 364,272 Q 366,275.2 368,272 Q 370,268.8 372,272 Q 374,275.2 376,272 Q 378,268.8 380,272 Q 382,275.2 384,272 Q 386,268.8 388,272 Q 390,275.2 392,272 Q 394,268.8 396,272 Q 398,275.2 400,272 Q 402,268.8 404,272 Q 406,275.2 408,272 Q 410,268.8 412,272 Q 414,275.2 416,272 Q 418,268.8 420,272 Q 422,275.2 424,272 Q 426,268.8 428,272 Q 430,275.2 432,272 Q 434,268.8 436,272 Q 438,275.2 440,272 Q 442,268.8 444,272 Q 446,275.2 448,272 Q 450,268.8 452,272 Q 454,275.2 456,272 Q 458,268.8 460,272 Q 462,275.2 464,272 Q 466,268.8 468,272 Q 470,275.2 472,272 Q 474,268.8 476,272 Q 478,275.2 480,272 Q 482,268.8 484,272 Q 486,275.2 488,272 Q 490,268.8 492,272 Q 494,275.2 496,272 Q 498,268.8 500,272 Q 502,275.2 504,272 Q 506,268.8 508,272 Q 510,275.2 512,272 Q 514,268.8 516,272 Q 518,275.2 520,272 Q 522,268.8 524,272 Q 526,275.2 528,272 Q 530,268.8 532,272 Q 534,275.2 536,272 Q 538,268.8 540,272 Q 542,275.2 544,272 Q 546,268.8 548,272 Q 550,275.2 552,272 Q 554,268.8 556,272 Q 558,275.2 560,272 Q 562,268.8 564,272 Q 566,275.2 568,272 Q 570,268.8 572,272 Q 574,275.2 576,272 Q 578,268.8 580,272 Q 582,275.2 584,272 Q 586,268.8 588,272 Q 590,275.2 592,272 Q 594,268.8 596,272 Q 598,275.2 600,272 Q 602,268.8 604,272 Q 606,275.2 608,272 Q 610,268.8 612,272 Q 614,275.2 616,272 Q 618,268.8 620,272 Q 622,275.2 624,272 Q 626,268.8 628,272 Q 630,275.2 632,272 Q 634,268.8 636,272 Q 638,275.2 640,272 Q 642,268.8 644,272 Q 646,275.2 648,272 Q 650,268.8 652,272 Q 654,275.2 656,272 Q 658,268.8 660,272 Q 662,275.2 664,272 Q 666,268.8 668,272 Q 670,275.2 672,272 Q 674,268.8 676,272 Q 678,275.2 680,272 Q 682,268.8 684,272 Q 686,275.2 688,272" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="696,272 684,266.4 684,277.6" fill="black" transform="rotate(0,688,272)"></polygon>
+                <polygon class="arrowhead" points="616,240 604,234.4 604,245.6" fill="black" transform="rotate(0,608,240)"></polygon>
+                <polygon class="arrowhead" points="536,176 524,170.4 524,181.6" fill="black" transform="rotate(0,528,176)"></polygon>
+                <polygon class="arrowhead" points="408,160 396,154.4 396,165.6" fill="black" transform="rotate(0,400,160)"></polygon>
+                <polygon class="arrowhead" points="280,96 268,90.4 268,101.6" fill="black" transform="rotate(0,272,96)"></polygon>
+                <polygon class="arrowhead" points="168,208 156,202.4 156,213.6" fill="black" transform="rotate(180,160,208)"></polygon>
+                <polygon class="arrowhead" points="168,128 156,122.4 156,133.6" fill="black" transform="rotate(180,160,128)"></polygon>
+                <polygon class="arrowhead" points="152,80 140,74.4 140,85.6" fill="black" transform="rotate(0,144,80)"></polygon>
+                <polygon class="arrowhead" points="40,160 28,154.4 28,165.6" fill="black" transform="rotate(180,32,160)"></polygon>
+                <g class="text">
+                  <text x="36" y="36">ClientC1</text>
+                  <text x="152" y="36">ServerC</text>
+                  <text x="280" y="36">ServerA</text>
+                  <text x="408" y="36">ServerB</text>
+                  <text x="540" y="36">ClientB*</text>
+                  <text x="620" y="36">ClientC*</text>
+                  <text x="700" y="36">ClientA*</text>
+                  <text x="64" y="68">Message</text>
+                  <text x="192" y="84">/submit</text>
+                  <text x="232" y="116">200</text>
+                  <text x="260" y="116">OK</text>
+                  <text x="108" y="148">Accepted</text>
+                  <text x="320" y="148">/notify</text>
+                  <text x="448" y="164">Message</text>
+                  <text x="240" y="196">/notify</text>
+                  <text x="192" y="228">Message</text>
+                  <text x="320" y="260">Message</text>
+                  <text x="408" y="260">|</text>
+                  <text x="536" y="260">|</text>
+                  <text x="408" y="292">|</text>
+                  <text x="536" y="292">|</text>
+                  <text x="616" y="292">|</text>
+                  <text x="76" y="324">ClientC1-&gt;ServerC:</text>
+                  <text x="164" y="324">[[</text>
+                  <text x="284" y="324">MLSMessage(PrivateMessage)</text>
+                  <text x="404" y="324">]]</text>
+                  <text x="72" y="340">ServerC-&gt;ServerA:</text>
+                  <text x="164" y="340">POST</text>
+                  <text x="296" y="340">/submit/clubhouse@a.example</text>
+                  <text x="516" y="340">MLSMessage(PrivateMessage)</text>
+                  <text x="36" y="356">ServerA:</text>
+                  <text x="108" y="356">Verifies</text>
+                  <text x="164" y="356">that</text>
+                  <text x="216" y="356">message</text>
+                  <text x="260" y="356">is</text>
+                  <text x="304" y="356">allowed</text>
+                  <text x="72" y="372">ServerA-&gt;ServerC:</text>
+                  <text x="164" y="372">POST</text>
+                  <text x="296" y="372">/notify/clubhouse@a.example</text>
+                  <text x="444" y="372">Message{</text>
+                  <text x="588" y="372">MLSMessage(PrivateMessage)</text>
+                  <text x="704" y="372">}</text>
+                  <text x="72" y="388">ServerA-&gt;ServerB:</text>
+                  <text x="164" y="388">POST</text>
+                  <text x="296" y="388">/notify/clubhouse@a.example</text>
+                  <text x="444" y="388">Message{</text>
+                  <text x="588" y="388">MLSMessage(PrivateMessage)</text>
+                  <text x="704" y="388">}</text>
+                  <text x="76" y="404">ServerA-&gt;ClientA*:</text>
+                  <text x="164" y="404">[[</text>
+                  <text x="284" y="404">MLSMessage(PrivateMessage)</text>
+                  <text x="404" y="404">]]</text>
+                  <text x="76" y="420">ServerB-&gt;ClientB*:</text>
+                  <text x="164" y="420">[[</text>
+                  <text x="284" y="420">MLSMessage(PrivateMessage)</text>
+                  <text x="404" y="420">]]</text>
+                  <text x="76" y="436">ServerC-&gt;ClientC*:</text>
+                  <text x="164" y="436">[[</text>
+                  <text x="284" y="436">MLSMessage(PrivateMessage)</text>
+                  <text x="404" y="436">]]</text>
+                </g>
+              </svg><a href="#section-3.4-2.1.1" class="pilcrow">¶</a>
+</div>
+</div>
+<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
+<a href="#name-cathy-sends-a-message-to-th" class="selfRef">Cathy Sends a Message to the Room</a>
+          </figcaption></figure>
+</div>
 </section>
 </div>
-<div id="alice-sends-a-message-to-the-room">
+<div id="bob-leaves-the-room">
 <section id="section-3.5">
-        <h3 id="name-alice-sends-a-message-to-th">
-<a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-alice-sends-a-message-to-th" class="section-name selfRef">Alice sends a message to the room</a>
+        <h3 id="name-bob-leaves-the-room">
+<a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-bob-leaves-the-room" class="section-name selfRef">Bob Leaves the Room</a>
         </h3>
-<p id="section-3.5-1">After Bob has joined the room, Alice creates a message using the MIMI content
-format <span>[<a href="#I-D.ietf-mimi-content" class="cite xref">I-D.ietf-mimi-content</a>]</span>, and sends a <code>ds.send_message</code>
-(<a href="#ev-sendmessage" class="auto internal xref">Section 5.3.4.5</a>) event to the Hub.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="the-hubowning-provider-fans-out-the-message">
-<section id="section-3.6">
-        <h3 id="name-the-hub-owning-provider-fan">
-<a href="#section-3.6" class="section-number selfRef">3.6. </a><a href="#name-the-hub-owning-provider-fan" class="section-name selfRef">The hub/owning provider fans out the message</a>
-        </h3>
-<p id="section-3.6-1">If the Hub accepts the message it fans the message out to all guest servers,
-which in this case is Bob's server.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
-<p id="section-3.6-2">Generally, the Hub also fans out any messages which originate from itself (ex:
-removing clients of deleted users).<a href="#section-3.6-2" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="bob-sends-a-message-to-the-room">
-<section id="section-3.7">
-        <h3 id="name-bob-sends-a-message-to-the-">
-<a href="#section-3.7" class="section-number selfRef">3.7. </a><a href="#name-bob-sends-a-message-to-the-" class="section-name selfRef">Bob sends a message to the room</a>
-        </h3>
-<p id="section-3.7-1">This is no different from Alice sending a message, which is fanned out in
-exactly the same way.<a href="#section-3.7-1" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="bob-adds-a-new-client">
-<section id="section-3.8">
-        <h3 id="name-bob-adds-a-new-client">
-<a href="#section-3.8" class="section-number selfRef">3.8. </a><a href="#name-bob-adds-a-new-client" class="section-name selfRef">Bob adds a new client</a>
-        </h3>
-<p id="section-3.8-1">For Bob's new client to join the MLS group and therefore fully participate in
-the room with Alice, Bob needs to fetch the current group and room information
-through a <code>ds.fetch_group_info</code> event (<a href="#ev-fetchgroupinfo" class="auto internal xref">Section 5.3.4.4</a>), which he sends to
-the Hub.<a href="#section-3.8-1" class="pilcrow">¶</a></p>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.8-2.1">
-            <p id="section-3.8-2.1.1"><strong>TODO</strong>: in the MLS case, what security properties are needed to protect a
-GroupInfo object in the MIMI context are still under discussion. It is
-possible that the requester only needs to prove possession of their private
-key. The GroupInfo in another context might be sufficiently sensitive that it
-should be encrypted from the end client to the hub provider (unreadable by the
-local provider).<a href="#section-3.8-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-3.5-1">A user removing another user follows the same flow as adding the user.  The
+user performing the removal creates an MLS commit covering Remove proposals for
+all of the removed user's devices, and an AppSync proposal updating the room
+state to remove the removed user from the room's participant list.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
+<p id="section-3.5-2">One's own user leaving is slightly more complicated than removing another user,
+because the leaving user cannot remove all of their devices from the MLS group.
+Instead, the leave happens in three steps:<a href="#section-3.5-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-3.5-3">
+<li id="section-3.5-3.1">
+            <p id="section-3.5-3.1.1">The leaving client constructs MLS Remove proposals for all of the user's
+devices (including the leaving client), and an AppSync proposal that removes
+its user from the participant list.<a href="#section-3.5-3.1.1" class="pilcrow">¶</a></p>
 </li>
-        </ul>
-<p id="section-3.8-3">The new client can use the information to add itself to the group via a
-<code>ds.commit</code> that contains an MLS ExternalInit proposal.<a href="#section-3.8-3" class="pilcrow">¶</a></p>
-</section>
+          <li id="section-3.5-3.2">
+            <p id="section-3.5-3.2.1">The leaving client sends these proposals to the hub.  The hub caches the proposals.<a href="#section-3.5-3.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.5-3.3">
+            <p id="section-3.5-3.3.1">The next time a client attempts to commit, the hub requires the client to
+include the cached proposals.<a href="#section-3.5-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+<p id="section-3.5-4">The hub thus guarantees the leaving client that they will be removed as soon as
+possible.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
+<span id="name-bob-leaves-the-room-2"></span><div id="fig-b-leave">
+<figure id="figure-7">
+          <div id="section-3.5-5.1">
+            <div class="alignLeft art-svg artwork" id="section-3.5-5.1.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="624" width="592" viewBox="0 0 592 624" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,384" fill="none" stroke="black"></path>
+                <path d="M 152,48 L 152,384" fill="none" stroke="black"></path>
+                <path d="M 280,48 L 280,384" fill="none" stroke="black"></path>
+                <path d="M 408,48 L 408,384" fill="none" stroke="black"></path>
+                <path d="M 536,48 L 536,384" fill="none" stroke="black"></path>
+                <path d="M 24,80 Q 26,76.8 28,80 Q 30,83.2 32,80 Q 34,76.8 36,80 Q 38,83.2 40,80 Q 42,76.8 44,80 Q 46,83.2 48,80 Q 50,76.8 52,80 Q 54,83.2 56,80 Q 58,76.8 60,80 Q 62,83.2 64,80 Q 66,76.8 68,80 Q 70,83.2 72,80 Q 74,76.8 76,80 Q 78,83.2 80,80 Q 82,76.8 84,80 Q 86,83.2 88,80 Q 90,76.8 92,80 Q 94,83.2 96,80 Q 98,76.8 100,80 Q 102,83.2 104,80 Q 106,76.8 108,80 Q 110,83.2 112,80 Q 114,76.8 116,80 Q 118,83.2 120,80 Q 122,76.8 124,80 Q 126,83.2 128,80 Q 130,76.8 132,80 Q 134,83.2 136,80 Q 138,76.8 140,80 Q 142,83.2 144,80" fill="none" stroke="black"></path>
+                <path d="M 152,96 L 272,96" fill="none" stroke="black"></path>
+                <path d="M 160,128 L 280,128" fill="none" stroke="black"></path>
+                <path d="M 32,160 Q 34,156.8 36,160 Q 38,163.2 40,160 Q 42,156.8 44,160 Q 46,163.2 48,160 Q 50,156.8 52,160 Q 54,163.2 56,160 Q 58,156.8 60,160 Q 62,163.2 64,160 Q 66,156.8 68,160 Q 70,163.2 72,160 Q 74,156.8 76,160 Q 78,163.2 80,160 Q 82,156.8 84,160 Q 86,163.2 88,160 Q 90,156.8 92,160 Q 94,163.2 96,160 Q 98,156.8 100,160 Q 102,163.2 104,160 Q 106,156.8 108,160 Q 110,163.2 112,160 Q 114,156.8 116,160 Q 118,163.2 120,160 Q 122,156.8 124,160 Q 126,163.2 128,160 Q 130,156.8 132,160 Q 134,163.2 136,160 Q 138,156.8 140,160 Q 142,163.2 144,160 Q 146,156.8 148,160 Q 150,163.2 152,160" fill="none" stroke="black"></path>
+                <path d="M 280,160 L 400,160" fill="none" stroke="black"></path>
+                <path d="M 408,192 Q 410,188.8 412,192 Q 414,195.2 416,192 Q 418,188.8 420,192 Q 422,195.2 424,192 Q 426,188.8 428,192 Q 430,195.2 432,192 Q 434,188.8 436,192 Q 438,195.2 440,192 Q 442,188.8 444,192 Q 446,195.2 448,192 Q 450,188.8 452,192 Q 454,195.2 456,192 Q 458,188.8 460,192 Q 462,195.2 464,192 Q 466,188.8 468,192 Q 470,195.2 472,192 Q 474,188.8 476,192 Q 478,195.2 480,192 Q 482,188.8 484,192 Q 486,195.2 488,192 Q 490,188.8 492,192 Q 494,195.2 496,192 Q 498,188.8 500,192 Q 502,195.2 504,192 Q 506,188.8 508,192 Q 510,195.2 512,192 Q 514,188.8 516,192 Q 518,195.2 520,192 Q 522,188.8 524,192 Q 526,195.2 528,192" fill="none" stroke="black"></path>
+                <path d="M 416,240 Q 418,236.8 420,240 Q 422,243.2 424,240 Q 426,236.8 428,240 Q 430,243.2 432,240 Q 434,236.8 436,240 Q 438,243.2 440,240 Q 442,236.8 444,240 Q 446,243.2 448,240 Q 450,236.8 452,240 Q 454,243.2 456,240 Q 458,236.8 460,240 Q 462,243.2 464,240 Q 466,236.8 468,240 Q 470,243.2 472,240 Q 474,236.8 476,240 Q 478,243.2 480,240 Q 482,236.8 484,240 Q 486,243.2 488,240 Q 490,236.8 492,240 Q 494,243.2 496,240 Q 498,236.8 500,240 Q 502,243.2 504,240 Q 506,236.8 508,240 Q 510,243.2 512,240 Q 514,236.8 516,240 Q 518,243.2 520,240 Q 522,236.8 524,240 Q 526,243.2 528,240 Q 530,236.8 532,240 Q 534,243.2 536,240" fill="none" stroke="black"></path>
+                <path d="M 288,272 L 408,272" fill="none" stroke="black"></path>
+                <path d="M 280,304 L 400,304" fill="none" stroke="black"></path>
+                <path d="M 408,336 Q 410,332.8 412,336 Q 414,339.2 416,336 Q 418,332.8 420,336 Q 422,339.2 424,336 Q 426,332.8 428,336 Q 430,339.2 432,336 Q 434,332.8 436,336 Q 438,339.2 440,336 Q 442,332.8 444,336 Q 446,339.2 448,336 Q 450,332.8 452,336 Q 454,339.2 456,336 Q 458,332.8 460,336 Q 462,339.2 464,336 Q 466,332.8 468,336 Q 470,339.2 472,336 Q 474,332.8 476,336 Q 478,339.2 480,336 Q 482,332.8 484,336 Q 486,339.2 488,336 Q 490,332.8 492,336 Q 494,339.2 496,336 Q 498,332.8 500,336 Q 502,339.2 504,336 Q 506,332.8 508,336 Q 510,339.2 512,336 Q 514,332.8 516,336 Q 518,339.2 520,336 Q 522,332.8 524,336 Q 526,339.2 528,336" fill="none" stroke="black"></path>
+                <path d="M 160,368 L 400,368" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="536,336 524,330.4 524,341.6" fill="black" transform="rotate(0,528,336)"></polygon>
+                <polygon class="arrowhead" points="536,192 524,186.4 524,197.6" fill="black" transform="rotate(0,528,192)"></polygon>
+                <polygon class="arrowhead" points="424,240 412,234.4 412,245.6" fill="black" transform="rotate(180,416,240)"></polygon>
+                <polygon class="arrowhead" points="408,368 396,362.4 396,373.6" fill="black" transform="rotate(0,400,368)"></polygon>
+                <polygon class="arrowhead" points="408,304 396,298.4 396,309.6" fill="black" transform="rotate(0,400,304)"></polygon>
+                <polygon class="arrowhead" points="408,160 396,154.4 396,165.6" fill="black" transform="rotate(0,400,160)"></polygon>
+                <polygon class="arrowhead" points="296,272 284,266.4 284,277.6" fill="black" transform="rotate(180,288,272)"></polygon>
+                <polygon class="arrowhead" points="280,96 268,90.4 268,101.6" fill="black" transform="rotate(0,272,96)"></polygon>
+                <polygon class="arrowhead" points="168,368 156,362.4 156,373.6" fill="black" transform="rotate(180,160,368)"></polygon>
+                <polygon class="arrowhead" points="168,128 156,122.4 156,133.6" fill="black" transform="rotate(180,160,128)"></polygon>
+                <polygon class="arrowhead" points="152,80 140,74.4 140,85.6" fill="black" transform="rotate(0,144,80)"></polygon>
+                <polygon class="arrowhead" points="40,160 28,154.4 28,165.6" fill="black" transform="rotate(180,32,160)"></polygon>
+                <g class="text">
+                  <text x="36" y="36">ClientB1</text>
+                  <text x="152" y="36">ServerB</text>
+                  <text x="280" y="36">ServerA</text>
+                  <text x="408" y="36">ServerC</text>
+                  <text x="540" y="36">ClientC1</text>
+                  <text x="72" y="68">Proposals</text>
+                  <text x="192" y="84">/update</text>
+                  <text x="232" y="116">200</text>
+                  <text x="260" y="116">OK</text>
+                  <text x="108" y="148">Accepted</text>
+                  <text x="328" y="148">/notify</text>
+                  <text x="456" y="180">Proposals</text>
+                  <text x="472" y="228">Commit(Props)</text>
+                  <text x="368" y="260">/update</text>
+                  <text x="304" y="292">200</text>
+                  <text x="332" y="292">OK</text>
+                  <text x="452" y="324">Accepted</text>
+                  <text x="240" y="356">/notify</text>
+                  <text x="320" y="356">/notify</text>
+                  <text x="40" y="420">ClientB1:</text>
+                  <text x="112" y="420">Prepare</text>
+                  <text x="180" y="420">Remove*,</text>
+                  <text x="312" y="420">AppSync(-bob@b.example)</text>
+                  <text x="76" y="436">ClientB1-&gt;ServerB:</text>
+                  <text x="164" y="436">[[</text>
+                  <text x="212" y="436">Remove*,</text>
+                  <text x="280" y="436">AppSync</text>
+                  <text x="324" y="436">]]</text>
+                  <text x="72" y="452">ServerB-&gt;ServerA:</text>
+                  <text x="164" y="452">POST</text>
+                  <text x="296" y="452">/update/clubhouse@a.example</text>
+                  <text x="444" y="452">Remove*,</text>
+                  <text x="512" y="452">AppSync</text>
+                  <text x="36" y="468">ServerA:</text>
+                  <text x="100" y="468">Verify</text>
+                  <text x="148" y="468">that</text>
+                  <text x="204" y="468">Removes,</text>
+                  <text x="272" y="468">AppSync</text>
+                  <text x="320" y="468">are</text>
+                  <text x="368" y="468">allowed</text>
+                  <text x="412" y="468">by</text>
+                  <text x="456" y="468">policy;</text>
+                  <text x="512" y="468">cache</text>
+                  <text x="72" y="484">ServerA-&gt;ServerB:</text>
+                  <text x="160" y="484">200</text>
+                  <text x="188" y="484">OK</text>
+                  <text x="72" y="500">ServerA-&gt;ServerC:</text>
+                  <text x="164" y="500">POST</text>
+                  <text x="296" y="500">/notify/clubhouse@a.example</text>
+                  <text x="448" y="500">Proposals</text>
+                  <text x="80" y="516">ServerC1-&gt;ClientC1:</text>
+                  <text x="172" y="516">[[</text>
+                  <text x="224" y="516">Proposals</text>
+                  <text x="276" y="516">]]</text>
+                  <text x="76" y="532">ClientC1-&gt;ServerC:</text>
+                  <text x="164" y="532">[[</text>
+                  <text x="236" y="532">Commit(Props),</text>
+                  <text x="332" y="532">Welcome,</text>
+                  <text x="416" y="532">GroupInfo?,</text>
+                  <text x="516" y="532">RatchetTree?</text>
+                  <text x="580" y="532">]]</text>
+                  <text x="72" y="548">ServerC-&gt;ServerA:</text>
+                  <text x="164" y="548">POST</text>
+                  <text x="296" y="548">/update/clubhouse@a.example</text>
+                  <text x="460" y="548">CommitBundle</text>
+                  <text x="36" y="564">ServerA:</text>
+                  <text x="96" y="564">Check</text>
+                  <text x="152" y="564">whether</text>
+                  <text x="212" y="564">Commit</text>
+                  <text x="276" y="564">includes</text>
+                  <text x="340" y="564">queued</text>
+                  <text x="412" y="564">proposals;</text>
+                  <text x="484" y="564">accept</text>
+                  <text x="72" y="580">ServerA-&gt;ServerC:</text>
+                  <text x="160" y="580">200</text>
+                  <text x="188" y="580">OK</text>
+                  <text x="72" y="596">ServerA-&gt;ServerB:</text>
+                  <text x="164" y="596">POST</text>
+                  <text x="296" y="596">/notify/clubhouse@a.example</text>
+                  <text x="436" y="596">Commit</text>
+                  <text x="72" y="612">ServerA-&gt;ServerC:</text>
+                  <text x="164" y="612">POST</text>
+                  <text x="296" y="612">/notify/clubhouse@a.example</text>
+                  <text x="436" y="612">Commit</text>
+                </g>
+              </svg><a href="#section-3.5-5.1.1" class="pilcrow">¶</a>
 </div>
-<div id="alice-adds-cathy">
-<section id="section-3.9">
-        <h3 id="name-alice-adds-cathy">
-<a href="#section-3.9" class="section-number selfRef">3.9. </a><a href="#name-alice-adds-cathy" class="section-name selfRef">Alice adds Cathy</a>
-        </h3>
-<p id="section-3.9-1">Alice gets the identifier for Cathy and waits for her to join the room in
-exactly the same way as in previous steps.<a href="#section-3.9-1" class="pilcrow">¶</a></p>
-</section>
 </div>
-<div id="alice-removes-bob-from-the-room">
-<section id="section-3.10">
-        <h3 id="name-alice-removes-bob-from-the-">
-<a href="#section-3.10" class="section-number selfRef">3.10. </a><a href="#name-alice-removes-bob-from-the-" class="section-name selfRef">Alice removes Bob from the room</a>
-        </h3>
-<p id="section-3.10-1">Alice removes Bob by sending an <code>ds.commit</code> event. The <code>ds.commit</code> event
-contains an <code>m.room.user</code> event which removes Bob from the participant list, as
-well as proposals to remove Bob's clients.<a href="#section-3.10-1" class="pilcrow">¶</a></p>
+<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
+<a href="#name-bob-leaves-the-room-2" class="selfRef">Bob Leaves the Room</a>
+          </figcaption></figure>
+</div>
 </section>
 </div>
 </section>
@@ -2251,7 +2776,7 @@ user to the list of participants in the <code>invite</code> state.<a href="#sect
 the Hub), one of the user's clients can add itself, as well as any other clients
 to the room's underlying group.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
 <p id="section-6.2-3">Updating the target user's participation state is done using the following
-steps, and is visualized in <a href="#fig-invites" class="auto internal xref">Figure 1</a>.<a href="#section-6.2-3" class="pilcrow">¶</a></p>
+steps, and is visualized in <a href="#fig-invites" class="auto internal xref">Figure 8</a>.<a href="#section-6.2-3" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-6.2-4">
 <li id="section-6.2-4.1">
             <p id="section-6.2-4.1.1">The inviter's server generates an <code>m.room.user</code> (<a href="#ev-mroomuser" class="auto internal xref">Section 6.7</a>)
@@ -2291,7 +2816,7 @@ relevant provider-specific API where the user can then accept or decline the inv
 <p id="section-6.2-6">If the user declines the invite, they are removed from the participant list.
 Accepting is done by joining (<a href="#joins" class="auto internal xref">Section 6.3</a>) the room.<a href="#section-6.2-6" class="pilcrow">¶</a></p>
 <span id="name-invite-happy-path"></span><div id="fig-invites">
-<figure id="figure-1">
+<figure id="figure-8">
           <div id="section-6.2-7.1">
             <div class="alignLeft art-svg artwork" id="section-6.2-7.1.1">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="496" width="568" viewBox="0 0 568 496" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
@@ -2367,7 +2892,7 @@ Accepting is done by joining (<a href="#joins" class="auto internal xref">Sectio
               </svg><a href="#section-6.2-7.1.1" class="pilcrow">¶</a>
 </div>
 </div>
-<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
 <a href="#name-invite-happy-path" class="selfRef">Invite happy path</a>
           </figcaption></figure>
 </div>
@@ -2840,6 +3365,10 @@ separated by dots.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
         <dd>
 <span class="refAuthor">Barnes, R.</span>, <span class="refTitle">"An Architecture for More Instant Messaging Interoperability (MIMI)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-barnes-mimi-arch-02</span>, <time datetime="2023-10-23" class="refDate">23 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-barnes-mimi-arch-02">https://datatracker.ietf.org/doc/html/draft-barnes-mimi-arch-02</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="I-D.mimi-arch">[I-D.mimi-arch]</dt>
+        <dd>
+<span class="refTitle">"*** BROKEN REFERENCE ***"</span>. </dd>
+<dd class="break"></dd>
 <dt id="I-D.robert-mimi-delivery-service">[I-D.robert-mimi-delivery-service]</dt>
         <dd>
 <span class="refAuthor">Robert, R.</span> and <span class="refAuthor">K. Kohbrok</span>, <span class="refTitle">"MIMI Delivery Service"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-robert-mimi-delivery-service-06</span>, <time datetime="2023-11-06" class="refDate">6 November 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-robert-mimi-delivery-service-06">https://datatracker.ietf.org/doc/html/draft-robert-mimi-delivery-service-06</a>&gt;</span>. </dd>
@@ -2881,17 +3410,9 @@ separated by dots.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
 <a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
-<dt id="I-D.ietf-mimi-content">[I-D.ietf-mimi-content]</dt>
-        <dd>
-<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"More Instant Messaging Interoperability (MIMI) message content"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mimi-content-01</span>, <time datetime="2023-10-23" class="refDate">23 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-01">https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-01</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="I-D.kohbrok-mimi-transport">[I-D.kohbrok-mimi-transport]</dt>
         <dd>
 <span class="refAuthor">Kohbrok, K.</span> and <span class="refAuthor">R. Robert</span>, <span class="refTitle">"MIMI Transport"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-kohbrok-mimi-transport-01</span>, <time datetime="2023-09-21" class="refDate">21 September 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-kohbrok-mimi-transport-01">https://datatracker.ietf.org/doc/html/draft-kohbrok-mimi-transport-01</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="I-D.mahy-mimi-identity">[I-D.mahy-mimi-identity]</dt>
-        <dd>
-<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"More Instant Messaging Interoperability (MIMI) Identity Concepts"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mimi-identity-02</span>, <time datetime="2023-07-10" class="refDate">10 July 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mimi-identity-02">https://datatracker.ietf.org/doc/html/draft-mahy-mimi-identity-02</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ralston-mimi-policy">[I-D.ralston-mimi-policy]</dt>
         <dd>
