@@ -186,13 +186,13 @@ The MIMI protocol interactions are between Alice's server ServerA and Bob's
 server ServerB.  ServerB stores KeyPackages on behalf of Bob's devices.  ServerA
 performs the key material fetch on Alice's behalf, and delivers the resulting
 KeyPackages to Alice's clients.  Both ServerA and ServerB remember the sources
-of the KeyPackages they handle, so that they can route a Welcome mesasage for
+of the KeyPackages they handle, so that they can route a Welcome message for
 those KeyPackages to the proper recipients -- ServerA to ServerB, and ServerB to
 Bob's clients.
 
-[[ NOTE: In the full protocol, it will be necessary to have consent and access
-control on these operations.  We have elided that step here in the interest of
-simplicity. ]]
+> **NOTE:** In the full protocol, it will be necessary to have consent and access
+> control on these operations.  We have elided that step here in the interest of
+> simplicity.
 
 ~~~ aasvg
 ClientA1       ServerA         ServerB         ClientB*
@@ -247,7 +247,7 @@ ServerB->ClientB*: [[ Welcome, RatchetTree? ]]
 
 The process of adding Bob was a bit abbreviated because Alice is a user of the
 hub service provider.  When Bob adds Cathy, we see the full process, involving
-the same two steps (KP fetch followed by add), but this time indirected via the
+the same two steps (KeyPackage fetch followed by Add), but this time indirected via the
 hub server ServerA.  Also, now that there are users on ServerB involved in the
 room, the hub ServerA will have to distribute the Commit adding Cathy and
 Cathy's clients to ServerB as well as forwarding the Welcome to ServerC.
@@ -359,13 +359,14 @@ user performing the removal creates an MLS commit covering Remove proposals for
 all of the removed user's devices, and an AppSync proposal updating the room
 state to remove the removed user from the room's participant list.
 
-Leaving is slightly more complicated because the leaving user cannot remove all
-of their devices from the MLS group.  Instead, the leave happens in three steps:
+One's own user leaving is slightly more complicated than removing another user,
+because the leaving user cannot remove all of their devices from the MLS group.
+Instead, the leave happens in three steps:
 
 1. The leaving client constructs MLS Remove proposals for all of the user's
    devices (including the leaving client), and an AppSync proposal that removes
    its user from the participant list.
-2. The leaving client sends this proposals to the hub.  The hub caches the proposals.
+2. The leaving client sends these proposals to the hub.  The hub caches the proposals.
 3. The next time a client attempts to commit, the hub requires the client to
    include the cached proposals.
 
