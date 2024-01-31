@@ -54,16 +54,14 @@ informative:
 --- abstract
 
 This document specifies the More Instant Messaging Interoperability (MIMI)
-protocol, which allows users of different messaging providers to share
-membership in rooms and send messages to one-another.
-
-More specifically, the MIMI protocol defines message formats and conventions
-that allows the servers of different providers to interoperate, leaving the
-provider-internal client-server communication up to the provider.
-
-To ensure that communications between users are confidential and authentic, the
-MIMI protocol relies on MLS ({{!RFC9420}}, through the MIMI DS protocol
-{{!I-D.robert-mimi-delivery-service}}) to protect messages end-to-end.
+transport protocol, which allows users of different messaging providers to
+interoperate in group chats (rooms), including to send and receive messages,
+share room policy, and add participants to and remove participants from rooms.
+MIMI describes messages between providers, leaving most aspects of the
+provider-internal client-server communication up to the provider.  MIMI
+integrates the Messaging Layer Security (MLS) protocol to provide end-to-end security
+assurances, including authentication of protocol participants, confidentiality
+of messages exchanged within a room, and agreement on the state of the room.
 
 --- middle
 
