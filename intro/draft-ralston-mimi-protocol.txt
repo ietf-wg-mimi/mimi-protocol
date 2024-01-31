@@ -138,11 +138,12 @@ Table of Contents
    [I-D.barnes-mimi-arch], group chats and direct messages are described
    in terms of "rooms".  Each MIMI protocol room is hosted at a single
    provider (the "hub" provider"), but allows users from different
-   providers to become participants in the room.  The hub provider
-   maintains the policy and participation for the room, authorizes
-   messages, and is responsible for message ordering, the participation
-   list, and policy of its rooms.  Each provider also stores initial
-   keying material and consent for its own users (who may be offline).
+   providers to become participants in the room.  The hub provider is
+   responsible for ordering and distributing messages, enforcing policy,
+   and authorizing messages.  It also keeps a copy of the room state,
+   which includes the room policy and participant list, which it can
+   provide to new joiners.  Each provider also stores initial keying
+   material and consent for its own users (who may be offline).
 
    This document describes the communication among different providers
    necessary to support messaging application functionality, for
