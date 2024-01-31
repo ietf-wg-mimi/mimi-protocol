@@ -5,11 +5,11 @@
 More Instant Messaging Interoperability                       T. Ralston
 Internet-Draft                          The Matrix.org Foundation C.I.C.
 Intended status: Standards Track                              K. Kohbrok
-Expires: 1 August 2024                                         R. Robert
+Expires: 3 August 2024                                         R. Robert
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                         29 January 2024
+                                                         31 January 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 August 2024.
+   This Internet-Draft will expire on 3 August 2024.
 
 Copyright Notice
 
@@ -1335,16 +1335,16 @@ status code, not the response body.
 
 8.  MLS Application State Synchronization
 
-   [[ TODO: This section should be moved to its own document in the MLS
-   working group ]]
+   *TODO:* This section should be moved to its own document in the MLS
+   working group.
 
    One of the primary security benefits of MLS is that the MLS key
    schedule confirms that the group agrees on certain metadata, such as
    the membership of the group.  Members that disagree on the relevant
    metadata will arrive at different keys and be unable to communicate.
    Applications based on MLS can integrate their state into this
-   metadata in order to confirm that the member of an MLS group agree on
-   application state as well as MLS metadata.
+   metadata in order to confirm that the members of an MLS group agree
+   on application state as well as MLS metadata.
 
    Here, we define two extensions to MLS to facilitate this application
    design:
@@ -1362,16 +1362,17 @@ status code, not the response body.
    the relevant state changes before they are reflected in the group's
    application_states.
 
-   [[ NOTE: This design exposes the high-level structure of the
-   application state to MLS.  An alternative design would be to have the
-   application state be opaque to MLS.  There is a trade-off between
-   generality and the complexity of the API between the MLS
-   implementation and the application.  An opaque design would give the
-   application more freedom, but require the MLS stack to call out to
-   the application to get the updated state as part of Commit
-   processing.  This design allows the updates to happen within the MLS
-   stack, so that no callback is needed, at the cost of forcing the
-   application state to fit a certain structure. ]]
+      *NOTE:* This design exposes the high-level structure of the
+      application state to MLS.  An alternative design would be to have
+      the application state be opaque to MLS.  There is a trade-off
+      between generality and the complexity of the API between the MLS
+      implementation and the application.  An opaque design would give
+      the application more freedom, but require the MLS stack to call
+      out to the application to get the updated state as part of Commit
+      processing.  This design allows the updates to happen within the
+      MLS stack, so that no callback is needed, at the cost of forcing
+      the application state to fit a certain structure.  It also
+      potentially can result in smaller state updates in large groups.
 
    The state for Each applicationId in the application_states needs to
    conform to one of four basic types: an ordered array, an unordered
@@ -1380,6 +1381,14 @@ status code, not the response body.
 
    The content of the application_states extension and the AppSync
    proposal are structured as follows:
+
+   enum {
+       irreducible(0),
+       map(1),
+       unorderedList(2),
+       orderedArray(3),
+       (255)
+   } StateType;
 
    struct {
      opaque element<V>;
@@ -1480,8 +1489,8 @@ status code, not the response body.
    AppSync proposals do not need to contain an UpdatePath.  An AppSync
    proposal can be sent by an authorized external sender.
 
-   [[ TODO: IANA registry for application_id; register extension and
-   proposal types as safe extensions ]]
+      *TODO:* IANA registry for application_id; register extension and
+      proposal types as safe extensions
 
 9.  Security Considerations
 

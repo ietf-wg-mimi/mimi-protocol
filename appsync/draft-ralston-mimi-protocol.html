@@ -1043,7 +1043,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ralston, et al.</td>
-<td class="center">Expires 1 August 2024</td>
+<td class="center">Expires 3 August 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1056,12 +1056,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ralston-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-01-29" class="published">29 January 2024</time>
+<time datetime="2024-01-31" class="published">31 January 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-08-01">1 August 2024</time></dd>
+<dd class="expires"><time datetime="2024-08-03">3 August 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1131,7 +1131,7 @@ MIMI protocol relies on MLS (<span>[<a href="#RFC9420" class="cite xref">RFC9420
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 1 August 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 3 August 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2800,12 +2800,12 @@ reachable again.<a href="#section-7.3.2-8" class="pilcrow">¶</a></p>
       <h2 id="name-mls-application-state-synch">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-mls-application-state-synch" class="section-name selfRef">MLS Application State Synchronization</a>
       </h2>
-<p id="section-8-1">[[ TODO: This section should be moved to its own document in the MLS working group ]]<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-1"><strong>TODO:</strong> This section should be moved to its own document in the MLS working group.<a href="#section-8-1" class="pilcrow">¶</a></p>
 <p id="section-8-2">One of the primary security benefits of MLS is that the MLS key schedule
 confirms that the group agrees on certain metadata, such as the membership of
 the group. Members that disagree on the relevant metadata will arrive at
 different keys and be unable to communicate. Applications based on MLS can
-integrate their state into this metadata in order to confirm that the member of
+integrate their state into this metadata in order to confirm that the members of
 an MLS group agree on application state as well as MLS metadata.<a href="#section-8-2" class="pilcrow">¶</a></p>
 <p id="section-8-3">Here, we define two extensions to MLS to facilitate this application design:<a href="#section-8-3" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-8-4">
@@ -2823,7 +2823,9 @@ objects into the MLS key schedule. Changes to this state can be made out of
 band, or using the AppSync proposal. Using the AppSync proposal ensures that
 members of the MLS group have received the relevant state changes before they
 are reflected in the group's <code>application_states</code>.<a href="#section-8-5" class="pilcrow">¶</a></p>
-<p id="section-8-6">[[ NOTE: This design exposes the high-level structure of the application state
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-8-6.1">
+          <p id="section-8-6.1.1"><strong>NOTE:</strong> This design exposes the high-level structure of the application state
 to MLS.  An alternative design would be to have the application state be opaque
 to MLS.  There is a trade-off between generality and the complexity of the API
 between the MLS implementation and the application.  An opaque design would give
@@ -2831,7 +2833,9 @@ the application more freedom, but require the MLS stack to call out to the
 application to get the updated state as part of Commit processing.  This design
 allows the updates to happen within the MLS stack, so that no callback is
 needed, at the cost of forcing the application state to fit a certain structure.
-]]<a href="#section-8-6" class="pilcrow">¶</a></p>
+It also potentially can result in smaller state updates in large groups.<a href="#section-8-6.1.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
 <p id="section-8-7">The state for Each <code>applicationId</code> in the <code>application_states</code> needs to conform
 to one of four basic types: an ordered array, an unordered array, a map, or an
 irreducible blob. This allows the AppSync proposal to efficiently modify a large
@@ -2842,6 +2846,14 @@ structured as follows:<a href="#section-8-8" class="pilcrow">¶</a></p>
 <figure id="figure-2">
         <div class="lang-tls sourcecode" id="section-8-9.1">
 <pre>
+enum {
+    irreducible(0),
+    map(1),
+    unorderedList(2),
+    orderedArray(3),
+    (255)
+} StateType;
+
 struct {
   opaque element&lt;V&gt;;
 } OpaqueElement;
@@ -2943,9 +2955,14 @@ is invalid.<a href="#section-8-15" class="pilcrow">¶</a></p>
 <p id="section-8-16">Likewise a proposal list in a Commit <span class="bcp14">MAY</span> contain more than one AppSync proposal,
 but no more than one AppSync proposal per <code>applicationId</code>. The proposals are
 applied in the order that they are sent in the Commit.<a href="#section-8-16" class="pilcrow">¶</a></p>
-<p id="section-8-17">AppSync proposals do not need to contain an UpdatePath. An AppSync proposal can be sent by an authorized external sender.<a href="#section-8-17" class="pilcrow">¶</a></p>
-<p id="section-8-18">[[ TODO: IANA registry for <code>application_id</code>; register extension and proposal types
-as safe extensions ]]<a href="#section-8-18" class="pilcrow">¶</a></p>
+<p id="section-8-17">AppSync proposals do not need to contain an UpdatePath. An AppSync proposal can
+be sent by an authorized external sender.<a href="#section-8-17" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-8-18.1">
+          <p id="section-8-18.1.1"><strong>TODO:</strong> IANA registry for <code>application_id</code>; register extension and proposal types
+as safe extensions<a href="#section-8-18.1.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
 </section>
 </div>
 <div id="security-considerations">
