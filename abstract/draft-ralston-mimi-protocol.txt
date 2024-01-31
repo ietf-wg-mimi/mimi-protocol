@@ -5,11 +5,11 @@
 More Instant Messaging Interoperability                       T. Ralston
 Internet-Draft                          The Matrix.org Foundation C.I.C.
 Intended status: Standards Track                              K. Kohbrok
-Expires: 1 August 2024                                         R. Robert
+Expires: 3 August 2024                                         R. Robert
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                         29 January 2024
+                                                         31 January 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -24,10 +24,10 @@ Abstract
    remove participants from rooms.  MIMI describes messages between
    providers, leaving most aspects of the provider-internal client-
    server communication up to the provider.  MIMI integrates the
-   Messaging Layer Security protocol to provide end-to-end security
-   assurances, including authentication of protocol participants,
-   confidentiality of messages exchanged within a room, and agreement on
-   the state of the room.
+   Messaging Layer Security (MLS) protocol to provide end-to-end
+   security assurances, including authentication of protocol
+   participants, confidentiality of messages exchanged within a room,
+   and agreement on the state of the room.
 
 About This Document
 
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 August 2024.
+   This Internet-Draft will expire on 3 August 2024.
 
 Copyright Notice
 
