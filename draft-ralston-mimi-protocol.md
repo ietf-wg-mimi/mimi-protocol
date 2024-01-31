@@ -138,6 +138,8 @@ might be different from the identifier that should be used internally.  For
 example, a user-visible handle might need to be mapped to a durable internal
 identifier.  This document provides no mechanism for such resolution.
 
+Authentication
+: While MLS provides basic message authentication, users should also be able to (cryptographically) tie the identity of other users to their respective providers. Further authentication such as tying clients to their users (or the user's other clients) may also be desirable.
 
 # Conventions and Definitions
 
