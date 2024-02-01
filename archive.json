@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-01-30T00:03:13.453626+00:00",
+  "timestamp": "2024-02-01T00:04:00.523949+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -1799,7 +1799,7 @@
             "abbreviatedOid": "cde6ff2"
           },
           "author": "rohanmahy",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2023-11-03T19:43:35Z",
@@ -1812,7 +1812,7 @@
             "abbreviatedOid": "06c2fd5"
           },
           "author": "rohanmahy",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-11-03T19:44:28Z",
@@ -2603,26 +2603,62 @@
       "id": "PR_kwDOKZ8QO85lYBxX",
       "title": "Update abstract",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/41",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "bifurcation",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Consolidates paragraphs.  Expands on functionality.  Rephrases the E2E security section to list assurances and remove citations.",
       "createdAt": "2024-01-29T20:59:26Z",
-      "updatedAt": "2024-01-29T20:59:26Z",
+      "updatedAt": "2024-01-31T00:51:39Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "af62be86e01834c228d8bfc068fb383c0cdd20b2",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "abstract",
-      "headRefOid": "7a462a6464eba2a51ea3e64d334941cbddd26b65",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "0e6876a0d0ea413d97dccff03e86bd9482fef159",
+      "closedAt": "2024-01-31T00:51:39Z",
+      "mergedAt": "2024-01-31T00:51:39Z",
+      "mergedBy": "rohan-wire",
+      "mergeCommit": {
+        "oid": "b775606f779086dfb27b93a7bc1dad600ce4a8c1"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85uRfKY",
+          "commit": {
+            "abbreviatedOid": "7a462a6"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-01-30T01:36:11Z",
+          "updatedAt": "2024-01-30T01:36:11Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uamG_",
+          "commit": {
+            "abbreviatedOid": "7a462a6"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "extremely minor editorial comment, but lgtm",
+          "createdAt": "2024-01-30T22:08:22Z",
+          "updatedAt": "2024-01-30T22:09:01Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "```suggestion\r\nintegrates the Messaging Layer Security (MLS) protocol to provide end-to-end security\r\n```",
+              "createdAt": "2024-01-30T22:08:22Z",
+              "updatedAt": "2024-01-30T22:09:01Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 42,
@@ -2636,71 +2672,542 @@
       "labels": [],
       "body": "The Known Gaps section might need some updating depending on what we do with the rest of the document.",
       "createdAt": "2024-01-29T21:10:19Z",
-      "updatedAt": "2024-01-29T21:13:44Z",
+      "updatedAt": "2024-01-31T15:22:51Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "af62be86e01834c228d8bfc068fb383c0cdd20b2",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "intro",
-      "headRefOid": "34a2255c99d325468906b5efe8ecc26b94a5d355",
+      "headRefOid": "c20adfae565167b0e07adc6e00c86bf199c17bf7",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85uRgJ1",
+          "commit": {
+            "abbreviatedOid": "34a2255"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-01-30T01:38:59Z",
+          "updatedAt": "2024-01-30T01:40:06Z",
+          "comments": [
+            {
+              "originalPosition": 59,
+              "body": "```suggestion\r\nof a protocol framework to indicate how to add other necessary functionality.  The\r\n```",
+              "createdAt": "2024-01-30T01:38:59Z",
+              "updatedAt": "2024-01-30T01:40:06Z"
+            },
+            {
+              "originalPosition": 33,
+              "body": "```suggestion\r\nstores initial keying material and consent for its own users (who may be offline).\r\n```",
+              "createdAt": "2024-01-30T01:39:14Z",
+              "updatedAt": "2024-01-30T01:40:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uXk2u",
+          "commit": {
+            "abbreviatedOid": "34a2255"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Thanks for the PR. Made an initial pass with a few questions and remarks.",
+          "createdAt": "2024-01-30T15:48:52Z",
+          "updatedAt": "2024-01-30T15:57:32Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "Is there a reason we're distinguishing between \"maintains the policy and participation for the room\" and then later in the sentence \"and is responsible for (...) the participation list, and policy of its rooms\"?",
+              "createdAt": "2024-01-30T15:48:52Z",
+              "updatedAt": "2024-01-30T15:57:32Z"
+            },
+            {
+              "originalPosition": 33,
+              "body": "We should be more clear here what it means to \"store consent\". At least it's not clear to me.",
+              "createdAt": "2024-01-30T15:49:20Z",
+              "updatedAt": "2024-01-30T15:57:32Z"
+            },
+            {
+              "originalPosition": 38,
+              "body": "What does it mean to \"share room policy\"? Agreement between providers? Or participants?\r\n\r\nIn any case, the other two examples seem more natural in the context of \"messaging application functionality\", so I'd put them first.",
+              "createdAt": "2024-01-30T15:50:26Z",
+              "updatedAt": "2024-01-30T15:57:32Z"
+            },
+            {
+              "originalPosition": 92,
+              "body": "If we do want to keep a list (I think another PR removes existing remarks about missing things), we should add authentication here. We do have basic MLS authentication, but we should also be able to verify cryptographically, that a given user belongs to a given provider.",
+              "createdAt": "2024-01-30T15:57:05Z",
+              "updatedAt": "2024-01-30T15:57:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uYxPC",
+          "commit": {
+            "abbreviatedOid": "34a2255"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-30T17:53:00Z",
+          "updatedAt": "2024-01-30T17:53:01Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "I meant maintains the policy and participation as *enforcing* the policy and participation. It's also the source of truth (\"responsible\") for the \"message ordering, the participation list, and policy of its rooms\".\r\n\r\nFeel free free to propose some alternate wording.",
+              "createdAt": "2024-01-30T17:53:00Z",
+              "updatedAt": "2024-01-30T17:53:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uYyBF",
+          "commit": {
+            "abbreviatedOid": "34a2255"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-30T17:54:42Z",
+          "updatedAt": "2024-01-30T17:54:43Z",
+          "comments": [
+            {
+              "originalPosition": 33,
+              "body": "if a user has granted, revoked, or rejected consent, that needs to get stored at their provider so the provider can act on behalf of the user if his or clients are offline.",
+              "createdAt": "2024-01-30T17:54:43Z",
+              "updatedAt": "2024-01-30T17:54:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uYyXP",
+          "commit": {
+            "abbreviatedOid": "34a2255"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-30T17:55:32Z",
+          "updatedAt": "2024-01-30T17:55:32Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "I'd say \"share room policy\" is between participants and the hub.",
+              "createdAt": "2024-01-30T17:55:32Z",
+              "updatedAt": "2024-01-30T17:55:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uamc9",
+          "commit": {
+            "abbreviatedOid": "34a2255"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "Mentions of consent outside the known gaps section should be elided for now.",
+          "createdAt": "2024-01-30T22:09:25Z",
+          "updatedAt": "2024-01-30T22:18:28Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "```suggestion\r\nThe More Instant Messaging Interoperability (MIMI) transport protocol enables providers of\r\n```",
+              "createdAt": "2024-01-30T22:09:25Z",
+              "updatedAt": "2024-01-30T22:18:28Z"
+            },
+            {
+              "originalPosition": 33,
+              "body": "in my opinion, we should descope consent for now. It needs a lot more thought as to how it works.\r\n\r\n```suggestion\r\nstores initial keying material for its own users (who may be offline).\r\n```",
+              "createdAt": "2024-01-30T22:11:46Z",
+              "updatedAt": "2024-01-30T22:18:28Z"
+            },
+            {
+              "originalPosition": 45,
+              "body": "descoping consent: \r\n```suggestion\r\nIn support of these functions, the protocol also has primitives to fetch initial\r\nkeying material and fetch the current state of the underlying end-to-end encryption\r\nprotocol for the room.\r\n```",
+              "createdAt": "2024-01-30T22:14:13Z",
+              "updatedAt": "2024-01-30T22:18:28Z"
+            },
+            {
+              "originalPosition": 52,
+              "body": "```suggestion\r\nparticipant in the room, and that all clients in the group agree on the state\r\n```",
+              "createdAt": "2024-01-30T22:15:07Z",
+              "updatedAt": "2024-01-30T22:18:28Z"
+            },
+            {
+              "originalPosition": 72,
+              "body": "This is a bit too vague: what flows specifically are we descoping from this version?",
+              "createdAt": "2024-01-30T22:16:34Z",
+              "updatedAt": "2024-01-30T22:18:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85ubhMQ",
+          "commit": {
+            "abbreviatedOid": "34a2255"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-31T00:55:11Z",
+          "updatedAt": "2024-01-31T00:55:11Z",
+          "comments": [
+            {
+              "originalPosition": 33,
+              "body": "This statement merely says that the providers are responsible for keeping track of the consent of their users, which should be non-controversial. This section / PR doesn't impose any specific mechanism for doing so.",
+              "createdAt": "2024-01-31T00:55:11Z",
+              "updatedAt": "2024-01-31T00:55:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85ubiiA",
+          "commit": {
+            "abbreviatedOid": "34a2255"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-31T01:00:34Z",
+          "updatedAt": "2024-01-31T01:00:35Z",
+          "comments": [
+            {
+              "originalPosition": 72,
+              "body": "Richard wanted to make a join flow easy to understand by the WG, get consensus to make it a WG item, then add other join mechanisms. So in this version I think Richard wants to start with the \"member adds non-member\" flow. \r\n\r\nI'm fine (keen even) to add a second flow where a user adds a new client or a user already on a participant list (passively) does an external join, but only if we have strong consensus from the design team. \r\n\r\n@turt2live are you OK with that plan of action?",
+              "createdAt": "2024-01-31T01:00:34Z",
+              "updatedAt": "2024-01-31T01:00:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uc25o",
+          "commit": {
+            "abbreviatedOid": "34a2255"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-31T07:35:52Z",
+          "updatedAt": "2024-01-31T07:35:52Z",
+          "comments": [
+            {
+              "originalPosition": 33,
+              "body": "Thanks for clarifying. I'd be okay to leave it as is for now and touch it again once we know more about how consent works.",
+              "createdAt": "2024-01-31T07:35:52Z",
+              "updatedAt": "2024-01-31T07:35:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uc6s4",
+          "commit": {
+            "abbreviatedOid": "ee93db8"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-31T07:46:52Z",
+          "updatedAt": "2024-01-31T07:46:52Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "Something like this? \r\n```suggestion\r\nbecome participants in the room.  The hub provider is responsible for message ordering and distribution, as well as policy enforcement. It also keeps a copy of the room state, which includes the room's policy and participant list, which it can provide to new joiners. Each provider also\r\n```\r\nI wouldn't say it's the \"source of truth\", since the truth is in the MLS group state and the MLS commits. Saying it's the source of truth (to me) implies that it has direct control over it. It stores the group state, but the group state ultimately comes from the clients (even though the hub can reject commits it doesn't like).",
+              "createdAt": "2024-01-31T07:46:52Z",
+              "updatedAt": "2024-01-31T07:46:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uc9Rj",
+          "commit": {
+            "abbreviatedOid": "ee93db8"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-31T07:54:06Z",
+          "updatedAt": "2024-01-31T07:54:06Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "It still sounds a bit weird to me, but I don't want to nitpick too much here. Let's leave it as is for now.",
+              "createdAt": "2024-01-31T07:54:06Z",
+              "updatedAt": "2024-01-31T07:54:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uc_Uw",
+          "commit": {
+            "abbreviatedOid": "ee93db8"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-31T07:59:34Z",
+          "updatedAt": "2024-01-31T07:59:34Z",
+          "comments": [
+            {
+              "originalPosition": 93,
+              "body": "Maybe something like this?\r\n```suggestion\r\nAuthentication\r\n: While MLS provides basic message authentication, users should also be able to (cryptographically) tie the identity of other users to their respective providers. Further authentication such as tying clients to their users (or the user's other clients) may also be desirable.\r\n```",
+              "createdAt": "2024-01-31T07:59:34Z",
+              "updatedAt": "2024-01-31T07:59:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85ugXXu",
+          "commit": {
+            "abbreviatedOid": "ee93db8"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-31T15:08:22Z",
+          "updatedAt": "2024-01-31T15:08:23Z",
+          "comments": [
+            {
+              "originalPosition": 92,
+              "body": "```suggestion\r\nidentifier.  This document provides no mechanism for such resolution.\r\n\r\n```",
+              "createdAt": "2024-01-31T15:08:23Z",
+              "updatedAt": "2024-01-31T15:08:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85ugk-i",
+          "commit": {
+            "abbreviatedOid": "7abe231"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-31T15:20:13Z",
+          "updatedAt": "2024-01-31T15:20:14Z",
+          "comments": [
+            {
+              "originalPosition": 33,
+              "body": "```suggestion\r\nbecome participants in the room. The hub provider is responsible for ordering\r\nand distributing messages, enforcing policy, and authorizing messages. It also\r\nkeeps a copy of the room state, which includes the room policy and participant\r\nlist, which it can provide to new joiners. Each provider also\r\n```",
+              "createdAt": "2024-01-31T15:20:13Z",
+              "updatedAt": "2024-01-31T15:20:14Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 43,
       "id": "PR_kwDOKZ8QO85lYKEY",
       "title": "Update terminology section",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/43",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "bifurcation",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "* Add reference to MLS for terminology.\r\n* Remove issues.  Everything in this document is open to change.",
       "createdAt": "2024-01-29T21:19:01Z",
-      "updatedAt": "2024-01-29T21:19:01Z",
+      "updatedAt": "2024-01-30T22:19:48Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "af62be86e01834c228d8bfc068fb383c0cdd20b2",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "terms",
       "headRefOid": "1a9ddec906dbd525c3932ea55dc5277420614d18",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-01-30T17:53:06Z",
+      "mergedAt": "2024-01-30T17:53:06Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "a488b5950dba565bbcc9e3dc8b87e9b5977bf2bb"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85uRgyB",
+          "commit": {
+            "abbreviatedOid": "1a9ddec"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-01-30T01:42:20Z",
+          "updatedAt": "2024-01-30T01:42:20Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uXh7q",
+          "commit": {
+            "abbreviatedOid": "1a9ddec"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-01-30T15:45:21Z",
+          "updatedAt": "2024-01-30T15:45:21Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uatHV",
+          "commit": {
+            "abbreviatedOid": "1a9ddec"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "\u2705 just dropping by to say I've seen this :)",
+          "createdAt": "2024-01-30T22:19:48Z",
+          "updatedAt": "2024-01-30T22:19:48Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 44,
       "id": "PR_kwDOKZ8QO85lYK3Q",
       "title": "Replace example flow with protocol overview",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/44",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "bifurcation",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "* Add clearer description of layering model\r\n* Add more detailed protocol flow",
       "createdAt": "2024-01-29T21:21:41Z",
-      "updatedAt": "2024-01-29T21:21:41Z",
+      "updatedAt": "2024-01-31T16:49:07Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
-      "baseRefOid": "af62be86e01834c228d8bfc068fb383c0cdd20b2",
+      "baseRefOid": "b775606f779086dfb27b93a7bc1dad600ce4a8c1",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "overview",
-      "headRefOid": "5c034f62dd4a47bc1cc87265ac669ed581a59705",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "66a43831a302b2e93f1230fb659fddfd0d4263fa",
+      "closedAt": "2024-01-31T16:49:06Z",
+      "mergedAt": "2024-01-31T16:49:06Z",
+      "mergedBy": "rohan-wire",
+      "mergeCommit": {
+        "oid": "b5c9bb1d3d1fb866adc2db9c65d08f3fbf3f530b"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85uR9i4",
+          "commit": {
+            "abbreviatedOid": "5c034f6"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-01-30T04:21:37Z",
+          "updatedAt": "2024-01-30T04:29:34Z",
+          "comments": [
+            {
+              "originalPosition": 227,
+              "body": "```suggestion\r\n> **NOTE:** In the full protocol, it will be necessary to have consent and access\r\n> control on these operations.  We have elided that step here in the interest of\r\n> simplicity.\r\n```",
+              "createdAt": "2024-01-30T04:21:37Z",
+              "updatedAt": "2024-01-30T04:29:34Z"
+            },
+            {
+              "originalPosition": 438,
+              "body": "```suggestion\r\nOne's own user leaving is slightly more complicated than removing another user,\r\nbecause the leaving user cannot remove all of their devices from the MLS group.\r\nInstead, the leave happens in three steps:\r\n```",
+              "createdAt": "2024-01-30T04:28:19Z",
+              "updatedAt": "2024-01-30T04:29:35Z"
+            },
+            {
+              "originalPosition": 445,
+              "body": "```suggestion\r\n2. The leaving client sends these proposals to the hub.  The hub caches the proposals.\r\n```",
+              "createdAt": "2024-01-30T04:29:01Z",
+              "updatedAt": "2024-01-30T04:29:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uavnF",
+          "commit": {
+            "abbreviatedOid": "5c034f6"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "I have mostly editorial comments on this one, with +1s for Rohan's comments.",
+          "createdAt": "2024-01-30T22:26:52Z",
+          "updatedAt": "2024-01-30T22:36:48Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "AppSync should probably get a section or I-D reference. Failing that, some sort of language to denote it's in the process of being defined - this currently reads as though AppSync is already part of MLS.",
+              "createdAt": "2024-01-30T22:26:52Z",
+              "updatedAt": "2024-01-30T22:36:49Z"
+            },
+            {
+              "originalPosition": 214,
+              "body": "```suggestion\r\nof the KeyPackages they handle, so that they can route a Welcome message for\r\n```",
+              "createdAt": "2024-01-30T22:32:14Z",
+              "updatedAt": "2024-01-30T22:36:49Z"
+            },
+            {
+              "originalPosition": 306,
+              "body": "```suggestion\r\nthe same two steps (KeyPackage fetch followed by Add), but this time indirected via the\r\n```",
+              "createdAt": "2024-01-30T22:33:22Z",
+              "updatedAt": "2024-01-30T22:36:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uc17e",
+          "commit": {
+            "abbreviatedOid": "5c034f6"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Looks good to me modulo existing comments and the ongoing discussion around the AppSync PR.",
+          "createdAt": "2024-01-31T07:33:19Z",
+          "updatedAt": "2024-01-31T07:33:19Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uhnh7",
+          "commit": {
+            "abbreviatedOid": "66a4383"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-31T16:48:40Z",
+          "updatedAt": "2024-01-31T16:48:40Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "Agreed. We'll add that once PR #45 is merged (possibly with that PR)",
+              "createdAt": "2024-01-31T16:48:40Z",
+              "updatedAt": "2024-01-31T16:48:40Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 45,
@@ -2714,19 +3221,179 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-01-29T21:31:42Z",
-      "updatedAt": "2024-01-29T21:31:43Z",
+      "updatedAt": "2024-01-31T15:03:51Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "af62be86e01834c228d8bfc068fb383c0cdd20b2",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "appsync",
-      "headRefOid": "8602a91937fa001bc78cfed7ad345b58178bbadd",
+      "headRefOid": "c8f5e18209f9d18f563e213fed44940a834e6816",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "comments": [
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Do I understand correctly, that there can be only one ApplicationState per appliction_id? In that case, each application can only have one map/array/etc.? What if the application needs different data structures or multiple of one kind?\r\n\r\nEach application_id contains one top-level map/array/etc. An application can have multiple application_ids (each representing a specific type of application state). In barnes-mimi-protocol we proposed two application_ids (participant list, and room base policy). If an application _id needs a complex structure, the top level data structure for each application_id could be a map (which can contain arbitrarily complex data structures below it) or it could be an irreducible blob.\r\n\r\n> More generally, I'm a bit concerned about the introduction of the application_id since it's not part of MLS negotiation mechanism. It's not relevant to MLS interop, because the semantics of the application are outside of MLS, but it seems relevant that clients can signal support for a given application, or that a group can require that an application be supported. I guess what I'm trying to say is that either there is agreement between clients on the application that runs on top of MLS in which case we don't need an application_id, or there isn't, in which case we need a negotiation mechanism.\r\n\r\nI would say the later, but do we need that negotiation in MLS? I was thinking that existence of specific application IDs in the GroupContext means that that state does exist in the group. I think adding a new application ID to the GroupContext would require agreement in a GroupContextExtension proposal or out of band, but I think that negotiation is ok at the app level. I could be convinced otherwise however.\r\n\r\n> \r\n> Regarding opaque vs. non-opaque state, I think I have a slight preference for letting the application handle the AppSync proposals and modify the state itself. The current design seems a bit clunky and limiting.\r\n\r\nI can totally accept that considering I put it together in about 45 minutes. My main motivation was to allow a patch to one element of the participant list or one setting of many to be a small patch instead of, for example, sending the entire participant list of 1000 users just to add or remove one. Anything that accomplishes that goal, or a demonstration that the bandwidth/processing is a non-issue, would make me more comfortable with the opaque blob model.",
+          "createdAt": "2024-01-30T16:25:14Z",
+          "updatedAt": "2024-01-30T16:25:14Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for the clarifications!\r\n\r\nI'm not sure it's a great idea on the one hand for applications to require an application_id per piece of state they want to store and on the other hand have application_id be IANA registered. My suggestion would be that each application use an extension id and then define its own AppSync mechanism. This allows the application to define an arbitrary number of proposals with arbitrary semantics, as well as arbitrary state to store in the group context.",
+          "createdAt": "2024-01-31T07:25:33Z",
+          "updatedAt": "2024-01-31T07:25:33Z"
+        },
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Thanks for the clarifications!\r\n> \r\n> I'm not sure it's a great idea on the one hand for applications to require an application_id per piece of state they want to store and on the other hand have application_id be IANA registered. My suggestion would be that each application use an extension id and then define its own AppSync mechanism. This allows the application to define an arbitrary number of proposals with arbitrary semantics, as well as arbitrary state to store in the group context.\r\n\r\nApplications can still define arbitrary semantics of their state, they just don't get arbitrary patching semantics in AppSync. If the thing that you want to change is irreducible, replace the whole thing. If the thing you want to change is a map, list, or array, you can replace/delete/insert into those oft-used data structures without resending the entire (possibly large) data structure. That's all. If folks only want \"replace the whole thing\" semantics, I can live with that, but I am definitely not ok with having the patch semantics vary per application. I've seen that protocol movie before and it bombed.",
+          "createdAt": "2024-01-31T15:03:50Z",
+          "updatedAt": "2024-01-31T15:03:50Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85uR5jr",
+          "commit": {
+            "abbreviatedOid": "8602a91"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-01-30T03:58:33Z",
+          "updatedAt": "2024-01-30T04:09:19Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\r\n**TODO:** This section should be moved to its own document in the MLS working group.\r\n```",
+              "createdAt": "2024-01-30T03:58:33Z",
+              "updatedAt": "2024-01-30T04:09:19Z"
+            },
+            {
+              "originalPosition": 12,
+              "body": "```suggestion\r\nintegrate their state into this metadata in order to confirm that the members of\r\n```",
+              "createdAt": "2024-01-30T03:59:09Z",
+              "updatedAt": "2024-01-30T04:09:19Z"
+            },
+            {
+              "originalPosition": 36,
+              "body": "```suggestion\r\n> **NOTE:** This design exposes the high-level structure of the application state\r\n> to MLS.  An alternative design would be to have the application state be opaque\r\n> to MLS.  There is a trade-off between generality and the complexity of the API\r\n> between the MLS implementation and the application.  An opaque design would give\r\n> the application more freedom, but require the MLS stack to call out to the\r\n> application to get the updated state as part of Commit processing.  This design\r\n> allows the updates to happen within the MLS stack, so that no callback is\r\n> needed, at the cost of forcing the application state to fit a certain structure.\r\n> It also potentially can result in smaller state updates in large groups.\r\n```",
+              "createdAt": "2024-01-30T04:02:06Z",
+              "updatedAt": "2024-01-30T04:09:19Z"
+            },
+            {
+              "originalPosition": 47,
+              "body": "```suggestion\r\n~~~ tls\r\nenum {\r\n    irreducible(0),\r\n    map(1),\r\n    unorderedList(2),\r\n    orderedArray(3),\r\n    (255)\r\n} StateType;\r\n\r\nstruct {\r\n```",
+              "createdAt": "2024-01-30T04:06:04Z",
+              "updatedAt": "2024-01-30T04:09:19Z"
+            },
+            {
+              "originalPosition": 139,
+              "body": "```suggestion\r\nAppSync proposals do not need to contain an UpdatePath. An AppSync proposal can\r\nbe sent by an authorized external sender.\r\n```",
+              "createdAt": "2024-01-30T04:08:45Z",
+              "updatedAt": "2024-01-30T04:09:19Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85uXha9",
+          "commit": {
+            "abbreviatedOid": "8602a91"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Do I understand correctly, that there can be only one ApplicationState per appliction_id? In that case, each application can only have one map/array/etc.? What if the application needs different data structures or multiple of one kind?\r\n\r\nMore generally, I'm a bit concerned about the introduction of the application_id since it's not part of MLS negotiation mechanism. It's not relevant to MLS interop, because the semantics of the application are outside of MLS, but it seems relevant that clients can signal support for a given application, or that a group can require that an application be supported. I guess what I'm trying to say is that either there is agreement between clients on the application that runs on top of MLS in which case we don't need an application_id, or there isn't, in which case we need a negotiation mechanism.\r\n\r\nRegarding opaque vs. non-opaque state, I think I have a slight preference for letting the application handle the AppSync proposals and modify the state itself. The current design seems a bit clunky and limiting.",
+          "createdAt": "2024-01-30T15:44:32Z",
+          "updatedAt": "2024-01-30T15:44:32Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85ua2Lj",
+          "commit": {
+            "abbreviatedOid": "8602a91"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "lgtm, though I'm not an MLS expert. Some of the system design characteristics might change over time, I suspect.",
+          "createdAt": "2024-01-30T22:45:55Z",
+          "updatedAt": "2024-01-30T22:46:22Z",
+          "comments": [
+            {
+              "originalPosition": 142,
+              "body": "Should this get the same quoted TODO treatment as the others?",
+              "createdAt": "2024-01-30T22:45:55Z",
+              "updatedAt": "2024-01-30T22:46:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85ua6Yn",
+          "commit": {
+            "abbreviatedOid": "8602a91"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-30T22:57:41Z",
+          "updatedAt": "2024-01-30T22:57:41Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Clarifying question: can the server see the contents of the application state?",
+              "createdAt": "2024-01-30T22:57:41Z",
+              "updatedAt": "2024-01-30T22:57:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85ubkJz",
+          "commit": {
+            "abbreviatedOid": "8602a91"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-31T01:08:51Z",
+          "updatedAt": "2024-01-31T01:08:52Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "The hub sees everything, all the servers see all the changes sent in AppState proposals or in GroupContextExtension proposals. We haven't specified if the complete application state needs to be conveyed to other providers at the time a Welcome is received. ",
+              "createdAt": "2024-01-31T01:08:52Z",
+              "updatedAt": "2024-01-31T01:08:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85ugOOB",
+          "commit": {
+            "abbreviatedOid": "8602a91"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-31T14:53:25Z",
+          "updatedAt": "2024-01-31T14:53:26Z",
+          "comments": [
+            {
+              "originalPosition": 142,
+              "body": "```suggestion\r\n> **TODO:** IANA registry for `application_id`; register extension and proposal types\r\n>as safe extensions\r\n```",
+              "createdAt": "2024-01-31T14:53:25Z",
+              "updatedAt": "2024-01-31T14:57:19Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
