@@ -78,7 +78,7 @@ become participants in the room. The hub provider is responsible for ordering
 and distributing messages, enforcing policy, and authorizing messages. It also
 keeps a copy of the room state, which includes the room policy and participant
 list, which it can provide to new joiners. Each provider also
-stores initial keying material and consent for its own users (who may be offline).
+stores initial keying material for its own users (who may be offline).
 
 This document describes the communication among different providers necessary to
 support messaging application functionality, for example:
