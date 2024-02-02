@@ -80,6 +80,7 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction
+     1.1.  Known Gaps
    2.  Conventions and Definitions
    3.  Example protocol flow
      3.1.  Alice Creates a Room
@@ -125,30 +126,85 @@ Table of Contents
 
 1.  Introduction
 
-   Providers of secure messaging services typically allow their users to
-   only communicate with other users of the same provider.  This can be
-   limiting for users, who frequently have to run clients of multiple
-   messaging applications in parallel, each for a different secure
-   messaging provider.
+   The More Instant Messaging Interoperability (MIMI) transport protocol
+   enables providers of end-to-end encrypted instant messaging to
+   interoperate.  As described in the MIMI architecture
+   [I-D.barnes-mimi-arch], group chats and direct messages are described
+   in terms of "rooms".  Each MIMI protocol room is hosted at a single
+   provider (the "hub" provider"), but allows users from different
+   providers to become participants in the room.  The hub provider is
+   responsible for ordering and distributing messages, enforcing policy,
+   and authorizing messages.  It also keeps a copy of the room state,
+   which includes the room policy and participant list, which it can
+   provide to new joiners.  Each provider also stores initial keying
+   material for its own users (who may be offline).
 
-   The More Instant Messaging Interoperability (MIMI) protocol specified
-   in this document allows interoperability on the provider level based
-   on rooms.  Each MIMI protocol room is hosted at a single provider,
-   but allows users from different providers to become participants in
-   the room.
+   This document describes the communication among different providers
+   necessary to support messaging application functionality, for
+   example:
 
-   Users and providers can use events to interact with the provider
-   hosting the room and with one-another, for example, to add or remove
-   users from the room.
+   *  Sharing room policy
 
-   Each user can have clients in the room, who can then communicate with
-   one-another, where messages are end-to-end encrypted using the
-   Messaging Layer Security (MLS) protocol ([RFC9420]).
+   *  Adding and removing participants in a room
 
-   An MLS group (through the MIMI DS protocol
-   [I-D.robert-mimi-delivery-service]) forms the cryptographic core of
-   each room and ensures that clients in the room agree on room state
-   and group state such as user and client level membership.
+   *  Exchanging secure messages
+
+   In support of these functions, the protocol also has primitives to
+   fetch initial keying material and fetch the current state of the
+   underlying end-to-end encryption protocol for the room.
+
+   Messages sent inside each room are end-to-end encrypted using the
+   Messaging Layer Security (MLS) protocol [RFC9420], and each room is
+   associated with an MLS group.  MLS also ensures that clients in a
+   room agree on the room policy and participation.  MLS is integrated
+   into MIMI in such a way as to ensure that a client is joined to a
+   room's MLS group only if the client's user is a participant in the
+   room, and that all clients in the group agree on the state of the
+   room (including, for example, the room's participant list).
+
+1.1.  Known Gaps
+
+   In this version of the document, we have tried to capture enough
+   concrete functionality to enable basic application functionality,
+   while defining enough of a protocol framework to indicate how to add
+   other necessary functionality.  The following functions are likely to
+   be needed by the complete protocol, but are not covered here:
+
+   Authorization policy:  In this document, we assume that all
+      participants in a room have equal capability.  Actual messaging
+      systems have authorization policies for which clients can take
+      which actions in a room.
+
+   Advanced join/leave flows:  In this document, all adds / removes /
+      joins / leaves are initiated from within the group, since this
+      aligns well with MLS.  Messaging application support a variety of
+      other flows, some of which this protocol will need to support.
+
+   Consent:  In this document, we assume that any required consent has
+      already been obtained, e.g., a user consenting to be added to a
+      room by another user.  The full protocol will need some mechanisms
+      for establishing this consent.
+
+   Identifiers:  Certain entities in the MIMI system need to be
+      identified in the protocol.  In this document, we define a
+      notional syntax for identifiers, but a more concrete one should be
+      defined.
+
+   Abuse reporting:  There is no mechanism in this document for
+      reporting abusive behavior to a messaging provider.
+
+   Identifier resolution:  In some cases, the identifier used to
+      initiate communications with a user might be different from the
+      identifier that should be used internally.  For example, a user-
+      visible handle might need to be mapped to a durable internal
+      identifier.  This document provides no mechanism for such
+      resolution.
+
+   Authentication  While MLS provides basic message authentication,
+      users should also be able to (cryptographically) tie the identity
+      of other users to their respective providers.  Further
+      authentication such as tying clients to their users (or the user's
+      other clients) may also be desirable.
 
 2.  Conventions and Definitions
 
