@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-01T00:04:00.523949+00:00",
+  "timestamp": "2024-02-04T00:03:55.300029+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -660,7 +660,7 @@
       "labels": [],
       "body": "I feel like it's a missed opportunity by the MIMI WG to essentially ignore the prior art created with the XMPP standard and make no effort to be compatible with the existing XMPP internet standard.\r\n\r\nI'm not sure why an entirely new transport protocol and message format that is not compatible with XMPP is being considered, instead of a XMPP protocol extension for MLS.\r\n\r\nThe advantages of Matrix were eventual consistency and more decentralized rooms, but the protocol proposal makes no mention of those features and the scaling issues Matrix has show that they're probably a bad idea too. Is it really worth breaking compatibility with XMPP just to replace XML with JSON?",
       "createdAt": "2023-12-02T13:48:21Z",
-      "updatedAt": "2024-01-15T18:21:23Z",
+      "updatedAt": "2024-02-02T18:19:58Z",
       "closedAt": null,
       "comments": [
         {
@@ -704,6 +704,13 @@
           "body": "To clarify the client-server detail: it's generally understood that if MIMI were to be founded on another protocol, that protocol's client-server API would be excluded from scope. Matrix's APIs are able to be separated in this way, and I believe XMPP can as well.",
           "createdAt": "2024-01-15T18:21:23Z",
           "updatedAt": "2024-01-15T18:21:23Z"
+        },
+        {
+          "author": "haansn08",
+          "authorAssociation": "NONE",
+          "body": "@Alexis211 \r\n\r\n> A streaming protocol using a single TCP connection would be subject to reliability issues such as head-of-line blocking (the situation where a dropped packet slows down the entire flow of data in a TCP connection\r\n\r\nHead-of-line blocking is not a very pressing issue for XMPP today, but even if it was there are much better options than establishing more TCP/SSL connections for every request/message like with HTTP, just to avoid head-of-line blocking. An updated XMPP spec with a message oriented transport protocol such as SCTP or QUICK would be nice and much more elegant than HTTP. Switching out the transport protocol also allows for backwards compatibility and avoids reinventing the wheel again.\r\n\r\n> The reliability requirements on messaging applications match very well to the transactional nature of HTTP requests: when sending a message to a remote server using a PUT (or POST) request, a response code of 200 indicates that the recipient server has successfully received and stored the message\r\n\r\n> By forcing the design of a protocol that uses separate, stateless HTTP requests for each message, we will naturally end up building a protocol that is idempotent, i.e. if we are not sure that a message was sent correctly, we just re-send it, and even if the first one did actually go through, the message will not be duplicated when the second requests is received as well. (This can be implemented using unique IDs on messages, and is an expected behavior of HTTP PUT requests).\r\n\r\nYou probably are looking for https://xmpp.org/extensions/xep-0198.html\r\n\r\n> HTTP library support is excellent in most mainstream programming languages, and many developers are already familiar with HTTP semantics (which is not the case with XMPP), which could help MIMI to be adopted much more easily / much faster.\r\n\r\nSince most IM users are trapped in large silos like WhatsApp today success will mostly depend on whether those large providers will adopt it or not. WhatsApp for example is already using a modified version of ejabberd internally, so XMPP federation would be the obvious choice for them. It's nice that there are masses of web developers out there that understand how HTTP works, but tbh there are very few companies that decide if MIMI will be successful. I think reinventing existing internet standards, instead of improving them is much more harmful to the goals of MIMI. XMPP is already a successful protocol - it is time tested and can scale to billions (!) of users in production like at WhatsApp - even if the original goal of universal federation has not been met. However this is due to the profit incentives of large IM providers (ofc interoperability is harder and as a \"reward\" is makes it easier for users to leave their platform). Publishing yet another IM protocol will do nothing to solve this problem and only introduce more fragmentation.",
+          "createdAt": "2024-02-02T13:27:01Z",
+          "updatedAt": "2024-02-02T18:19:58Z"
         }
       ]
     }
@@ -2665,24 +2672,26 @@
       "id": "PR_kwDOKZ8QO85lYGQ7",
       "title": "Update Introduction and add Known Gaps",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/42",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "bifurcation",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "The Known Gaps section might need some updating depending on what we do with the rest of the document.",
       "createdAt": "2024-01-29T21:10:19Z",
-      "updatedAt": "2024-01-31T15:22:51Z",
+      "updatedAt": "2024-02-02T21:10:15Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "af62be86e01834c228d8bfc068fb383c0cdd20b2",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "intro",
-      "headRefOid": "c20adfae565167b0e07adc6e00c86bf199c17bf7",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "65edb486fd03cdcef8a372f881b2a8936458604b",
+      "closedAt": "2024-02-02T21:10:15Z",
+      "mergedAt": "2024-02-02T21:10:15Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "1301edecda602fad2511c158950b0660fa657722"
+      },
       "comments": [],
       "reviews": [
         {
@@ -3012,6 +3021,79 @@
               "updatedAt": "2024-01-31T15:20:14Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85umd5-",
+          "commit": {
+            "abbreviatedOid": "c20adfa"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thanks for making the changes! Looks good to me now.",
+          "createdAt": "2024-02-01T06:03:27Z",
+          "updatedAt": "2024-02-01T06:03:27Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85umfJO",
+          "commit": {
+            "abbreviatedOid": "ee93db8"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-01T06:05:30Z",
+          "updatedAt": "2024-02-01T06:05:30Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "The text looks good now, except that I don't quite get what the difference between \"enforcing policy\" and \"authorizing messages\" is. My understanding was that authorizing messages (or not) is part of policy enforcement.",
+              "createdAt": "2024-02-01T06:05:30Z",
+              "updatedAt": "2024-02-01T06:05:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85u41J3",
+          "commit": {
+            "abbreviatedOid": "34a2255"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-02T21:06:01Z",
+          "updatedAt": "2024-02-02T21:06:01Z",
+          "comments": [
+            {
+              "originalPosition": 72,
+              "body": "Yeah, we're descoping everything besides the basic flow from this version.  The idea here is to capture the basic moving parts for one use cases, with the idea that the WG can then elaborate them to cover other use cases after adoption.",
+              "createdAt": "2024-02-02T21:06:01Z",
+              "updatedAt": "2024-02-02T21:06:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85u41qE",
+          "commit": {
+            "abbreviatedOid": "c20adfa"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-02T21:07:52Z",
+          "updatedAt": "2024-02-02T21:08:17Z",
+          "comments": [
+            {
+              "originalPosition": 35,
+              "body": "```suggestion\r\nstores initial keying material for its own users (who may be offline).\r\n```",
+              "createdAt": "2024-02-02T21:07:52Z",
+              "updatedAt": "2024-02-02T21:08:17Z"
+            }
+          ]
         }
       ]
     },
@@ -3214,24 +3296,26 @@
       "id": "PR_kwDOKZ8QO85lYOM_",
       "title": "Add the MLS AppSync mechanism",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/45",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "bifurcation",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-01-29T21:31:42Z",
-      "updatedAt": "2024-01-31T15:03:51Z",
+      "updatedAt": "2024-02-02T20:54:36Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "af62be86e01834c228d8bfc068fb383c0cdd20b2",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "appsync",
       "headRefOid": "c8f5e18209f9d18f563e213fed44940a834e6816",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-02-02T20:54:36Z",
+      "mergedAt": "2024-02-02T20:54:36Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "7a6a998aac6726255a51ed3d597107e02e365216"
+      },
       "comments": [
         {
           "author": "rohan-wire",
