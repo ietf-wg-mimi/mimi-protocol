@@ -1,0 +1,1220 @@
+
+
+
+
+More Instant Messaging Interoperability                       T. Ralston
+Internet-Draft                          The Matrix.org Foundation C.I.C.
+Intended status: Standards Track                              K. Kohbrok
+Expires: 9 August 2024                                         R. Robert
+                                                             Phoenix R&D
+                                                              M. Hodgson
+                                        The Matrix.org Foundation C.I.C.
+                                                         6 February 2024
+
+
+   More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
+                   draft-ralston-mimi-protocol-latest
+
+Abstract
+
+   This document specifies the More Instant Messaging Interoperability
+   (MIMI) transport protocol, which allows users of different messaging
+   providers to interoperate in group chats (rooms), including to send
+   and receive messages, share room policy, and add participants to and
+   remove participants from rooms.  MIMI describes messages between
+   providers, leaving most aspects of the provider-internal client-
+   server communication up to the provider.  MIMI integrates the
+   Messaging Layer Security (MLS) protocol to provide end-to-end
+   security assurances, including authentication of protocol
+   participants, confidentiality of messages exchanged within a room,
+   and agreement on the state of the room.
+
+About This Document
+
+   This note is to be removed before publishing as an RFC.
+
+   The latest revision of this draft can be found at
+   https://bifurcation.github.io/ietf-mimi-protocol/draft-ralston-mimi-
+   protocol.html.  Status information for this document may be found at
+   https://datatracker.ietf.org/doc/draft-ralston-mimi-protocol/.
+
+   Discussion of this document takes place on the More Instant Messaging
+   Interoperability Working Group mailing list (mailto:mimi@ietf.org),
+   which is archived at https://mailarchive.ietf.org/arch/browse/mimi/.
+   Subscribe at https://www.ietf.org/mailman/listinfo/mimi/.
+
+   Source for this draft and an issue tracker can be found at
+   https://github.com/bifurcation/ietf-mimi-protocol.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 9 August 2024.
+
+Copyright Notice
+
+   Copyright (c) 2024 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Introduction
+     1.1.  Known Gaps
+   2.  Conventions and Definitions
+   3.  Example protocol flow
+     3.1.  Alice Creates a Room
+     3.2.  Alice adds Bob to the Room
+     3.3.  Bob adds Cathy to the Room
+     3.4.  Cathy Sends a Message
+     3.5.  Bob Leaves the Room
+   4.  MIMI Endpoints and Framing
+     4.1.  Directory
+     4.2.  Fetch Key Material
+     4.3.  Update Room State
+     4.4.  Submit a Message
+     4.5.  Fanout Messages and Room Events
+   5.  Relation between MIMI state and cryptographic state
+     5.1.  Room state
+     5.2.  Cryptographic room representation
+     5.3.  Proposal-commit paradigm
+     5.4.  Authenticating proposals
+   6.  MLS Application State Synchronization
+   7.  Security Considerations
+   8.  IANA Considerations
+   9.  References
+     9.1.  Normative References
+     9.2.  Informative References
+   Acknowledgments
+   Contributors
+   Authors' Addresses
+
+1.  Introduction
+
+   The More Instant Messaging Interoperability (MIMI) transport protocol
+   enables providers of end-to-end encrypted instant messaging to
+   interoperate.  As described in the MIMI architecture
+   [I-D.barnes-mimi-arch], group chats and direct messages are described
+   in terms of "rooms".  Each MIMI protocol room is hosted at a single
+   provider (the "hub" provider"), but allows users from different
+   providers to become participants in the room.  The hub provider is
+   responsible for ordering and distributing messages, enforcing policy,
+   and authorizing messages.  It also keeps a copy of the room state,
+   which includes the room policy and participant list, which it can
+   provide to new joiners.  Each provider also stores initial keying
+   material for its own users (who may be offline).
+
+   This document describes the communication among different providers
+   necessary to support messaging application functionality, for
+   example:
+
+   *  Sharing room policy
+
+   *  Adding and removing participants in a room
+
+   *  Exchanging secure messages
+
+   In support of these functions, the protocol also has primitives to
+   fetch initial keying material and fetch the current state of the
+   underlying end-to-end encryption protocol for the room.
+
+   Messages sent inside each room are end-to-end encrypted using the
+   Messaging Layer Security (MLS) protocol [RFC9420], and each room is
+   associated with an MLS group.  MLS also ensures that clients in a
+   room agree on the room policy and participation.  MLS is integrated
+   into MIMI in such a way as to ensure that a client is joined to a
+   room's MLS group only if the client's user is a participant in the
+   room, and that all clients in the group agree on the state of the
+   room (including, for example, the room's participant list).
+
+1.1.  Known Gaps
+
+   In this version of the document, we have tried to capture enough
+   concrete functionality to enable basic application functionality,
+   while defining enough of a protocol framework to indicate how to add
+   other necessary functionality.  The following functions are likely to
+   be needed by the complete protocol, but are not covered here:
+
+   Authorization policy:  In this document, we assume that all
+      participants in a room have equal capability.  Actual messaging
+      systems have authorization policies for which clients can take
+      which actions in a room.
+
+   Advanced join/leave flows:  In this document, all adds / removes /
+      joins / leaves are initiated from within the group, since this
+      aligns well with MLS.  Messaging application support a variety of
+      other flows, some of which this protocol will need to support.
+
+   Consent:  In this document, we assume that any required consent has
+      already been obtained, e.g., a user consenting to be added to a
+      room by another user.  The full protocol will need some mechanisms
+      for establishing this consent.
+
+   Identifiers:  Certain entities in the MIMI system need to be
+      identified in the protocol.  In this document, we define a
+      notional syntax for identifiers, but a more concrete one should be
+      defined.
+
+   Abuse reporting:  There is no mechanism in this document for
+      reporting abusive behavior to a messaging provider.
+
+   Identifier resolution:  In some cases, the identifier used to
+      initiate communications with a user might be different from the
+      identifier that should be used internally.  For example, a user-
+      visible handle might need to be mapped to a durable internal
+      identifier.  This document provides no mechanism for such
+      resolution.
+
+   Authentication  While MLS provides basic message authentication,
+      users should also be able to (cryptographically) tie the identity
+      of other users to their respective providers.  Further
+      authentication such as tying clients to their users (or the user's
+      other clients) may also be desirable.
+
+2.  Conventions and Definitions
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+   Terms and definitions are inherited from [I-D.barnes-mimi-arch].  We
+   also make use of terms from the MLS protocol [RFC9420].
+
+   Throughout this document, the examples use the TLS Presentation
+   Language [RFC8446] and the semantics of HTTP [RFC7231] respectively
+   as placeholder a set of binary encoding mechanism and transport
+   semantics.
+
+   The protocol layering of the MIMI transport protocol is as follows:
+
+   1.  An application layer that enables messaging functionality
+
+   2.  A security layer that provides end-to-end security guarantees:
+
+       *  Confidentiality for messages
+
+       *  Authentication of actors making changes to rooms
+
+       *  Agreement on room state across the clients involved in a room
+
+   3.  A transport layer that provides secure delivery of protocol
+       objects between servers.
+
+   +------------------------+
+   |       Application      |
+   |       +----------------+
+   |       |  E2E Security  |
+   +-------+----------------+
+   |        Transport       |
+   +------------------------+
+
+                      Figure 1: MIMI protocol layering
+
+   MIMI uses MLS [RFC9420] for end-to-end security, using the MLS
+   AppSync proposal type to efficiently synchronize room state across
+   the clients involved in a room.  The MIMI transport is based on HTTPS
+   over mutually-authenticated TLS.
+
+3.  Example protocol flow
+
+   This section walks through a basic scenario that illustrates how a
+   room works in the MIMI protocol.  The scenario involves the following
+   actors:
+
+   *  Service providers a.example, b.example, and c.example represented
+      by servers ServerA, ServerB, and ServerC respectively
+
+   *  Users Alice (alice@a.example), Bob (bob@b.example) and Cathy
+      (cathy@c.example) of the respective service providers
+
+   *  Clients ClientA1, ClientA2, ClientB1, etc. belonging to these
+      users
+
+   *  A room clubhouse@a.example where the three users interact
+
+   As noted in [I-D.barnes-mimi-arch], the MIMI protocol only defines
+   interactions between service providers' servers.  Interactions
+   between clients and servers within a service provider domain are
+   shown here for completeness, but surrounded by [[ double brackets ]].
+
+3.1.  Alice Creates a Room
+
+   The first step in the lifetime of a MIMI room is its creation on the
+   hub server.  This operation is local to the service provider, and
+   does not entail any MIMI protocol operations.  However, it must
+   establish the initial state of the room, which is then the basis for
+   protocol operations related to the room.
+
+   Here, we assume that Alice uses ClientA1 to create a room with the
+   following properties:
+
+   *  Identifier: clubhouse@a.example
+
+   *  Participants: [alice@a.example]
+
+   ClientA1 also creates an MLS group with group ID clubhouse@a.example
+   and ensures via provider-local operations that Alice's other clients
+   are members of this MLS group.
+
+3.2.  Alice adds Bob to the Room
+
+   Adding Bob to the room entails operations at two levels.  First,
+   Bob's user identity must be added to the room's participant list.
+   Second, Bob's clients must be added to the room's MLS group.
+
+   The process of adding Bob to the room thus begins by Alice fetching
+   key material for Bob's clients.  Alice then updates the room by
+   sending an MLS Commit over the following proposals:
+
+   *  An AppSync proposal updating the room state by adding Bob to the
+      participant list
+
+   *  Add proposals for Bob's clients
+
+   The MIMI protocol interactions are between Alice's server ServerA and
+   Bob's server ServerB.  ServerB stores KeyPackages on behalf of Bob's
+   devices.  ServerA performs the key material fetch on Alice's behalf,
+   and delivers the resulting KeyPackages to Alice's clients.  Both
+   ServerA and ServerB remember the sources of the KeyPackages they
+   handle, so that they can route a Welcome message for those
+   KeyPackages to the proper recipients -- ServerA to ServerB, and
+   ServerB to Bob's clients.
+
+      *NOTE:* In the full protocol, it will be necessary to have consent
+      and access control on these operations.  We have elided that step
+      here in the interest of simplicity.
+
+   ClientA1       ServerA         ServerB         ClientB*
+     |               |               |               |
+     |               |               |     Store KPs |
+     |               |               |<~~~~~~~~~~~~~~+
+     |               |               |<~~~~~~~~~~~~~~+
+     | Request KPs   |               |               |
+     +~~~~~~~~~~~~~~>| /keyMaterial  |               |
+     |               +-------------->|               |
+     |               |        200 OK |               |
+     |           KPs |<--------------+               |
+     |<~~~~~~~~~~~~~~+               |               |
+     |               |               |               |
+
+   ClientB*->ServerB: [[ Store KeyPackages ]]
+   ClientA1->ServerA: [[ request KPs for bob@b.example ]]
+   ServerA->ServerB: POST /keyMaterial KeyMaterialRequest
+   ServerB: Verify that Alice is authorized to fetch KeyPackages
+   ServerB: Mark returned KPs as reserved for Alice’s use
+   ServerB->ServerA: 200 OK KeyMaterialResponse
+   ServerA: Remember that these KPs go to b.example
+   ServerA->ClientA1: [[ KPs ]]
+
+           Figure 2: Alice Fetches KeyPackages for Bob's Clients
+
+ClientA1       ServerA         ServerB         ClientB*
+  |               |               |               |
+  | Commit, etc.  |               |               |
+  +~~~~~~~~~~~~~~>| /notify       |               |
+  |               +-------------->| Welcome, Tree |
+  |               |               +~~~~~~~~~~~~~~>|
+  |               |               +~~~~~~~~~~~~~~>|
+  |               |        200 OK |               |
+  |      Accepted |<--------------+               |
+  |<~~~~~~~~~~~~~~+               |               |
+  |               |               |               |
+
+ClientA1: Prepare Commit over AppSync(+bob@b.example), Add*
+ClientA1->ServerA: [[ Commit, Welcome, GroupInfo?, RatchetTree? ]]
+ServerA: Verify that AppSync, Adds are allowed by policy
+ServerA: Identifies Welcome domains based on KP hash in Welcome
+ServerA->ServerB: POST /notify/clubhouse@a.example Intro{ Welcome, RatchetTree? }
+ServerB: Recognizes that Welcome is adding Bob to room clubhouse@a.example
+ServerB->ClientB*: [[ Welcome, RatchetTree? ]]
+
+  Figure 3: Alice Adds Bob to the Room and Bob's Clients to the MLS
+                                Group
+
+3.3.  Bob adds Cathy to the Room
+
+   The process of adding Bob was a bit abbreviated because Alice is a
+   user of the hub service provider.  When Bob adds Cathy, we see the
+   full process, involving the same two steps (KeyPackage fetch followed
+   by Add), but this time indirected via the hub server ServerA.  Also,
+   now that there are users on ServerB involved in the room, the hub
+   ServerA will have to distribute the Commit adding Cathy and Cathy's
+   clients to ServerB as well as forwarding the Welcome to ServerC.
+
+ ClientB1       ServerB         ServerA         ServerC         ClientC*
+   |               |               |               |               |
+   |               |               |               |     Store KPs |
+   |               |               |               |<~~~~~~~~~~~~~~+
+   |               |               |               |<~~~~~~~~~~~~~~+
+   | Request KPs   |               |               |               |
+   +~~~~~~~~~~~~~~>| /keyMaterial  | /keyMaterial  |               |
+   |               +-------------->+-------------->|               |
+   |               |        200 OK |        200 OK |               |
+   |           KPs |<--------------+<--------------+               |
+   |<~~~~~~~~~~~~~~+               |               |               |
+   |               |               |               |               |
+
+ ClientC*->ServerC: [[ Store KeyPackages ]]
+ ClientB1->ServerB: [[ request KPs for bob@b.example ]]
+ ServerB->ServerA: POST /keyMaterial KeyMaterialRequest
+ ServerA->ServerC: POST /keyMaterial KeyMaterialRequest
+ ServerB: Verify that Bob is authorized to fetch KeyPackages
+ ServerB: Mark returned KPs as reserved for Bob’s use
+ ServerC->ServerA: 200 OK KeyMaterialResponse
+ ServerA: Remember that these KPs go to b.example
+ ServerA->ServerB: 200 OK KeyMaterialResponse
+ ServerB->ClientB1: [[ KPs ]]
+
+         Figure 4: Bob Fetches KeyPackages for Cathy's Clients
+
+ClientB1       ServerB         ServerA         ServerC         ClientC*  ClientB*  ClientA*
+  |               |               |               |               |         |         |
+  | Commit, etc.  |               |               |               |         |         |
+  +~~~~~~~~~~~~~~>| /update       |               |               |         |         |
+  |               +-------------->|               |               |         |         |
+  |               |        200 OK |               |               |         |         |
+  |               |<--------------+               |               |         |         |
+  |      Accepted |               | /notify       |               |         |         |
+  |<~~~~~~~~~~~~~~+               +-------------->| Welcome, Tree |         |         |
+  |               |               |               +~~~~~~~~~~~~~~>|         |         |
+  |               |               |               +~~~~~~~~~~~~~~>|         |         |
+  |               |       /notify |               |               |         |         |
+  |               |<--------------+               |               |         |         |
+  |               | Commit        |               |               |         |         |
+  |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|         |
+  |               |               | Commit        |               |         |         |
+  |               |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|
+  |               |               |               |               |         |         |
+
+ClientB1: Prepare Commit over AppSync(+cathy@c.example), Add*
+ClientB1->ServerB: [[ Commit, Welcome, GroupInfo?, RatchetTree? ]]
+ServerB->ServerA: POST /update/clubhouse@a.example CommitBundle
+ServerA: Verify that Adds are allowed by policy
+ServerA->ServerB: 200 OK
+ServerA->ServerC: POST /notify/clubhouse@a.example Intro{ Welcome, RatchetTree? }
+ServerC: Recognizes that Welcome is adding Cathy to clubhouse@a.example
+ServerC->ClientC*: [[ Welcome, RatchetTree? ]]
+ServerA->ServerB: POST /notify/clubhouse@a.example Commit
+ServerB->ClientB*: [[ Commit ]]
+ServerA->ClientA*: [[ Commit ]]
+
+   Figure 5: Bob Adds Cathy to the Room and Cathy's Clients to the
+                              MLS Group
+
+3.4.  Cathy Sends a Message
+
+   Now that Alice, Bob, and Cathy are all in the room, Cathy wants to
+   say hello to everyone.  Cathy's client encapsulates the message in an
+   MLS PrivateMessage and sends it to ServerC, who forwards it to the
+   hub ServerA on Cathy's behalf.  Assuming Cathy is allowed to speak in
+   the room, ServerA will forward Cathy's message to the other servers
+   involved in the room, who distribute it to their clients.
+
+ClientC1       ServerC         ServerA         ServerB         ClientB*  ClientC*  ClientA*
+  |               |               |               |               |         |         |
+  | Message       |               |               |               |         |         |
+  +~~~~~~~~~~~~~~>| /submit       |               |               |         |         |
+  |               +-------------->|               |               |         |         |
+  |               |        200 OK |               |               |         |         |
+  |               |<--------------+               |               |         |         |
+  |      Accepted |               | /notify       |               |         |         |
+  |<~~~~~~~~~~~~~~+               +-------------->| Message       |         |         |
+  |               |               |               +~~~~~~~~~~~~~~>|         |         |
+  |               |       /notify |               |               |         |         |
+  |               |<--------------+               |               |         |         |
+  |               | Message       |               |               |         |         |
+  |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|         |
+  |               |               | Message       |               |         |         |
+  |               |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|
+  |               |               |               |               |         |         |
+
+ClientC1->ServerC: [[ MLSMessage(PrivateMessage) ]]
+ServerC->ServerA: POST /submit/clubhouse@a.example MLSMessage(PrivateMessage)
+ServerA: Verifies that message is allowed
+ServerA->ServerC: POST /notify/clubhouse@a.example Message{ MLSMessage(PrivateMessage) }
+ServerA->ServerB: POST /notify/clubhouse@a.example Message{ MLSMessage(PrivateMessage) }
+ServerA->ClientA*: [[ MLSMessage(PrivateMessage) ]]
+ServerB->ClientB*: [[ MLSMessage(PrivateMessage) ]]
+ServerC->ClientC*: [[ MLSMessage(PrivateMessage) ]]
+
+             Figure 6: Cathy Sends a Message to the Room
+
+3.5.  Bob Leaves the Room
+
+   A user removing another user follows the same flow as adding the
+   user.  The user performing the removal creates an MLS commit covering
+   Remove proposals for all of the removed user's devices, and an
+   AppSync proposal updating the room state to remove the removed user
+   from the room's participant list.
+
+   One's own user leaving is slightly more complicated than removing
+   another user, because the leaving user cannot remove all of their
+   devices from the MLS group.  Instead, the leave happens in three
+   steps:
+
+   1.  The leaving client constructs MLS Remove proposals for all of the
+       user's devices (including the leaving client), and an AppSync
+       proposal that removes its user from the participant list.
+
+   2.  The leaving client sends these proposals to the hub.  The hub
+       caches the proposals.
+
+   3.  The next time a client attempts to commit, the hub requires the
+       client to include the cached proposals.
+
+   The hub thus guarantees the leaving client that they will be removed
+   as soon as possible.
+
+ClientB1       ServerB         ServerA         ServerC         ClientC1
+  |               |               |               |               |
+  | Proposals     |               |               |               |
+  +~~~~~~~~~~~~~~>| /update       |               |               |
+  |               +-------------->|               |               |
+  |               |        200 OK |               |               |
+  |               |<--------------+               |               |
+  |      Accepted |               |  /notify      |               |
+  |<~~~~~~~~~~~~~~+               +-------------->|               |
+  |               |               |               | Proposals     |
+  |               |               |               +~~~~~~~~~~~~~~>|
+  |               |               |               |               |
+  |               |               |               | Commit(Props) |
+  |               |               |               |<~~~~~~~~~~~~~~+
+  |               |               |       /update |               |
+  |               |               |<--------------+               |
+  |               |               | 200 OK        |               |
+  |               |               +-------------->|               |
+  |               |               |               | Accepted      |
+  |               |               |               +~~~~~~~~~~~~~~>|
+  |               |       /notify | /notify       |               |
+  |               |<--------------+-------------->|               |
+  |               |               |               |               |
+
+ClientB1: Prepare Remove*, AppSync(-bob@b.example)
+ClientB1->ServerB: [[ Remove*, AppSync ]]
+ServerB->ServerA: POST /update/clubhouse@a.example Remove*, AppSync
+ServerA: Verify that Removes, AppSync are allowed by policy; cache
+ServerA->ServerB: 200 OK
+ServerA->ServerC: POST /notify/clubhouse@a.example Proposals
+ServerC1->ClientC1: [[ Proposals ]]
+ClientC1->ServerC: [[ Commit(Props), Welcome, GroupInfo?, RatchetTree? ]]
+ServerC->ServerA: POST /update/clubhouse@a.example CommitBundle
+ServerA: Check whether Commit includes queued proposals; accept
+ServerA->ServerC: 200 OK
+ServerA->ServerB: POST /notify/clubhouse@a.example Commit
+ServerA->ServerC: POST /notify/clubhouse@a.example Commit
+
+                    Figure 7: Bob Leaves the Room
+
+4.  MIMI Endpoints and Framing
+
+   This section describes the specific endpoints necessary to provide
+   the functionality in the example flow.  The framing for each endpoint
+   includes a protocol so that different variations of the end-to-end
+   encryption can be used.
+
+   The syntax of the MIMI protocol messages are described using the TLS
+   presentation language format (Section 3 of [RFC8446]).
+
+   enum {
+       reserved(0),
+       mls10(1),
+       (255)
+   } Protocol;
+
+4.1.  Directory
+
+   Like the ACME protocol [RFC8555], the MIMI protocol uses a directory
+   document to convey the HTTPS URLs used to reach certain endpoints (as
+   opposed to hard coding the endpoints).
+
+   The directory URL is discovered using the mimi-protocol-directory
+   well-known URI.  The response is a JSON document with URIs for each
+   type of endpoint.
+
+   GET /.well-known/mimi-protocol-directory
+
+   {
+     "keyMaterial":
+        "https://mimi.example.com/v1/keyMaterial/{targetUser}",
+     "update": "https://mimi.example.com/v1/update{roomId}",
+     "notify": "https://mimi.example.com/v1/notify/{roomId}",
+     "submitMessage":
+        "https://mimi.example.com/v1/submitMessage/{roomId}"
+   }
+
+4.2.  Fetch Key Material
+
+   This action attempts to claim initial keying material for all the
+   clients of a single user at a specific provider.  The keying material
+   may not be reused unless identified as "last resort" keying material.
+   It uses the HTTP POST method.
+
+   POST /keyMaterial/{targetUser}
+
+   The target user's URI is listed in the request path.  KeyPackages
+   requested using this primitive MUST be sent via the hub provider of
+   whatever room they will be used in.  (If this is not the case, the
+   hub provider will be unable to forward a Welcome message to the
+   target provider).
+
+   The path includes the target user.  The request body includes the
+   protocol (currently just MLS 1.0), and the requesting user.  The
+   request SHOULD include the room ID for which the KeyPackage is
+   intended, as the target may have only granted consent for a specific
+   room.
+
+   For MLS, the request includes a non-empty list of acceptable MLS
+   ciphersuites, and an MLS RequiredCapabilities object (which contains
+   credential types, non-default proposal types, and extensions)
+   required by the requesting provider (these lists can be an empty).
+   The lastResortAllowed field SHOULD be false.
+
+   The request body has the following form.
+
+   struct {
+       opaque uri<V>;
+   } IdentifierUri;
+
+   struct {
+       Protocol protocol;
+       IdentifierUri requestingUser;
+       IdentifierUri targetUser;
+       IdentifierUri roomId;
+       select (protocol) {
+           case mls10:
+               CipherSuite acceptableCiphersuites<V>;
+               RequiredCapabilities requiredCapabilities;
+               bool lastResortAllowed;
+       };
+   } KeyMaterialRequest;
+
+   The response contains a user status code that indicates keying
+   material was returned for all the user's clients (success), that
+   keying material was returned for some of their clients
+   (partialSuccess), or a specific user code indicating failure.  If the
+   user code is success or partialSuccess, each client is enumerated in
+   the response.  Then for each client with a _client_ success code, the
+   structure includes initial keying material (a KeyPackage for MLS
+   1.0).  If the client's code is nothingCompatible, the client's
+   capabilities are optionally included (The client's capabilities could
+   be omitted for privacy reasons.)
+
+   If the _user_ code is noCompatibleMaterial, the provider MAY populate
+   the clients list.  For any other user code, the provider MUST NOT
+   populate the clients list.
+
+   Keying material provided from one response MUST NOT be provided in
+   any other response unless the lastResortAllowed field was set in the
+   requests.  The target provider MUST NOT provide expired keying
+   material (ex: an MLS KeyPackage containing a LeafNode with a notAfter
+   time past the current date and time).
+
+   enum {
+       success(0);
+       partialSuccess(1);
+       incompatibleProtocol(2);
+       noCompatibleMaterial(3);
+       userUnknown(4);
+       noConsent(5);
+       noConsentForThisRoom(6);
+       userDeleted(7);
+       (255)
+   } KeyMaterialUserCode;
+
+   enum {
+       success(0);
+       keyMaterialExhausted(1);
+       onlyLastResort(2);
+       nothingCompatible(3);
+       (255)
+   } KeyMaterialClientCode;
+
+
+   struct {
+       KeyMaterialClientCode clientStatus;
+       IdentifierUri clientUri;
+       select (protocol) {
+           case mls10:
+               select (clientStatus) {
+                   case success:
+                       KeyPackage keyPackage;
+                   case nothingCompatible:
+                       optional<Capabilities> clientCapabilities;
+               };
+       };
+   } ClientKeyMaterial;
+
+   struct {
+       Protocol protocol;
+       KeyMaterialUserCode userStatus;
+       IdentifierUri userUri;
+       ClientKeyMaterial clients<V>;
+   } KeyMaterialResponse;
+
+   At minimum, as each MLS KeyPackage is returned to a requesting
+   provider (on behalf of a requesting IM client), the target provider
+   needs to associate its KeyPackageRef with the target client and the
+   hub provider needs to associate its KeyPackageRef with the target
+   provider.  This insures that Welcome messages can be correctly routed
+   to the target provider and client.  These associations can be deleted
+   after a Welcome message is forwarded or after the KeyPackage
+   leaf_node.lifetime.not_after time has passed.
+
+4.3.  Update Room State
+
+   Adds, removes, and policy changes to the room are all forms of
+   updating the room state.  They are accomplished using the update
+   transaction which is used to update the room base policy,
+   participation list, or its underlying MLS group.  It uses the HTTP
+   POST method.
+
+   POST /update/{roomId}
+
+   In MLS 1.0, any change to the room base policy document or to the
+   participant list is always communicated via an AppSync proposal type
+   with the appropriate applicationId.  The participant list change
+   needed to add a user MUST happen either before or simultaneously with
+   the corresponding MLS operation.
+
+   Removing an active user from a participant list or banning an active
+   participant SHOULD happen simultaneously with any MLS changes made to
+   the commit removing the participant.
+
+   A hub provider which observes that an active user has been removed or
+   banned, but still has clients MUST prevent any of those clients from
+   sending or receiving any additional application messages; MUST
+   prevent any of those clients from sending Commit messages; and MUST
+   prevent it from sending any proposals except for Remove and
+   SelfRemove proposals.
+
+   The update request body is described below:
+
+   enum {
+     reserved(0),
+     full(1),
+     compressed(2),
+     delta(3),
+     patch(4),
+     byReference(5)
+     (255)
+   } RatchetTreeRepresentation;
+
+   struct {
+     RatchetTreeRepresentation representation;
+     select (representation) {
+       case full:
+         Node ratchet_tree<V>;
+     };
+   } RatchetTreeOption;
+
+   struct {
+     select (room.protocol) {
+       case mls10:
+         PublicMessage proposalOrCommit;
+         select (proposalOrCommit.content.content_type) {
+           case commit:
+             optional<Welcome> welcome;
+             GroupInfo groupInfo;   /* without embedded ratchet_tree */
+             RatchetTreeOption ratchetTreeOption;
+           case proposal:
+             PublicMessage moreProposals<V>; /* a list of additional proposals */
+         };
+     };
+   } UpdateRequest;
+
+   In the first use case described in the Protocol Overview, Alice
+   creates a Commit containing an AppSync proposal adding bob@b.example,
+   and Add proposals for all Bob's MLS clients.  Alice includes the
+   Welcome message which will be sent for Bob, a GroupInfo object for
+   the hub provider, and complete ratchet_tree extension.
+
+   The response body is described below:
+
+   enum {
+     success(0),
+     wrongEpoch(1),
+     notAllowed(2),
+     hubUnresponsive(3),
+     invalidProposal(4),
+     (255)
+   } UpdateResponseCode;
+
+   struct {
+       UpdateResponseCode responseCode;
+       string errorDescription;
+   } UpdateRoomResponse
+
+4.4.  Submit a Message
+
+   End-to-end encrypted (application) message are submitted to the hub
+   for authorization and eventual fanout using an HTTP POST request.
+
+   POST /submitMessage/{roomId}
+
+   The request body is as follows:
+
+   struct {
+     Protocol protocol;
+     select(protocol) {
+       case mls10:
+         /* PrivateMessage containing an application message */
+         MLSMessage app_message;
+     };
+   } SubmitMessageRequest;
+
+   If the protocol is MLS 1.0, the request body is an MLSMessage with a
+   WireFormat of PrivateMessage (an application message).
+
+   The response merely indicates if the message was accepted by the hub
+   provider.
+
+   enum {
+     accepted(0),
+     nonMember(1),
+     notAuthorized(2),
+     epochTooOld(3),
+     (255)
+   } SubmitResponseCode;
+
+   struct {
+     Protocol protocol;
+     select(protocol) {
+       case mls10:
+         SubmitResponseCode status_code;
+     };
+   } SubmitMessageResponse;
+
+      *ISSUE:* Do we want to offer a distinction between regular
+      application messages and ephemeral applications messages (for
+      example "is typing" notifications), which do not need to be queued
+      at the target provider.
+
+4.5.  Fanout Messages and Room Events
+
+   If the hub provider accepts an application or handshake message
+   (proposal or commit) message, it forwards that message to all other
+   providers with active participants in the room and all local clients
+   which are active participants.  This is described as fanning the
+   message out.  One can think of fanning a message out as presenting an
+   ordered list of MLS-protected events to the next "hop" toward the
+   receiving client.
+
+   An MLS Welcome message is sent to the providers and local users
+   associated with the KeyPackageRef values in the secrets array of the
+   Welcome.  In the case of a Welcome message, a RatchetTreeOption is
+   also included in the FanoutMessage.
+
+   The hub provider also fans out any messages which originate from
+   itself (ex: MLS External Proposals).
+
+   The hub can include multiple concatenated FanoutMessage objects
+   relevant to the same room.  This endpoint uses the HTTP POST method.
+
+   POST /notify/{roomId}
+
+   struct {
+     uint64 timestamp;
+     select (protocol) {
+       case mls10:
+         /* A PrivateMessage containing an application message,
+            a PublicMessage containing a proposal or commit,
+            or a Welcome message.                               */
+         MLSMessage message;
+         /* the hub acceptance time (in milliseconds from the UNIX epoch) */
+         uint64 timestamp;
+         select (message.wire_format) {
+           case welcome:
+             RatchetTreeOption ratchetTreeOption;
+         };
+     };
+   } FanoutMessage;
+
+      *NOTE:* Correctly fanning out Welcome messages relies on the hub
+      and target providers storing the KeyPackageRef of claimed
+      KeyPackages.
+
+   To be clear, clients that are being removed SHOULD receive the
+   corresponding Commit message, so they can recognize that they have
+   been removed and clean up their internal state.
+
+   The response to a FanoutMessage contains no body.  The HTTP response
+   code indicates if the messages in the request were accepted (201
+   response code), or if there was an error.
+
+5.  Relation between MIMI state and cryptographic state
+
+5.1.  Room state
+
+   The state of a room consists of its room ID, its base policy, its
+   participant list (including the role and participation state of each
+   participant), and the associated end-to-end protocol state (its MLS
+   group state) that anchors the room state cryptographically.
+
+   While all parties involved in a room agree on the room's state during
+   a specific epoch, the Hub is the arbiter that decides if a state
+   change is valid.  All state-changing events are sent to the Hub,
+   checked for their validity and policy conformance before they are
+   forwarded to any follower servers.
+
+   As soon as the Hub accepts an event that changes the room state, its
+   effect is applied to the room state and future events are validated
+   in the context of that new state.
+
+   The room state is thus changed based on events, even if the MLS
+   proposal implementing the event was not yet committed by a client.
+   Note that this only applies to events changing the room state.
+
+5.2.  Cryptographic room representation
+
+   Each room is represented cryptographically by an MLS group and the
+   Hub that manages the room uses the MIMI DS protocol specified in
+   [I-D.robert-mimi-delivery-service] to manage that group.
+
+   In particular, the MIMI DS protocol manages the list of group
+   members, i.e. the list of clients belonging to users currently in the
+   room.
+
+5.3.  Proposal-commit paradigm
+
+   The MIMI DS protocol uses MLS, which follows a proposal-commit
+   paradigm.  Any party involved in a room (follower server, Hub or
+   clients) can send proposals (e.g. to add/remove/update clients of a
+   user or to re-initialize the group with different parameters).
+   However, only clients can send commits, which contain all valid
+   previously sent proposals and apply them to the MLS group state.
+
+   The MIMI DS protocol ensures that the Hub, all follower servers and
+   the clients of all active participants agree on the group state,
+   which includes the client list and the key material used for message
+   encryption (although the latter is only available to clients).  Since
+   the group state also includes a copy of the room state at the time of
+   the most recent commit, it is also covered by the agreement.
+
+5.4.  Authenticating proposals
+
+   The MLS specification [RFC9420] requires that MLS proposals from the
+   Hub and from follower servers (external senders in MLS terminology)
+   be authenticated using key material contained in the external_senders
+   extension of the MLS group.  Each MLS group associated with a MIMI
+   room MUST therefore contain an external_senders extension.  That
+   extension MUST contain at least the Certificate of the Hub.
+
+   When a user from a follower server becomes a participant in the room,
+   the Certificate of the follower server MAY be added to the extension.
+   When the last participant belonging to a follower server leaves the
+   room, the certificate of that user MUST be removed from the list.
+   Changes to the external_senders extension only take effect when the
+   MLS proposal containing the event is committed by a MIMI commit.
+
+6.  MLS Application State Synchronization
+
+   *TODO:* This section should be moved to its own document in the MLS
+   working group.
+
+   One of the primary security benefits of MLS is that the MLS key
+   schedule confirms that the group agrees on certain metadata, such as
+   the membership of the group.  Members that disagree on the relevant
+   metadata will arrive at different keys and be unable to communicate.
+   Applications based on MLS can integrate their state into this
+   metadata in order to confirm that the members of an MLS group agree
+   on application state as well as MLS metadata.
+
+   Here, we define two extensions to MLS to facilitate this application
+   design:
+
+   1.  A GroupContext extension application_states that confirms
+       agreement on application state from potentially multiple sources.
+
+   2.  A new proposal type AppSync that allows MLS group members to
+       propose changes to the agreed application state.
+
+   The application_states extension allows the application to inject
+   state objects into the MLS key schedule.  Changes to this state can
+   be made out of band, or using the AppSync proposal.  Using the
+   AppSync proposal ensures that members of the MLS group have received
+   the relevant state changes before they are reflected in the group's
+   application_states.
+
+      *NOTE:* This design exposes the high-level structure of the
+      application state to MLS.  An alternative design would be to have
+      the application state be opaque to MLS.  There is a trade-off
+      between generality and the complexity of the API between the MLS
+      implementation and the application.  An opaque design would give
+      the application more freedom, but require the MLS stack to call
+      out to the application to get the updated state as part of Commit
+      processing.  This design allows the updates to happen within the
+      MLS stack, so that no callback is needed, at the cost of forcing
+      the application state to fit a certain structure.  It also
+      potentially can result in smaller state updates in large groups.
+
+   The state for Each applicationId in the application_states needs to
+   conform to one of four basic types: an ordered array, an unordered
+   array, a map, or an irreducible blob.  This allows the AppSync
+   proposal to efficiently modify a large application state object.
+
+   The content of the application_states extension and the AppSync
+   proposal are structured as follows:
+
+   enum {
+       irreducible(0),
+       map(1),
+       unorderedList(2),
+       orderedArray(3),
+       (255)
+   } StateType;
+
+   struct {
+     opaque element<V>;
+   } OpaqueElement;
+
+   struct {
+     opaque elementName<V>;
+     opaque elementValue<V>;
+   } OpaqueMapElement;
+
+   struct {
+     uint32 applicationId;
+     StateType stateType;
+     select (stateType) {
+       case irreducible:
+         OpaqueElement state;
+       case map:
+         OpaqueMapElement mapEntries<V>;
+       case unorderedList:
+         OpaqueElement unorderedEntries<V>;
+       case orderedArray:
+         OpaqueElement orderedEntries<V>;
+     };
+   } ApplicationState;
+
+   struct {
+     ApplicationState applicationStates<V>;
+   } ApplicationStatesExtension;
+
+                Figure 8: The `application_state` extension
+
+   struct {
+     uint32 index;
+     opaque element<V>;
+   } ElementWithIndex;
+
+
+   struct {
+     uint32 applicationId;
+     StateType stateType;
+     select (stateType) {
+       case irreducible:
+         OpaqueElement newState;
+       case map:
+         OpaqueElement removedKeys<V>;
+         OpaqueMapElement newOrUpdatedElements<V>;
+       case unorderedList:
+         uint32 removedIndices<V>;
+         OpaqueElement addedEntries<V>;
+       case orderedArray:
+         ElementWithIndex replacedElements<V>;
+         uint32 removedIndices<V>;
+         ElementWithIndex insertedElements<V>;
+         OpaqueElement appenededEntries<V>;
+     };
+   } AppSync;
+
+                    Figure 9: The AppSync proposal type
+
+   The applicationId determines the structure and interpretation of the
+   contents. of an ApplicationState object.  AppSync proposals contain
+   changes to this state, which the client uses to update the
+   representation of the state in application_states.
+
+   A client receiving an AppSync proposal applies it in the following
+   way:
+
+   *  Identify an application_states GroupContext extension which
+      contains the same application_id state as the AppSync proposal
+
+   *  Apply the relevant operations (replace, remove, update, append,
+      insert) according to the stateType to the relevant parts of the
+      ApplicationState object in application_states extension.
+
+   An AppSync for an irreducible state replaces its state element with a
+   new (possibly empty) newState.  An AppSync for a map-based
+   ApplicationState first removes all the keys in removedKeys and than
+   replaces or adds the elements in newOrUpdatedElements.  An AppSync
+   for an unorderedList ApplicationState first removes all the indexes
+   in removedIndices, then adds the elements in addedEntries.  Finally
+   an AppSync for an orderedArray, replaces all the elements (index-by-
+   index) in replacedElements, the removes the elements in
+   removedIndices according to the then order of the array, then inserts
+   all the elements in insertedElements according to the then order of
+   the array, then finally appends the appendedEntries (in order).  All
+   indices are zero-based.
+
+   Note that the application_states extension is updated directly by
+   AppSync proposals; a GroupContextExtensions proposal is not
+   necessary.  A proposal list that contains both an AppSync proposal
+   and a GroupContextExtensions proposal is invalid.
+
+   Likewise a proposal list in a Commit MAY contain more than one
+   AppSync proposal, but no more than one AppSync proposal per
+   applicationId.  The proposals are applied in the order that they are
+   sent in the Commit.
+
+   AppSync proposals do not need to contain an UpdatePath.  An AppSync
+   proposal can be sent by an authorized external sender.
+
+      *TODO:* IANA registry for application_id; register extension and
+      proposal types as safe extensions
+
+7.  Security Considerations
+
+   Overall, the user participation state leads any possible MLS group
+   state to ensure malicious clients are not able to easily get access
+   to messages.
+
+      *TODO*: Other security guarantees?  Consensus may be required
+      here.
+
+8.  IANA Considerations
+
+9.  References
+
+9.1.  Normative References
+
+   [I-D.barnes-mimi-arch]
+              Barnes, R., "An Architecture for More Instant Messaging
+              Interoperability (MIMI)", Work in Progress, Internet-
+              Draft, draft-barnes-mimi-arch-02, 23 October 2023,
+              <https://datatracker.ietf.org/doc/html/draft-barnes-mimi-
+              arch-02>.
+
+   [I-D.robert-mimi-delivery-service]
+              Robert, R. and K. Kohbrok, "MIMI Delivery Service", Work
+              in Progress, Internet-Draft, draft-robert-mimi-delivery-
+              service-06, 6 November 2023,
+              <https://datatracker.ietf.org/doc/html/draft-robert-mimi-
+              delivery-service-06>.
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC7231]  Fielding, R., Ed. and J. Reschke, Ed., "Hypertext Transfer
+              Protocol (HTTP/1.1): Semantics and Content", RFC 7231,
+              DOI 10.17487/RFC7231, June 2014,
+              <https://www.rfc-editor.org/rfc/rfc7231>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+   [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
+              Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
+              <https://www.rfc-editor.org/rfc/rfc8446>.
+
+   [RFC9420]  Barnes, R., Beurdouche, B., Robert, R., Millican, J.,
+              Omara, E., and K. Cohn-Gordon, "The Messaging Layer
+              Security (MLS) Protocol", RFC 9420, DOI 10.17487/RFC9420,
+              July 2023, <https://www.rfc-editor.org/rfc/rfc9420>.
+
+9.2.  Informative References
+
+   [I-D.kohbrok-mimi-transport]
+              Kohbrok, K. and R. Robert, "MIMI Transport", Work in
+              Progress, Internet-Draft, draft-kohbrok-mimi-transport-01,
+              21 September 2023, <https://datatracker.ietf.org/doc/html/
+              draft-kohbrok-mimi-transport-01>.
+
+   [I-D.mahy-mimi-group-chat]
+              Mahy, R., "Group Chat Framework for More Instant Messaging
+              Interoperability (MIMI)", Work in Progress, Internet-
+              Draft, draft-mahy-mimi-group-chat-00, 10 July 2023,
+              <https://datatracker.ietf.org/doc/html/draft-mahy-mimi-
+              group-chat-00>.
+
+   [I-D.ralston-mimi-policy]
+              Ralston, T. and M. Hodgson, "MIMI Policy Envelope", Work
+              in Progress, Internet-Draft, draft-ralston-mimi-policy-00,
+              22 September 2023, <https://datatracker.ietf.org/doc/html/
+              draft-ralston-mimi-policy-00>.
+
+   [I-D.ralston-mimi-signaling]
+              Ralston, T. and M. Hodgson, "MIMI Signaling Protocol",
+              Work in Progress, Internet-Draft, draft-ralston-mimi-
+              signaling-00, 22 September 2023,
+              <https://datatracker.ietf.org/doc/html/draft-ralston-mimi-
+              signaling-00>.
+
+   [RFC8555]  Barnes, R., Hoffman-Andrews, J., McCarney, D., and J.
+              Kasten, "Automatic Certificate Management Environment
+              (ACME)", RFC 8555, DOI 10.17487/RFC8555, March 2019,
+              <https://www.rfc-editor.org/rfc/rfc8555>.
+
+Acknowledgments
+
+      *TODO*: Refactor acknowledgements to match sections of interest.
+
+   This document is the consolidation of the following documents:
+
+   *  [I-D.kohbrok-mimi-transport],
+
+   *  [I-D.robert-mimi-delivery-service],
+
+   *  [I-D.ralston-mimi-signaling],
+
+   *  [I-D.ralston-mimi-policy],
+
+   *  [I-D.mahy-mimi-group-chat],
+
+   [I-D.barnes-mimi-arch] was additionally used throughout the writing
+   of this document.
+
+Contributors
+
+   Rohan Mahy
+   Wire
+   Email: rohan.mahy@wire.com
+
+
+Authors' Addresses
+
+   Travis Ralston
+   The Matrix.org Foundation C.I.C.
+   Email: travisr@matrix.org
+
+
+   Konrad Kohbrok
+   Phoenix R&D
+   Email: konrad.kohbrok@datashrine.de
+
+
+   Raphael Robert
+   Phoenix R&D
+   Email: ietf@raphaelrobert.com
+
+
+   Matthew Hodgson
+   The Matrix.org Foundation C.I.C.
+   Email: matthew@matrix.org
