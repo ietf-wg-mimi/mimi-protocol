@@ -137,7 +137,10 @@ example, a user-visible handle might need to be mapped to a durable internal
 identifier.  This document provides no mechanism for such resolution.
 
 Authentication
-: While MLS provides basic message authentication, users should also be able to (cryptographically) tie the identity of other users to their respective providers. Further authentication such as tying clients to their users (or the user's other clients) may also be desirable.
+: While MLS provides basic message authentication, users should also be able
+to (cryptographically) tie the identity of other users to their respective
+providers. Further authentication such as tying clients to their users (or the
+user's other clients) may also be desirable.
 
 # Conventions and Definitions
 
@@ -150,7 +153,7 @@ Throughout this document, the examples use the TLS Presentation Language
 {{!RFC8446}} and the semantics of HTTP {{!RFC7231}} respectively as
 placeholder a set of binary encoding mechanism and transport semantics.
 
-# Example protocol flow
+The protocol layering of the MIMI transport protocol is as follows:
 
 1. An application layer that enables messaging functionality
 2. A security layer that provides end-to-end security guarantees:
@@ -159,10 +162,6 @@ placeholder a set of binary encoding mechanism and transport semantics.
     * Agreement on room state across the clients involved in a room
 3. A transport layer that provides secure delivery of protocol objects between
    servers.
-
-The MIMI transport is based on HTTPS over mutually-authenticated TLS.  MIMI uses
-MLS {{!RFC9420}} for end-to-end security, using the MLS AppSync proposal type to
-efficiently synchronize room state across the clients involved in a room.
 
 ~~~ aasvg
 +------------------------+
@@ -175,9 +174,15 @@ efficiently synchronize room state across the clients involved in a room.
 ~~~
 {: #fig-layers title="MIMI protocol layering" }
 
-The remainder of this section walks through a basic scenario that illustrates
-how a room works in the MIMI protocol.  The scenario involves the following
-actors:
+MIMI uses MLS {{!RFC9420}} for end-to-end security, using the MLS AppSync
+proposal type to efficiently synchronize room state across the clients involved
+in a room. The MIMI transport is based on HTTPS over mutually-authenticated
+TLS.  
+
+# Example protocol flow
+
+This section walks through a basic scenario that illustrates how a room works
+in the MIMI protocol.  The scenario involves the following actors:
 
 * Service providers `a.example`, `b.example`, and `c.example` represented by
   servers `ServerA`, `ServerB`, and `ServerC` respectively
