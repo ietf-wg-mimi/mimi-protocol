@@ -177,7 +177,7 @@ The protocol layering of the MIMI transport protocol is as follows:
 MIMI uses MLS {{!RFC9420}} for end-to-end security, using the MLS AppSync
 proposal type to efficiently synchronize room state across the clients involved
 in a room. The MIMI transport is based on HTTPS over mutually-authenticated
-TLS.  
+TLS.
 
 # Example protocol flow
 
