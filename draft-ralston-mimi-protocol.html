@@ -20,21 +20,21 @@ integrates the Messaging Layer Security (MLS) protocol to provide end-to-end sec
 assurances, including authentication of protocol participants, confidentiality
 of messages exchanged within a room, and agreement on the state of the room. 
     " name="description">
-<meta content="xml2rfc 3.19.1" name="generator">
+<meta content="xml2rfc 3.19.2" name="generator">
 <meta content="mimi" name="keyword">
 <meta content="interoperable messaging" name="keyword">
 <meta content="chat" name="keyword">
 <meta content="secure messaging" name="keyword">
 <meta content="draft-ralston-mimi-protocol-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.19.1
+  xml2rfc 3.19.2
     Python 3.11.6
     ConfigArgParse 1.7
     google-i18n-address 3.1.0
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 4.9.3
-    platformdirs 4.1.0
+    platformdirs 4.2.0
     pycountry 22.3.5
     PyYAML 6.0.1
     requests 2.31.0
@@ -1043,7 +1043,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ralston, et al.</td>
-<td class="center">Expires 5 August 2024</td>
+<td class="center">Expires 9 August 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1056,12 +1056,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ralston-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-02-02" class="published">2 February 2024</time>
+<time datetime="2024-02-06" class="published">6 February 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-08-05">5 August 2024</time></dd>
+<dd class="expires"><time datetime="2024-08-09">9 August 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1131,7 +1131,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 5 August 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 9 August 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1410,7 +1410,10 @@ identifier.  This document provides no mechanism for such resolution.<a href="#s
           <dd class="break"></dd>
 <dt id="section-1.1-2.13">Authentication</dt>
           <dd style="margin-left: 1.5em" id="section-1.1-2.14">
-            <p id="section-1.1-2.14.1">While MLS provides basic message authentication, users should also be able to (cryptographically) tie the identity of other users to their respective providers. Further authentication such as tying clients to their users (or the user's other clients) may also be desirable.<a href="#section-1.1-2.14.1" class="pilcrow">¶</a></p>
+            <p id="section-1.1-2.14.1">While MLS provides basic message authentication, users should also be able
+to (cryptographically) tie the identity of other users to their respective
+providers. Further authentication such as tying clients to their users (or the
+user's other clients) may also be desirable.<a href="#section-1.1-2.14.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -1432,43 +1435,34 @@ make use of terms from the MLS protocol <span>[<a href="#RFC9420" class="cite xr
 <p id="section-2-3">Throughout this document, the examples use the TLS Presentation Language
 <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> and the semantics of HTTP <span>[<a href="#RFC7231" class="cite xref">RFC7231</a>]</span> respectively as
 placeholder a set of binary encoding mechanism and transport semantics.<a href="#section-2-3" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="example-protocol-flow">
-<section id="section-3">
-      <h2 id="name-example-protocol-flow">
-<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-example-protocol-flow" class="section-name selfRef">Example protocol flow</a>
-      </h2>
-<ol start="1" type="1" class="normal type-1" id="section-3-1">
-<li id="section-3-1.1">
-          <p id="section-3-1.1.1">An application layer that enables messaging functionality<a href="#section-3-1.1.1" class="pilcrow">¶</a></p>
+<p id="section-2-4">The protocol layering of the MIMI transport protocol is as follows:<a href="#section-2-4" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2-5">
+<li id="section-2-5.1">
+          <p id="section-2-5.1.1">An application layer that enables messaging functionality<a href="#section-2-5.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="section-3-1.2">
-          <p id="section-3-1.2.1">A security layer that provides end-to-end security guarantees:<a href="#section-3-1.2.1" class="pilcrow">¶</a></p>
+        <li id="section-2-5.2">
+          <p id="section-2-5.2.1">A security layer that provides end-to-end security guarantees:<a href="#section-2-5.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3-1.2.2.1">
-              <p id="section-3-1.2.2.1.1">Confidentiality for messages<a href="#section-3-1.2.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-2-5.2.2.1">
+              <p id="section-2-5.2.2.1.1">Confidentiality for messages<a href="#section-2-5.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-3-1.2.2.2">
-              <p id="section-3-1.2.2.2.1">Authentication of actors making changes to rooms<a href="#section-3-1.2.2.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-2-5.2.2.2">
+              <p id="section-2-5.2.2.2.1">Authentication of actors making changes to rooms<a href="#section-2-5.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-3-1.2.2.3">
-              <p id="section-3-1.2.2.3.1">Agreement on room state across the clients involved in a room<a href="#section-3-1.2.2.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-2-5.2.2.3">
+              <p id="section-2-5.2.2.3.1">Agreement on room state across the clients involved in a room<a href="#section-2-5.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </li>
-        <li id="section-3-1.3">
-          <p id="section-3-1.3.1">A transport layer that provides secure delivery of protocol objects between
-servers.<a href="#section-3-1.3.1" class="pilcrow">¶</a></p>
+        <li id="section-2-5.3">
+          <p id="section-2-5.3.1">A transport layer that provides secure delivery of protocol objects between
+servers.<a href="#section-2-5.3.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
-<p id="section-3-2">The MIMI transport is based on HTTPS over mutually-authenticated TLS.  MIMI uses
-MLS <span>[<a href="#RFC9420" class="cite xref">RFC9420</a>]</span> for end-to-end security, using the MLS AppSync proposal type to
-efficiently synchronize room state across the clients involved in a room.<a href="#section-3-2" class="pilcrow">¶</a></p>
 <span id="name-mimi-protocol-layering"></span><div id="fig-layers">
 <figure id="figure-1">
-        <div id="section-3-3.1">
-          <div class="alignLeft art-svg artwork" id="section-3-3.1.1">
+        <div id="section-2-6.1">
+          <div class="alignLeft art-svg artwork" id="section-2-6.1.1">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="144" width="216" viewBox="0 0 216 144" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
               <path d="M 8,32 L 8,128" fill="none" stroke="black"></path>
               <path d="M 72,64 L 72,96" fill="none" stroke="black"></path>
@@ -1483,36 +1477,46 @@ efficiently synchronize room state across the clients involved in a room.<a href
                 <text x="156" y="84">Security</text>
                 <text x="112" y="116">Transport</text>
               </g>
-            </svg><a href="#section-3-3.1.1" class="pilcrow">¶</a>
+            </svg><a href="#section-2-6.1.1" class="pilcrow">¶</a>
 </div>
 </div>
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
 <a href="#name-mimi-protocol-layering" class="selfRef">MIMI protocol layering</a>
         </figcaption></figure>
 </div>
-<p id="section-3-4">The remainder of this section walks through a basic scenario that illustrates
-how a room works in the MIMI protocol.  The scenario involves the following
-actors:<a href="#section-3-4" class="pilcrow">¶</a></p>
+<p id="section-2-7">MIMI uses MLS <span>[<a href="#RFC9420" class="cite xref">RFC9420</a>]</span> for end-to-end security, using the MLS AppSync
+proposal type to efficiently synchronize room state across the clients involved
+in a room. The MIMI transport is based on HTTPS over mutually-authenticated
+TLS.<a href="#section-2-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="example-protocol-flow">
+<section id="section-3">
+      <h2 id="name-example-protocol-flow">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-example-protocol-flow" class="section-name selfRef">Example protocol flow</a>
+      </h2>
+<p id="section-3-1">This section walks through a basic scenario that illustrates how a room works
+in the MIMI protocol.  The scenario involves the following actors:<a href="#section-3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3-5.1">
-          <p id="section-3-5.1.1">Service providers <code>a.example</code>, <code>b.example</code>, and <code>c.example</code> represented by
-servers <code>ServerA</code>, <code>ServerB</code>, and <code>ServerC</code> respectively<a href="#section-3-5.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3-2.1">
+          <p id="section-3-2.1.1">Service providers <code>a.example</code>, <code>b.example</code>, and <code>c.example</code> represented by
+servers <code>ServerA</code>, <code>ServerB</code>, and <code>ServerC</code> respectively<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-5.2">
-          <p id="section-3-5.2.1">Users Alice (<code>alice@a.example</code>), Bob (<code>bob@b.example</code>) and Cathy
-(<code>cathy@c.example</code>) of the respective service providers<a href="#section-3-5.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-3-2.2">
+          <p id="section-3-2.2.1">Users Alice (<code>alice@a.example</code>), Bob (<code>bob@b.example</code>) and Cathy
+(<code>cathy@c.example</code>) of the respective service providers<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-5.3">
-          <p id="section-3-5.3.1">Clients <code>ClientA1</code>, <code>ClientA2</code>, <code>ClientB1</code>, etc. belonging to these users<a href="#section-3-5.3.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-3-2.3">
+          <p id="section-3-2.3.1">Clients <code>ClientA1</code>, <code>ClientA2</code>, <code>ClientB1</code>, etc. belonging to these users<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-5.4">
-          <p id="section-3-5.4.1">A room <code>clubhouse@a.example</code> where the three users interact<a href="#section-3-5.4.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-3-2.4">
+          <p id="section-3-2.4.1">A room <code>clubhouse@a.example</code> where the three users interact<a href="#section-3-2.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-3-6">As noted in <span>[<a href="#I-D.mimi-arch" class="cite xref">I-D.mimi-arch</a>]</span>, the MIMI protocol only defines interactions
+<p id="section-3-3">As noted in <span>[<a href="#I-D.mimi-arch" class="cite xref">I-D.mimi-arch</a>]</span>, the MIMI protocol only defines interactions
 between service providers' servers.  Interactions between clients and servers
 within a service provider domain are shown here for completeness, but
-surrounded by <code>[[ double brackets ]]</code>.<a href="#section-3-6" class="pilcrow">¶</a></p>
+surrounded by <code>[[ double brackets ]]</code>.<a href="#section-3-3" class="pilcrow">¶</a></p>
 <div id="alice-creates-a-room">
 <section id="section-3.1">
         <h3 id="name-alice-creates-a-room">

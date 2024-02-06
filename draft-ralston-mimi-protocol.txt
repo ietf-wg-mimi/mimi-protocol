@@ -5,11 +5,11 @@
 More Instant Messaging Interoperability                       T. Ralston
 Internet-Draft                          The Matrix.org Foundation C.I.C.
 Intended status: Standards Track                              K. Kohbrok
-Expires: 5 August 2024                                         R. Robert
+Expires: 9 August 2024                                         R. Robert
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                         2 February 2024
+                                                         6 February 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 August 2024.
+   This Internet-Draft will expire on 9 August 2024.
 
 Copyright Notice
 
@@ -222,7 +222,7 @@ Table of Contents
    as placeholder a set of binary encoding mechanism and transport
    semantics.
 
-3.  Example protocol flow
+   The protocol layering of the MIMI transport protocol is as follows:
 
    1.  An application layer that enables messaging functionality
 
@@ -237,11 +237,6 @@ Table of Contents
    3.  A transport layer that provides secure delivery of protocol
        objects between servers.
 
-   The MIMI transport is based on HTTPS over mutually-authenticated TLS.
-   MIMI uses MLS [RFC9420] for end-to-end security, using the MLS
-   AppSync proposal type to efficiently synchronize room state across
-   the clients involved in a room.
-
    +------------------------+
    |       Application      |
    |       +----------------+
@@ -252,9 +247,16 @@ Table of Contents
 
                       Figure 1: MIMI protocol layering
 
-   The remainder of this section walks through a basic scenario that
-   illustrates how a room works in the MIMI protocol.  The scenario
-   involves the following actors:
+   MIMI uses MLS [RFC9420] for end-to-end security, using the MLS
+   AppSync proposal type to efficiently synchronize room state across
+   the clients involved in a room.  The MIMI transport is based on HTTPS
+   over mutually-authenticated TLS.
+
+3.  Example protocol flow
+
+   This section walks through a basic scenario that illustrates how a
+   room works in the MIMI protocol.  The scenario involves the following
+   actors:
 
    *  Service providers a.example, b.example, and c.example represented
       by servers ServerA, ServerB, and ServerC respectively
