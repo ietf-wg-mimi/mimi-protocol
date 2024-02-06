@@ -1499,10 +1499,26 @@ be sent by an authorized external sender.
 
 # Security Considerations
 
-Overall, the user participation state leads any possible MLS group state to
-ensure malicious clients are not able to easily get access to messages.
+The MIMI protocol incorporates several layers of security.
 
-> **TODO**: Other security guarantees? Consensus may be required here.
+Individual protocol actions are protected against network attackers with
+mutually-authenticated TLS, where the TLS certificates authenticate the
+identities that the protocol actors assert at the application layer.
+
+Messages and room state changes are protected end-to-end using MLS.  The
+protection is "end-to-end" in the sense that messages sent within the group are
+confidentiality-protected against all servers involved in the delivery of those
+messages, and in the sense that the authenticity of room state changes is
+verified by the end clients involved in the room.  The usage of MLS ensures that
+the servers facilitating the exchange cannot read messages in the room or
+falsify room state changes, even though they can read the room state change
+messages.
+
+Each room has an authorization policy that dictates which protocol actors can
+perform which actions in the room.  This policy is enforced by the hub server
+for the room.  The actors for whom the policy is being evaluated authenticate
+their identities to the hub server using the MLS PublicMessage signed object
+format, together with the identity credentials presented in MLS.
 
 # IANA Considerations
 
