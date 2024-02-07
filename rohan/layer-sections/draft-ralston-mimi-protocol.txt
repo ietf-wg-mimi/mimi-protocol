@@ -5,11 +5,11 @@
 More Instant Messaging Interoperability                       T. Ralston
 Internet-Draft                          The Matrix.org Foundation C.I.C.
 Intended status: Standards Track                              K. Kohbrok
-Expires: 9 August 2024                                         R. Robert
+Expires: 10 August 2024                                        R. Robert
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                         6 February 2024
+                                                         7 February 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 August 2024.
+   This Internet-Draft will expire on 10 August 2024.
 
 Copyright Notice
 
@@ -582,7 +582,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    room manage the MLS-level membership by sending Commit messages
    covering Add and Remove proposals.
 
-   Every message sent within a room is authenticated and
+   Every application message sent within a room is authenticated and
    confidentiality-protected by virtue of being encapsulated in an MLS
    PrivateMessage object.
 
@@ -599,10 +599,10 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    a commit that confirms a state change before processing the state
    change itself.
 
-   [[ TODO: A little more needs to be said here about how MLS is used.
-   For example: What types of credential are required / allowed?  If
-   servers are going to be allowed to introduce room changes, how are
-   their keys provisioned as external signers? ]]
+      *TODO*: A little more needs to be said here about how MLS is used.
+      For example: What types of credential are required / allowed?  If
+      servers are going to be allowed to introduce room changes, how are
+      their keys provisioned as external signers?
 
 4.3.  Application Layer
 
