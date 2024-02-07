@@ -488,7 +488,7 @@ Every MIMI room has an MLS group associated to it, which provides end-to-end
 security guarantees.  The clients participating in the room manage the MLS-level
 membership by sending Commit messages covering Add and Remove proposals.
 
-Every message sent within a room is authenticated and confidentiality-protected
+Every application message sent within a room is authenticated and confidentiality-protected
 by virtue of being encapsulated in an MLS PrivateMessage object.
 
 MIMI uses the MLS application state synchronization mechanism
@@ -503,10 +503,10 @@ originate AppSync proposals.  Encoding room state changes in MLS proposals
 ensures that a client will not process a commit that confirms a state change
 before processing the state change itself.
 
-[[ TODO: A little more needs to be said here about how MLS is used.  For
+> **TODO**: A little more needs to be said here about how MLS is used.  For
 example: What types of credential are required / allowed?  If servers are going
 to be allowed to introduce room changes, how are their keys provisioned as
-external signers? ]]
+external signers?
 
 ## Application Layer
 
