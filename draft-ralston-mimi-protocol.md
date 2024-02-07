@@ -614,7 +614,7 @@ struct {
 At minimum, as each MLS KeyPackage is returned to a requesting provider (on
 behalf of a requesting IM client), the target provider needs to associate its
 `KeyPackageRef` with the target client and the hub provider needs to associate
-its `KeyPackageRef` with the target provider. This insures that Welcome messages
+its `KeyPackageRef` with the target provider. This ensures that Welcome messages
 can be correctly routed to the target provider and client. These associations
 can be deleted after a Welcome message is forwarded or after the KeyPackage
 `leaf_node.lifetime.not_after` time has passed.
@@ -724,7 +724,7 @@ struct {
   select(protocol) {
     case mls10:
       /* PrivateMessage containing an application message */
-      MLSMessage app_message;
+      MLSMessage appMessage;
   };
 } SubmitMessageRequest;
 ~~~
@@ -760,7 +760,7 @@ notifications), which do not need to be queued at the target provider.
 
 If the hub provider accepts an application or handshake message (proposal or
 commit) message, it forwards that message to all other providers with active
-participants in the room and all local clients which are active participants.
+participants in the room and all local clients which are active members.
 This is described as fanning the message out. One can think of fanning a
 message out as presenting an ordered list of MLS-protected events to the next
 "hop" toward the receiving client.
