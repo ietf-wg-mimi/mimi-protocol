@@ -5,11 +5,11 @@
 More Instant Messaging Interoperability                       T. Ralston
 Internet-Draft                          The Matrix.org Foundation C.I.C.
 Intended status: Standards Track                              K. Kohbrok
-Expires: 9 August 2024                                         R. Robert
+Expires: 10 August 2024                                        R. Robert
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                         6 February 2024
+                                                         7 February 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 August 2024.
+   This Internet-Draft will expire on 10 August 2024.
 
 Copyright Notice
 
@@ -677,7 +677,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    provider (on behalf of a requesting IM client), the target provider
    needs to associate its KeyPackageRef with the target client and the
    hub provider needs to associate its KeyPackageRef with the target
-   provider.  This insures that Welcome messages can be correctly routed
+   provider.  This ensures that Welcome messages can be correctly routed
    to the target provider and client.  These associations can be deleted
    after a Welcome message is forwarded or after the KeyPackage
    leaf_node.lifetime.not_after time has passed.
@@ -780,7 +780,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
      select(protocol) {
        case mls10:
          /* PrivateMessage containing an application message */
-         MLSMessage app_message;
+         MLSMessage appMessage;
      };
    } SubmitMessageRequest;
 
@@ -816,10 +816,10 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    If the hub provider accepts an application or handshake message
    (proposal or commit) message, it forwards that message to all other
    providers with active participants in the room and all local clients
-   which are active participants.  This is described as fanning the
-   message out.  One can think of fanning a message out as presenting an
-   ordered list of MLS-protected events to the next "hop" toward the
-   receiving client.
+   which are active members.  This is described as fanning the message
+   out.  One can think of fanning a message out as presenting an ordered
+   list of MLS-protected events to the next "hop" toward the receiving
+   client.
 
    An MLS Welcome message is sent to the providers and local users
    associated with the KeyPackageRef values in the secrets array of the
