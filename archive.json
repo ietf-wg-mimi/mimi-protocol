@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-06T00:03:11.193408+00:00",
+  "timestamp": "2024-02-08T00:03:05.190967+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -200,7 +200,7 @@
       ],
       "body": "> **ISSUE**: Come to consensus on a specific binary encoding for the MIMI\r\n> transport protocol.\r\n\r\nCurrently we use TLS-serialized structs.",
       "createdAt": "2023-11-09T12:17:51Z",
-      "updatedAt": "2023-12-27T17:15:33Z",
+      "updatedAt": "2024-02-07T12:26:25Z",
       "closedAt": null,
       "comments": [
         {
@@ -272,6 +272,13 @@
           "body": "This is my first time posting in a MIMI discussion, so please bear with me if I write things that are wrong or irrelevant, but I would still like to share my opinion as a developer of distributed systems.\r\n\r\nI would put a strong emphasis on using a serialization protocol that is defined by an RFC or another formal standard published by a recognized organism, which leaves CBOR and TLS presentation language (TLS-PL) as good options.\r\n\r\nGiven the scope of the task that MIMI aims for, I think we would all agree that making a protocol that can be upgraded and extended is a strong requirement. At first glance, CBOR looks like it would be a good option, as field names are serialized with the data, and new fields can therefore be added easily. However this is relatively dangerous and can break down when the interpretation of existing fields change, leading to the following rule : _the context in which a message should be interpreted must be specified outside of the message itself_. This can be done using protocol versions, but I believe this outcome can be achieved in a much more versatile way by standardizing individual message structures (the equivalent of protobuf schemas), and assigning IDs to these types in the RFCs, which would then be prepended to each individual message. Once a message type has been published with its corresponding schema and type identifier, it cannot be changed anymore, and updated/extended versions must be published as separate schemas with a different type identifier. This does not need to be coordinated on a global scale using protocol versions (only the attribution of non-overlapping type IDs has to be coordinated), and individual RFCs could be published with specific extensions or updated message types (with such a process, the RFC numbers could be embedded in type identifiers to ensure that they are non-overlapping). Implementations would be required to still support older message type (unless they are specifically made obsolete by a new RFC), and their semantics can be upgraded on-the-fly to newer protocol semantics. This is the solution I've converged to in [the software I develop](https://garagehq.deuxfleurs.fr), albeit for internal data storage formats with support for migration, and not for a public interchange protocol.\r\n\r\nAs a consequence of using exterior type identifiers to determine the semantics of encoded messages, the value proposition of CBOR that encodes fields names is much less relevant and TLS-PL becomes a compelling option as well. Since both are standardized, I believe they are relatively equivalent in their merits, and the remaining distinctions are relatively minor. I'd argue that CBOR might be a better option due to seemingly better library availability for many mainstream programming languages, and semantics that are quite similar to JSON, which is known by everyone, so it might be a better choice to ease the implementation of the MIMI standard and help it to be deployed widely as soon as possible. While TLS-PL might have better compactness and encoding/decoding performance, I'm not sure this is is a very relevant argument, given that CBOR is already orders of magnitude faster than JSON, and there will be many costs at other places (storage access times, network delays, conversion to other formats including JSON in the various proprietary client-server APIs, ...).\r\n\r\nConcerning the need for a canonical representation in order to be able to compute and verify signatures, I feel that this whole mess is fundamentally caused by misuse of serialization and signing primitives, and could be totally avoided by storing the signature outside and next to the serialized message, in a second layer of serialization. A signed message would always be a tuple (signature, data bytes), serialized in any relevant way (potentially embedded in a larger struct with other data), where the data bytes would always be a byte slice of the signed message, serialized previously in a separate step, and that would always be transmitted as a single unit next to its signature and never modified. Not respecting this principle when building serialization formats is the cause for needless headaches such as needing to determine what a \"canonical representation\" means, and also exposes to higher risk of security flaws by misuse of cryptographic primitives. Of course, there would be significant performance issues when doing this with text-based encoding formats such as JSON, but for binary encoding formats that support inline byte slices, this can be very efficiently implemented without the need for binary encoding/decoding such as base64 and excessive memory copies. In fact, this could even help achieve better performance as sub-serialized fields would not need to be deserialized in all cases, and in particular not when interpreting their content is not needed.\r\n\r\nHope this helps.",
           "createdAt": "2023-12-27T17:10:55Z",
           "updatedAt": "2023-12-27T17:15:33Z"
+        },
+        {
+          "author": "mar-v-in",
+          "authorAssociation": "NONE",
+          "body": "A comment on Protobuf: Some popular implementations do not fully support Protobuf 2, but only the subset of features that is also present in Protobuf 3. Groups being the most popular example. Also Protobuf 2 support is considered deprecated in some implementations, so specifying the use of Protobuf 2 at this point seems weird.\r\n\r\nBoth CBOR and TLS-PL seem to be reasonable options to me.",
+          "createdAt": "2024-02-07T12:26:24Z",
+          "updatedAt": "2024-02-07T12:26:24Z"
         }
       ]
     },
@@ -660,7 +667,7 @@
       "labels": [],
       "body": "I feel like it's a missed opportunity by the MIMI WG to essentially ignore the prior art created with the XMPP standard and make no effort to be compatible with the existing XMPP internet standard.\r\n\r\nI'm not sure why an entirely new transport protocol and message format that is not compatible with XMPP is being considered, instead of a XMPP protocol extension for MLS.\r\n\r\nThe advantages of Matrix were eventual consistency and more decentralized rooms, but the protocol proposal makes no mention of those features and the scaling issues Matrix has show that they're probably a bad idea too. Is it really worth breaking compatibility with XMPP just to replace XML with JSON?",
       "createdAt": "2023-12-02T13:48:21Z",
-      "updatedAt": "2024-02-02T18:19:58Z",
+      "updatedAt": "2024-02-07T10:59:54Z",
       "closedAt": null,
       "comments": [
         {
@@ -711,6 +718,58 @@
           "body": "@Alexis211 \r\n\r\n> A streaming protocol using a single TCP connection would be subject to reliability issues such as head-of-line blocking (the situation where a dropped packet slows down the entire flow of data in a TCP connection\r\n\r\nHead-of-line blocking is not a very pressing issue for XMPP today, but even if it was there are much better options than establishing more TCP/SSL connections for every request/message like with HTTP, just to avoid head-of-line blocking. An updated XMPP spec with a message oriented transport protocol such as SCTP or QUICK would be nice and much more elegant than HTTP. Switching out the transport protocol also allows for backwards compatibility and avoids reinventing the wheel again.\r\n\r\n> The reliability requirements on messaging applications match very well to the transactional nature of HTTP requests: when sending a message to a remote server using a PUT (or POST) request, a response code of 200 indicates that the recipient server has successfully received and stored the message\r\n\r\n> By forcing the design of a protocol that uses separate, stateless HTTP requests for each message, we will naturally end up building a protocol that is idempotent, i.e. if we are not sure that a message was sent correctly, we just re-send it, and even if the first one did actually go through, the message will not be duplicated when the second requests is received as well. (This can be implemented using unique IDs on messages, and is an expected behavior of HTTP PUT requests).\r\n\r\nYou probably are looking for https://xmpp.org/extensions/xep-0198.html\r\n\r\n> HTTP library support is excellent in most mainstream programming languages, and many developers are already familiar with HTTP semantics (which is not the case with XMPP), which could help MIMI to be adopted much more easily / much faster.\r\n\r\nSince most IM users are trapped in large silos like WhatsApp today success will mostly depend on whether those large providers will adopt it or not. WhatsApp for example is already using a modified version of ejabberd internally, so XMPP federation would be the obvious choice for them. It's nice that there are masses of web developers out there that understand how HTTP works, but tbh there are very few companies that decide if MIMI will be successful. I think reinventing existing internet standards, instead of improving them is much more harmful to the goals of MIMI. XMPP is already a successful protocol - it is time tested and can scale to billions (!) of users in production like at WhatsApp - even if the original goal of universal federation has not been met. However this is due to the profit incentives of large IM providers (ofc interoperability is harder and as a \"reward\" is makes it easier for users to leave their platform). Publishing yet another IM protocol will do nothing to solve this problem and only introduce more fragmentation.",
           "createdAt": "2024-02-02T13:27:01Z",
           "updatedAt": "2024-02-02T18:19:58Z"
+        },
+        {
+          "author": "haansn08",
+          "authorAssociation": "NONE",
+          "body": "More evidence that WhatsApp's DMA compliance will be based on the XMPP internet standard:\r\n \r\n> Dick Brouwer, an engineering director at WhatsApp\r\n\r\n> Brouwer says Meta would prefer if other apps use the Signal encryption protocol, which its systems are based upon. Other than its namesake app and the Meta-owned messengers, the Signal Protocol is publicly disclosed as being used in Google Messages and Skype. To send messages, third-party apps will need to encrypt content using the Signal Protocol and then **package it into message stanzas in the eXtensible Markup Language (XML)**. When receiving messages, apps will need to connect to WhatsApp\u2019s servers.\r\n\r\n> \u201cWe think that the best way to deliver this approach is through a solution that is **built on WhatsApp\u2019s existing client-server architecture**,\u201d Brouwer says, adding it has been working with other companies on the plans.\r\n\r\nhttps://www.wired.com/story/whatsapp-interoperability-messaging/",
+          "createdAt": "2024-02-06T21:36:59Z",
+          "updatedAt": "2024-02-06T21:36:59Z"
+        },
+        {
+          "author": "ara4n",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Having just implemented Matrix interop with WA\u2019s DMA APIs, I\u2019m afraid that I can say with authority that they are *very* far removed from XMPP (as you would expect, given WhatsApp forked from XMPP and ejabberd before it even launched).",
+          "createdAt": "2024-02-07T00:47:23Z",
+          "updatedAt": "2024-02-07T00:47:23Z"
+        },
+        {
+          "author": "haansn08",
+          "authorAssociation": "NONE",
+          "body": "@ara4n Can you share more details about the API? I cannot find any details on it. The most detailed account on the internals of WhatsApp I can find is this [article](https://mycodeplex.wordpress.com/2016/03/08/inside-of-whatsapp-part-1/) from 2016, which suggests that they use a static table to map XMPP keywords to single bytes and a lot of custom extensions.",
+          "createdAt": "2024-02-07T02:20:33Z",
+          "updatedAt": "2024-02-07T02:20:33Z"
+        },
+        {
+          "author": "mar-v-in",
+          "authorAssociation": "NONE",
+          "body": "- XMPP over HTTP is long specified via [XEP-0206](https://xmpp.org/extensions/xep-0206.html), with multiple implementations having used it in the wild (it was how XMPP clients in browsers worked before there was WebSocket)\r\n- XMPP over WebSocket is specified via [RFC7395](https://datatracker.ietf.org/doc/rfc7395/)\r\n- XMPP over QUIC was specified before the foundation of the MIMI WG via [XEP-0467](https://xmpp.org/extensions/xep-0467.html). There is a [server-side proxy software](https://github.com/moparisthebest/xmpp-proxy) that can make every existing XMPP server support XMPP over QUIC both for c2s and s2s.\r\n\r\nSo any of the mentioned reasons that speak for using HTTP would not rule out using XMPP in any way. That said, I also don't see a big issue with using something else. Even if XMPP was used as is as a transport protocol, there would be need to add support for new identifiers, discovery and so on, so it's unlikely that any existing XMPP implementation could be compatible with what is within the goals of MIMI.\r\n\r\nWhen it comes to take learnings from XMPP:\r\n- Don't use XML or JSON for transporting binary blobs (or as payload for encrypted messages). It's really just wasting resources and it's impossible to understand those for humans anyway (which was one of the reasons to use plain-text protocols back then).\r\n- Always keep in mind you might lose messages on s2s links during fanout, implying the need to discover this and be able to recover from such loss.",
+          "createdAt": "2024-02-07T10:59:53Z",
+          "updatedAt": "2024-02-07T10:59:53Z"
+        }
+      ]
+    },
+    {
+      "number": 46,
+      "id": "I_kwDOKZ8QO85-dr3a",
+      "title": "power levels or role-based authorization?",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/46",
+      "state": "OPEN",
+      "author": "rohan-wire",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "draft-ralston-mimi-protocol currently uses Matrix-style power levels.\r\ndraft-barnes-mimi-protocol currently implies role-based access control (RBAC).\r\n\r\nI think we have three reasonable choices here:\r\n- keep using power levels\r\n- use role-based access control with a fixed set of roles (for example: owner, admin, moderator, regular-user, visitor, banned, none)\r\n- user role-based access control with administrator defined role labels. Each role label has a set of permissions it can accomplish (for example, can add user, can add remove user, can change user role, can change base policy, etc.)\r\n\r\nTravis brought up that with role-based access control it is necessary to specify the behavior of combinations of roles or permissions. That is true, but I don't think it is unreasonable to enumerate those requirements. I think RBAC maps much better onto the variety of systems we would like to interop with. ",
+      "createdAt": "2024-02-06T21:40:00Z",
+      "updatedAt": "2024-02-06T22:20:19Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "draft-ralston-mimi-protocol currently does not define any permissions model, especially not power levels, and instead implies some sort of RBAC. I do think we need an RBAC system, but it needs to be user-defined because there's systems which already allow such features. \r\n\r\nUsers should also be able to be assigned multiple roles, which can then lead to conflicts in the user's permissions. To make it predictable, we can add a numeric `order` value to each role, which defines which order the role's included permissions are defined in (in ascending order). Note that I'm assuming permissions are a trinary of [grant, deny, unchanged/default].\r\n\r\nAs an example:\r\n* Role A (power 1) is explicitly allowed to send messages, no changes to being able to add users.\r\n* Role B (power 2) is explicitly allowed to add users, no changes to sending messages.\r\n* Role C (power 3) is explicitly *denied* sending messages, no changes to adding users.\r\n* User A is assigned roles A and C - they are *not* allowed to send messages, and the default value for adding users is applied. \r\n* User B is assigned roles B and C - they are *not* allowed to send messages, and *are* allowed to add other users. \r\n* User C is assigned roles A, B, and C - they have the same permissions as User B.",
+          "createdAt": "2024-02-06T22:20:18Z",
+          "updatedAt": "2024-02-06T22:20:18Z"
         }
       ]
     }
@@ -2307,7 +2366,7 @@
       ],
       "body": "globally replace `m.room.` with `room.` in event names.",
       "createdAt": "2023-11-06T15:09:57Z",
-      "updatedAt": "2023-11-09T12:56:03Z",
+      "updatedAt": "2024-02-07T12:12:14Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "cf29470de209e35fbdb7db010a572fe59adaec54",
@@ -2325,6 +2384,13 @@
           "body": "Yeah, I'm inclined to leave this for the WG to comment on.  The traditional IETF approach to something like this would be to have an IANA registry where certain values are registered (those that would be `m.` here) and certain values would be vendor space (I believe the Matrix pattern for these is `com.example.foo`).  If we were talking about numerical code points, the analogy would be exact, since if you know the range of numbers reserved for vendor usage (\u2248 non-`m.` here), you can look at a value and tell if it's registered or vendor.\r\n\r\nFor text-like registries, things are a little less clear.  Traditionally, these registries don't have an explicit vendor reservation, since space is not constrained.  (See, e.g., the [ACME directory metadata fields registry](https://www.iana.org/assignments/acme/acme.xhtml#acme-directory-metadata-fields).)  If you want a value for some proprietary thing, you just choose one and use it, and if some official thing later collides with it, oh well.  And in cases where there were explicit affordances for experimental (e.g., `X-` and `P-` in HTTP/SIP headers), those affordances [are now deprecated](https://datatracker.ietf.org/doc/html/rfc6648).\r\n\r\nSo it's not immediately clear to me what the right answer is here, and how to do extensibility seems like a good question for the WG to weigh in on.",
           "createdAt": "2023-11-06T20:12:25Z",
           "updatedAt": "2023-11-06T20:12:25Z"
+        },
+        {
+          "author": "mar-v-in",
+          "authorAssociation": "NONE",
+          "body": "As an outside viewer, I assumed those names to be placeholders (obviously based on Matrix `m.` prefix). You don't want to send those names around in the binary protocol on the wire in the end and should use an enum instead, along the lines of\r\n\r\n```\r\nenum EventType {\r\n  RoomInfo = 1;\r\n  RoomUser = 2;\r\n  ...\r\n  Vendor(string) = 255;\r\n}\r\n```",
+          "createdAt": "2024-02-07T12:12:12Z",
+          "updatedAt": "2024-02-07T12:12:12Z"
         }
       ],
       "reviews": [
@@ -2679,7 +2745,7 @@
       "labels": [],
       "body": "The Known Gaps section might need some updating depending on what we do with the rest of the document.",
       "createdAt": "2024-01-29T21:10:19Z",
-      "updatedAt": "2024-02-02T21:10:15Z",
+      "updatedAt": "2024-02-06T22:43:29Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "af62be86e01834c228d8bfc068fb383c0cdd20b2",
@@ -3094,6 +3160,19 @@
               "updatedAt": "2024-02-02T21:08:17Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vP_GN",
+          "commit": {
+            "abbreviatedOid": "65edb48"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "several days late (sorry, FOSDEM), but lgtm - thanks for applying the edits :)",
+          "createdAt": "2024-02-06T22:43:29Z",
+          "updatedAt": "2024-02-06T22:43:29Z",
+          "comments": []
         }
       ]
     },
@@ -3474,6 +3553,381 @@
               "body": "```suggestion\r\n> **TODO:** IANA registry for `application_id`; register extension and proposal types\r\n>as safe extensions\r\n```",
               "createdAt": "2024-01-31T14:53:25Z",
               "updatedAt": "2024-01-31T14:57:19Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 47,
+      "id": "PR_kwDOKZ8QO85mMnXU",
+      "title": "Add sections introducing layering",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/47",
+      "state": "OPEN",
+      "author": "rohan-wire",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-02-06T22:36:43Z",
+      "updatedAt": "2024-02-07T00:02:04Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "0186460b95b5977bd0b850948a4010b93e62cdd6",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "rohan/layer-sections",
+      "headRefOid": "68e93568b6f8cd843f6cad0b212e426e602aea37",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85vQAGz",
+          "commit": {
+            "abbreviatedOid": "77cd1b7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "generally lgtm - mostly clarifying comments contained within. Thanks!",
+          "createdAt": "2024-02-06T22:47:25Z",
+          "updatedAt": "2024-02-06T22:51:55Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "The `From` header I think needs further discussion with the working group - it feels like abuse of the header to me. Ideally we don't try to wedge ourselves into a header if that header isn't capable of clearly and semantically representing our use case - a new header or mechanism may be required, which is fine imo.",
+              "createdAt": "2024-02-06T22:47:25Z",
+              "updatedAt": "2024-02-06T22:51:55Z"
+            },
+            {
+              "originalPosition": 34,
+              "body": "Every message meaning user/instant message, or MLS Message? (please clarify in text)",
+              "createdAt": "2024-02-06T22:48:42Z",
+              "updatedAt": "2024-02-06T22:51:55Z"
+            },
+            {
+              "originalPosition": 51,
+              "body": "should this be converted to the quoted comment style we seem to have adopted elsewhere?",
+              "createdAt": "2024-02-06T22:50:18Z",
+              "updatedAt": "2024-02-06T22:51:55Z"
+            },
+            {
+              "originalPosition": 68,
+              "body": "`fetch-key-material` looks like it's supposed to be a link?",
+              "createdAt": "2024-02-06T22:51:06Z",
+              "updatedAt": "2024-02-06T22:51:55Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vQdzJ",
+          "commit": {
+            "abbreviatedOid": "77cd1b7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-06T23:59:30Z",
+          "updatedAt": "2024-02-06T23:59:31Z",
+          "comments": [
+            {
+              "originalPosition": 68,
+              "body": "it was, but it relies on PR #48 ",
+              "createdAt": "2024-02-06T23:59:31Z",
+              "updatedAt": "2024-02-06T23:59:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vQfRW",
+          "commit": {
+            "abbreviatedOid": "77cd1b7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-07T00:00:56Z",
+          "updatedAt": "2024-02-07T00:00:56Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "```suggestion\r\nEvery application message sent within a room is authenticated and confidentiality-protected\r\nby virtue of being encapsulated in an MLS PrivateMessage object.\r\n```",
+              "createdAt": "2024-02-07T00:00:56Z",
+              "updatedAt": "2024-02-07T00:00:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vQf1p",
+          "commit": {
+            "abbreviatedOid": "77cd1b7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-07T00:01:25Z",
+          "updatedAt": "2024-02-07T00:01:25Z",
+          "comments": [
+            {
+              "originalPosition": 51,
+              "body": "```suggestion\r\n> **TODO**: A little more needs to be said here about how MLS is used.  For\r\nexample: What types of credential are required / allowed?  If servers are going\r\nto be allowed to introduce room changes, how are their keys provisioned as\r\nexternal signers?\r\n```",
+              "createdAt": "2024-02-07T00:01:25Z",
+              "updatedAt": "2024-02-07T00:01:25Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 48,
+      "id": "PR_kwDOKZ8QO85mM8pi",
+      "title": "Incorporate the basic mechanism described in the example flows.",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/48",
+      "state": "OPEN",
+      "author": "rohan-wire",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-02-06T23:50:23Z",
+      "updatedAt": "2024-02-07T21:11:29Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "0186460b95b5977bd0b850948a4010b93e62cdd6",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "rohan/basic-mechanism",
+      "headRefOid": "db2fbf28327aa020b69dcf3ad063f7e3657561d7",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> This is a partial review based on the diff presented. It looks like something went very sideways with the diff though - would you be able to restructure the changes to make the diff parsable please?\r\n\r\nIf we had support for stacked diffs this would be easier. I suppose I could redo a new equivalent PR with individual commits: one commit deleting, one commit adding, then one or more commits modifying things that reference the new content. I find it hard to get a clean diff from git for large markdown changes. Git way too aggressively looks for one common word dozens of lines in the middle of a replacement.\r\n\r\nIf you have any concrete suggestions @turt2live @bifurcation please let me know.\r\n",
+          "createdAt": "2024-02-07T20:00:16Z",
+          "updatedAt": "2024-02-07T20:00:16Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85vX2lP",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "This is a partial review based on the diff presented. It looks like something went very sideways with the diff though - would you be able to restructure the changes to make the diff parsable please?",
+          "createdAt": "2024-02-07T18:37:04Z",
+          "updatedAt": "2024-02-07T18:51:38Z",
+          "comments": [
+            {
+              "originalPosition": 236,
+              "body": "```suggestion\r\nThe target user's identifier is listed in the request path. KeyPackages\r\n```",
+              "createdAt": "2024-02-07T18:37:04Z",
+              "updatedAt": "2024-02-07T18:51:38Z"
+            },
+            {
+              "originalPosition": 270,
+              "body": "I think we ideally generify the identifier shape for now, at least until the working group has identifier discussions (and more specifically, URI shape/use).\r\n\r\nFor now we can probably just call this `Identifier` with an `opaque id<V>; // TODO: Define shape` property",
+              "createdAt": "2024-02-07T18:39:20Z",
+              "updatedAt": "2024-02-07T18:51:38Z"
+            },
+            {
+              "originalPosition": 439,
+              "body": "```suggestion\r\nits `KeyPackageRef` with the target provider. This ensures that Welcome messages\r\n```",
+              "createdAt": "2024-02-07T18:40:39Z",
+              "updatedAt": "2024-02-07T18:51:38Z"
+            },
+            {
+              "originalPosition": 597,
+              "body": "why would the hub be unresponsive? this isn't a client-server endpoint, so there's no feedback to provide with respect to the error here.",
+              "createdAt": "2024-02-07T18:43:39Z",
+              "updatedAt": "2024-02-07T18:51:38Z"
+            },
+            {
+              "originalPosition": 768,
+              "body": "consistency:\r\n\r\n```suggestion\r\n      MLSMessage appMessage;\r\n```",
+              "createdAt": "2024-02-07T18:44:11Z",
+              "updatedAt": "2024-02-07T18:51:38Z"
+            },
+            {
+              "originalPosition": 970,
+              "body": "(yes, I think we do, but that's a different PR/issue's concern imo)",
+              "createdAt": "2024-02-07T18:45:15Z",
+              "updatedAt": "2024-02-07T18:51:38Z"
+            },
+            {
+              "originalPosition": 978,
+              "body": "```suggestion\r\nparticipants in the room and all local clients which are active members.\r\n```",
+              "createdAt": "2024-02-07T18:45:36Z",
+              "updatedAt": "2024-02-07T18:51:38Z"
+            },
+            {
+              "originalPosition": 1125,
+              "body": "There should something to this effect somewhere: \"the Hub MUST NOT accept changes which are non-compliant with the room's policy, and similarly MUST NOT decline changes which are compliant with the room's policy\"\r\n\r\nThis is to prevent arbitrary rules from being created/enforced by the hub.",
+              "createdAt": "2024-02-07T18:49:09Z",
+              "updatedAt": "2024-02-07T18:51:38Z"
+            },
+            {
+              "originalPosition": 1152,
+              "body": "sorry, it took me until this line to realize that the diff is really weird and broken. Would you be able to structure the changes so the diff is usable?",
+              "createdAt": "2024-02-07T18:50:48Z",
+              "updatedAt": "2024-02-07T18:51:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vYdQt",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-07T20:05:09Z",
+          "updatedAt": "2024-02-07T20:05:10Z",
+          "comments": [
+            {
+              "originalPosition": 270,
+              "body": "Is there any reason _NOT_ to use a URI?  A URI allows us to encapsulate existing and new identifiers without collisions, and we can trivially include a URI into certificates and into MLS data structures. I think this first property is absolutely essential. I also can't think of any other solution which gives us that property and can be included in X.509 certificates which already work with RFC5280.\r\n\r\nTo be clear, there is no need to agree on a specific URI scheme or schemes.",
+              "createdAt": "2024-02-07T20:05:09Z",
+              "updatedAt": "2024-02-07T20:05:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vYfBw",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-07T20:07:56Z",
+          "updatedAt": "2024-02-07T20:07:56Z",
+          "comments": [
+            {
+              "originalPosition": 597,
+              "body": "many of these provider interfaces will be decomposed, especially in a high availability environment. This would be the case if the ingress is functioning and the specific service or even the database was not working.  Think of this as analogous to a 503 HTTP response.",
+              "createdAt": "2024-02-07T20:07:56Z",
+              "updatedAt": "2024-02-07T20:07:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vYhWm",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-07T20:14:20Z",
+          "updatedAt": "2024-02-07T20:14:20Z",
+          "comments": [
+            {
+              "originalPosition": 1152,
+              "body": "@turt2live \r\nYou were nearly though the PR by this point. Maybe you would be able to review the remaining 5 paragraphs and bullet list changes to the Acknowledgements? Perhaps using the rich diff mode?",
+              "createdAt": "2024-02-07T20:14:20Z",
+              "updatedAt": "2024-02-07T20:14:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vYkSv",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-07T20:21:37Z",
+          "updatedAt": "2024-02-07T20:21:37Z",
+          "comments": [
+            {
+              "originalPosition": 1125,
+              "body": "> There should something to this effect somewhere: \"the Hub MUST NOT accept changes which are non-compliant with the room's policy, and similarly MUST NOT decline changes which are compliant with the room's policy\"\r\n> \r\n> This is to prevent arbitrary rules from being created/enforced by the hub.\r\n\r\nI think normative language like this should be in the `/update` endpoint section. \r\n\r\nI would be wary of the \"MUST NOT decline\" for things like rate limiting and spam/abuse prevention. As well, the hub may have sent a valid external AppSync proposal which crossed an otherwise valid commit on the wire. I think it should be up to the hub whether it a) accepts the valid commit and resends its proposal, or b) rejects the commit with suitable information (incorporate proposal ref xyz)  and have the provider's client retry.\r\n\r\n",
+              "createdAt": "2024-02-07T20:21:37Z",
+              "updatedAt": "2024-02-07T20:21:37Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 49,
+      "id": "PR_kwDOKZ8QO85mM9Yk",
+      "title": "Longer security considerations section",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/49",
+      "state": "OPEN",
+      "author": "rohan-wire",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-02-06T23:55:00Z",
+      "updatedAt": "2024-02-07T21:12:20Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "0186460b95b5977bd0b850948a4010b93e62cdd6",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "rohan/security",
+      "headRefOid": "f52763d2852bcbc9536c5ebd2c8f5ae936cacd0d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85vX9ao",
+          "commit": {
+            "abbreviatedOid": "f52763d"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "otherwise lgtm",
+          "createdAt": "2024-02-07T18:54:06Z",
+          "updatedAt": "2024-02-07T18:54:13Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "we may need to add a note that the hub-and-spoke model allows the hub to be a threat actor itself, but is deemed appropriate for simplicity. ",
+              "createdAt": "2024-02-07T18:54:06Z",
+              "updatedAt": "2024-02-07T18:54:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vY75L",
+          "commit": {
+            "abbreviatedOid": "f52763d"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-07T21:12:19Z",
+          "updatedAt": "2024-02-07T21:12:20Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "good point",
+              "createdAt": "2024-02-07T21:12:19Z",
+              "updatedAt": "2024-02-07T21:12:20Z"
             }
           ]
         }
