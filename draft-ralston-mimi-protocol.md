@@ -696,8 +696,7 @@ enum {
   success(0),
   wrongEpoch(1),
   notAllowed(2),
-  hubUnresponsive(3),
-  invalidProposal(4),
+  invalidProposal(3),
   (255)
 } UpdateResponseCode;
 
