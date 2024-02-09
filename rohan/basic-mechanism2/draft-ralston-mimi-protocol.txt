@@ -88,23 +88,29 @@ Table of Contents
      3.3.  Bob adds Cathy to the Room
      3.4.  Cathy Sends a Message
      3.5.  Bob Leaves the Room
-   4.  MIMI Endpoints and Framing
-     4.1.  Directory
-     4.2.  Fetch Key Material
-     4.3.  Update Room State
-     4.4.  Submit a Message
-     4.5.  Fanout Messages and Room Events
-   5.  Relation between MIMI state and cryptographic state
-     5.1.  Room state
-     5.2.  Cryptographic room representation
-     5.3.  Proposal-commit paradigm
-     5.4.  Authenticating proposals
-   6.  MLS Application State Synchronization
-   7.  Security Considerations
-   8.  IANA Considerations
-   9.  References
-     9.1.  Normative References
-     9.2.  Informative References
+   4.  Services required at each layer
+     4.1.  Transport layer
+     4.2.  End-to-End Security Layer
+     4.3.  Application Layer
+       4.3.1.  Server State
+       4.3.2.  Participation List Changes
+   5.  MIMI Endpoints and Framing
+     5.1.  Directory
+     5.2.  Fetch Key Material
+     5.3.  Update Room State
+     5.4.  Submit a Message
+     5.5.  Fanout Messages and Room Events
+   6.  Relation between MIMI state and cryptographic state
+     6.1.  Room state
+     6.2.  Cryptographic room representation
+     6.3.  Proposal-commit paradigm
+     6.4.  Authenticating proposals
+   7.  MLS Application State Synchronization
+   8.  Security Considerations
+   9.  IANA Considerations
+   10. References
+     10.1.  Normative References
+     10.2.  Informative References
    Acknowledgments
    Contributors
    Authors' Addresses
@@ -527,7 +533,121 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
                     Figure 7: Bob Leaves the Room
 
-4.  MIMI Endpoints and Framing
+4.  Services required at each layer
+
+4.1.  Transport layer
+
+   MIMI servers communicate using HTTPS.  The HTTP request MUST identify
+   the source and target providers for the request, in the following
+   way:
+
+   *  The target provider is indicated using a Host header [RFC9110].
+      If the provider is using a non-standard port, then the port
+      component of the Host header is ignored.
+
+   *  The source provider is indicated using a From header [RFC9110].
+      The mailbox production in the From header MUST use the addr-spec
+      variant, and the local-part of the address MUST contain the fixed
+      string mimi.  Thus, the content of the From header will be
+      mimi@a.example, where a.example is the domain name of the source
+      provider.
+
+      *NOTE*: The use of the From header field here is not really well-
+      aligned with its intended use.  The WG should consider whether
+      this is correct, or whether a new header field would be better.
+      Perhaps something like "From-Host" to match Host?
+
+   The TLS connection underlying the HTTPS connection MUST be mutually
+   authenticated.  The certificates presented in the TLS handshake MUST
+   authenticate the source and target provider domains, according to
+   [RFC6125].
+
+   The bodies of HTTP requests and responses are defined by the
+   individual endpoints defined in Section 4.3.
+
+4.2.  End-to-End Security Layer
+
+   Every MIMI room has an MLS group associated to it, which provides
+   end-to-end security guarantees.  The clients participating in the
+   room manage the MLS-level membership by sending Commit messages
+   covering Add and Remove proposals.
+
+   Every application message sent within a room is authenticated and
+   confidentiality-protected by virtue of being encapsulated in an MLS
+   PrivateMessage object.
+
+   MIMI uses the MLS application state synchronization mechanism
+   (Section 7) to ensure that the clients involved in a MIMI room agree
+   on the state of the room.  Each MIMI message that changes the state
+   of the room is encapsulated in an AppSync proposal and transmitted
+   inside an MLS PublicMessage object.
+
+   The PublicMessage encapsulation provides sender authentication,
+   including the ability for actors outside the group (e.g., servers
+   involved in the room) to originate AppSync proposals.  Encoding room
+   state changes in MLS proposals ensures that a client will not process
+   a commit that confirms a state change before processing the state
+   change itself.
+
+      *TODO*: A little more needs to be said here about how MLS is used.
+      For example: What types of credential are required / allowed?  If
+      servers are going to be allowed to introduce room changes, how are
+      their keys provisioned as external signers?
+
+4.3.  Application Layer
+
+   Servers in MIMI provide a few functions that enable messaging
+   applications.  All servers act as publication points for key material
+   used to add their users to rooms.  The hub server for a room tracks
+   the state of the room, and controls how the room's state evolves,
+   e.g., by ensuring that changes are compliant with the room's policy.
+   Non-hub servers facilitate interactions between their clients and the
+   hub server.
+
+   In this section, we describe the state that servers keep.  The
+   following top level section describes the HTTP endpoints exposed to
+   enable these functions.
+
+4.3.1.  Server State
+
+   Every MIMI server is a publication point for users' key material, via
+   the keyMaterial endpoint discussed in fetch-key-material [TODO:
+   link].  To support this endpoint, the server stores a set of
+   KeyPackages, where each KeyPackage belongs to a specific user and
+   device.
+
+   The hub server for the room stores the state of the room, comprising:
+
+   *  The _base policy_ of the room, which does not depend on the
+      specific participants in the room.
+
+   *  The _participation list_: a list of the users who are participants
+      of the room, and their permissions in the room.
+
+      *TODO*: We need a more full description of the room, room state
+      syntax.
+
+   When a client requests key material via the hub, the hub records the
+   KeyPackageRef values for the returned KeyPackages, and the identity
+   of the provider from which they were received.  This information is
+   then used to route Welcome message to the proper provider.
+
+4.3.2.  Participation List Changes
+
+   The participation list can be changed by adding or removing users.
+   These changes are described without a specific syntax as a list of
+   adds and removes:
+
+   Add: ["diana@d.example", "eric@e.example"],
+   Remove: ["bob@b.example"],
+
+                  Figure 8: Changing the state of the room
+
+   To put these changes into effect, a client or server encodes them in
+   an AppSync proposal, signs the proposal as a PublicMessage, and
+   submits them to the update endpoint on the hub.
+
+5.  MIMI Endpoints and Framing
 
    This section describes the specific endpoints necessary to provide
    the functionality in the example flow.  The framing for each endpoint
@@ -543,7 +663,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
        (255)
    } Protocol;
 
-4.1.  Directory
+5.1.  Directory
 
    Like the ACME protocol [RFC8555], the MIMI protocol uses a directory
    document to convey the HTTPS URLs used to reach certain endpoints (as
@@ -564,7 +684,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
         "https://mimi.example.com/v1/submitMessage/{roomId}"
    }
 
-4.2.  Fetch Key Material
+5.2.  Fetch Key Material
 
    This action attempts to claim initial keying material for all the
    clients of a single user at a specific provider.  The keying material
@@ -682,7 +802,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    after a Welcome message is forwarded or after the KeyPackage
    leaf_node.lifetime.not_after time has passed.
 
-4.3.  Update Room State
+5.3.  Update Room State
 
    Adds, removes, and policy changes to the room are all forms of
    updating the room state.  They are accomplished using the update
@@ -765,7 +885,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
        string errorDescription;
    } UpdateRoomResponse
 
-4.4.  Submit a Message
+5.4.  Submit a Message
 
    End-to-end encrypted (application) message are submitted to the hub
    for authorization and eventual fanout using an HTTP POST request.
@@ -810,7 +930,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
       example "is typing" notifications), which do not need to be queued
       at the target provider.
 
-4.5.  Fanout Messages and Room Events
+5.5.  Fanout Messages and Room Events
 
    If the hub provider accepts an application or handshake message
    (proposal or commit) message, it forwards that message to all other
@@ -862,9 +982,9 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    code indicates if the messages in the request were accepted (201
    response code), or if there was an error.
 
-5.  Relation between MIMI state and cryptographic state
+6.  Relation between MIMI state and cryptographic state
 
-5.1.  Room state
+6.1.  Room state
 
    The state of a room consists of its room ID, its base policy, its
    participant list (including the role and participation state of each
@@ -885,7 +1005,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    proposal implementing the event was not yet committed by a client.
    Note that this only applies to events changing the room state.
 
-5.2.  Cryptographic room representation
+6.2.  Cryptographic room representation
 
    Each room is represented cryptographically by an MLS group and the
    Hub that manages the room uses the MIMI DS protocol specified in
@@ -895,7 +1015,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    members, i.e. the list of clients belonging to users currently in the
    room.
 
-5.3.  Proposal-commit paradigm
+6.3.  Proposal-commit paradigm
 
    The MIMI DS protocol uses MLS, which follows a proposal-commit
    paradigm.  Any party involved in a room (follower server, Hub or
@@ -911,7 +1031,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    the group state also includes a copy of the room state at the time of
    the most recent commit, it is also covered by the agreement.
 
-5.4.  Authenticating proposals
+6.4.  Authenticating proposals
 
    The MLS specification [RFC9420] requires that MLS proposals from the
    Hub and from follower servers (external senders in MLS terminology)
@@ -927,7 +1047,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    Changes to the external_senders extension only take effect when the
    MLS proposal containing the event is committed by a MIMI commit.
 
-6.  MLS Application State Synchronization
+7.  MLS Application State Synchronization
 
    *TODO:* This section should be moved to its own document in the MLS
    working group.
@@ -1012,7 +1132,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
      ApplicationState applicationStates<V>;
    } ApplicationStatesExtension;
 
-                Figure 8: The `application_state` extension
+                Figure 9: The `application_state` extension
 
    struct {
      uint32 index;
@@ -1040,7 +1160,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
      };
    } AppSync;
 
-                    Figure 9: The AppSync proposal type
+                    Figure 10: The AppSync proposal type
 
    The applicationId determines the structure and interpretation of the
    contents. of an ApplicationState object.  AppSync proposals contain
@@ -1086,20 +1206,40 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
       *TODO:* IANA registry for application_id; register extension and
       proposal types as safe extensions
 
-7.  Security Considerations
+8.  Security Considerations
 
-   Overall, the user participation state leads any possible MLS group
-   state to ensure malicious clients are not able to easily get access
-   to messages.
+   The MIMI protocol incorporates several layers of security.
 
-      *TODO*: Other security guarantees?  Consensus may be required
-      here.
+   Individual protocol actions are protected against network attackers
+   with mutually-authenticated TLS, where the TLS certificates
+   authenticate the identities that the protocol actors assert at the
+   application layer.
 
-8.  IANA Considerations
+   Messages and room state changes are protected end-to-end using MLS.
+   The protection is "end-to-end" in the sense that messages sent within
+   the group are confidentiality-protected against all servers involved
+   in the delivery of those messages, and in the sense that the
+   authenticity of room state changes is verified by the end clients
+   involved in the room.  The usage of MLS ensures that the servers
+   facilitating the exchange cannot read messages in the room or falsify
+   room state changes, even though they can read the room state change
+   messages.
 
-9.  References
+   Each room has an authorization policy that dictates which protocol
+   actors can perform which actions in the room.  This policy is
+   enforced by the hub server for the room.  The actors for whom the
+   policy is being evaluated authenticate their identities to the hub
+   server using the MLS PublicMessage signed object format, together
+   with the identity credentials presented in MLS.  This design means
+   that the hub is trusted to correctly enforce the room's policy, but
+   this cost is offset by the simplicity of not having multiple policy
+   enforcement points.
 
-9.1.  Normative References
+9.  IANA Considerations
+
+10.  References
+
+10.1.  Normative References
 
    [I-D.barnes-mimi-arch]
               Barnes, R., "An Architecture for More Instant Messaging
@@ -1120,6 +1260,13 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
 
+   [RFC6125]  Saint-Andre, P. and J. Hodges, "Representation and
+              Verification of Domain-Based Application Service Identity
+              within Internet Public Key Infrastructure Using X.509
+              (PKIX) Certificates in the Context of Transport Layer
+              Security (TLS)", RFC 6125, DOI 10.17487/RFC6125, March
+              2011, <https://www.rfc-editor.org/rfc/rfc6125>.
+
    [RFC7231]  Fielding, R., Ed. and J. Reschke, Ed., "Hypertext Transfer
               Protocol (HTTP/1.1): Semantics and Content", RFC 7231,
               DOI 10.17487/RFC7231, June 2014,
@@ -1133,12 +1280,17 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
               <https://www.rfc-editor.org/rfc/rfc8446>.
 
+   [RFC9110]  Fielding, R., Ed., Nottingham, M., Ed., and J. Reschke,
+              Ed., "HTTP Semantics", STD 97, RFC 9110,
+              DOI 10.17487/RFC9110, June 2022,
+              <https://www.rfc-editor.org/rfc/rfc9110>.
+
    [RFC9420]  Barnes, R., Beurdouche, B., Robert, R., Millican, J.,
               Omara, E., and K. Cohn-Gordon, "The Messaging Layer
               Security (MLS) Protocol", RFC 9420, DOI 10.17487/RFC9420,
               July 2023, <https://www.rfc-editor.org/rfc/rfc9420>.
 
-9.2.  Informative References
+10.2.  Informative References
 
    [I-D.kohbrok-mimi-transport]
               Kohbrok, K. and R. Robert, "MIMI Transport", Work in
