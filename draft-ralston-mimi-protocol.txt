@@ -88,38 +88,44 @@ Table of Contents
      3.3.  Bob adds Cathy to the Room
      3.4.  Cathy Sends a Message
      3.5.  Bob Leaves the Room
-   4.  Framing
-   5.  Rooms and Events
-     5.1.  Event Schema
-     5.2.  Room state
-     5.3.  Cryptographic room representation
-       5.3.1.  Proposal-commit paradigm
-       5.3.2.  Cryptographically anchoring room state
-       5.3.3.  Authenticating proposals
-       5.3.4.  MIMI DS events
-     5.4.  Creation
-       5.4.1.  m.room.info
-   6.  User Participation and Client Membership
-     6.1.  Adds
-     6.2.  Invites
-     6.3.  Joins
-     6.4.  Leaves/Kicks
-     6.5.  Bans
-     6.6.  Knocks
-     6.7.  m.room.user
-   7.  Transport
-     7.1.  Authentication
-     7.2.  Endpoint Discovery
-     7.3.  REST Endpoints
-       7.3.1.  Send Event
-       7.3.2.  Check Invite Event
-   8.  MLS Application State Synchronization
-   9.  Security Considerations
-   10. IANA Considerations
-     10.1.  MIMI Event Types
-   11. References
-     11.1.  Normative References
-     11.2.  Informative References
+   4.  Services required at each layer
+     4.1.  Transport layer
+     4.2.  End-to-End Security Layer
+     4.3.  Application Layer
+       4.3.1.  Server State
+       4.3.2.  Participation List Changes
+   5.  Framing
+   6.  Rooms and Events
+     6.1.  Event Schema
+     6.2.  Room state
+     6.3.  Cryptographic room representation
+       6.3.1.  Proposal-commit paradigm
+       6.3.2.  Cryptographically anchoring room state
+       6.3.3.  Authenticating proposals
+       6.3.4.  MIMI DS events
+     6.4.  Creation
+       6.4.1.  m.room.info
+   7.  User Participation and Client Membership
+     7.1.  Adds
+     7.2.  Invites
+     7.3.  Joins
+     7.4.  Leaves/Kicks
+     7.5.  Bans
+     7.6.  Knocks
+     7.7.  m.room.user
+   8.  Transport
+     8.1.  Authentication
+     8.2.  Endpoint Discovery
+     8.3.  REST Endpoints
+       8.3.1.  Send Event
+       8.3.2.  Check Invite Event
+   9.  MLS Application State Synchronization
+   10. Security Considerations
+   11. IANA Considerations
+     11.1.  MIMI Event Types
+   12. References
+     12.1.  Normative References
+     12.2.  Informative References
    Acknowledgments
    Contributors
    Authors' Addresses
@@ -542,7 +548,121 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
                     Figure 7: Bob Leaves the Room
 
-4.  Framing
+4.  Services required at each layer
+
+4.1.  Transport layer
+
+   MIMI servers communicate using HTTPS.  The HTTP request MUST identify
+   the source and target providers for the request, in the following
+   way:
+
+   *  The target provider is indicated using a Host header [RFC9110].
+      If the provider is using a non-standard port, then the port
+      component of the Host header is ignored.
+
+   *  The source provider is indicated using a From header [RFC9110].
+      The mailbox production in the From header MUST use the addr-spec
+      variant, and the local-part of the address MUST contain the fixed
+      string mimi.  Thus, the content of the From header will be
+      mimi@a.example, where a.example is the domain name of the source
+      provider.
+
+      *NOTE*: The use of the From header field here is not really well-
+      aligned with its intended use.  The WG should consider whether
+      this is correct, or whether a new header field would be better.
+      Perhaps something like "From-Host" to match Host?
+
+   The TLS connection underlying the HTTPS connection MUST be mutually
+   authenticated.  The certificates presented in the TLS handshake MUST
+   authenticate the source and target provider domains, according to
+   [RFC6125].
+
+   The bodies of HTTP requests and responses are defined by the
+   individual endpoints defined in Section 4.3.
+
+4.2.  End-to-End Security Layer
+
+   Every MIMI room has an MLS group associated to it, which provides
+   end-to-end security guarantees.  The clients participating in the
+   room manage the MLS-level membership by sending Commit messages
+   covering Add and Remove proposals.
+
+   Every application message sent within a room is authenticated and
+   confidentiality-protected by virtue of being encapsulated in an MLS
+   PrivateMessage object.
+
+   MIMI uses the MLS application state synchronization mechanism
+   (Section 9) to ensure that the clients involved in a MIMI room agree
+   on the state of the room.  Each MIMI message that changes the state
+   of the room is encapsulated in an AppSync proposal and transmitted
+   inside an MLS PublicMessage object.
+
+   The PublicMessage encapsulation provides sender authentication,
+   including the ability for actors outside the group (e.g., servers
+   involved in the room) to originate AppSync proposals.  Encoding room
+   state changes in MLS proposals ensures that a client will not process
+   a commit that confirms a state change before processing the state
+   change itself.
+
+      *TODO*: A little more needs to be said here about how MLS is used.
+      For example: What types of credential are required / allowed?  If
+      servers are going to be allowed to introduce room changes, how are
+      their keys provisioned as external signers?
+
+4.3.  Application Layer
+
+   Servers in MIMI provide a few functions that enable messaging
+   applications.  All servers act as publication points for key material
+   used to add their users to rooms.  The hub server for a room tracks
+   the state of the room, and controls how the room's state evolves,
+   e.g., by ensuring that changes are compliant with the room's policy.
+   Non-hub servers facilitate interactions between their clients and the
+   hub server.
+
+   In this section, we describe the state that servers keep.  The
+   following top level section describes the HTTP endpoints exposed to
+   enable these functions.
+
+4.3.1.  Server State
+
+   Every MIMI server is a publication point for users' key material, via
+   the keyMaterial endpoint discussed in fetch-key-material [TODO:
+   link].  To support this endpoint, the server stores a set of
+   KeyPackages, where each KeyPackage belongs to a specific user and
+   device.
+
+   The hub server for the room stores the state of the room, comprising:
+
+   *  The _base policy_ of the room, which does not depend on the
+      specific participants in the room.
+
+   *  The _participation list_: a list of the users who are participants
+      of the room, and their permissions in the room.
+
+      *TODO*: We need a more full description of the room, room state
+      syntax.
+
+   When a client requests key material via the hub, the hub records the
+   KeyPackageRef values for the returned KeyPackages, and the identity
+   of the provider from which they were received.  This information is
+   then used to route Welcome message to the proper provider.
+
+4.3.2.  Participation List Changes
+
+   The participation list can be changed by adding or removing users.
+   These changes are described without a specific syntax as a list of
+   adds and removes:
+
+   Add: ["diana@d.example", "eric@e.example"],
+   Remove: ["bob@b.example"],
+
+                  Figure 8: Changing the state of the room
+
+   To put these changes into effect, a client or server encodes them in
+   an AppSync proposal, signs the proposal as a PublicMessage, and
+   submits them to the update endpoint on the hub.
+
+5.  Framing
 
    MIMI protocol messages are sent described using the TLS presentation
    language format (Section 3 of [RFC8446]).
@@ -580,7 +700,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
       }
    } MIMIMessage
 
-5.  Rooms and Events
+6.  Rooms and Events
 
    Rooms, described by [I-D.barnes-mimi-arch], consist of a user
    participation list, a cryptographic representation of the room as
@@ -610,7 +730,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    cryptographic security layer rather than being confirmed in events
    specifically.
 
-5.1.  Event Schema
+6.1.  Event Schema
 
    Events are validated against their TLS presentation language format
    (Section 3 of [RFC8446]):
@@ -694,7 +814,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
       }
    } EventResponse
 
-5.2.  Room state
+6.2.  Room state
 
    The state of a room consists of the room's RoomID, its policy, and
    the participant list (including the role and participation state of
@@ -717,9 +837,9 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    Note that this only applies to events changing the room state, but
    not for MIMI DS specific events that change the group state.  For
    more information on the proposal-commit paradigm and the role of the
-   MIMI DS protocol see Section 5.3.
+   MIMI DS protocol see Section 6.3.
 
-5.3.  Cryptographic room representation
+6.3.  Cryptographic room representation
 
    Each room is represented cryptographically by an MLS group and the
    Hub that manages the room uses the MIMI DS protocol specified in
@@ -729,7 +849,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    members, i.e. the list of clients belonging to users currently in the
    room.
 
-5.3.1.  Proposal-commit paradigm
+6.3.1.  Proposal-commit paradigm
 
    The MIMI DS protocol uses MLS, which follows a proposal-commit
    paradigm.  Any party involved in a room (follower server, Hub or
@@ -746,7 +866,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    the room state at the time of the most recent commit, it is also
    covered by the agreement.
 
-5.3.2.  Cryptographically anchoring room state
+6.3.2.  Cryptographically anchoring room state
 
    To allow all parties involved to agree on the state of the room in
    addition to the state of the associated group, the room state is
@@ -779,7 +899,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    even if the commits that carry the event information have not yet
    been committed.
 
-5.3.3.  Authenticating proposals
+6.3.3.  Authenticating proposals
 
    The MLS specification [RFC9420] requires that MLS proposals from the
    Hub and from follower servers (external senders in MLS terminology)
@@ -794,9 +914,9 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    room, the certificate of that user MUST be removed from the list.
    Changes to the external_senders extension only take effect when the
    MLS proposal containing the event is committed by a MIMI DS commit.
-   See Section 6.7 for more information.
+   See Section 7.7 for more information.
 
-5.3.4.  MIMI DS events
+6.3.4.  MIMI DS events
 
    The MIMI DS protocol operations are encapsulated in DSRequest structs
    and contain a request_type field that details the operation in
@@ -820,7 +940,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
       *TODO*: Update the MIMI DS doc to allow for messages to contain
       more than one proposal and a generic "commit" action.
 
-5.3.4.1.  Propose group update
+6.3.4.1.  Propose group update
 
    *Event type*: ds.proposal
 
@@ -839,7 +959,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    *  Clients can only be added to the group if the associated user is
       on the participant list and in the join state.
 
-5.3.4.2.  Commit group update
+6.3.4.2.  Commit group update
 
    *Event type*: ds.commit
 
@@ -850,7 +970,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
    Note that this event can also be used by a client to add itself to
    the group.  To do that, the sender requires the current group
-   information (see Section 5.3.4.4).
+   information (see Section 6.3.4.4).
 
    struct {
      DSRequest commitBundle;
@@ -861,7 +981,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    *  Clients can only be added to the group if the associated user is
       on the participant list and in the join state.
 
-5.3.4.3.  Fetch KeyPackage
+6.3.4.3.  Fetch KeyPackage
 
    *Event type*: ds.fetch_key_packages
 
@@ -881,7 +1001,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
    None
 
-5.3.4.4.  Fetch group information
+6.3.4.4.  Fetch group information
 
    *Event type*: ds.fetch_group_info
 
@@ -899,7 +1019,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
    None
 
-5.3.4.5.  Send Message
+6.3.4.5.  Send Message
 
    *Event type*: ds.send_message
 
@@ -918,7 +1038,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
    None
 
-5.4.  Creation
+6.4.  Creation
 
    Rooms (and the underlying MLS groups) are first created within the
    provider, out of scope from MIMI.  When the room is exposed to
@@ -926,12 +1046,12 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    invite to another user, the creating server MUST produce the
    following details:
 
-   *  An m.room.info (Section 5.4.1) event describing the encryption and
+   *  An m.room.info (Section 6.4.1) event describing the encryption and
       policy details for the room.
 
    *  A universally unique room ID (represented by the room info event).
 
-   *  An m.room.user (Section 6.7) event which invites the desired user.
+   *  An m.room.user (Section 7.7) event which invites the desired user.
 
    *  Any relevant cryptographic state needed to verify the invite is
       legitimate.  For example, the ciphersuite used by the
@@ -942,7 +1062,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    configuration of the room's policy, adding the creator's other
    clients to the MLS group state, etc.
 
-5.4.1.  m.room.info
+6.4.1.  m.room.info
 
    The m.room.info event contains the current room state, thus allowing
    servers to bootstrap the room.  Note that this event does not contain
@@ -964,12 +1084,12 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    *Fanout considerations*:
 
    InfoEvent is _unsigned_ in all cases it is used, but authenticated
-   implicitly through the transport layer (Section 7).  The room info
+   implicitly through the transport layer (Section 8).  The room info
    event is used during invites to ensure the server is capable of
    participating in the room and is not fanned out more generally.  See
-   Section 7.3.2 for usage.
+   Section 8.3.2 for usage.
 
-6.  User Participation and Client Membership
+7.  User Participation and Client Membership
 
    In a MIMI room, users are _participants_ with an associated
    _participation state_ whereas clients of those users are _members_ of
@@ -995,14 +1115,14 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
    All servers with at least one user of theirs in the "joined"
    participation state are considered to be "in" or "participating" in
-   the room.  Events which require full fanout (Section 7.3.1.1) are
+   the room.  Events which require full fanout (Section 8.3.1.1) are
    sent to all participating servers by default.  Some events MAY be
    sent to additional servers as needed by their fanout considerations.
 
    The participant list is anchored in the cryptographic state of the
-   room as described in Section 5.3.2.
+   room as described in Section 6.3.2.
 
-6.1.  Adds
+7.1.  Adds
 
       *TODO*: We will probably want some kind of mechanism here that
       allows the adder to signal that they are authorized (by the added
@@ -1013,10 +1133,10 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    is typically sent as part of a commit that also adds the user's
    clients to the room's MLS group.
 
-   1.  The adder generates an m.room.user (Section 6.7) event to add the
+   1.  The adder generates an m.room.user (Section 7.7) event to add the
        target user.
 
-   2.  The adder sends (Section 7.3.1) the m.room.user event to the hub
+   2.  The adder sends (Section 8.3.1) the m.room.user event to the hub
        server.  If the adder is a client, the event is likely sent as
        part of a ds.commit event.
 
@@ -1034,9 +1154,9 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
    5.  The target user (or its server) can reject the addition by
        sending an m.room.user event that proposes the removal of the
-       user and its clients (Section 6.4).
+       user and its clients (Section 7.4).
 
-6.2.  Invites
+7.2.  Invites
 
    An _invite_ is when a user (or more specifically, a user's client)
    adds another user to the list of participants in the invite state.
@@ -1046,13 +1166,13 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    well as any other clients to the room's underlying group.
 
    Updating the target user's participation state is done using the
-   following steps, and is visualized in Figure 8.
+   following steps, and is visualized in Figure 9.
 
-   1.  The inviter's server generates an m.room.user (Section 6.7) event
+   1.  The inviter's server generates an m.room.user (Section 7.7) event
        to invite the target user.  Typically this begins with a client-
        initiated request to the server using the provider-specific API.
 
-   2.  The inviter's server sends (Section 7.3.1) the m.room.user event
+   2.  The inviter's server sends (Section 8.3.1) the m.room.user event
        to the hub server.
 
    3.  The hub server validates the event to ensure the following:
@@ -1065,11 +1185,11 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    4.  If the event is invalid, it is rejected.  Otherwise, it is
        forwarded by the hub to the target user's server to give it the
        opportunity to reject the invite early in the process.  This is
-       described by Section 7.3.2.
+       described by Section 8.3.2.
 
    5.  If the target server rejected the event, the event is rejected by
        the hub as well.  Otherwise, the event is fanned out
-       (Section 7.3.1.1) to all participating servers, plus the target
+       (Section 8.3.1.1) to all participating servers, plus the target
        server if not already participating.
 
    At this stage, the _user_ is now invited but their clients are not
@@ -1078,7 +1198,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    user can then accept or decline the invite.
 
    If the user declines the invite, they are removed from the
-   participant list.  Accepting is done by joining (Section 6.3) the
+   participant list.  Accepting is done by joining (Section 7.3) the
    room.
 
   +---+                            +-----+                         +---+
@@ -1111,9 +1231,9 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
     |<--------------------------------|----------------------------->|
     |                                 |                              |
 
-                       Figure 8: Invite happy path
+                       Figure 9: Invite happy path
 
-6.3.  Joins
+7.3.  Joins
 
    Users join a room either in response to an invite (therefore
    accepting it) or after discovering it as a public room.  In both
@@ -1140,16 +1260,16 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    The two-step flow looks as follows:
 
    1.  Option a: The joiner's server generates an m.room.user
-       (Section 6.7) event to add the user.
+       (Section 7.7) event to add the user.
 
        Option b: The joiner's client generates a commit that contains an
        m.room.user event, as well as an Add proposal for itself (this
        requires that the client has previously obtained a the room's
        group info through a ds.fetch_group_info event
-       (Section 5.3.4.4)).  The joiner's server generates a ds.commit
+       (Section 6.3.4.4)).  The joiner's server generates a ds.commit
        event from the commit.
 
-   2.  The joiners's server sends (Section 7.3.1) the generated event to
+   2.  The joiners's server sends (Section 8.3.1) the generated event to
        the hub server.
 
    3.  The hub server validates the event to ensure the following:
@@ -1160,7 +1280,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
        *  The sender and joining user MUST be the same.
 
    4.  If the event is invalid, it is rejected.  Otherwise, the event is
-       fanned out (Section 7.3.1.1) to all participating servers, plus
+       fanned out (Section 8.3.1.1) to all participating servers, plus
        the joiner's server as they are now participating in the room
        too.
 
@@ -1169,19 +1289,19 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    group state via one or more ds.commit events after fetching the
    room's current information via a ds.fetch_group_info event.
 
-6.4.  Leaves/Kicks
+7.4.  Leaves/Kicks
 
    Leaving a room can signal a user declining an invite, voluntarily
    leaving the room, or being kicked (removed) from the room.  When the
-   sender and target of an m.room.user (Section 6.7) leave event are
+   sender and target of an m.room.user (Section 7.7) leave event are
    different, the target user is being kicked.  Otherwise the event
    represents a voluntary leave or declined invite (if the previous
    participation state was "invited").
 
    Like with other participation/membership operations, a user's leave
    is initiated by updating their participation state first.  This is
-   done by sending (Section 7.3.1) the relevant m.room.user
-   (Section 6.7) state event to the hub, which validates it as follows:
+   done by sending (Section 8.3.1) the relevant m.room.user
+   (Section 7.7) state event to the hub, which validates it as follows:
 
    *  If the target and sender are the same, the user MUST be in the
       invited, joined, or knocking participation state.
@@ -1196,7 +1316,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
       *TODO*: Include special case permissions constraints.
 
-   If the event is valid, it is fanned out (Section 7.3.1.1) to all
+   If the event is valid, it is fanned out (Section 8.3.1.1) to all
    particpating servers, plus the target user's server.
 
    The next ds.commit event MUST remove _all_ of the target user's
@@ -1209,14 +1329,14 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    remove the affected clients, requiring that those changes be
    confirmed/accepted by a client remaining in the group promptly.
 
-   As mentioned in Section 6.3, a user already in the join participation
+   As mentioned in Section 7.3, a user already in the join participation
    state MAY add and remove their own clients from the cryptographic
    state at will.
 
-6.5.  Bans
+7.5.  Bans
 
-   Bans imply kick, and are operated the same way as Section 6.4, though
-   with the m.room.user (Section 6.7) state event using a ban
+   Bans imply kick, and are operated the same way as Section 7.4, though
+   with the m.room.user (Section 7.7) state event using a ban
    participation state.
 
    In contrast to leaving users, banned users remain on the participant
@@ -1227,12 +1347,12 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    state to allow the participation state change.
 
    Unbans can be performed by removing a user in the banned
-   participation state from the participant list Section 6.4.
+   participation state from the participant list Section 7.4.
 
-6.6.  Knocks
+7.6.  Knocks
 
    In this state, the sender of a knock is requesting an invite
-   (Section 6.2) to the room.  They do not have access to the
+   (Section 7.2) to the room.  They do not have access to the
    cryptographic state.
 
       *TODO*: Discuss if this participation state is desirable, and
@@ -1243,7 +1363,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
       "Invites" section, an "Add" would probably be the response to a
       knock.
 
-6.7.  m.room.user
+7.7.  m.room.user
 
    *Event type*: m.room.user
 
@@ -1294,8 +1414,8 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
    *Additional validation rules*:
 
-   *  Rules described by Section 6.2, Section 6.3, Section 6.4,
-      Section 6.5, Section 6.6.
+   *  Rules described by Section 7.2, Section 7.3, Section 7.4,
+      Section 7.5, Section 7.6.
 
    *  The proposal MUST be authenticated as an MLS message based on the
       room's underlying MLS group.
@@ -1304,9 +1424,9 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
    *Fanout considerations*:
 
-   Each m.room.user event is fanned out as normal (Section 7.3.1.1).
+   Each m.room.user event is fanned out as normal (Section 8.3.1.1).
    The event MAY be sent to additional servers, as required by
-   Section 6.2, Section 6.3, Section 6.4, Section 6.5, Section 6.6.
+   Section 7.2, Section 7.3, Section 7.4, Section 7.5, Section 7.6.
 
    *Additional validation rules*:
 
@@ -1316,13 +1436,13 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
    This event is not fanned out.
 
-7.  Transport
+8.  Transport
 
    Servers communicate with each other over HTTP [RFC9110] by "sending"
-   events (Section 5.1) to each other.  Responses are also events for
+   events (Section 6.1) to each other.  Responses are also events for
    ease of handling.
 
-7.1.  Authentication
+8.1.  Authentication
 
    All endpoints, with the exception of .well-known endpoints, use the
    mutually authenticated mode of TLS [RFC5246].  This provides
@@ -1336,7 +1456,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    point-to-point security properties while an event's signature
    provides authenticity over multiple hops.
 
-7.2.  Endpoint Discovery
+8.2.  Endpoint Discovery
 
    A messaging provider that wants to query the endpoint of another
    messaging provider first has to discover the fully qualified domain
@@ -1344,7 +1464,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    performing a GET request to https://example.org/.well-known/mimi/
    domain. example.org could, for example, answer by providing the
    domain mimi.example.org (assuming that this is where it responds to
-   the REST endpoints defined in Section 7.3).
+   the REST endpoints defined in Section 8.3).
 
    The expected response format is simply a text/plain body containing
    the fully qualified domain name.
@@ -1354,7 +1474,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    Response
    mimi.example.org
 
-7.3.  REST Endpoints
+8.3.  REST Endpoints
 
    The following REST endpoints can be used to communicate with a MIMI
    server.
@@ -1362,14 +1482,14 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    All operations rely on TLS-encoded structs and therefore requests and
    responses SHOULD use a Content-Type of application/octet-stream.
 
-7.3.1.  Send Event
+8.3.1.  Send Event
 
-   Asks the server to send an event (Section 5.1).  Each event is
+   Asks the server to send an event (Section 6.1).  Each event is
    subject to additional validation and handling within this endpoint,
    such as ensuring the room's policy is not violated.
 
    Follower servers in a room MUST only send to the hub server.  The hub
-   server is responsible for further fanout (Section 7.3.1.1) if
+   server is responsible for further fanout (Section 8.3.1.1) if
    required by the event, after the send request has been completed.
 
    Follower servers receiving an event from another follower server MUST
@@ -1378,14 +1498,14 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    additional actions on the event as required by the event.  For
    example, the hub server may check that an invite is legal under the
    room's policy, then ensure the target server accepts the event with
-   Section 7.3.2, then finally continue processing.
+   Section 8.3.2, then finally continue processing.
 
    Rejected send requests MUST return a 400 HTTP status code.  Accepted
    send requests MUST return a 200 HTTP status code, and an event in the
    response body if one is applicable.
 
-   If the event requires fanout (Section 7.3.1.1), the event is then
-   fanned out Section 7.3.1.1 to relevant servers in the room.
+   If the event requires fanout (Section 8.3.1.1), the event is then
+   fanned out Section 8.3.1.1 to relevant servers in the room.
 
    Follower servers SHOULD apply the same validation as hub servers upon
    receiving a send request to identify potentially malicious hub
@@ -1403,17 +1523,17 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    Servers SHOULD retry this request with exponential backoff (to a
    limit) if they receive timeout/network errors.
 
-7.3.1.1.  Fanout
+8.3.1.1.  Fanout
 
    A hub server fans an event out by using the send endpoint described
    above on all participating servers in the room.  A server is
    considered "participating" if it has at least one user in the joined
-   participation state, described by Section 6.
+   participation state, described by Section 7.
 
    Additional servers MAY have the event sent to them if required by the
    steps leading up to fanout.
 
-7.3.2.  Check Invite Event
+8.3.2.  Check Invite Event
 
       *TODO*: Consider reducing this down to m.room.check_invite or
       something, to reuse /send.
@@ -1426,7 +1546,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    with the invitee.
 
    If the server does not recognize the event format of the InfoEvent
-   (Section 5.4.1) event, or does not understand the policy/encryption
+   (Section 6.4.1) event, or does not understand the policy/encryption
    configuration contained within, it MUST reject the request.
 
    The request MAY be rejected with a 400 HTTP status code.  If
@@ -1458,7 +1578,7 @@ status code, not the response body.
    expected that the original sender will attempt to re-send the invite
    once the server is reachable again.
 
-8.  MLS Application State Synchronization
+9.  MLS Application State Synchronization
 
    *TODO:* This section should be moved to its own document in the MLS
    working group.
@@ -1543,7 +1663,7 @@ status code, not the response body.
      ApplicationState applicationStates<V>;
    } ApplicationStatesExtension;
 
-                Figure 9: The `application_state` extension
+                Figure 10: The `application_state` extension
 
    struct {
      uint32 index;
@@ -1571,7 +1691,7 @@ status code, not the response body.
      };
    } AppSync;
 
-                    Figure 10: The AppSync proposal type
+                    Figure 11: The AppSync proposal type
 
    The applicationId determines the structure and interpretation of the
    contents. of an ApplicationState object.  AppSync proposals contain
@@ -1617,7 +1737,7 @@ status code, not the response body.
       *TODO:* IANA registry for application_id; register extension and
       proposal types as safe extensions
 
-9.  Security Considerations
+10.  Security Considerations
 
    The MIMI protocol incorporates several layers of security.
 
@@ -1646,13 +1766,13 @@ status code, not the response body.
    this cost is offset by the simplicity of not having multiple policy
    enforcement points.
 
-10.  IANA Considerations
+11.  IANA Considerations
 
    IANA has created the following registries:
 
    *  MIMI Event Types
 
-10.1.  MIMI Event Types
+11.1.  MIMI Event Types
 
    An event type denotes the nature of a payload contained in an event,
    in the context of the MIMI protocol.  The event type is a string
@@ -1667,9 +1787,9 @@ status code, not the response body.
       *TODO*: Does IANA need any other information for legal event
       types?
 
-11.  References
+12.  References
 
-11.1.  Normative References
+12.1.  Normative References
 
    [I-D.barnes-mimi-arch]
               Barnes, R., "An Architecture for More Instant Messaging
@@ -1698,6 +1818,13 @@ status code, not the response body.
               DOI 10.17487/RFC5246, August 2008,
               <https://www.rfc-editor.org/rfc/rfc5246>.
 
+   [RFC6125]  Saint-Andre, P. and J. Hodges, "Representation and
+              Verification of Domain-Based Application Service Identity
+              within Internet Public Key Infrastructure Using X.509
+              (PKIX) Certificates in the Context of Transport Layer
+              Security (TLS)", RFC 6125, DOI 10.17487/RFC6125, March
+              2011, <https://www.rfc-editor.org/rfc/rfc6125>.
+
    [RFC7231]  Fielding, R., Ed. and J. Reschke, Ed., "Hypertext Transfer
               Protocol (HTTP/1.1): Semantics and Content", RFC 7231,
               DOI 10.17487/RFC7231, June 2014,
@@ -1721,7 +1848,7 @@ status code, not the response body.
               Security (MLS) Protocol", RFC 9420, DOI 10.17487/RFC9420,
               July 2023, <https://www.rfc-editor.org/rfc/rfc9420>.
 
-11.2.  Informative References
+12.2.  Informative References
 
    [I-D.kohbrok-mimi-transport]
               Kohbrok, K. and R. Robert, "MIMI Transport", Work in
@@ -1748,16 +1875,16 @@ Acknowledgments
 
    This document is the consolidation of the following documents:
 
-   *  [I-D.kohbrok-mimi-transport] forms the majority of Section 7.
+   *  [I-D.kohbrok-mimi-transport] forms the majority of Section 8.
 
    *  [I-D.robert-mimi-delivery-service] describes details for
-      Section 6, subsections of Section 7.3 (per transport draft).
+      Section 7, subsections of Section 8.3 (per transport draft).
 
-   *  [I-D.ralston-mimi-signaling] describes Section 5.1, Section 5.4,
-      details of Section 6, and subsections of Section 7.3.
+   *  [I-D.ralston-mimi-signaling] describes Section 6.1, Section 6.4,
+      details of Section 7, and subsections of Section 8.3.
 
    Aspects of [I-D.ralston-mimi-policy] are additionally taken into
-   consideration in this document through subsections of Section 6, but
+   consideration in this document through subsections of Section 7, but
    is largely unincorporated and may require updates to match this
    document's specifics.
 
