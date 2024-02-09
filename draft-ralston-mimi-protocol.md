@@ -715,22 +715,6 @@ ensure malicious clients are not able to easily get access to messages.
 
 # IANA Considerations
 
-IANA has created the following registries:
-
-* MIMI Event Types
-
-## MIMI Event Types
-
-An event type denotes the nature of a payload contained in an event, in the
-context of the MIMI protocol. The event type is a string composed of substrings
-separated by dots.
-
-The first substring is "m", followed by the logical container being affected
-(typically just "room"), then a number of descriptor strings.
-
-Example: `m.room.info`
-
-> **TODO**: Does IANA need any other information for legal event types?
 
 --- back
 
