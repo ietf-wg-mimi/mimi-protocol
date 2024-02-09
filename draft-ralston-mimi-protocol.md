@@ -1519,7 +1519,7 @@ perform which actions in the room.  This policy is enforced by the hub server
 for the room.  The actors for whom the policy is being evaluated authenticate
 their identities to the hub server using the MLS PublicMessage signed object
 format, together with the identity credentials presented in MLS.  This design
-means that the hub is trusted to correctly enforce the room's policy, but this 
+means that the hub is trusted to correctly enforce the room's policy, but this
 cost is offset by the simplicity of not having multiple policy enforcement points.
 
 # IANA Considerations
