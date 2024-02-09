@@ -459,6 +459,107 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 ~~~
 {: #fig-b-leave title="Bob Leaves the Room" }
 
+# Services required at each layer
+
+## Transport layer
+
+MIMI servers communicate using HTTPS.  The HTTP request MUST identify the
+source and target providers for the request, in the following way:
+
+* The target provider is indicated using a Host header {{!RFC9110}}.  If the
+  provider is using a non-standard port, then the port component of the Host
+  header is ignored.
+* The source provider is indicated using a From header {{!RFC9110}}.  The
+  `mailbox` production in the From header MUST use the `addr-spec` variant, and
+  the `local-part` of the address MUST contain the fixed string `mimi`.  Thus,
+  the content of the From header will be `mimi@a.example`, where `a.example` is
+  the domain name of the source provider.
+
+> **NOTE**: The use of the From header field here is not really well-aligned with its
+  intended use.  The WG should consider whether this is correct, or whether a new
+  header field would be better.  Perhaps something like "From-Host" to match Host?
+
+The TLS connection underlying the HTTPS connection MUST be mutually
+authenticated.  The certificates presented in the TLS handshake MUST
+authenticate the source and target provider domains, according to {{!RFC6125}}.
+
+The bodies of HTTP requests and responses are defined by the individual
+endpoints defined in {{application-layer}}.
+
+## End-to-End Security Layer
+
+Every MIMI room has an MLS group associated to it, which provides end-to-end
+security guarantees.  The clients participating in the room manage the MLS-level
+membership by sending Commit messages covering Add and Remove proposals.
+
+Every application message sent within a room is authenticated and confidentiality-protected
+by virtue of being encapsulated in an MLS PrivateMessage object.
+
+MIMI uses the MLS application state synchronization mechanism
+({{mls-application-state-synchronization}}) to ensure that the clients involved
+in a MIMI room agree on the state of the room.  Each MIMI message that changes
+the state of the room is encapsulated in an AppSync proposal and transmitted
+inside an MLS PublicMessage object.
+
+The PublicMessage encapsulation provides sender authentication, including the
+ability for actors outside the group (e.g., servers involved in the room) to
+originate AppSync proposals.  Encoding room state changes in MLS proposals
+ensures that a client will not process a commit that confirms a state change
+before processing the state change itself.
+
+> **TODO**: A little more needs to be said here about how MLS is used.  For
+example: What types of credential are required / allowed?  If servers are going
+to be allowed to introduce room changes, how are their keys provisioned as
+external signers?
+
+## Application Layer
+
+Servers in MIMI provide a few functions that enable messaging applications.
+All servers act as publication points for key material used to add their users
+to rooms. The hub server for a room tracks the state of the room, and controls
+how the room's state evolves, e.g., by ensuring that changes are compliant with
+the room's policy. Non-hub servers facilitate interactions between their clients
+and the hub server.
+
+In this section, we describe the state that servers keep. The following top
+level section describes the HTTP endpoints exposed to enable these functions.
+
+### Server State
+
+Every MIMI server is a publication point for users' key material, via the
+`keyMaterial` endpoint discussed in fetch-key-material [TODO: link].  To support this
+endpoint, the server stores a set of KeyPackages, where each KeyPackage belongs
+to a specific user and device.
+
+The hub server for the room stores the state of the room, comprising:
+
+* The *base policy* of the room, which does not depend on the specific
+  participants in the room.
+* The *participation list*: a list of the users who are participants of the
+  room, and their permissions in the room.
+
+> **TODO**: We need a more full description of the room, room state syntax.
+
+When a client requests key material via the hub, the hub records the
+KeyPackageRef values for the returned KeyPackages, and the identity of the
+provider from which they were received.  This information is then used to route
+Welcome message to the proper provider.
+
+### Participation List Changes
+
+The participation list can be changed by adding or removing users.  These
+changes are described without a specific syntax as a list of adds and removes:
+
+~~~ ascii-art
+Add: ["diana@d.example", "eric@e.example"],
+Remove: ["bob@b.example"],
+~~~
+{: #fig-room-state-change title="Changing the state of the room" }
+
+To put these changes into effect, a client or server encodes them in an AppSync
+proposal, signs the proposal as a PublicMessage, and submits them to the
+`update` endpoint on the hub.
+
 # Framing
 
 MIMI protocol messages are sent described using the TLS presentation language
