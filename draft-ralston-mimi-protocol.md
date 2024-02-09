@@ -475,9 +475,9 @@ source and target providers for the request, in the following way:
   the content of the From header will be `mimi@a.example`, where `a.example` is
   the domain name of the source provider.
   
-[[ NOTE: The use of the From header field here is not really well-aligned with its
-intended use.  The WG should consider whether this is correct, or whether a new
-header field would be better.  Perhaps something like "From-Host" to match Host? ]]
+> **NOTE**: The use of the From header field here is not really well-aligned with its
+  intended use.  The WG should consider whether this is correct, or whether a new
+  header field would be better.  Perhaps something like "From-Host" to match Host?
 
 The TLS connection underlying the HTTPS connection MUST be mutually
 authenticated.  The certificates presented in the TLS handshake MUST
