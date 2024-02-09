@@ -459,6 +459,357 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 ~~~
 {: #fig-b-leave title="Bob Leaves the Room" }
 
+# MIMI Endpoints and Framing
+
+This section describes the specific endpoints necessary to provide the
+functionality in the example flow. The framing for each endpoint includes a
+protocol so that different variations of the end-to-end encryption can be used.
+
+The syntax of the MIMI protocol messages are described using the TLS
+presentation language format ({{Section 3 of RFC8446}}).
+
+~~~ tls
+enum {
+    reserved(0),
+    mls10(1),
+    (255)
+} Protocol;
+~~~
+
+## Directory
+
+Like the ACME protocol {{?RFC8555}}, the MIMI protocol uses a directory document
+to convey the HTTPS URLs used to reach certain endpoints (as opposed to hard
+coding the endpoints).
+
+The directory URL is discovered using the `mimi-protocol-directory` well-known
+URI. The response is a JSON document with URIs for each type of endpoint.
+
+~~~
+GET /.well-known/mimi-protocol-directory
+~~~
+
+~~~
+{
+  "keyMaterial":
+     "https://mimi.example.com/v1/keyMaterial/{targetUser}",
+  "update": "https://mimi.example.com/v1/update{roomId}",
+  "notify": "https://mimi.example.com/v1/notify/{roomId}",
+  "submitMessage":
+     "https://mimi.example.com/v1/submitMessage/{roomId}"
+}
+~~~
+
+## Fetch Key Material
+
+This action attempts to claim initial keying material for all the clients
+of a single user at a specific provider. The keying material may not be
+reused unless identified as "last resort" keying material. It uses the
+HTTP POST method.
+
+~~~
+POST /keyMaterial/{targetUser}
+~~~
+
+The target user's URI is listed in the request path. KeyPackages
+requested using this primitive MUST be sent via the hub provider of whatever
+room they will be used in. (If this is not the case, the hub provider will be
+unable to forward a Welcome message to the target provider).
+
+The path includes the target user. The request body includes the protocol
+(currently just MLS 1.0), and the requesting user. The request SHOULD include
+the room ID for which the KeyPackage is intended, as the target may have only
+granted consent for a specific room.
+
+For MLS, the request includes a non-empty list of acceptable MLS ciphersuites,
+and an MLS `RequiredCapabilities` object (which contains credential types,
+non-default proposal types, and extensions) required by the requesting provider
+(these lists can be an empty). The `lastResortAllowed` field SHOULD be false.
+
+The request body has the following form.
+
+~~~ tls
+struct {
+    opaque uri<V>;
+} IdentifierUri;
+
+struct {
+    Protocol protocol;
+    IdentifierUri requestingUser;
+    IdentifierUri targetUser;
+    IdentifierUri roomId;
+    select (protocol) {
+        case mls10:
+            CipherSuite acceptableCiphersuites<V>;
+            RequiredCapabilities requiredCapabilities;
+            bool lastResortAllowed;
+    };
+} KeyMaterialRequest;
+~~~
+
+The response contains a user status code that indicates keying material was
+returned for all the user's clients (`success`), that keying material was
+returned for some of their clients (`partialSuccess`), or a specific user code
+indicating failure. If the user code is success or partialSuccess, each client
+is enumerated in the response. Then for each client with a *client* success
+code, the structure includes initial keying material (a KeyPackage for MLS 1.0).
+If the client's code is `nothingCompatible`, the client's capabilities are
+optionally included (The client's capabilities could be omitted for privacy
+reasons.)
+
+If the *user* code is `noCompatibleMaterial`, the provider MAY populate the
+`clients` list. For any other user code, the provider MUST NOT populate the
+`clients` list.
+
+Keying material provided from one response MUST NOT be provided in any other
+response unless the `lastResortAllowed` field was set in the requests.
+The target provider MUST NOT provide expired keying material (ex: an MLS
+KeyPackage containing a LeafNode with a `notAfter` time past the current date
+and time).
+
+~~~ tls
+enum {
+    success(0);
+    partialSuccess(1);
+    incompatibleProtocol(2);
+    noCompatibleMaterial(3);
+    userUnknown(4);
+    noConsent(5);
+    noConsentForThisRoom(6);
+    userDeleted(7);
+    (255)
+} KeyMaterialUserCode;
+
+enum {
+    success(0);
+    keyMaterialExhausted(1);
+    onlyLastResort(2);
+    nothingCompatible(3);
+    (255)
+} KeyMaterialClientCode;
+
+
+struct {
+    KeyMaterialClientCode clientStatus;
+    IdentifierUri clientUri;
+    select (protocol) {
+        case mls10:
+            select (clientStatus) {
+                case success:
+                    KeyPackage keyPackage;
+                case nothingCompatible:
+                    optional<Capabilities> clientCapabilities;
+            };
+    };
+} ClientKeyMaterial;
+
+struct {
+    Protocol protocol;
+    KeyMaterialUserCode userStatus;
+    IdentifierUri userUri;
+    ClientKeyMaterial clients<V>;
+} KeyMaterialResponse;
+~~~
+
+At minimum, as each MLS KeyPackage is returned to a requesting provider (on
+behalf of a requesting IM client), the target provider needs to associate its
+`KeyPackageRef` with the target client and the hub provider needs to associate
+its `KeyPackageRef` with the target provider. This ensures that Welcome messages
+can be correctly routed to the target provider and client. These associations
+can be deleted after a Welcome message is forwarded or after the KeyPackage
+`leaf_node.lifetime.not_after` time has passed.
+
+
+## Update Room State
+
+Adds, removes, and policy changes to the room are all forms of updating the
+room state. They are accomplished using the update transaction which is used to
+update the room base policy, participation list, or its underlying MLS group.
+It uses the HTTP POST method.
+
+~~~
+POST /update/{roomId}
+~~~
+
+In MLS 1.0, any change to the room base policy document or to the participant
+list is always communicated via an `AppSync` proposal type with the appropriate
+`applicationId`. The participant list change needed to add a user MUST
+happen either before or simultaneously with the corresponding MLS operation.
+
+Removing an active user from a participant list or banning an active participant
+SHOULD happen simultaneously with any MLS changes made to the commit removing
+the participant.
+
+A hub provider which observes that an active user has been removed or banned,
+but still has clients MUST prevent any of those clients from sending or
+receiving any additional application messages; MUST prevent any of those clients
+from sending Commit messages; and MUST prevent it from sending any proposals
+except for `Remove` and `SelfRemove` proposals.
+
+The update request body is described below:
+
+~~~ tls
+enum {
+  reserved(0),
+  full(1),
+  compressed(2),
+  delta(3),
+  patch(4),
+  byReference(5)
+  (255)
+} RatchetTreeRepresentation;
+
+struct {
+  RatchetTreeRepresentation representation;
+  select (representation) {
+    case full:
+      Node ratchet_tree<V>;
+  };
+} RatchetTreeOption;
+
+struct {
+  select (room.protocol) {
+    case mls10:
+      PublicMessage proposalOrCommit;
+      select (proposalOrCommit.content.content_type) {
+        case commit:
+          optional<Welcome> welcome;
+          GroupInfo groupInfo;   /* without embedded ratchet_tree */
+          RatchetTreeOption ratchetTreeOption;
+        case proposal:
+          PublicMessage moreProposals<V>; /* a list of additional proposals */
+      };
+  };
+} UpdateRequest;
+~~~
+
+In the first use case described in the Protocol Overview, Alice creates a Commit
+containing an AppSync proposal adding `bob@b.example`, and Add proposals for all
+Bob's MLS clients.  Alice includes the Welcome message which will be sent for
+Bob, a GroupInfo object for the hub provider, and complete `ratchet_tree`
+extension.
+
+The response body is described below:
+
+~~~ tls
+enum {
+  success(0),
+  wrongEpoch(1),
+  notAllowed(2),
+  hubUnresponsive(3),
+  invalidProposal(4),
+  (255)
+} UpdateResponseCode;
+
+struct {
+    UpdateResponseCode responseCode;
+    string errorDescription;
+} UpdateRoomResponse
+~~~
+
+## Submit a Message
+
+End-to-end encrypted (application) message are submitted to the hub for
+authorization and eventual fanout using an HTTP POST request.
+
+~~~
+POST /submitMessage/{roomId}
+~~~
+
+The request body is as follows:
+
+~~~ tls
+struct {
+  Protocol protocol;
+  select(protocol) {
+    case mls10:
+      /* PrivateMessage containing an application message */
+      MLSMessage appMessage;
+  };
+} SubmitMessageRequest;
+~~~
+
+If the protocol is MLS 1.0, the request body is an MLSMessage with a WireFormat
+of PrivateMessage (an application message).
+
+The response merely indicates if the message was accepted by the hub provider.
+
+~~~ tls
+enum {
+  accepted(0),
+  nonMember(1),
+  notAuthorized(2),
+  epochTooOld(3),
+  (255)
+} SubmitResponseCode;
+
+struct {
+  Protocol protocol;
+  select(protocol) {
+    case mls10:
+      SubmitResponseCode status_code;
+  };
+} SubmitMessageResponse;
+~~~
+
+> **ISSUE:** Do we want to offer a distinction between regular application
+messages and ephemeral applications messages (for example "is typing"
+notifications), which do not need to be queued at the target provider.
+
+## Fanout Messages and Room Events
+
+If the hub provider accepts an application or handshake message (proposal or
+commit) message, it forwards that message to all other providers with active
+participants in the room and all local clients which are active members.
+This is described as fanning the message out. One can think of fanning a
+message out as presenting an ordered list of MLS-protected events to the next
+"hop" toward the receiving client.
+
+An MLS Welcome message is sent to the providers and local users associated with
+the `KeyPackageRef` values in the `secrets` array of the Welcome. In the case
+of a Welcome message, a `RatchetTreeOption` is also included in the
+FanoutMessage.
+
+The hub provider also fans out any messages which originate from itself (ex: MLS
+External Proposals).
+
+The hub can include multiple concatenated `FanoutMessage` objects relevant to
+the same room. This endpoint uses the HTTP POST method.
+
+~~~
+POST /notify/{roomId}
+~~~
+
+~~~ tls
+struct {
+  uint64 timestamp;
+  select (protocol) {
+    case mls10:
+      /* A PrivateMessage containing an application message,
+         a PublicMessage containing a proposal or commit,
+         or a Welcome message.                               */
+      MLSMessage message;
+      /* the hub acceptance time (in milliseconds from the UNIX epoch) */
+      uint64 timestamp;
+      select (message.wire_format) {
+        case welcome:
+          RatchetTreeOption ratchetTreeOption;
+      };
+  };
+} FanoutMessage;
+~~~
+
+> **NOTE:** Correctly fanning out Welcome messages relies on the hub and target
+providers storing the `KeyPackageRef` of claimed KeyPackages.
+
+To be clear, clients that are being removed SHOULD receive the corresponding
+Commit message, so they can recognize that they have been removed and clean up
+their internal state.
+
+The response to a FanoutMessage contains no body. The HTTP response code
+indicates if the messages in the request were accepted (201 response code), or
+if there was an error.
+
 
 ## Room state
 
