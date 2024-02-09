@@ -5,11 +5,11 @@
 More Instant Messaging Interoperability                       T. Ralston
 Internet-Draft                          The Matrix.org Foundation C.I.C.
 Intended status: Standards Track                              K. Kohbrok
-Expires: 9 August 2024                                         R. Robert
+Expires: 12 August 2024                                        R. Robert
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                         6 February 2024
+                                                         9 February 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 August 2024.
+   This Internet-Draft will expire on 12 August 2024.
 
 Copyright Notice
 
@@ -1641,7 +1641,10 @@ status code, not the response body.
    enforced by the hub server for the room.  The actors for whom the
    policy is being evaluated authenticate their identities to the hub
    server using the MLS PublicMessage signed object format, together
-   with the identity credentials presented in MLS.
+   with the identity credentials presented in MLS.  This design means
+   that the hub is trusted to correctly enforce the room's policy, but
+   this cost is offset by the simplicity of not having multiple policy
+   enforcement points.
 
 10.  IANA Considerations
 
