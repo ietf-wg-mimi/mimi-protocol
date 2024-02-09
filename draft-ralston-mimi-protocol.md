@@ -191,7 +191,7 @@ in the MIMI protocol.  The scenario involves the following actors:
 * Clients `ClientA1`, `ClientA2`, `ClientB1`, etc. belonging to these users
 * A room `clubhouse@a.example` where the three users interact
 
-As noted in {{!I-D.mimi-arch}}, the MIMI protocol only defines interactions
+As noted in {{!I-D.barnes-mimi-arch}}, the MIMI protocol only defines interactions
 between service providers' servers.  Interactions between clients and servers
 within a service provider domain are shown here for completeness, but
 surrounded by `[[ double brackets ]]`.
