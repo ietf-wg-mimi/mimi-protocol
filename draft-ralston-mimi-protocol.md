@@ -858,39 +858,6 @@ encryption (although the latter is only available to clients). Since the group
 state also includes a copy of the room state at the time of the most recent
 commit, it is also covered by the agreement.
 
-### Cryptographically anchoring room state {#anchoring}
-
-To allow all parties involved to agree on the state of the room in addition to
-the state of the associated group, the room state is anchored in the MLS group
-via a GroupContext extension.
-
-~~~ tls
-struct {
-   opaque user_id;
-   opaque role;
-   ParticipationState state;
-} ParticipantData
-
-struct {
-  opaque room_id;
-  ParticipantData participants<V>;
-  // TODO: Add any remaining room data
-} RoomState;
-~~~
-
-As part of the MIMI DS protocol, clients create commits to update the group
-state, which are then included in MIMI DS specific events. The time between two
-commits denotes an epoch.
-
-Whenever a client creates a commit, it MUST include all valid proposals accepted
-by the Hub during the current epoch. This includes both proposals that carry
-room-state changes, as well as proposals sent as part of MIMI DS events.
-
-Note that the validity of a proposal depend on the current room state, which may
-change during an epoch based on room-state changing events. The changes of these
-events are applied to the room state even if the commits that carry the event
-information have not yet been committed.
-
 ### Authenticating proposals
 
 The MLS specification {{!RFC9420}} requires that MLS proposals from the Hub and
