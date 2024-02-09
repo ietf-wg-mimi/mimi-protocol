@@ -474,7 +474,7 @@ source and target providers for the request, in the following way:
   the `local-part` of the address MUST contain the fixed string `mimi`.  Thus,
   the content of the From header will be `mimi@a.example`, where `a.example` is
   the domain name of the source provider.
-  
+
 > **NOTE**: The use of the From header field here is not really well-aligned with its
   intended use.  The WG should consider whether this is correct, or whether a new
   header field would be better.  Perhaps something like "From-Host" to match Host?
