@@ -725,18 +725,15 @@ ensure malicious clients are not able to easily get access to messages.
 
 This document is the consolidation of the following documents:
 
-* {{?I-D.kohbrok-mimi-transport}} forms the majority of {{transport}}.
+* {{?I-D.kohbrok-mimi-transport}},
 
-* {{?I-D.robert-mimi-delivery-service}} describes details for {{membership}},
-  subsections of {{rest-api}} (per transport draft).
+* {{?I-D.robert-mimi-delivery-service}},
 
-* {{?I-D.ralston-mimi-signaling}} describes {{event-schema}},
-  {{room-creation}}, details of {{membership}}, and subsections of {{rest-api}}.
+* {{?I-D.ralston-mimi-signaling}},
 
-Aspects of {{?I-D.ralston-mimi-policy}} are additionally taken into
-consideration in this document through subsections of {{membership}}, but is
-largely unincorporated and may require updates to match this document's
-specifics.
+* {{?I-D.ralston-mimi-policy}},
+
+* {{?I-D.mahy-mimi-group-chat}},
 
 {{!I-D.barnes-mimi-arch}} was additionally used throughout the writing
 of this document.
