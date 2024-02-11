@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-08T00:03:05.190967+00:00",
+  "timestamp": "2024-02-11T00:03:49.397380+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -2357,7 +2357,7 @@
       "id": "PR_kwDOKZ8QO85es6P4",
       "title": "Remove extraneous m. in front of room events",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/20",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohan-wire",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -2366,14 +2366,14 @@
       ],
       "body": "globally replace `m.room.` with `room.` in event names.",
       "createdAt": "2023-11-06T15:09:57Z",
-      "updatedAt": "2024-02-07T12:12:14Z",
+      "updatedAt": "2024-02-09T22:08:21Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "cf29470de209e35fbdb7db010a572fe59adaec54",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "rohan/event-namespace",
       "headRefOid": "b2d8061fba74b709538b2d0ebd8e36a7d41fb1c5",
-      "closedAt": null,
+      "closedAt": "2024-02-09T22:08:21Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -2391,6 +2391,13 @@
           "body": "As an outside viewer, I assumed those names to be placeholders (obviously based on Matrix `m.` prefix). You don't want to send those names around in the binary protocol on the wire in the end and should use an enum instead, along the lines of\r\n\r\n```\r\nenum EventType {\r\n  RoomInfo = 1;\r\n  RoomUser = 2;\r\n  ...\r\n  Vendor(string) = 255;\r\n}\r\n```",
           "createdAt": "2024-02-07T12:12:12Z",
           "updatedAt": "2024-02-07T12:12:12Z"
+        },
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing as this is superfluous in PR #50 ",
+          "createdAt": "2024-02-09T22:08:21Z",
+          "updatedAt": "2024-02-09T22:08:21Z"
         }
       ],
       "reviews": [
@@ -3563,24 +3570,26 @@
       "id": "PR_kwDOKZ8QO85mMnXU",
       "title": "Add sections introducing layering",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/47",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohan-wire",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-02-06T22:36:43Z",
-      "updatedAt": "2024-02-07T00:02:04Z",
+      "updatedAt": "2024-02-09T22:28:04Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "0186460b95b5977bd0b850948a4010b93e62cdd6",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "rohan/layer-sections",
-      "headRefOid": "68e93568b6f8cd843f6cad0b212e426e602aea37",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "c0d8f83455effb0c7a3f43fe2e4c574cf1c315c4",
+      "closedAt": "2024-02-09T22:28:04Z",
+      "mergedAt": "2024-02-09T22:28:04Z",
+      "mergedBy": "rohan-wire",
+      "mergeCommit": {
+        "oid": "36ad4767944db62e4b270460f06f2e6dfd98adef"
+      },
       "comments": [],
       "reviews": [
         {
@@ -3680,6 +3689,79 @@
               "updatedAt": "2024-02-07T00:01:25Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vpzie",
+          "commit": {
+            "abbreviatedOid": "77cd1b7"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-09T21:33:37Z",
+          "updatedAt": "2024-02-09T21:33:37Z",
+          "comments": [
+            {
+              "originalPosition": 68,
+              "body": "```suggestion\r\n`keyMaterial` endpoint discussed in fetch-key-material [TODO: link].  To support this\r\n```",
+              "createdAt": "2024-02-09T21:33:37Z",
+              "updatedAt": "2024-02-09T21:33:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vpzvV",
+          "commit": {
+            "abbreviatedOid": "77cd1b7"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-09T21:34:22Z",
+          "updatedAt": "2024-02-09T21:34:23Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "I agree that `From` is an awkward fit.  But if we agree that *some* HTTP header is OK, then we can leave this as a stub and let the WG opine on how to make it better.",
+              "createdAt": "2024-02-09T21:34:22Z",
+              "updatedAt": "2024-02-09T21:34:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vp0ce",
+          "commit": {
+            "abbreviatedOid": "68e9356"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-09T21:36:14Z",
+          "updatedAt": "2024-02-09T21:36:14Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "```suggestion\r\n* The source provider is indicated using a From header {{!RFC9110}}.  The\r\n  `mailbox` production in the From header MUST use the `addr-spec` variant, and\r\n  the `local-part` of the address MUST contain the fixed string `mimi`.  Thus,\r\n  the content of the From header will be `mimi@a.example`, where `a.example` is\r\n  the domain name of the source provider.\r\n  \r\n[[ NOTE: The use of the From header field here is not really well-aligned with its\r\nintended use.  The WG should consider whether this is correct, or whether a new\r\nheader field would be better.  Perhaps something like \"From-Host\" to match Host? ]]\r\n```",
+              "createdAt": "2024-02-09T21:36:14Z",
+              "updatedAt": "2024-02-09T21:36:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vp0hY",
+          "commit": {
+            "abbreviatedOid": "68e9356"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-02-09T21:36:32Z",
+          "updatedAt": "2024-02-09T21:36:32Z",
+          "comments": []
         }
       ]
     },
@@ -3688,21 +3770,21 @@
       "id": "PR_kwDOKZ8QO85mM8pi",
       "title": "Incorporate the basic mechanism described in the example flows.",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/48",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohan-wire",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-02-06T23:50:23Z",
-      "updatedAt": "2024-02-07T21:11:29Z",
+      "updatedAt": "2024-02-09T19:33:15Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "0186460b95b5977bd0b850948a4010b93e62cdd6",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "rohan/basic-mechanism",
       "headRefOid": "db2fbf28327aa020b69dcf3ad063f7e3657561d7",
-      "closedAt": null,
+      "closedAt": "2024-02-09T19:30:17Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -3713,6 +3795,20 @@
           "body": "> This is a partial review based on the diff presented. It looks like something went very sideways with the diff though - would you be able to restructure the changes to make the diff parsable please?\r\n\r\nIf we had support for stacked diffs this would be easier. I suppose I could redo a new equivalent PR with individual commits: one commit deleting, one commit adding, then one or more commits modifying things that reference the new content. I find it hard to get a clean diff from git for large markdown changes. Git way too aggressively looks for one common word dozens of lines in the middle of a replacement.\r\n\r\nIf you have any concrete suggestions @turt2live @bifurcation please let me know.\r\n",
           "createdAt": "2024-02-07T20:00:16Z",
           "updatedAt": "2024-02-07T20:00:16Z"
+        },
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It appears as though Git is getting confused with which text is \"first\", which commonly happens when new text is added above modified text. It may help to put the net-new sections below the modified/deleted sections of the existing text.",
+          "createdAt": "2024-02-08T19:48:17Z",
+          "updatedAt": "2024-02-08T19:48:17Z"
+        },
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> It appears as though Git is getting confused with which text is \"first\", which commonly happens when new text is added above modified text. It may help to put the net-new sections below the modified/deleted sections of the existing text.\r\n\r\nReplaced with PR #50 . I'll close this one in favor of the other.",
+          "createdAt": "2024-02-09T19:30:17Z",
+          "updatedAt": "2024-02-09T19:30:17Z"
         }
       ],
       "reviews": [
@@ -3863,6 +3959,206 @@
               "updatedAt": "2024-02-07T20:21:37Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vhtrX",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-08T19:34:57Z",
+          "updatedAt": "2024-02-08T19:34:57Z",
+          "comments": [
+            {
+              "originalPosition": 270,
+              "body": "There are certainly good reasons to use a URI, but I don't feel we've sufficiently discussed the concept to consider it having consensus yet. In the interest of progress, we should remove the mention here and talk about it as a working group post-adoption.",
+              "createdAt": "2024-02-08T19:34:57Z",
+              "updatedAt": "2024-02-08T19:34:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vhuXF",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-08T19:36:11Z",
+          "updatedAt": "2024-02-08T19:36:11Z",
+          "comments": [
+            {
+              "originalPosition": 597,
+              "body": "why can't we use HTTP 503 then? I'd be a bit surprised if folks configured their reverse proxies to return MIMI-specific error codes in this case.",
+              "createdAt": "2024-02-08T19:36:11Z",
+              "updatedAt": "2024-02-08T19:36:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vhyqA",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-08T19:45:26Z",
+          "updatedAt": "2024-02-08T19:45:27Z",
+          "comments": [
+            {
+              "originalPosition": 1125,
+              "body": "This section sounds normative too - should it be in both?\r\n\r\nThere's certainly wording adjustments to be made to account for rate limiting, of course, though I don't think we should be allowing the hub to declare something is spam to get out of a policy obligation (for example). For the AppSync example, this sounds like a problem for sequencing: if the commit comes through before the proposal exists (even if the server knows it's generating that proposal), then it's a legitimate commit that *must* be accepted. The next commit will be required to incorporate the proposal. If the proposal is appended first though, the commit will be required to incorporate it at that time. This is all dependent on whether the protocol document actually requires the hub server's external proposals to be incorporated though - this is not something that should be an implementation detail.",
+              "createdAt": "2024-02-08T19:45:27Z",
+              "updatedAt": "2024-02-08T19:45:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vhzHg",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-08T19:46:40Z",
+          "updatedAt": "2024-02-08T19:46:41Z",
+          "comments": [
+            {
+              "originalPosition": 1152,
+              "body": "The side-by-side diff unfortunately doesn't really help either. I usually approach these sorts of diffs with multiple passes, but I'm finding it incredibly hard to do those passes over this PR, sorry.",
+              "createdAt": "2024-02-08T19:46:41Z",
+              "updatedAt": "2024-02-08T19:46:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85viTQT",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-08T21:10:39Z",
+          "updatedAt": "2024-02-08T21:10:39Z",
+          "comments": [
+            {
+              "originalPosition": 270,
+              "body": "> There are certainly good reasons to use a URI, but I don't feel we've sufficiently discussed the concept to consider it having consensus yet. In the interest of progress, we should remove the mention here and talk about it as a working group post-adoption.\r\n\r\nWe had strong guidance from the to make our proposal concrete. Nobody has proposed an alternative identifier as good as a URI or any reason not to use one, so in the interest of concreteness, I'd like to leave it a URI.",
+              "createdAt": "2024-02-08T21:10:39Z",
+              "updatedAt": "2024-02-08T21:10:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85viTao",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-08T21:11:05Z",
+          "updatedAt": "2024-02-08T21:11:05Z",
+          "comments": [
+            {
+              "originalPosition": 597,
+              "body": "> why can't we use HTTP 503 then? I'd be a bit surprised if folks configured their reverse proxies to return MIMI-specific error codes in this case.\r\n\r\nSure.",
+              "createdAt": "2024-02-08T21:11:05Z",
+              "updatedAt": "2024-02-08T21:11:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85viVx8",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-08T21:17:41Z",
+          "updatedAt": "2024-02-08T21:17:42Z",
+          "comments": [
+            {
+              "originalPosition": 1125,
+              "body": "> This section sounds normative too - should it be in both?\r\n> \r\n> There's certainly wording adjustments to be made to account for rate limiting, of course, though I don't think we should be allowing the hub to declare something is spam to get out of a policy obligation (for example). For the AppSync example, this sounds like a problem for sequencing: if the commit comes through before the proposal exists (even if the server knows it's generating that proposal), then it's a legitimate commit that _must_ be accepted. The next commit will be required to incorporate the proposal. If the proposal is appended first though, the commit will be required to incorporate it at that time. This is all dependent on whether the protocol document actually requires the hub server's external proposals to be incorporated though - this is not something that should be an implementation detail.\r\n\r\nThe hub decides what arrives first. From the hub's perspective, its external proposal was sent and fanned out and on the wire. It receives the commit later, so that commit according to the ordering policy of mimi is invalid because it does not include all valid pending proposals. The same thing could happen if Alice sends a commit to add Carol and Bob sends a proposal to remove himself. If Bob's proposal arrives first *from the hub's perspective*, Alice's Commit is invalid.\r\n\r\nIf the hub sends an otherwise valid proposal from a valid `external_sender`, the proposal needs to be incorporated. The policy remedy if a group/room doesn't want that is to configure the group without an `external_sender` for the hub and/or only join rooms without an `external_sender` configured in the corresponding room.",
+              "createdAt": "2024-02-08T21:17:41Z",
+              "updatedAt": "2024-02-08T21:17:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vi9gp",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-08T23:29:21Z",
+          "updatedAt": "2024-02-08T23:29:21Z",
+          "comments": [
+            {
+              "originalPosition": 270,
+              "body": "There hasn't been a proposal because, to my knowledge, it's not been considered by people yet. If we have a strong proposal to use URIs, that can remain as a PR and discussed at IETF 119, but not part of the document itself for now.",
+              "createdAt": "2024-02-08T23:29:21Z",
+              "updatedAt": "2024-02-08T23:29:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vi9yq",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-08T23:30:44Z",
+          "updatedAt": "2024-02-08T23:30:44Z",
+          "comments": [
+            {
+              "originalPosition": 1125,
+              "body": "I'm failing to see how that contradicts my original suggested wording, sorry.",
+              "createdAt": "2024-02-08T23:30:44Z",
+              "updatedAt": "2024-02-08T23:30:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vpNWN",
+          "commit": {
+            "abbreviatedOid": "17f9300"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-09T19:33:14Z",
+          "updatedAt": "2024-02-09T19:33:15Z",
+          "comments": [
+            {
+              "originalPosition": 597,
+              "body": "fixed in a commit in PR #50 . resolving",
+              "createdAt": "2024-02-09T19:33:15Z",
+              "updatedAt": "2024-02-09T19:33:15Z"
+            }
+          ]
         }
       ]
     },
@@ -3871,24 +4167,26 @@
       "id": "PR_kwDOKZ8QO85mM9Yk",
       "title": "Longer security considerations section",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/49",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohan-wire",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-02-06T23:55:00Z",
-      "updatedAt": "2024-02-07T21:12:20Z",
+      "updatedAt": "2024-02-09T22:18:48Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "0186460b95b5977bd0b850948a4010b93e62cdd6",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "rohan/security",
-      "headRefOid": "f52763d2852bcbc9536c5ebd2c8f5ae936cacd0d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "f14d5b14d287e7da36376b02f1ddac933bafdf2f",
+      "closedAt": "2024-02-09T22:18:48Z",
+      "mergedAt": "2024-02-09T22:18:48Z",
+      "mergedBy": "rohan-wire",
+      "mergeCommit": {
+        "oid": "5a89e4eefd3af0e16fdce155d4944553d373425d"
+      },
       "comments": [],
       "reviews": [
         {
@@ -3930,8 +4228,67 @@
               "updatedAt": "2024-02-07T21:12:20Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vpyqL",
+          "commit": {
+            "abbreviatedOid": "f52763d"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-09T21:30:13Z",
+          "updatedAt": "2024-02-09T21:30:13Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "```suggestion\r\nEach room has an authorization policy that dictates which protocol actors can\r\nperform which actions in the room.  This policy is enforced by the hub server\r\nfor the room.  The actors for whom the policy is being evaluated authenticate\r\ntheir identities to the hub server using the MLS PublicMessage signed object\r\nformat, together with the identity credentials presented in MLS.  This design\r\nmeans that the hub is trusted to correctly enforce the room's policy, but this \r\ncost is offset by the simplicity of not having multiple policy enforcement points.\r\n```",
+              "createdAt": "2024-02-09T21:30:13Z",
+              "updatedAt": "2024-02-09T21:30:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85vpzHM",
+          "commit": {
+            "abbreviatedOid": "f52763d"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-02-09T21:31:57Z",
+          "updatedAt": "2024-02-09T21:31:57Z",
+          "comments": []
         }
       ]
+    },
+    {
+      "number": 50,
+      "id": "PR_kwDOKZ8QO85mg0xP",
+      "title": "Incorporate the basic mechanism described in the example flows (take 2)",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/50",
+      "state": "OPEN",
+      "author": "rohan-wire",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "As requested by Travis, this is a replacement for PR #48 which has cleaner diffs (via individual commits).",
+      "createdAt": "2024-02-09T19:24:51Z",
+      "updatedAt": "2024-02-09T22:40:01Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "36ad4767944db62e4b270460f06f2e6dfd98adef",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "rohan/basic-mechanism2",
+      "headRefOid": "467dea73a5d451d67f3420453ca5250818a0b7ca",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
