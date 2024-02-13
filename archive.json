@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-11T00:03:49.397380+00:00",
+  "timestamp": "2024-02-13T00:03:35.386996+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -4276,7 +4276,7 @@
       "labels": [],
       "body": "As requested by Travis, this is a replacement for PR #48 which has cleaner diffs (via individual commits).",
       "createdAt": "2024-02-09T19:24:51Z",
-      "updatedAt": "2024-02-09T22:40:01Z",
+      "updatedAt": "2024-02-12T20:33:04Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "36ad4767944db62e4b270460f06f2e6dfd98adef",
@@ -4288,7 +4288,190 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85v0ODV",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "This is a first pass of the PR, trying to cover as much of the content as possible. I'll aim to do further passes over the next few days and week.\r\n\r\nSee comments contained within for details. There's a mix of editorial comments and functional changes.",
+          "createdAt": "2024-02-12T18:54:11Z",
+          "updatedAt": "2024-02-12T20:33:04Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "the protocol version also allows us to change the endpoints in future, making it more of a MIMI version than an encryption (MLS) version, imo. We should still be ensuring that the encryption itself is supported by all involved servers, but I think we also need a way to ratchet the MIMI stuff independent of the encryption.\r\n\r\nI think this means `Protocol` below either becomes  2 enums or has `mimi10_mls10` (for example) to denote MIMI 1.0 using MLS 1.0. Either is fine, imo.",
+              "createdAt": "2024-02-12T18:54:11Z",
+              "updatedAt": "2024-02-12T20:33:04Z"
+            },
+            {
+              "originalPosition": 24,
+              "body": "```suggestion\r\nThe syntax of the MIMI protocol messages are described using the TLS\r\npresentation language format ({{Section 3 of RFC8446}}).\r\n\r\n> **Note**: The encoding used is extremely notional.\r\n```\r\n\r\n... or something to remind the reader that we're not actually seriously considering TLS-PL (given it has near-zero library support, but we don't want to get caught up on 'which format' debates at this stage).",
+              "createdAt": "2024-02-12T18:56:08Z",
+              "updatedAt": "2024-02-12T20:33:04Z"
+            },
+            {
+              "originalPosition": 236,
+              "body": "```suggestion\r\nThe target user's identifier is listed in the request path. KeyPackages\r\n```",
+              "createdAt": "2024-02-12T18:57:08Z",
+              "updatedAt": "2024-02-12T20:33:04Z"
+            },
+            {
+              "originalPosition": 248,
+              "body": "```suggestion\r\n(see {{mimi-endpoints-and-framing}}), and the requesting user. The request SHOULD include\r\n```\r\n\r\n(or however a section reference is done - sorry, not in front of an editor right now)",
+              "createdAt": "2024-02-12T18:58:09Z",
+              "updatedAt": "2024-02-12T20:33:04Z"
+            },
+            {
+              "originalPosition": 256,
+              "body": "> The `lastResortAllowed` field SHOULD be false.\r\n\r\nExpansion on the reasoning for this would be appreciated. It's obvious for those who are familiar with what last resort keys do, but that may not be every reader of the document.",
+              "createdAt": "2024-02-12T18:59:40Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 270,
+              "body": "re-raising thread on URIs here. I really think we should keep this as `identifier` for now, and maybe leave a note that it is most likely best represented by a URI in the doc. \r\n\r\n```suggestion\r\n    opaque identifer<V>;  /* most likely a URI */\r\n} Identifier;\r\n```",
+              "createdAt": "2024-02-12T19:01:22Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 270,
+              "body": "It's also not clear to me why we'd hide this away in a struct. We use it for multiple purposes, but it still only has a single field. Does TLS-PL support type aliasing? ",
+              "createdAt": "2024-02-12T19:02:45Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 370,
+              "body": "we should define the difference between user unknown and deleted, and when a provider is [not] allowed to use that code.",
+              "createdAt": "2024-02-12T19:05:27Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 490,
+              "body": "```suggestion\r\nIn MIMI 1.0, any change to the room base policy document or to the participant\r\n```",
+              "createdAt": "2024-02-12T19:06:40Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 498,
+              "body": "Another `SHOULD` without a why.",
+              "createdAt": "2024-02-12T19:07:51Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 502,
+              "body": "still has clients where? In general or in the MLS group?",
+              "createdAt": "2024-02-12T19:08:36Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 504,
+              "body": "```suggestion\r\nfrom sending Commit messages; and MUST prevent them from sending any proposals\r\n```",
+              "createdAt": "2024-02-12T19:08:54Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 505,
+              "body": "reference needed for `SelfRemove`",
+              "createdAt": "2024-02-12T19:09:13Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 522,
+              "body": "is this some MLS thing? Can we get a cited reference please?",
+              "createdAt": "2024-02-12T19:10:07Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 560,
+              "body": "This paragraph feels out of place. If the intention is to describe the example flow in a bit more detail, there should be code blocks demonstrating what those requests/responses look like.",
+              "createdAt": "2024-02-12T19:11:49Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 629,
+              "body": "```suggestion\r\nEnd-to-end encrypted (application) messages are submitted to the hub for\r\n```",
+              "createdAt": "2024-02-12T19:12:05Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 949,
+              "body": "```suggestion\r\n      SubmitResponseCode statusCode;\r\n```\r\n\r\n(consistency)",
+              "createdAt": "2024-02-12T19:13:00Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 1099,
+              "body": "Should the hub provider wait for a response before sending the next batch?",
+              "createdAt": "2024-02-12T19:16:04Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 972,
+              "body": "Applies to `/notify`, `/submitMessage`, and `/update`: when the sender doesn't see a response, or gets a timeout error, it will retry the request. Should the receiving server respond with an error when it sees duplicate requests?\r\n\r\nIt feels more kind to have the server respond with the same status/object it intended to the first time, regardless of whether that made it over to the sender. The endpoints should get a transaction ID to allow providers to quickly identify duplicate requests (as these may be handled at a reverse proxy rather than application level).",
+              "createdAt": "2024-02-12T19:20:55Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 1124,
+              "body": "re-raising: allowing the hub provider to enact arbitrary rules at a protocol level is unsafe. We need language to say that a hub provider *must* behave in accordance with the policy and protocol at all times.",
+              "createdAt": "2024-02-12T19:22:54Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 1126,
+              "body": "```suggestion\r\npolicy conformance before they are forwarded to any follower servers and local clients.\r\n```",
+              "createdAt": "2024-02-12T19:23:28Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 972,
+              "body": "Does the follower server which sent the original change need to wait until it's fanned back to them, or can they optimize and send the object to their local clients ahead of the hub processing the request? (applies to state changes and application messages)",
+              "createdAt": "2024-02-12T19:24:30Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 1137,
+              "body": "This might need a sequence diagram to back it up.",
+              "createdAt": "2024-02-12T19:25:27Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 1151,
+              "body": "I thought we were pulling the details of that document into here? Is there anything the DS document describes which hasn't already been covered by this PR?",
+              "createdAt": "2024-02-12T19:31:09Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 1258,
+              "body": "`ralston-policy` and `mahy-group-chat` are *not* consolidated into this document. The only portion of `ralston-policy` which was incorporated was the notion of participation state, which seems to have gone missing under this PR - that needs to be reinstated in some capacity.\r\n\r\nI'd suggest reinstating the \"Aspects of ralston-policy...\" paragraph, and either clarify how `mahy-group-chat` has had an impact on this document or remove it. ",
+              "createdAt": "2024-02-12T20:26:32Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 1,
+              "body": "I think we also need an example showing how 2 servers negotiate the encryption being used for a room, and how that applies when a third server is trying to become involved.",
+              "createdAt": "2024-02-12T20:28:20Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 451,
+              "body": "policy changes or policy *configuration*? It shouldn't be possible to change the policy envelope.",
+              "createdAt": "2024-02-12T20:31:55Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            },
+            {
+              "originalPosition": 492,
+              "body": "what is the appropriate `applicationId`?",
+              "createdAt": "2024-02-12T20:32:26Z",
+              "updatedAt": "2024-02-12T20:33:05Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
