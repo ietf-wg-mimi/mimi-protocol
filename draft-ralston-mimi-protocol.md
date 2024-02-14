@@ -545,6 +545,11 @@ KeyPackageRef values for the returned KeyPackages, and the identity of the
 provider from which they were received.  This information is then used to route
 Welcome message to the proper provider.
 
+The returned KeyPackages identify whether the device (and therefore user) is
+capable of participating in the group. If compatible, normal MLS operations are
+used to add the device alongside a participation list change proposal for the
+user (described below).
+
 ### Participation List Changes
 
 The participation list can be changed by adding or removing users.  These
