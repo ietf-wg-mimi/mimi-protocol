@@ -753,10 +753,6 @@ The update request body is described below:
 enum {
   reserved(0),
   full(1),
-  compressed(2),
-  delta(3),
-  patch(4),
-  byReference(5)
   (255)
 } RatchetTreeRepresentation;
 
@@ -774,8 +770,9 @@ struct {
       PublicMessage proposalOrCommit;
       select (proposalOrCommit.content.content_type) {
         case commit:
+          /* Both the Welcome and GroupInfo omit the ratchet_tree */
           optional<Welcome> welcome;
-          GroupInfo groupInfo;   /* without embedded ratchet_tree */
+          GroupInfo groupInfo;
           RatchetTreeOption ratchetTreeOption;
         case proposal:
           PublicMessage moreProposals<V>; /* a list of additional proposals */
