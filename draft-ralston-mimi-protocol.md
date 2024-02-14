@@ -1037,19 +1037,5 @@ ensure malicious clients are not able to easily get access to messages.
 # Acknowledgments
 {:numbered="false"}
 
-> **TODO**: Refactor acknowledgements to match sections of interest.
+> **TODO**:
 
-This document is the consolidation of the following documents:
-
-* {{?I-D.kohbrok-mimi-transport}},
-
-* {{?I-D.robert-mimi-delivery-service}},
-
-* {{?I-D.ralston-mimi-signaling}},
-
-* {{?I-D.ralston-mimi-policy}},
-
-* {{?I-D.mahy-mimi-group-chat}},
-
-{{!I-D.barnes-mimi-arch}} was additionally used throughout the writing
-of this document.
