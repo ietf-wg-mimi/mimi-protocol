@@ -2792,11 +2792,9 @@ applies to events changing the room state.<a href="#section-6.1-4" class="pilcro
         <h3 id="name-cryptographic-room-represen">
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-cryptographic-room-represen" class="section-name selfRef">Cryptographic room representation</a>
         </h3>
-<p id="section-6.2-1">Each room is represented cryptographically by an MLS group and the Hub that
-manages the room uses the MIMI DS protocol specified in
-<span>[<a href="#I-D.robert-mimi-delivery-service" class="cite xref">I-D.robert-mimi-delivery-service</a>]</span> to manage that group.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
-<p id="section-6.2-2">In particular, the MIMI DS protocol manages the list of group members, i.e. the
-list of clients belonging to users currently in the room.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
+<p id="section-6.2-1">Each room is represented cryptographically by an MLS group. The Hub that
+manages the room also manages the list of group members, i.e. the
+list of clients belonging to users currently in the room.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="proposal-commit-paradigm">
@@ -2804,12 +2802,12 @@ list of clients belonging to users currently in the room.<a href="#section-6.2-2
         <h3 id="name-proposal-commit-paradigm">
 <a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-proposal-commit-paradigm" class="section-name selfRef">Proposal-commit paradigm</a>
         </h3>
-<p id="section-6.3-1">The MIMI DS protocol uses MLS, which follows a proposal-commit paradigm. Any
+<p id="section-6.3-1">The MLS protocol follows a proposal-commit paradigm. Any
 party involved in a room (follower server, Hub or clients) can send proposals
 (e.g. to add/remove/update clients of a user or to re-initialize the group with
 different parameters). However, only clients can send commits, which contain all
 valid previously sent proposals and apply them to the MLS group state.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
-<p id="section-6.3-2">The MIMI DS protocol ensures that the Hub, all follower servers and the clients
+<p id="section-6.3-2">The MIMI usage of MLS ensures that the Hub, all follower servers and the clients
 of all active participants agree on the group state, which includes the client
 list and the key material used for message encryption (although the latter is
 only available to clients). Since the group state also includes a copy of the
@@ -2822,7 +2820,7 @@ agreement.<a href="#section-6.3-2" class="pilcrow">¶</a></p>
         <h3 id="name-authenticating-proposals">
 <a href="#section-6.4" class="section-number selfRef">6.4. </a><a href="#name-authenticating-proposals" class="section-name selfRef">Authenticating proposals</a>
         </h3>
-<p id="section-6.4-1">The MLS specification <span>[<a href="#RFC9420" class="cite xref">RFC9420</a>]</span> requires that MLS proposals from the Hub and
+<p id="section-6.4-1">MLS requires that MLS proposals from the Hub and
 from follower servers (external senders in MLS terminology) be authenticated
 using key material contained in the <code>external_senders</code> extension of the MLS
 group. Each MLS group associated with a MIMI room <span class="bcp14">MUST</span> therefore contain an
@@ -3054,10 +3052,6 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <dt id="I-D.barnes-mimi-arch">[I-D.barnes-mimi-arch]</dt>
         <dd>
 <span class="refAuthor">Barnes, R.</span>, <span class="refTitle">"An Architecture for More Instant Messaging Interoperability (MIMI)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-barnes-mimi-arch-02</span>, <time datetime="2023-10-23" class="refDate">23 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-barnes-mimi-arch-02">https://datatracker.ietf.org/doc/html/draft-barnes-mimi-arch-02</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="I-D.robert-mimi-delivery-service">[I-D.robert-mimi-delivery-service]</dt>
-        <dd>
-<span class="refAuthor">Robert, R.</span> and <span class="refAuthor">K. Kohbrok</span>, <span class="refTitle">"MIMI Delivery Service"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-robert-mimi-delivery-service-06</span>, <time datetime="2023-11-06" class="refDate">6 November 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-robert-mimi-delivery-service-06">https://datatracker.ietf.org/doc/html/draft-robert-mimi-delivery-service-06</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
