@@ -935,22 +935,19 @@ applies to events changing the room state.
 
 ## Cryptographic room representation
 
-Each room is represented cryptographically by an MLS group and the Hub that
-manages the room uses the MIMI DS protocol specified in
-{{!I-D.robert-mimi-delivery-service}} to manage that group.
-
-In particular, the MIMI DS protocol manages the list of group members, i.e. the
+Each room is represented cryptographically by an MLS group. The Hub that
+manages the room also manages the list of group members, i.e. the
 list of clients belonging to users currently in the room.
 
 ## Proposal-commit paradigm
 
-The MIMI DS protocol uses MLS, which follows a proposal-commit paradigm. Any
+The MLS protocol follows a proposal-commit paradigm. Any
 party involved in a room (follower server, Hub or clients) can send proposals
 (e.g. to add/remove/update clients of a user or to re-initialize the group with
 different parameters). However, only clients can send commits, which contain all
 valid previously sent proposals and apply them to the MLS group state.
 
-The MIMI DS protocol ensures that the Hub, all follower servers and the clients
+The MIMI usage of MLS ensures that the Hub, all follower servers and the clients
 of all active participants agree on the group state, which includes the client
 list and the key material used for message encryption (although the latter is
 only available to clients). Since the group state also includes a copy of the
@@ -959,7 +956,7 @@ agreement.
 
 ## Authenticating proposals
 
-The MLS specification {{!RFC9420}} requires that MLS proposals from the Hub and
+MLS requires that MLS proposals from the Hub and
 from follower servers (external senders in MLS terminology) be authenticated
 using key material contained in the `external_senders` extension of the MLS
 group. Each MLS group associated with a MIMI room MUST therefore contain an
