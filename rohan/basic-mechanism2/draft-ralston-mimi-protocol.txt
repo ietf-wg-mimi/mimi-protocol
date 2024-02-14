@@ -5,11 +5,11 @@
 More Instant Messaging Interoperability                       T. Ralston
 Internet-Draft                          The Matrix.org Foundation C.I.C.
 Intended status: Standards Track                              K. Kohbrok
-Expires: 12 August 2024                                        R. Robert
+Expires: 17 August 2024                                        R. Robert
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                         9 February 2024
+                                                        14 February 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 August 2024.
+   This Internet-Draft will expire on 17 August 2024.
 
 Copyright Notice
 
@@ -1292,32 +1292,6 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
 10.2.  Informative References
 
-   [I-D.kohbrok-mimi-transport]
-              Kohbrok, K. and R. Robert, "MIMI Transport", Work in
-              Progress, Internet-Draft, draft-kohbrok-mimi-transport-01,
-              21 September 2023, <https://datatracker.ietf.org/doc/html/
-              draft-kohbrok-mimi-transport-01>.
-
-   [I-D.mahy-mimi-group-chat]
-              Mahy, R., "Group Chat Framework for More Instant Messaging
-              Interoperability (MIMI)", Work in Progress, Internet-
-              Draft, draft-mahy-mimi-group-chat-00, 10 July 2023,
-              <https://datatracker.ietf.org/doc/html/draft-mahy-mimi-
-              group-chat-00>.
-
-   [I-D.ralston-mimi-policy]
-              Ralston, T. and M. Hodgson, "MIMI Policy Envelope", Work
-              in Progress, Internet-Draft, draft-ralston-mimi-policy-00,
-              22 September 2023, <https://datatracker.ietf.org/doc/html/
-              draft-ralston-mimi-policy-00>.
-
-   [I-D.ralston-mimi-signaling]
-              Ralston, T. and M. Hodgson, "MIMI Signaling Protocol",
-              Work in Progress, Internet-Draft, draft-ralston-mimi-
-              signaling-00, 22 September 2023,
-              <https://datatracker.ietf.org/doc/html/draft-ralston-mimi-
-              signaling-00>.
-
    [RFC8555]  Barnes, R., Hoffman-Andrews, J., McCarney, D., and J.
               Kasten, "Automatic Certificate Management Environment
               (ACME)", RFC 8555, DOI 10.17487/RFC8555, March 2019,
@@ -1325,22 +1299,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
 Acknowledgments
 
-      *TODO*: Refactor acknowledgements to match sections of interest.
-
-   This document is the consolidation of the following documents:
-
-   *  [I-D.kohbrok-mimi-transport],
-
-   *  [I-D.robert-mimi-delivery-service],
-
-   *  [I-D.ralston-mimi-signaling],
-
-   *  [I-D.ralston-mimi-policy],
-
-   *  [I-D.mahy-mimi-group-chat],
-
-   [I-D.barnes-mimi-arch] was additionally used throughout the writing
-   of this document.
+      *TODO*:
 
 Contributors
 
