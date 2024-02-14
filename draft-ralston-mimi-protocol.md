@@ -879,6 +879,7 @@ POST /notify/{roomId}
 
 ~~~ tls
 struct {
+  /* the hub acceptance time (in milliseconds from the UNIX epoch) */
   uint64 timestamp;
   select (protocol) {
     case mls10:
@@ -886,8 +887,6 @@ struct {
          a PublicMessage containing a proposal or commit,
          or a Welcome message.                               */
       MLSMessage message;
-      /* the hub acceptance time (in milliseconds from the UNIX epoch) */
-      uint64 timestamp;
       select (message.wire_format) {
         case welcome:
           RatchetTreeOption ratchetTreeOption;
