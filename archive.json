@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-13T00:03:35.386996+00:00",
+  "timestamp": "2024-02-15T00:03:18.138757+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -4276,13 +4276,13 @@
       "labels": [],
       "body": "As requested by Travis, this is a replacement for PR #48 which has cleaner diffs (via individual commits).",
       "createdAt": "2024-02-09T19:24:51Z",
-      "updatedAt": "2024-02-12T20:33:04Z",
+      "updatedAt": "2024-02-14T20:51:13Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "36ad4767944db62e4b270460f06f2e6dfd98adef",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "rohan/basic-mechanism2",
-      "headRefOid": "467dea73a5d451d67f3420453ca5250818a0b7ca",
+      "headRefOid": "46fc864ca8f3988143b16826529699a5726244aa",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -4470,8 +4470,1242 @@
               "updatedAt": "2024-02-12T20:33:05Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v3P1_",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T01:57:56Z",
+          "updatedAt": "2024-02-13T01:57:56Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "Why isn't configuration sufficient?  We are probably talking about a handful of manually configured providers per hub.",
+              "createdAt": "2024-02-13T01:57:56Z",
+              "updatedAt": "2024-02-13T01:57:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v3QPx",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T01:59:33Z",
+          "updatedAt": "2024-02-13T01:59:34Z",
+          "comments": [
+            {
+              "originalPosition": 451,
+              "body": "why not? If an admin role has the permissions to change a room from unmoderated to moderated or from member-only to auditorium-style, why is this a problem?",
+              "createdAt": "2024-02-13T01:59:33Z",
+              "updatedAt": "2024-02-13T01:59:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v3Qjh",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T02:01:20Z",
+          "updatedAt": "2024-02-13T02:01:20Z",
+          "comments": [
+            {
+              "originalPosition": 492,
+              "body": "the appropriate applicationId for the base policy document is the MIMI base policy application ID. The appropriate applicationId for the participation list is the MIMI participation list application ID.",
+              "createdAt": "2024-02-13T02:01:20Z",
+              "updatedAt": "2024-02-13T02:01:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v3Q3z",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T02:03:13Z",
+          "updatedAt": "2024-02-13T02:03:13Z",
+          "comments": [
+            {
+              "originalPosition": 236,
+              "body": "In the interest of concreteness, and consistency with the content format, let's keep it URI. If you have a concrete proposal of an alternative family of identifiers, I'm happy to reconsider.",
+              "createdAt": "2024-02-13T02:03:13Z",
+              "updatedAt": "2024-02-13T02:03:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v3RVa",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T02:05:57Z",
+          "updatedAt": "2024-02-13T02:05:57Z",
+          "comments": [
+            {
+              "originalPosition": 1151,
+              "body": "I don't think that is very clear. Does the client that talks to the hub as a local provider need to implement MIMI DS, or just use compatible MLS objects and signatures?  For example, the hub needs some way to get all components of the commit bundle, but the specific struct used to convey those components doesn't have to be the same.",
+              "createdAt": "2024-02-13T02:05:57Z",
+              "updatedAt": "2024-02-13T02:05:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v3Rip",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T02:07:14Z",
+          "updatedAt": "2024-02-13T02:07:14Z",
+          "comments": [
+            {
+              "originalPosition": 1258,
+              "body": "How about \"Concepts from the following documents motivated the contents of this document...\"?\r\n",
+              "createdAt": "2024-02-13T02:07:14Z",
+              "updatedAt": "2024-02-13T02:07:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v390v",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T06:17:29Z",
+          "updatedAt": "2024-02-13T06:17:29Z",
+          "comments": [
+            {
+              "originalPosition": 1151,
+              "body": "I'm not following, sorry. Clients aren't providers - they belong to providers. What information is missing in this PR which ensures MLS is reliable for users of providers?",
+              "createdAt": "2024-02-13T06:17:29Z",
+              "updatedAt": "2024-02-13T06:17:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v3-cI",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T06:20:05Z",
+          "updatedAt": "2024-02-13T06:20:05Z",
+          "comments": [
+            {
+              "originalPosition": 1258,
+              "body": "I'm not sure either of the policy documents have really provided enough inspiration to be listed, honestly. The participation state enum was defined well before the policy documents existed, and should be returned to this PR somewhere (I can work on wording, if helpful). \r\n\r\nWhat parts of `mahy-group-chat` were incorporated?",
+              "createdAt": "2024-02-13T06:20:05Z",
+              "updatedAt": "2024-02-13T06:20:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v3--j",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T06:21:56Z",
+          "updatedAt": "2024-02-13T06:21:56Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "I think that needs to be made clearer in the document. I was under the impression that we're trying to connect providers regardless of the DMA legal framework, where any random messaging provider could approach another MIMI-compatible provider on the open internet.",
+              "createdAt": "2024-02-13T06:21:56Z",
+              "updatedAt": "2024-02-13T06:21:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v3_I2",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T06:22:37Z",
+          "updatedAt": "2024-02-13T06:22:37Z",
+          "comments": [
+            {
+              "originalPosition": 451,
+              "body": "That's configuration of the policy, not fundamentally changing the policy rules which exist.",
+              "createdAt": "2024-02-13T06:22:37Z",
+              "updatedAt": "2024-02-13T06:22:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v3_PU",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T06:23:02Z",
+          "updatedAt": "2024-02-13T06:23:02Z",
+          "comments": [
+            {
+              "originalPosition": 492,
+              "body": "I'm not following, sorry. Can we get verbiage in the document please?",
+              "createdAt": "2024-02-13T06:23:02Z",
+              "updatedAt": "2024-02-13T06:23:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v-DQ-",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T17:15:12Z",
+          "updatedAt": "2024-02-13T17:15:12Z",
+          "comments": [
+            {
+              "originalPosition": 1151,
+              "body": "What I am saying is that there are two things being described by MIMI DS. One is a list of expected behaviors related to MLS, including many of things described in the \"Operational Considerations\" section of the MLS architecture document. This is largely aligned. The second is almost an API to access the KeyPackages, handle Commits, access GroupInfo, etc. A provider that implemented what is in this PR, could then use an \"API\" very similar to the endpoints in MIMI DS to accomplish what the MIMI provider needs to implement the related to MLS actions. \r\n\r\nThere are three main differences:\r\n- this document assumes that the MIMI provider knows about users (which could include pseudonymous users) and can determine if a given client \"belongs to\" that user. \r\n- MIMI DS requires the hub to process the whole ratchet tree just like a client (which could be a scalability concern for large providers), whereas this PR has the `RatchetTreeRepresentation` assuming the simple thing first (the client uploads the ratchet tree), and could optionally do the full server-maintained ratchet tree.\r\n- MIMI DS has certain design decisions based on enabling metadata privacy. we need to tease that out more (which Raphael, Konrad, and I have already committed to do), but for now we want to show the basic case work",
+              "createdAt": "2024-02-13T17:15:12Z",
+              "updatedAt": "2024-02-13T17:25:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v-E7I",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T17:19:01Z",
+          "updatedAt": "2024-02-13T17:19:02Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "That's a good point. Maybe we just make a note in the document and we can discuss it with the WG. for now, it is a nice placeholder.",
+              "createdAt": "2024-02-13T17:19:02Z",
+              "updatedAt": "2024-02-13T17:19:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v-Fcx",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T17:20:19Z",
+          "updatedAt": "2024-02-13T17:20:19Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "I think that is well understood by the working group at this point. This point has been discussed at 3 IETFs now. ",
+              "createdAt": "2024-02-13T17:20:19Z",
+              "updatedAt": "2024-02-13T17:20:19Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v-G55",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T17:23:39Z",
+          "updatedAt": "2024-02-13T17:23:40Z",
+          "comments": [
+            {
+              "originalPosition": 248,
+              "body": "Let's leave these stylistic editorial improvements for another PR once this merges please. I think it is great to have a PR that adds internal references, but only after a merge. I already have a TODO link in another place.",
+              "createdAt": "2024-02-13T17:23:40Z",
+              "updatedAt": "2024-02-13T17:23:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v-JJR",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T17:28:03Z",
+          "updatedAt": "2024-02-13T17:28:03Z",
+          "comments": [
+            {
+              "originalPosition": 1258,
+              "body": "I think we are just acknowledging other work that came before us. Describing exactly what came from where or was even ultimately included sounds like a non-goal at this stage.",
+              "createdAt": "2024-02-13T17:28:03Z",
+              "updatedAt": "2024-02-13T17:28:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v-JxE",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T17:29:27Z",
+          "updatedAt": "2024-02-13T17:29:27Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "We agreed to leave out things that don't motivate the basic Alice and Bob flow. In that flow, both sides assume they can use MLS as described here.",
+              "createdAt": "2024-02-13T17:29:27Z",
+              "updatedAt": "2024-02-13T17:29:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v-KSH",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T17:30:38Z",
+          "updatedAt": "2024-02-13T17:30:38Z",
+          "comments": [
+            {
+              "originalPosition": 451,
+              "body": "perhaps you could provide a concrete example of this distinction?",
+              "createdAt": "2024-02-13T17:30:38Z",
+              "updatedAt": "2024-02-13T17:30:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v-LOK",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T17:32:18Z",
+          "updatedAt": "2024-02-13T17:32:18Z",
+          "comments": [
+            {
+              "originalPosition": 492,
+              "body": "Sure, once this is merged and we have the AppSync extension expanded, I can writeup an IANA section that registers the applicationIds in new PR. That should make it super clear. ",
+              "createdAt": "2024-02-13T17:32:18Z",
+              "updatedAt": "2024-02-13T17:32:18Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v_AxU",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T19:48:10Z",
+          "updatedAt": "2024-02-13T19:48:10Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "A note would be fine, yea.",
+              "createdAt": "2024-02-13T19:48:10Z",
+              "updatedAt": "2024-02-13T19:48:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v_A56",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T19:48:28Z",
+          "updatedAt": "2024-02-13T19:48:28Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "understanding should be documented, imo. ",
+              "createdAt": "2024-02-13T19:48:28Z",
+              "updatedAt": "2024-02-13T19:48:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v_CfL",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T19:51:25Z",
+          "updatedAt": "2024-02-13T19:51:25Z",
+          "comments": [
+            {
+              "originalPosition": 1151,
+              "body": "Including those differences in the document itself would really help understanding, I think. I'm still not fully following the ratchet tree stuff, but will give it another read this week.",
+              "createdAt": "2024-02-13T19:51:25Z",
+              "updatedAt": "2024-02-13T19:51:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v_C5g",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T19:52:39Z",
+          "updatedAt": "2024-02-13T19:52:39Z",
+          "comments": [
+            {
+              "originalPosition": 1258,
+              "body": "If we aren't incorporating the work, I don't think we need to reference it here. The working group will need to have discussions about policy as a separate discussion/document, which can and should reference both drafts.\r\n\r\nI'd suggest removing both `ralston-policy` and `mahy-group-chat` from the acknowledgements for now.",
+              "createdAt": "2024-02-13T19:52:39Z",
+              "updatedAt": "2024-02-13T19:52:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v_I_p",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T20:09:31Z",
+          "updatedAt": "2024-02-13T20:09:31Z",
+          "comments": [
+            {
+              "originalPosition": 451,
+              "body": "The envelope is the set of rules which form an authorization policy itself. The room may have toggles to steer behaviour, but how those flags work is set in stone through the envelope.\r\n\r\nFor example, the permissions system might define 2 flags:\r\n* `can_ban` - Whether users belonging to the role can ban other users.\r\n* `can_invite` - Whether users belonging to the role can invite other users.\r\n\r\nThe envelope could have a rule which says a user must be unbanned before they can be invited, which implies behaviour upon users which hold `can_invite`. All participating providers have a shared understanding for this envelope, and can locally enforce those operations without having to disturb the hub with needless requests. The actual assignment of the flags is left as a configuration detail for the room, though does still need to be visible to the providers which are locally enforcing policy (for obvious cases that don't require the hub). ",
+              "createdAt": "2024-02-13T20:09:31Z",
+              "updatedAt": "2024-02-13T20:09:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v_KHe",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T20:12:57Z",
+          "updatedAt": "2024-02-13T20:12:57Z",
+          "comments": [
+            {
+              "originalPosition": 492,
+              "body": "This PR needs a note about the application IDs in it. The IANA section can be expanded in a future PR, but for this PR to be mergeable the description of what the application ID look like needs to be included.",
+              "createdAt": "2024-02-13T20:12:57Z",
+              "updatedAt": "2024-02-13T20:12:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v_K1u",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "Sending in this review as a checkpoint; I've made it about half-way through.\r\n\r\nOverall, I think this is the right direction, but there are several minor things to fix.",
+          "createdAt": "2024-02-13T20:15:09Z",
+          "updatedAt": "2024-02-13T20:56:08Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "I'm not going to go to the mat on this, but having one endpoint handle multiple versions actually seems quite messy to me.\r\n\r\nSince we have a directory now, we can do versioning there, e.g., by having both `notify` and `notify_v2` endpoints.  Then the actual endpoints only have to handle one version.",
+              "createdAt": "2024-02-13T20:15:09Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 21,
+              "body": "One thing I notice we lost in the deleted sections was some prose exempting the `.well-known` endpoint from the mutual TLS requirement.  That seems sensible to me even with this change to the `.well-known` endpoint.  The only reason you would need client authentication here is if the server were going to provide different data to different clients (including no data).  I guess you could imagine providing different endpoints to different peered providers, but in general it seems like this information should be public and uniform.",
+              "createdAt": "2024-02-13T20:18:45Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 84,
+              "body": "```suggestion\r\nLike the ACME protocol (see {{Section 7.1.1 of ?RFC8555}}), the MIMI protocol uses a directory document\r\n```",
+              "createdAt": "2024-02-13T20:21:15Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 248,
+              "body": "This SHOULD should be a conditional MUST, something like:\r\n\r\n> When the request is being made in the context of adding the target user to a room, the request MUST include ...",
+              "createdAt": "2024-02-13T20:27:09Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 249,
+              "body": "Room URI?",
+              "createdAt": "2024-02-13T20:27:17Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 256,
+              "body": "I would also be fine deleting the `lastResortAllowed` flag.  We're not using it, and it's an easy thing to add back later.",
+              "createdAt": "2024-02-13T20:29:02Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 270,
+              "body": "This isn't actually hidden; it can be referenced from other sections.  TLS-PL is more of a human-readable documentation language (with unambiguous encoding semantics) than a machine-readable language.",
+              "createdAt": "2024-02-13T20:30:43Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 270,
+              "body": "I agree with @turt2live here that we should remain agnostic on identifiers for the moment.  To make this system hang together, we need unique IDs for rooms and users that map to their hub / home servers respectively.  We should have something detailed, but it doesn't need to be totally nailed down.\r\n\r\nIMO what we should do here is:\r\n* ~Flag identifiers as an open issue~ This is already done\r\n* In this PR, use generic worridng like @turt2live suggests; don't assume that identifiers are URIs.\r\n* In a follow-on PR, add an \"Identifiers\" section:\r\n    * Define a syntax that is simple and obviously wrong:\r\n        * Server: `example.com`\r\n        * Room: `room-name@hub.example.com`\r\n        * User: `user-name@home.example.com`\r\n    * Discuss requirements and design considerations:\r\n        * Requirements: user/room -> home/hub\r\n        * URIs: existing syntax vs. too much complexity\r\n        * Custom: simpler vs. have to ensure all bases covered",
+              "createdAt": "2024-02-13T20:42:35Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 280,
+              "body": "I'm probably just a type system nerd, but it might be good to distinguish `UserIdentifier` and `RoomIdentifier` types.",
+              "createdAt": "2024-02-13T20:43:22Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 337,
+              "body": "I don't see `clients` defined anywhere.  Do you mean `clientCapabilities`?  Assuming that's right, the MAY / MUST NOT seems unnecessary here, since the syntax itself forbids the MUST NOT.  I would probably rephrase as \"If `noCompatibleMaterial`, then the `clientCapabilities` field may be used to indicate...\"",
+              "createdAt": "2024-02-13T20:45:10Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 339,
+              "body": "```suggestion\r\nKey material provided from one response MUST NOT be provided in any other\r\n```",
+              "createdAt": "2024-02-13T20:46:31Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 492,
+              "body": "Agree with @turt2live here.  This document can just declare that two app IDs exist and what state they correspond to, and then the IANA section can assign them values.",
+              "createdAt": "2024-02-13T20:48:31Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 502,
+              "body": "I presume \"in the MLS group\", but we should be clear.\r\n\r\nI would probably be stronger than this, and declare that a proposal to removing / banning a user is invalid as long as there are any clients belonging to that user in the MLS group.  The \"hub queues up proposals and requires they be implemented\" model described elsewhere, this can be implemented just fine.",
+              "createdAt": "2024-02-13T20:50:54Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 502,
+              "body": "(Maybe you still need something like this as a backstop, for the interval in between when a removal is proposed and when it is committed.)",
+              "createdAt": "2024-02-13T20:51:36Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 522,
+              "body": "I would just delete this and refer to the [representation in RFC 9420](https://rfcs.online/rfcs/rfc9420.html#ratchet-tree-extension).  AFAIK none of these are defined, and defining them would entail more work than we should do in this document (arguably should be an MLS WG project).",
+              "createdAt": "2024-02-13T20:53:14Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 543,
+              "body": "Presumably this should also omit the `ratchet_tree` extension.",
+              "createdAt": "2024-02-13T20:54:02Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            },
+            {
+              "originalPosition": 560,
+              "body": "At least start with \"For example, ...\"",
+              "createdAt": "2024-02-13T20:54:40Z",
+              "updatedAt": "2024-02-13T20:56:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v_pRI",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T21:28:31Z",
+          "updatedAt": "2024-02-13T21:28:31Z",
+          "comments": [
+            {
+              "originalPosition": 256,
+              "body": "I included it to tell people not to use last resort keypackages. I'm fine deleting the field and still saying only use single-use keypackages.",
+              "createdAt": "2024-02-13T21:28:31Z",
+              "updatedAt": "2024-02-13T21:28:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v_rmH",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T21:31:16Z",
+          "updatedAt": "2024-02-13T21:31:16Z",
+          "comments": [
+            {
+              "originalPosition": 1151,
+              "body": "That is part of the problem. We had documents with various scopes and motivations and the working group asked for a document that was clear with a limited scope. Most of our audience has not read MIMI DS. The comparison isn't necessary IMO. ",
+              "createdAt": "2024-02-13T21:31:16Z",
+              "updatedAt": "2024-02-13T21:31:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v_rzY",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T21:31:32Z",
+          "updatedAt": "2024-02-13T21:31:32Z",
+          "comments": [
+            {
+              "originalPosition": 256,
+              "body": "Either works imo. More pointing out that a `SHOULD` needs an attached rationale when used.",
+              "createdAt": "2024-02-13T21:31:32Z",
+              "updatedAt": "2024-02-13T21:31:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v_vEG",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T21:38:13Z",
+          "updatedAt": "2024-02-13T21:38:13Z",
+          "comments": [
+            {
+              "originalPosition": 451,
+              "body": "we don't have consensus on the envelope concept you are describing, and this notion you can't change the envelope in a room. In draft-mahy-mimi-group-chat there is a single document that defines the style of conference and the permissions. I've seen at least 4 other variations. \r\n\r\nrather than carve that in stone, why don't we allow the hub to set the rules about what authorization is required to make certain changes. If a hub never gives the change_room_type permission, then nobody will ever be able to.",
+              "createdAt": "2024-02-13T21:38:13Z",
+              "updatedAt": "2024-02-13T21:38:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v_wrg",
+          "commit": {
+            "abbreviatedOid": "c077ae6"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T21:42:15Z",
+          "updatedAt": "2024-02-13T21:42:15Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "I can think of plenty of providers who would like to limit the information about their internal endpoints. Remember, only a handful of providers need to know these URLs as they are not for client use.",
+              "createdAt": "2024-02-13T21:42:15Z",
+              "updatedAt": "2024-02-13T21:42:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v_yGx",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T21:46:44Z",
+          "updatedAt": "2024-02-13T21:46:44Z",
+          "comments": [
+            {
+              "originalPosition": 492,
+              "body": "That's what the document already says. One applicationId is for base policy, the other for the participation list.",
+              "createdAt": "2024-02-13T21:46:44Z",
+              "updatedAt": "2024-02-13T21:46:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85v_9Sm",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-13T22:19:16Z",
+          "updatedAt": "2024-02-13T22:19:16Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "*unresolving* - this needs to be made clear in the document, sorry. ",
+              "createdAt": "2024-02-13T22:19:16Z",
+              "updatedAt": "2024-02-13T22:19:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wB36z",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Just a partial review for now. I'll continue over the next few days.",
+          "createdAt": "2024-02-14T07:15:57Z",
+          "updatedAt": "2024-02-14T07:53:55Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "I also don't have a strong opinion on this, as long as anything that's signed (i.e. things where mTLS is not enough) includes both the endpoint and the protocol version in the TBS.",
+              "createdAt": "2024-02-14T07:15:57Z",
+              "updatedAt": "2024-02-14T07:53:55Z"
+            },
+            {
+              "originalPosition": 41,
+              "body": "If we do versioning via the directory, we should remove the version from the paths here.",
+              "createdAt": "2024-02-14T07:18:08Z",
+              "updatedAt": "2024-02-14T07:53:55Z"
+            },
+            {
+              "originalPosition": 256,
+              "body": "I agree with @bifurcation here. Let's discuss usage of last resort separately. ",
+              "createdAt": "2024-02-14T07:22:56Z",
+              "updatedAt": "2024-02-14T07:53:55Z"
+            },
+            {
+              "originalPosition": 280,
+              "body": "Yes please!",
+              "createdAt": "2024-02-14T07:23:59Z",
+              "updatedAt": "2024-02-14T07:53:55Z"
+            },
+            {
+              "originalPosition": 108,
+              "body": "Even if we have a MUST NOT here, there should be a check on the receiving end, as sender and recipient might not agree on time.",
+              "createdAt": "2024-02-14T07:25:51Z",
+              "updatedAt": "2024-02-14T07:53:55Z"
+            },
+            {
+              "originalPosition": 370,
+              "body": "We shouldn't be too restrictive here. We don't want to require providers to keep lists of deleted user names around.",
+              "createdAt": "2024-02-14T07:28:31Z",
+              "updatedAt": "2024-02-14T07:53:55Z"
+            },
+            {
+              "originalPosition": 128,
+              "body": "We should really leave the handling of last resort stuff for a later date.",
+              "createdAt": "2024-02-14T07:29:43Z",
+              "updatedAt": "2024-02-14T07:53:55Z"
+            },
+            {
+              "originalPosition": 451,
+              "body": "I don't have a strong opinion here, but we I agree with @rohan-wire that we shouldn't be restrictive where we don't have to be.",
+              "createdAt": "2024-02-14T07:31:51Z",
+              "updatedAt": "2024-02-14T07:53:55Z"
+            },
+            {
+              "originalPosition": 502,
+              "body": "I think this PR removes a section where the hub state was described as the combination of queued proposals and (commited) MLS group state. I haven't quite finished the review, but this needs to be described somewhere. Ideally at some point before this section.",
+              "createdAt": "2024-02-14T07:36:40Z",
+              "updatedAt": "2024-02-14T07:53:55Z"
+            },
+            {
+              "originalPosition": 522,
+              "body": "Agreed. This is something we can handle at a later date.",
+              "createdAt": "2024-02-14T07:38:06Z",
+              "updatedAt": "2024-02-14T07:53:55Z"
+            },
+            {
+              "originalPosition": 244,
+              "body": "We should either discuss the semantics of each of those, or leave them out for the moment. The same goes for the other status codes below.",
+              "createdAt": "2024-02-14T07:41:12Z",
+              "updatedAt": "2024-02-14T07:53:55Z"
+            },
+            {
+              "originalPosition": 972,
+              "body": "For state changes it definitely needs to wait for a response for the hub, as another commit might have been faster. For application messages it's less bad, but it still alters the view of the conversation. For overall consistency, I'd suggest we don't optimize here.",
+              "createdAt": "2024-02-14T07:46:43Z",
+              "updatedAt": "2024-02-14T07:53:55Z"
+            },
+            {
+              "originalPosition": 335,
+              "body": "Do we really need two timestamps in this struct?",
+              "createdAt": "2024-02-14T07:48:53Z",
+              "updatedAt": "2024-02-14T07:53:55Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wFscH",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T15:03:44Z",
+          "updatedAt": "2024-02-14T16:06:34Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "@turt2live Can you say more about what you expect here?  (Also, I assume we are talking about E2E encryption, not transport.)  It seems to me that any sort of negotiation is an advanced feature, and thus not suitable for this initial draft.  \r\n\r\nRoom creation also entails establishment of the E2E security context for the room, covering the initial membership (e.g., Alice's devices).  Room creation is also out of scope for this protocol.  So by the time this protocol has any work to do, the E2E security context is already fixed.  In principle, the context can then be changed (e.g., by re-initializing the MLS group to a new ciphersuite), but that operation is going to be expensive, complicated, and rare, thus an advanced feature.\r\n\r\nThe absolute maximum I would do here is note in the group creation section that if some set of prospective members are known at the time of group creation, then the hub may proactively fetch key material for those prospective members and use it to select the parameters for the MLS group.",
+              "createdAt": "2024-02-14T15:03:44Z",
+              "updatedAt": "2024-02-14T16:06:34Z"
+            },
+            {
+              "originalPosition": 41,
+              "body": "The provider can choose whatever endpoints they want, that's the point of the directory.  So if the provider wants to say `v1`, they can.  They could even say `v1` for the `v2` endpoint!",
+              "createdAt": "2024-02-14T15:34:26Z",
+              "updatedAt": "2024-02-14T16:06:34Z"
+            },
+            {
+              "originalPosition": 451,
+              "body": "Recall that one of the principles discussed and agreed by the WG was that the hub defines the policy envelope.  That discussion did not say that the policy envelope was immutable. ",
+              "createdAt": "2024-02-14T15:47:29Z",
+              "updatedAt": "2024-02-14T16:06:34Z"
+            },
+            {
+              "originalPosition": 502,
+              "body": "Agree that we need to describe that.  I thought this was covered, but I'm not seeing it in the document.  Maybe file an issue to make sure it's covered in a follow-on.",
+              "createdAt": "2024-02-14T15:51:01Z",
+              "updatedAt": "2024-02-14T16:06:34Z"
+            },
+            {
+              "originalPosition": 823,
+              "body": "If we push protocol versioning to the directory, we can save on these `If the protocol is...` caveats.",
+              "createdAt": "2024-02-14T15:53:12Z",
+              "updatedAt": "2024-02-14T16:06:34Z"
+            },
+            {
+              "originalPosition": 972,
+              "body": "I agree that deduplication is necessary, but would be tempted to punt ~= treat as a known issue, rather than something to fix here.",
+              "createdAt": "2024-02-14T15:54:36Z",
+              "updatedAt": "2024-02-14T16:06:34Z"
+            },
+            {
+              "originalPosition": 972,
+              "body": "I think the question is whether the hub's acceptance is enough, or whether the follower also needs to get it fanout'ed back to them.  I would tend toward the former, viewing the acceptance by the hub as a commitment that the message/update will be distributed appropriately.  But I could also understand an argument that there's some simplicity and conservatism to waiting for the fanout.\r\n\r\nEither way, it seems like we can make a provisional choice here and adapt later.  Might even be good to have a note in the text about whichever alternative we don't select.",
+              "createdAt": "2024-02-14T15:58:18Z",
+              "updatedAt": "2024-02-14T16:06:34Z"
+            },
+            {
+              "originalPosition": 1099,
+              "body": "It seems like this would simplify processing on the receive side, at least for Commit messages.",
+              "createdAt": "2024-02-14T16:02:07Z",
+              "updatedAt": "2024-02-14T16:06:34Z"
+            },
+            {
+              "originalPosition": 1124,
+              "body": "The hub provider MUST do whatever we state as MUSTs in this specification.  But the hub is allowed to have local policy.  What else do you think the hub provider MUST do?",
+              "createdAt": "2024-02-14T16:03:23Z",
+              "updatedAt": "2024-02-14T16:06:34Z"
+            },
+            {
+              "originalPosition": 1151,
+              "body": "The citation to mimi-ds is out of place.  We should not cite that document, but instead pull any necessary mechanism in here.",
+              "createdAt": "2024-02-14T16:05:00Z",
+              "updatedAt": "2024-02-14T16:06:34Z"
+            },
+            {
+              "originalPosition": 1181,
+              "body": "Similar comments here about \"DS protocol\".  We don't really have a DS sub-protocol any more.  Just say \"MIMI\".",
+              "createdAt": "2024-02-14T16:06:20Z",
+              "updatedAt": "2024-02-14T16:06:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wG_WQ",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T17:33:16Z",
+          "updatedAt": "2024-02-14T17:33:16Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "\"unresolving - this needs to be made clear in the document, sorry.\"\r\n\r\nI'm not sure what you think is unclear. This document is defining a mechanism that supports the basic Alice and Bob flow with *MLS*. You have *personally* asked to remove otherwise useful features that will almost certainly be required in the MLS case based on this minimalist approach. Protocol negotiation is not even remotely required. It is **100% OUT OF SCOPE**.  Resolving.",
+              "createdAt": "2024-02-14T17:33:16Z",
+              "updatedAt": "2024-02-14T17:33:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wHCAV",
+          "commit": {
+            "abbreviatedOid": "c077ae6"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T17:39:33Z",
+          "updatedAt": "2024-02-14T17:39:34Z",
+          "comments": [
+            {
+              "originalPosition": 335,
+              "body": "> Do we really need two timestamps in this struct?\r\n\r\nWe need the time the hub accepts the message as discussed at the post-MIMI WG meeting lunch in Prague. What is the other timestamp you are referring to?",
+              "createdAt": "2024-02-14T17:39:33Z",
+              "updatedAt": "2024-02-14T17:39:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wHJIA",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T17:55:07Z",
+          "updatedAt": "2024-02-14T17:55:08Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "Please give me a chance to reply before resolving :/\r\n\r\nI'm asking for the document to clarify the mechanism by which providers determine they are capable of participating in the room, and by extension their clients too. At group creation time, there needs to be a check that Alice's clients and Bob's clients are actually capable of encrypting for each other *and* that both providers (if we assume they're on separate providers) can track the appropriate state.\r\n\r\nThis is further complicated when a third user on a net-new provider is aiming to become involved. The inviter and hub server need to once again check client compatibility and provider compatibility. If the client or provider can't participate, then they should not be allowed to.\r\n\r\nCurrently, the mechanism by which this is performed is not clear in the document. It may very well be a function of MLS. If it is, text needs to be added to point to it please.\r\n\r\nWhat I am *not* asking for is scope creep or for an explicit create operation in our protocol. Creation is done locally on the provider, and then invites/adds go out to future members. Those invited providers provision whatever resources they need for their clients to interact with the room, effectively creating or mirroring the room onto their systems. None of this is an operation which needs technical definition in this document.",
+              "createdAt": "2024-02-14T17:55:08Z",
+              "updatedAt": "2024-02-14T17:55:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wHJ9V",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T17:56:55Z",
+          "updatedAt": "2024-02-14T17:56:56Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "(is the versioning comment on the wrong thread?)",
+              "createdAt": "2024-02-14T17:56:55Z",
+              "updatedAt": "2024-02-14T17:56:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wHLSZ",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T18:00:09Z",
+          "updatedAt": "2024-02-14T18:00:09Z",
+          "comments": [
+            {
+              "originalPosition": 972,
+              "body": "yea, +1 as recorded known issue rather than trying to solve now.",
+              "createdAt": "2024-02-14T18:00:09Z",
+              "updatedAt": "2024-02-14T18:00:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wHMAL",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T18:01:52Z",
+          "updatedAt": "2024-02-14T18:01:53Z",
+          "comments": [
+            {
+              "originalPosition": 1124,
+              "body": "I'm worried that the language here gives leeway for the hub provider to enact custom and arbitrary rules. We use very few MUSTs to limit this behaviour currently.\r\n\r\nStrengthening the overall text is likely the best direction here, rather than fixing one specific line.",
+              "createdAt": "2024-02-14T18:01:52Z",
+              "updatedAt": "2024-02-14T18:01:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wHMbN",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T18:02:51Z",
+          "updatedAt": "2024-02-14T18:02:52Z",
+          "comments": [
+            {
+              "originalPosition": 972,
+              "body": "what @bifurcation said :)",
+              "createdAt": "2024-02-14T18:02:51Z",
+              "updatedAt": "2024-02-14T18:02:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wHNJa",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T18:04:35Z",
+          "updatedAt": "2024-02-14T18:04:35Z",
+          "comments": [
+            {
+              "originalPosition": 451,
+              "body": "right, I'll resolve this for now pending more policy discussions with the working group. It's not something which prevents merging this PR - more of a nitpick on the language.",
+              "createdAt": "2024-02-14T18:04:35Z",
+              "updatedAt": "2024-02-14T18:04:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wHWlS",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T18:23:46Z",
+          "updatedAt": "2024-02-14T18:23:47Z",
+          "comments": [
+            {
+              "originalPosition": 493,
+              "body": "```suggestion\r\nIn MLS 1.0, changes to the room's policy and participant list are done with `AppSync`\r\nproposals. A distinct `applicationId` contains the room's policy while another contains\r\nthe participant list. When adding a user, the participant list change MUST happen \r\neither before or simultaneously with the corresponding MLS operation.\r\n```",
+              "createdAt": "2024-02-14T18:23:46Z",
+              "updatedAt": "2024-02-14T18:23:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wHXYd",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T18:25:50Z",
+          "updatedAt": "2024-02-14T18:25:51Z",
+          "comments": [
+            {
+              "originalPosition": 492,
+              "body": "I've attempted to clear up the confusion here: https://github.com/bifurcation/ietf-mimi-protocol/pull/50/files#r1489894427\r\n\r\nThe current text is unclear about whether a new application ID is needed for each proposal, if it's an identifier the client needs to populate (`com.whatsapp.web`, for example), or if it's a canonical identifier in the room to consistently store the information. I believe it's the last one.",
+              "createdAt": "2024-02-14T18:25:50Z",
+              "updatedAt": "2024-02-14T18:25:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wHjt-",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T18:54:28Z",
+          "updatedAt": "2024-02-14T18:54:29Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "> Please give me a chance to reply before resolving :/\r\n> \r\n> I'm asking for the document to clarify the mechanism by which providers determine they are capable of participating in the room, and by extension their clients too. At group creation time, there needs to be a check that Alice's clients and Bob's clients are actually capable of encrypting for each other _and_ that both providers (if we assume they're on separate providers) can track the appropriate state.\r\n\r\nIf they implement what is in this PR merged into this document there is no issue. Group creation is out of scope. MIMI specs only cover MLS. In MLS, Alice can see via Bob's KeyPackage if Bob supports the necessary features.\r\n\r\nAs for adding future negotiation for other encryption or MIMI extensions, for MLS the KeyPackages can contain extensions; support can be statically configured (quite appropriate for a non-standard encryption binding); and the discovery mechanism can be extended. And no, we do not need to say that in the document.\r\n\r\n> This is further complicated when a third user on a net-new provider is aiming to become involved. The inviter and hub server need to once again check client compatibility and provider compatibility. If the client or provider can't participate, then they should not be allowed to.\r\n>\r\n> Currently, the mechanism by which this is performed is not clear in the document. It may very well be a function of MLS. If it is, text needs to be added to point to it please.\r\n\r\nThen once this PR is merged, I would be delighted to see issues and PRs which point out specific use cases or problemss. Until then I would advise you to carefully read the sections in RFC 9420 (section 13 - especially 13.4) and draft-ietf-mls-architecture (sections 6.8, 7, and 8.2.4) on MLS extensibility.\r\n \r\n> What I am _not_ asking for is scope creep or for an explicit create operation in our protocol. Creation is done locally on the provider, and then invites/adds go out to future members. Those invited providers provision whatever resources they need for their clients to interact with the room, effectively creating or mirroring the room onto their systems. None of this is an operation which needs technical definition in this document.\r\n\r\nRespectfully, you are asking for a generic extensibility negotiation mechanism, and/or a lot of text that does not fit the current scope of this PR and the target draft. That is not appropriate. It is out of scope.",
+              "createdAt": "2024-02-14T18:54:28Z",
+              "updatedAt": "2024-02-14T18:54:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wHmRT",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T19:00:34Z",
+          "updatedAt": "2024-02-14T19:00:34Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "> I would advise you to carefully read the sections in RFC 9420 (section 13 - especially 13.4) and draft-ietf-mls-architecture (sections 6.8, 7, and 8.2.4) on MLS extensibility.\r\n\r\nPlease add these references to the document if they address the concern. It is not clear as a reader that these sections are required reading.\r\n\r\nI do not agree that people reading this document/PR will inherently know that the mechanism for ensuring compatibility is in MLS.",
+              "createdAt": "2024-02-14T19:00:34Z",
+              "updatedAt": "2024-02-14T19:00:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wHrro",
+          "commit": {
+            "abbreviatedOid": "beefc67"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T19:13:48Z",
+          "updatedAt": "2024-02-14T19:13:49Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "To reiterate though: I'm really just looking for a sentence or two *somewhere* to show we've thought about this, because clearly we have. The scope of this PR is not clear to me, but from the title I would consider Alice fetching Bob's KeyPackage and deciding that communication is impossible as a 'basic flow'.",
+              "createdAt": "2024-02-14T19:13:48Z",
+              "updatedAt": "2024-02-14T19:13:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wIi7k",
+          "commit": {
+            "abbreviatedOid": "467dea7"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T20:51:12Z",
+          "updatedAt": "2024-02-14T20:51:13Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "If we think it's out of scope for this PR, please consider https://github.com/bifurcation/ietf-mimi-protocol/pull/51",
+              "createdAt": "2024-02-14T20:51:13Z",
+              "updatedAt": "2024-02-14T20:51:13Z"
+            }
+          ]
         }
       ]
+    },
+    {
+      "number": 51,
+      "id": "PR_kwDOKZ8QO85m56LK",
+      "title": "Clarify that KeyPackages *are* the negotiation mechanism for support",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/51",
+      "state": "OPEN",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "ref https://github.com/bifurcation/ietf-mimi-protocol/pull/50/files#r1486736385",
+      "createdAt": "2024-02-14T20:50:57Z",
+      "updatedAt": "2024-02-14T20:50:58Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "36ad4767944db62e4b270460f06f2e6dfd98adef",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "travis/negotiate",
+      "headRefOid": "4b24bca596e91a5f6af863424111a42fab42118e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
