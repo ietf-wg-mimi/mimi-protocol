@@ -582,7 +582,7 @@ enum {
 
 ## Directory
 
-Like the ACME protocol {{?RFC8555}}, the MIMI protocol uses a directory document
+Like the ACME protocol (See {{Section 7.1.1 of ?RFC8555}}), the MIMI protocol uses a directory document
 to convey the HTTPS URLs used to reach certain endpoints (as opposed to hard
 coding the endpoints).
 
@@ -932,7 +932,7 @@ the message will eventually be distributed to the group. The hub is not
 expected to forward the client's own message to the client or its provider.
 However, the client and its provider need to be prepared to receive the
 client's (effectively duplicate) message. This situation can occur during
-failover in high availability recovery scenarios. 
+failover in high availability recovery scenarios.
 
 Clients that are being removed SHOULD receive the corresponding
 Commit message, so they can recognize that they have been removed and clean up
