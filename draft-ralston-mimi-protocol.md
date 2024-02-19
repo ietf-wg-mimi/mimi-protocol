@@ -828,10 +828,25 @@ enum {
 } UpdateResponseCode;
 
 struct {
-    UpdateResponseCode responseCode;
-    string errorDescription;
+  UpdateResponseCode responseCode;
+  string errorDescription;
+  select (responseCode) {
+    case wrongEpoch:
+      uint64 currentEpoch;
+    case invalidProposal:
+      ProposalRef invalidProposals<V>;
+  };
 } UpdateRoomResponse
 ~~~
+
+The semantics of the `UpdatedResponseCode` values are as follows:
+- `success` indicates the `UpdateRequest` was accepted and will be distributed.
+- `wrongEpoch` indicates that the hub provider is using a different epoch. The
+`currentEpoch` is provided in the response.
+- `notAllowed` indicates that some type of policy or authorization prevented the
+hub provider from accepting the `UpdateRequest`.
+- `invalidProposal` indicates that at least one proposal is invalid. A list of
+invalidProposals is provided in the response.
 
 ## Submit a Message
 
