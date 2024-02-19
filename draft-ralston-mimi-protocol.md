@@ -566,6 +566,9 @@ This section describes the specific endpoints necessary to provide the
 functionality in the example flow. The framing for each endpoint includes a
 protocol so that different variations of the end-to-end encryption can be used.
 
+> **TODO**: Determine the what needs to be included in the protocol. MIMI
+  version, e2e protocol version, etc.
+
 The syntax of the MIMI protocol messages are described using the TLS
 presentation language format ({{Section 3 of RFC8446}}).
 
