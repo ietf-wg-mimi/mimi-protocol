@@ -932,7 +932,8 @@ their internal state.
 
 The response to a FanoutMessage contains no body. The HTTP response code
 indicates if the messages in the request were accepted (201 response code), or
-if there was an error.
+if there was an error. The hub need not wait for a response before sending the
+next fanout message.
 
 
 # Relation between MIMI state and cryptographic state
