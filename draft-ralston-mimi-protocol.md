@@ -620,7 +620,8 @@ room they will be used in. (If this is not the case, the hub provider will be
 unable to forward a Welcome message to the target provider).
 
 The path includes the target user. The request body includes the protocol
-(currently just MLS 1.0), and the requesting user. The request SHOULD include
+(currently just MLS 1.0), and the requesting user. When the request is being
+made in the context of adding the target user to a room, the request MUST include
 the room ID for which the KeyPackage is intended, as the target may have only
 granted consent for a specific room.
 
@@ -773,7 +774,7 @@ banned from the room, MUST prevent any of its clients from sending or
 receiving any additional application messages in the corresponding MLS group;
 MUST prevent any of those clients from sending Commit messages in that group;
 and MUST prevent it from sending any proposals except for `Remove` and
-`SelfRemove` {{!I-D.ietf-mls-extensions}} proposals in that group.
+`SelfRemove` {{!I-D.ietf-mls-extensions}} proposals for its users in that group.
 
 The update request body is described below:
 
