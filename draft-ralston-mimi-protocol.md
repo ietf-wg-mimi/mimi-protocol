@@ -773,7 +773,7 @@ banned from the room, MUST prevent any of its clients from sending or
 receiving any additional application messages in the corresponding MLS group;
 MUST prevent any of those clients from sending Commit messages in that group;
 and MUST prevent it from sending any proposals except for `Remove` and
-`SelfRemove` proposals in that group.
+`SelfRemove` {{!I-D.ietf-mls-extensions}} proposals in that group.
 
 The update request body is described below:
 
@@ -809,7 +809,7 @@ struct {
 } UpdateRequest;
 ~~~
 
-In the first use case described in the Protocol Overview, Alice creates a Commit
+For example, in the first use case described in the Protocol Overview, Alice creates a Commit
 containing an AppSync proposal adding `bob@b.example`, and Add proposals for all
 Bob's MLS clients.  Alice includes the Welcome message which will be sent for
 Bob, a GroupInfo object for the hub provider, and complete `ratchet_tree`
