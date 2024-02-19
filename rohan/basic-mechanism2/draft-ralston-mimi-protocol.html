@@ -2422,7 +2422,7 @@ enum {
         <h3 id="name-directory">
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-directory" class="section-name selfRef">Directory</a>
         </h3>
-<p id="section-5.1-1">Like the ACME protocol <span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span>, the MIMI protocol uses a directory document
+<p id="section-5.1-1">Like the ACME protocol (See <span><a href="https://rfc-editor.org/rfc/rfc8555#section-7.1.1" class="relref">Section 7.1.1</a> of [<a href="#RFC8555" class="cite xref">RFC8555</a>]</span>), the MIMI protocol uses a directory document
 to convey the HTTPS URLs used to reach certain endpoints (as opposed to hard
 coding the endpoints).<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 <p id="section-5.1-2">The directory URL is discovered using the <code>mimi-protocol-directory</code> well-known
@@ -2464,7 +2464,8 @@ requested using this primitive <span class="bcp14">MUST</span> be sent via the h
 room they will be used in. (If this is not the case, the hub provider will be
 unable to forward a Welcome message to the target provider).<a href="#section-5.2-3" class="pilcrow">¶</a></p>
 <p id="section-5.2-4">The path includes the target user. The request body includes the protocol
-(currently just MLS 1.0), and the requesting user. The request <span class="bcp14">SHOULD</span> include
+(currently just MLS 1.0), and the requesting user. When the request is being
+made in the context of adding the target user to a room, the request <span class="bcp14">MUST</span> include
 the room ID for which the KeyPackage is intended, as the target may have only
 granted consent for a specific room.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
 <p id="section-5.2-5">For MLS, the request includes a non-empty list of acceptable MLS ciphersuites,
@@ -2613,7 +2614,7 @@ banned from the room, <span class="bcp14">MUST</span> prevent any of its clients
 receiving any additional application messages in the corresponding MLS group;
 <span class="bcp14">MUST</span> prevent any of those clients from sending Commit messages in that group;
 and <span class="bcp14">MUST</span> prevent it from sending any proposals except for <code>Remove</code> and
-<code>SelfRemove</code> <span>[<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span> proposals in that group.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
+<code>SelfRemove</code> <span>[<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span> proposals for its users in that group.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
 <p id="section-5.3-6">The update request body is described below:<a href="#section-5.3-6" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.3-7">
 <pre>
@@ -2665,11 +2666,25 @@ enum {
 } UpdateResponseCode;
 
 struct {
-    UpdateResponseCode responseCode;
-    string errorDescription;
+  UpdateResponseCode responseCode;
+  string errorDescription;
+  select (responseCode) {
+    case wrongEpoch:
+      uint64 currentEpoch;
+    case invalidProposal:
+      ProposalRef invalidProposals&lt;V&gt;;
+  };
 } UpdateRoomResponse
 </pre><a href="#section-5.3-10" class="pilcrow">¶</a>
 </div>
+<p id="section-5.3-11">The semantics of the <code>UpdatedResponseCode</code> values are as follows:
+- <code>success</code> indicates the <code>UpdateRequest</code> was accepted and will be distributed.
+- <code>wrongEpoch</code> indicates that the hub provider is using a different epoch. The
+<code>currentEpoch</code> is provided in the response.
+- <code>notAllowed</code> indicates that some type of policy or authorization prevented the
+hub provider from accepting the <code>UpdateRequest</code>.
+- <code>invalidProposal</code> indicates that at least one proposal is invalid. A list of
+invalidProposals is provided in the response.<a href="#section-5.3-11" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="submit-a-message">
@@ -2777,13 +2792,21 @@ struct {
 providers storing the <code>KeyPackageRef</code> of claimed KeyPackages.<a href="#section-5.5-7.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-5.5-8">To be clear, clients that are being removed <span class="bcp14">SHOULD</span> receive the corresponding
+<p id="section-5.5-8">A client which receives a <code>success</code> to either an <code>UpdateRoomResponse</code> or a
+<code>SubmitMessageResponse</code> can view this a commitment from the hub provider that
+the message will eventually be distributed to the group. The hub is not
+expected to forward the client's own message to the client or its provider.
+However, the client and its provider need to be prepared to receive the
+client's (effectively duplicate) message. This situation can occur during
+failover in high availability recovery scenarios.<a href="#section-5.5-8" class="pilcrow">¶</a></p>
+<p id="section-5.5-9">Clients that are being removed <span class="bcp14">SHOULD</span> receive the corresponding
 Commit message, so they can recognize that they have been removed and clean up
-their internal state.<a href="#section-5.5-8" class="pilcrow">¶</a></p>
-<p id="section-5.5-9">The response to a FanoutMessage contains no body. The HTTP response code
+their internal state. A removed client might not receive a commit if it was
+removed as a malicious or abusive client, or if it obviously deleted.<a href="#section-5.5-9" class="pilcrow">¶</a></p>
+<p id="section-5.5-10">The response to a FanoutMessage contains no body. The HTTP response code
 indicates if the messages in the request were accepted (201 response code), or
 if there was an error. The hub need not wait for a response before sending the
-next fanout message.<a href="#section-5.5-9" class="pilcrow">¶</a></p>
+next fanout message.<a href="#section-5.5-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
