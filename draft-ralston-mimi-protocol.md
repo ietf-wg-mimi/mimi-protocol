@@ -926,9 +926,18 @@ struct {
 > **NOTE:** Correctly fanning out Welcome messages relies on the hub and target
 providers storing the `KeyPackageRef` of claimed KeyPackages.
 
-To be clear, clients that are being removed SHOULD receive the corresponding
+A client which receives a `success` to either an `UpdateRoomResponse` or a
+`SubmitMessageResponse` can view this a commitment from the hub provider that
+the message will eventually be distributed to the group. The hub is not
+expected to forward the client's own message to the client or its provider.
+However, the client and its provider need to be prepared to receive the
+client's (effectively duplicate) message. This situation can occur during
+failover in high availability recovery scenarios. 
+
+Clients that are being removed SHOULD receive the corresponding
 Commit message, so they can recognize that they have been removed and clean up
-their internal state.
+their internal state. A removed client might not receive a commit if it was
+removed as a malicious or abusive client, or if it obviously deleted.
 
 The response to a FanoutMessage contains no body. The HTTP response code
 indicates if the messages in the request were accepted (201 response code), or
