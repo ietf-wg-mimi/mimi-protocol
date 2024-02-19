@@ -740,7 +740,7 @@ change MUST be committed either before or simultaneously with the corresponding
 MLS operation.
 
 Removing an active user from a participant list or banning an active participant
-SHOULD happen simultaneously with any MLS changes made to the commit removing
+likewise also happen simultaneously with any MLS changes made to the commit removing
 the participant.
 
 A hub provider which observes that an active user has been removed or banned,
