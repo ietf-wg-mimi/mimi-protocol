@@ -768,11 +768,12 @@ Removing an active user from a participant list or banning an active participant
 likewise also happen simultaneously with any MLS changes made to the commit removing
 the participant.
 
-A hub provider which observes that an active user has been removed or banned,
-but still has clients MUST prevent any of those clients from sending or
-receiving any additional application messages; MUST prevent any of those clients
-from sending Commit messages; and MUST prevent it from sending any proposals
-except for `Remove` and `SelfRemove` proposals.
+A hub provider which observes that an active participant has been removed or
+banned from the room, MUST prevent any of its clients from sending or
+receiving any additional application messages in the corresponding MLS group;
+MUST prevent any of those clients from sending Commit messages in that group;
+and MUST prevent it from sending any proposals except for `Remove` and
+`SelfRemove` proposals in that group.
 
 The update request body is described below:
 
