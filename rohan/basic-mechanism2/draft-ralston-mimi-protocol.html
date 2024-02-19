@@ -2552,13 +2552,37 @@ struct {
 } KeyMaterialResponse;
 </pre><a href="#section-5.2-11" class="pilcrow">¶</a>
 </div>
-<p id="section-5.2-12">At minimum, as each MLS KeyPackage is returned to a requesting provider (on
+<p id="section-5.2-12">The semantics of the <code>KeyMaterialUserCode</code> are as follows:
+- <code>success</code> indicates that key material was provided for every client of the
+target user.
+- <code>partialSuccess</code> indicates that key material was provided for at least one
+client of the target user.
+- <code>incompatibleProtocol</code> indicates that either one of providers supports the
+protocol requested, or none of the clients of the target user support the
+protocol requested.
+- <code>noCompatibleMaterial</code> indicates that none of the clients was able to
+supply key material compatible with the <code>requiredCapabilities</code> field in the
+request.
+- <code>userUnknown</code> indicates that the target user is not known to the target
+provider.
+- <code>noConsent</code> indicates that the requester does not have consent to fetch
+key material for the target user. The target provider can use this response
+as a catch all and in place of other status codes such as <code>userUnknown</code> if
+desired to preserve the privacy of its users.
+- <code>noConsentForThisRoom</code> indicates that the target user might have allowed
+a request for another room, but does not for this room. If the provider
+does not wish to make this distinction, it can return <code>noConsent</code> instead.
+- <code>userDeleted</code> indicates that the target provider wishes the requester to
+know that the target user was previously a valid user of the system and has
+been deleted. A target provider can of course use <code>userUnknown</code> if the
+provider does wish to keep or specify this distinction.<a href="#section-5.2-12" class="pilcrow">¶</a></p>
+<p id="section-5.2-13">At minimum, as each MLS KeyPackage is returned to a requesting provider (on
 behalf of a requesting IM client), the target provider needs to associate its
 <code>KeyPackageRef</code> with the target client and the hub provider needs to associate
 its <code>KeyPackageRef</code> with the target provider. This ensures that Welcome messages
 can be correctly routed to the target provider and client. These associations
 can be deleted after a Welcome message is forwarded or after the KeyPackage
-<code>leaf_node.lifetime.not_after</code> time has passed.<a href="#section-5.2-12" class="pilcrow">¶</a></p>
+<code>leaf_node.lifetime.not_after</code> time has passed.<a href="#section-5.2-13" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="update-room-state">
@@ -2582,7 +2606,7 @@ respectively. When adding a user, the proposal containing the participant list
 change <span class="bcp14">MUST</span> be committed either before or simultaneously with the corresponding
 MLS operation.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
 <p id="section-5.3-4">Removing an active user from a participant list or banning an active participant
-<span class="bcp14">SHOULD</span> happen simultaneously with any MLS changes made to the commit removing
+likewise also happen simultaneously with any MLS changes made to the commit removing
 the participant.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
 <p id="section-5.3-5">A hub provider which observes that an active user has been removed or banned,
 but still has clients <span class="bcp14">MUST</span> prevent any of those clients from sending or
