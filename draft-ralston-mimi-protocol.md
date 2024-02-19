@@ -607,9 +607,8 @@ GET /.well-known/mimi-protocol-directory
 ## Fetch Key Material
 
 This action attempts to claim initial keying material for all the clients
-of a single user at a specific provider. The keying material may not be
-reused unless identified as "last resort" keying material. It uses the
-HTTP POST method.
+of a single user at a specific provider. The keying material is designed
+for use in a single room and may not be reused. It uses the HTTP POST method.
 
 ~~~
 POST /keyMaterial/{targetUser}
@@ -628,7 +627,7 @@ granted consent for a specific room.
 For MLS, the request includes a non-empty list of acceptable MLS ciphersuites,
 and an MLS `RequiredCapabilities` object (which contains credential types,
 non-default proposal types, and extensions) required by the requesting provider
-(these lists can be an empty). The `lastResortAllowed` field SHOULD be false.
+(these lists can be an empty).
 
 The request body has the following form.
 
@@ -646,7 +645,6 @@ struct {
         case mls10:
             CipherSuite acceptableCiphersuites<V>;
             RequiredCapabilities requiredCapabilities;
-            bool lastResortAllowed;
     };
 } KeyMaterialRequest;
 ~~~
@@ -666,7 +664,7 @@ If the *user* code is `noCompatibleMaterial`, the provider MAY populate the
 `clients` list.
 
 Keying material provided from one response MUST NOT be provided in any other
-response unless the `lastResortAllowed` field was set in the requests.
+response.
 The target provider MUST NOT provide expired keying material (ex: an MLS
 KeyPackage containing a LeafNode with a `notAfter` time past the current date
 and time).
@@ -686,9 +684,8 @@ enum {
 
 enum {
     success(0);
-    keyMaterialExhausted(1);
-    onlyLastResort(2);
-    nothingCompatible(3);
+    keyMaterialExhausted(1),
+    nothingCompatible(2),
     (255)
 } KeyMaterialClientCode;
 
