@@ -1002,7 +1002,8 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
    The response to a FanoutMessage contains no body.  The HTTP response
    code indicates if the messages in the request were accepted (201
-   response code), or if there was an error.
+   response code), or if there was an error.  The hub need not wait for
+   a response before sending the next fanout message.
 
 6.  Relation between MIMI state and cryptographic state
 

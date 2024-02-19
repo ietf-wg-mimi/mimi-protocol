@@ -2782,7 +2782,8 @@ Commit message, so they can recognize that they have been removed and clean up
 their internal state.<a href="#section-5.5-8" class="pilcrow">¶</a></p>
 <p id="section-5.5-9">The response to a FanoutMessage contains no body. The HTTP response code
 indicates if the messages in the request were accepted (201 response code), or
-if there was an error.<a href="#section-5.5-9" class="pilcrow">¶</a></p>
+if there was an error. The hub need not wait for a response before sending the
+next fanout message.<a href="#section-5.5-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
