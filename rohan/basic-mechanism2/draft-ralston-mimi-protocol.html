@@ -2400,16 +2400,22 @@ proposal, signs the proposal as a PublicMessage, and submits them to the
 <p id="section-5-1">This section describes the specific endpoints necessary to provide the
 functionality in the example flow. The framing for each endpoint includes a
 protocol so that different variations of the end-to-end encryption can be used.<a href="#section-5-1" class="pilcrow">¶</a></p>
-<p id="section-5-2">The syntax of the MIMI protocol messages are described using the TLS
-presentation language format (<span><a href="https://rfc-editor.org/rfc/rfc8446#section-3" class="relref">Section 3</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>).<a href="#section-5-2" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-5-3">
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5-2.1">
+          <p id="section-5-2.1.1"><strong>TODO</strong>: Determine the what needs to be included in the protocol. MIMI
+  version, e2e protocol version, etc.<a href="#section-5-2.1.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-5-3">The syntax of the MIMI protocol messages are described using the TLS
+presentation language format (<span><a href="https://rfc-editor.org/rfc/rfc8446#section-3" class="relref">Section 3</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>).<a href="#section-5-3" class="pilcrow">¶</a></p>
+<div class="lang-tls sourcecode" id="section-5-4">
 <pre>
 enum {
     reserved(0),
     mls10(1),
     (255)
 } Protocol;
-</pre><a href="#section-5-3" class="pilcrow">¶</a>
+</pre><a href="#section-5-4" class="pilcrow">¶</a>
 </div>
 <div id="directory">
 <section id="section-5.1">
@@ -2446,9 +2452,8 @@ GET /.well-known/mimi-protocol-directory
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-fetch-key-material" class="section-name selfRef">Fetch Key Material</a>
         </h3>
 <p id="section-5.2-1">This action attempts to claim initial keying material for all the clients
-of a single user at a specific provider. The keying material may not be
-reused unless identified as "last resort" keying material. It uses the
-HTTP POST method.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+of a single user at a specific provider. The keying material is designed
+for use in a single room and may not be reused. It uses the HTTP POST method.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.2-2">
 <pre>
 POST /keyMaterial/{targetUser}
@@ -2465,7 +2470,7 @@ granted consent for a specific room.<a href="#section-5.2-4" class="pilcrow">¶<
 <p id="section-5.2-5">For MLS, the request includes a non-empty list of acceptable MLS ciphersuites,
 and an MLS <code>RequiredCapabilities</code> object (which contains credential types,
 non-default proposal types, and extensions) required by the requesting provider
-(these lists can be an empty). The <code>lastResortAllowed</code> field <span class="bcp14">SHOULD</span> be false.<a href="#section-5.2-5" class="pilcrow">¶</a></p>
+(these lists can be an empty).<a href="#section-5.2-5" class="pilcrow">¶</a></p>
 <p id="section-5.2-6">The request body has the following form.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.2-7">
 <pre>
@@ -2482,7 +2487,6 @@ struct {
         case mls10:
             CipherSuite acceptableCiphersuites&lt;V&gt;;
             RequiredCapabilities requiredCapabilities;
-            bool lastResortAllowed;
     };
 } KeyMaterialRequest;
 </pre><a href="#section-5.2-7" class="pilcrow">¶</a>
@@ -2500,7 +2504,7 @@ reasons.)<a href="#section-5.2-8" class="pilcrow">¶</a></p>
 <code>clients</code> list. For any other user code, the provider <span class="bcp14">MUST NOT</span> populate the
 <code>clients</code> list.<a href="#section-5.2-9" class="pilcrow">¶</a></p>
 <p id="section-5.2-10">Keying material provided from one response <span class="bcp14">MUST NOT</span> be provided in any other
-response unless the <code>lastResortAllowed</code> field was set in the requests.
+response.
 The target provider <span class="bcp14">MUST NOT</span> provide expired keying material (ex: an MLS
 KeyPackage containing a LeafNode with a <code>notAfter</code> time past the current date
 and time).<a href="#section-5.2-10" class="pilcrow">¶</a></p>
@@ -2520,9 +2524,8 @@ enum {
 
 enum {
     success(0);
-    keyMaterialExhausted(1);
-    onlyLastResort(2);
-    nothingCompatible(3);
+    keyMaterialExhausted(1),
+    nothingCompatible(2),
     (255)
 } KeyMaterialClientCode;
 
