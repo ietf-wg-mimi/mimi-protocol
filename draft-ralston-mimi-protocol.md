@@ -732,10 +732,12 @@ It uses the HTTP POST method.
 POST /update/{roomId}
 ~~~
 
-In MLS 1.0, any change to the room base policy document or to the participant
-list is always communicated via an `AppSync` proposal type with the appropriate
-`applicationId`. The participant list change needed to add a user MUST
-happen either before or simultaneously with the corresponding MLS operation.
+Any change to the participant list or room policy (including
+authorization policy) is communicated via an `AppSync` proposal type
+with the `applicationId` of `mimiParticipantList` or `mimiRoomPolicy`
+respectively. When adding a user, the proposal containing the participant list
+change MUST be committed either before or simultaneously with the corresponding
+MLS operation.
 
 Removing an active user from a participant list or banning an active participant
 SHOULD happen simultaneously with any MLS changes made to the commit removing
@@ -806,7 +808,7 @@ struct {
 
 ## Submit a Message
 
-End-to-end encrypted (application) message are submitted to the hub for
+End-to-end encrypted (application) messages are submitted to the hub for
 authorization and eventual fanout using an HTTP POST request.
 
 ~~~
@@ -844,7 +846,7 @@ struct {
   Protocol protocol;
   select(protocol) {
     case mls10:
-      SubmitResponseCode status_code;
+      SubmitResponseCode statusCode;
   };
 } SubmitMessageResponse;
 ~~~
@@ -917,9 +919,10 @@ participant), and the associated end-to-end protocol state (its MLS group
 state) that anchors the room state cryptographically.
 
 While all parties involved in a room agree on the room's state during a
-specific epoch, the Hub is the arbiter that decides if a state change is valid.
-All state-changing events are sent to the Hub, checked for their validity and
-policy conformance before they are forwarded to any follower servers.
+specific epoch, the Hub is the arbiter that decides if a state change is valid,
+consistent with the room's then-current policy. All state-changing events are
+sent to the Hub and checked for their validity and policy conformance, before
+they are forwarded to any follower servers or local clients.
 
 As soon as the Hub accepts an event that changes the room state, its effect is
 applied to the room state and future events are validated in the context of that
