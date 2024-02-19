@@ -510,7 +510,7 @@ before processing the state change itself.
 > **TODO**: A little more needs to be said here about how MLS is used.  For
 example: What types of credential are required / allowed?  If servers are going
 to be allowed to introduce room changes, how are their keys provisioned as
-external signers?
+external signers? Need to maintain the membership and the list of queued proposals.
 
 ## Application Layer
 
