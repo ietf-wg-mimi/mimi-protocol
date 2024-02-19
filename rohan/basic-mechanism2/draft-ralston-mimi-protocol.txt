@@ -592,7 +592,8 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
       *TODO*: A little more needs to be said here about how MLS is used.
       For example: What types of credential are required / allowed?  If
       servers are going to be allowed to introduce room changes, how are
-      their keys provisioned as external signers?
+      their keys provisioned as external signers?  Need to maintain the
+      membership and the list of queued proposals.
 
 4.3.  Application Layer
 
@@ -845,12 +846,13 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    participant likewise also happen simultaneously with any MLS changes
    made to the commit removing the participant.
 
-   A hub provider which observes that an active user has been removed or
-   banned, but still has clients MUST prevent any of those clients from
-   sending or receiving any additional application messages; MUST
-   prevent any of those clients from sending Commit messages; and MUST
-   prevent it from sending any proposals except for Remove and
-   SelfRemove proposals.
+   A hub provider which observes that an active participant has been
+   removed or banned from the room, MUST prevent any of its clients from
+   sending or receiving any additional application messages in the
+   corresponding MLS group; MUST prevent any of those clients from
+   sending Commit messages in that group; and MUST prevent it from
+   sending any proposals except for Remove and SelfRemove
+   [I-D.ietf-mls-extensions] proposals in that group.
 
    The update request body is described below:
 
@@ -884,11 +886,12 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
      };
    } UpdateRequest;
 
-   In the first use case described in the Protocol Overview, Alice
-   creates a Commit containing an AppSync proposal adding bob@b.example,
-   and Add proposals for all Bob's MLS clients.  Alice includes the
-   Welcome message which will be sent for Bob, a GroupInfo object for
-   the hub provider, and complete ratchet_tree extension.
+   For example, in the first use case described in the Protocol
+   Overview, Alice creates a Commit containing an AppSync proposal
+   adding bob@b.example, and Add proposals for all Bob's MLS clients.
+   Alice includes the Welcome message which will be sent for Bob, a
+   GroupInfo object for the hub provider, and complete ratchet_tree
+   extension.
 
    The response body is described below:
 
@@ -1263,6 +1266,13 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
               Draft, draft-barnes-mimi-arch-02, 23 October 2023,
               <https://datatracker.ietf.org/doc/html/draft-barnes-mimi-
               arch-02>.
+
+   [I-D.ietf-mls-extensions]
+              Robert, R., "The Messaging Layer Security (MLS)
+              Extensions", Work in Progress, Internet-Draft, draft-ietf-
+              mls-extensions-03, 23 October 2023,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-mls-
+              extensions-03>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,

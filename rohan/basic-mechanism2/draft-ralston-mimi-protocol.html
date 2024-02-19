@@ -2315,7 +2315,7 @@ before processing the state change itself.<a href="#section-4.2-4" class="pilcro
             <p id="section-4.2-5.1.1"><strong>TODO</strong>: A little more needs to be said here about how MLS is used.  For
 example: What types of credential are required / allowed?  If servers are going
 to be allowed to introduce room changes, how are their keys provisioned as
-external signers?<a href="#section-4.2-5.1.1" class="pilcrow">¶</a></p>
+external signers? Need to maintain the membership and the list of queued proposals.<a href="#section-4.2-5.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2608,11 +2608,12 @@ MLS operation.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
 <p id="section-5.3-4">Removing an active user from a participant list or banning an active participant
 likewise also happen simultaneously with any MLS changes made to the commit removing
 the participant.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
-<p id="section-5.3-5">A hub provider which observes that an active user has been removed or banned,
-but still has clients <span class="bcp14">MUST</span> prevent any of those clients from sending or
-receiving any additional application messages; <span class="bcp14">MUST</span> prevent any of those clients
-from sending Commit messages; and <span class="bcp14">MUST</span> prevent it from sending any proposals
-except for <code>Remove</code> and <code>SelfRemove</code> proposals.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
+<p id="section-5.3-5">A hub provider which observes that an active participant has been removed or
+banned from the room, <span class="bcp14">MUST</span> prevent any of its clients from sending or
+receiving any additional application messages in the corresponding MLS group;
+<span class="bcp14">MUST</span> prevent any of those clients from sending Commit messages in that group;
+and <span class="bcp14">MUST</span> prevent it from sending any proposals except for <code>Remove</code> and
+<code>SelfRemove</code> <span>[<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span> proposals in that group.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
 <p id="section-5.3-6">The update request body is described below:<a href="#section-5.3-6" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.3-7">
 <pre>
@@ -2647,7 +2648,7 @@ struct {
 } UpdateRequest;
 </pre><a href="#section-5.3-7" class="pilcrow">¶</a>
 </div>
-<p id="section-5.3-8">In the first use case described in the Protocol Overview, Alice creates a Commit
+<p id="section-5.3-8">For example, in the first use case described in the Protocol Overview, Alice creates a Commit
 containing an AppSync proposal adding <code>bob@b.example</code>, and Add proposals for all
 Bob's MLS clients.  Alice includes the Welcome message which will be sent for
 Bob, a GroupInfo object for the hub provider, and complete <code>ratchet_tree</code>
@@ -3078,6 +3079,10 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <dt id="I-D.barnes-mimi-arch">[I-D.barnes-mimi-arch]</dt>
         <dd>
 <span class="refAuthor">Barnes, R.</span>, <span class="refTitle">"An Architecture for More Instant Messaging Interoperability (MIMI)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-barnes-mimi-arch-02</span>, <time datetime="2023-10-23" class="refDate">23 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-barnes-mimi-arch-02">https://datatracker.ietf.org/doc/html/draft-barnes-mimi-arch-02</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-mls-extensions">[I-D.ietf-mls-extensions]</dt>
+        <dd>
+<span class="refAuthor">Robert, R.</span>, <span class="refTitle">"The Messaging Layer Security (MLS) Extensions"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mls-extensions-03</span>, <time datetime="2023-10-23" class="refDate">23 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-03">https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-03</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
