@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-18T00:03:41.454669+00:00",
+  "timestamp": "2024-02-20T00:03:30.810402+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -772,6 +772,70 @@
           "updatedAt": "2024-02-06T22:20:18Z"
         }
       ]
+    },
+    {
+      "number": 52,
+      "id": "I_kwDOKZ8QO85_vAFp",
+      "title": "Figure out versioning",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/52",
+      "state": "OPEN",
+      "author": "rohan-wire",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Figure out if versioning of endpoints includes different options inside the same framing, or a whole new endpoint, discovered by the directory, or something else.",
+      "createdAt": "2024-02-19T19:33:42Z",
+      "updatedAt": "2024-02-19T19:33:43Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 53,
+      "id": "I_kwDOKZ8QO85_vDF3",
+      "title": "Define the specific form that identifiers take in MIMI",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/53",
+      "state": "OPEN",
+      "author": "rohan-wire",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-02-19T19:44:14Z",
+      "updatedAt": "2024-02-19T19:44:14Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 54,
+      "id": "I_kwDOKZ8QO85_vTpN",
+      "title": "Clarify handling of duplicate messages",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/54",
+      "state": "OPEN",
+      "author": "rohan-wire",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-02-19T20:35:54Z",
+      "updatedAt": "2024-02-19T20:35:54Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 55,
+      "id": "I_kwDOKZ8QO85_vcd3",
+      "title": "Make sure endpoint, and protocol are included in any MIMI signatures",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/55",
+      "state": "OPEN",
+      "author": "rohan-wire",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-02-19T21:07:46Z",
+      "updatedAt": "2024-02-19T21:07:46Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -4276,18 +4340,26 @@
       "labels": [],
       "body": "As requested by Travis, this is a replacement for PR #48 which has cleaner diffs (via individual commits).",
       "createdAt": "2024-02-09T19:24:51Z",
-      "updatedAt": "2024-02-15T06:21:46Z",
+      "updatedAt": "2024-02-19T21:43:06Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "36ad4767944db62e4b270460f06f2e6dfd98adef",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "rohan/basic-mechanism2",
-      "headRefOid": "46fc864ca8f3988143b16826529699a5726244aa",
+      "headRefOid": "395e200a9d871d2607b1fca76f4db2409d695aba",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Hi, I've been through the 120 comments on this PR, created 30 commits, and created 4 new issues. Thanks to @turt2live @kkohbrok and @bifurcation for all the comments. At this point I think I have addressed all substantive comments in some way or another. Here are four specific areas where I had some doubt if I correctly interpreted one of your intentions. \r\n\r\n@turt2live I used language regarding what the hub can do as needing to be consistent with the then-current room policy and part of being consistent is presumably that you can't change it unless you had permission to change it. \r\n\r\n@turt2live one of your comments where you requested changes is blocking this, so I'm going to select \"Dismiss review\". I'm very sorry if I dropped one of your comments, but I think I incorporated all your suggestions in letter or spirit. \r\n\r\n@kkohbrok I believe removing MIMI DS but doing something that allowed clients and providers to implement a very similar MIMI DS \"API\" is what I was asked to do. If that's not what was intended, please open a separate issue or PR.\r\n\r\n@kkohbrok regarding client lifetime handling, I think this is a client issue already handled in RFC9420. If you think MIMI still needs to say something here, please open a PR or issue and I will fix it post-merge.\r\n\r\nClicking merge here in a moment. See you on the other side of this PR.\r\n",
+          "createdAt": "2024-02-19T21:37:28Z",
+          "updatedAt": "2024-02-19T21:37:28Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOKZ8QO85v0ODV",
@@ -4296,10 +4368,10 @@
           },
           "author": "turt2live",
           "authorAssociation": "COLLABORATOR",
-          "state": "CHANGES_REQUESTED",
+          "state": "DISMISSED",
           "body": "This is a first pass of the PR, trying to cover as much of the content as possible. I'll aim to do further passes over the next few days and week.\r\n\r\nSee comments contained within for details. There's a mix of editorial comments and functional changes.",
           "createdAt": "2024-02-12T18:54:11Z",
-          "updatedAt": "2024-02-12T20:33:04Z",
+          "updatedAt": "2024-02-19T21:43:06Z",
           "comments": [
             {
               "originalPosition": 20,
@@ -5716,6 +5788,140 @@
               "body": "The first field of this struct is labeled `timestamp` and then there's another one on the line this comment is on. I do agree that we generally need a timestamp. I was just confused by the presence of two timestamps.",
               "createdAt": "2024-02-15T06:21:46Z",
               "updatedAt": "2024-02-15T06:21:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85wHq_z",
+          "commit": {
+            "abbreviatedOid": "395e200"
+          },
+          "author": "rohan-wire",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-14T19:11:52Z",
+          "updatedAt": "2024-02-19T21:39:46Z",
+          "comments": [
+            {
+              "originalPosition": 1258,
+              "body": "OK. I just removed the entire Acknowledgements section as not needed for the bare minimum.",
+              "createdAt": "2024-02-14T19:11:52Z",
+              "updatedAt": "2024-02-19T21:39:46Z"
+            },
+            {
+              "originalPosition": 1181,
+              "body": "I just created a new commit to remove all vestiges of MIMI-DS so this document is self-contained.  We can revert it if that is not what we wanted.",
+              "createdAt": "2024-02-14T19:38:51Z",
+              "updatedAt": "2024-02-19T21:39:47Z"
+            },
+            {
+              "originalPosition": 1151,
+              "body": "OK, I think this is addressed now with one of my recent commits.\r\n@kkohbrok does that commit look ok to you?",
+              "createdAt": "2024-02-14T19:50:59Z",
+              "updatedAt": "2024-02-19T21:39:46Z"
+            },
+            {
+              "originalPosition": 1124,
+              "body": "How about I make the last phrase read as follows?\r\n\r\n\"the Hub is the arbiter that decides if a state change is valid, consistent with the room's then current policy.\"",
+              "createdAt": "2024-02-14T19:54:19Z",
+              "updatedAt": "2024-02-19T21:39:46Z"
+            },
+            {
+              "originalPosition": 1099,
+              "body": "I don't think we can or should wait for a response to a fanout. We can't meet the needs of a large provider if we have a one-RTT delay between fanout messages. With a 10ms RTT, our max throughput on a single TLS connection would be 6000 messages per minute. Even a 100-person company can fanout more than 6000 messages per minute (reactions, read-receipts, maybe isTyping notificiations, ...) pretty easily.\r\n\r\nOn the receive side, it is just a queue of messages (and the order can be reconstructed trivially from the (hub accepted time) timestamp in the message.",
+              "createdAt": "2024-02-15T05:39:00Z",
+              "updatedAt": "2024-02-19T21:39:46Z"
+            },
+            {
+              "originalPosition": 335,
+              "body": "Ah, not enough context in the conversation diff. Fixed.",
+              "createdAt": "2024-02-15T05:44:41Z",
+              "updatedAt": "2024-02-19T21:39:47Z"
+            },
+            {
+              "originalPosition": 543,
+              "body": "fixed",
+              "createdAt": "2024-02-15T06:07:58Z",
+              "updatedAt": "2024-02-19T21:39:47Z"
+            },
+            {
+              "originalPosition": 24,
+              "body": "placeholder in issue #52 ",
+              "createdAt": "2024-02-19T19:34:07Z",
+              "updatedAt": "2024-02-19T21:39:46Z"
+            },
+            {
+              "originalPosition": 270,
+              "body": "raised in issue #53",
+              "createdAt": "2024-02-19T19:44:26Z",
+              "updatedAt": "2024-02-19T21:39:46Z"
+            },
+            {
+              "originalPosition": 370,
+              "body": "agreed. that wasn't my intention. just to provide a set of response with clear semantics that the providers can use. Added a commit which clarifies.",
+              "createdAt": "2024-02-19T20:09:56Z",
+              "updatedAt": "2024-02-19T21:39:46Z"
+            },
+            {
+              "originalPosition": 522,
+              "body": "Left a placeholder that allows us to support other solutions, such as the hub reconstructing most of the GroupInfo from Commits. ",
+              "createdAt": "2024-02-19T20:23:29Z",
+              "updatedAt": "2024-02-19T21:39:46Z"
+            },
+            {
+              "originalPosition": 972,
+              "body": " #54 ",
+              "createdAt": "2024-02-19T20:36:16Z",
+              "updatedAt": "2024-02-19T21:39:46Z"
+            },
+            {
+              "originalPosition": 972,
+              "body": "Added paragraph covering this. ",
+              "createdAt": "2024-02-19T20:50:10Z",
+              "updatedAt": "2024-02-19T21:39:46Z"
+            },
+            {
+              "originalPosition": 249,
+              "body": "covered in issue #53",
+              "createdAt": "2024-02-19T20:58:54Z",
+              "updatedAt": "2024-02-19T21:39:46Z"
+            },
+            {
+              "originalPosition": 492,
+              "body": "pretended we already had two specific applicationIds: `mimiRoomPolicy` and `mimiParticipantList`",
+              "createdAt": "2024-02-19T21:00:22Z",
+              "updatedAt": "2024-02-19T21:39:46Z"
+            },
+            {
+              "originalPosition": 280,
+              "body": "issue #53",
+              "createdAt": "2024-02-19T21:02:24Z",
+              "updatedAt": "2024-02-19T21:39:47Z"
+            },
+            {
+              "originalPosition": 337,
+              "body": "search for this vector. it's there\r\n`ClientKeyMaterial clients<V>;`",
+              "createdAt": "2024-02-19T21:04:08Z",
+              "updatedAt": "2024-02-19T21:39:47Z"
+            },
+            {
+              "originalPosition": 339,
+              "body": "There are tons of uses of both key material and keying material. we can decide later which of these we want to use. for now i will ignore this.",
+              "createdAt": "2024-02-19T21:05:27Z",
+              "updatedAt": "2024-02-19T21:39:47Z"
+            },
+            {
+              "originalPosition": 823,
+              "body": "#52 ",
+              "createdAt": "2024-02-19T21:21:22Z",
+              "updatedAt": "2024-02-19T21:39:47Z"
+            },
+            {
+              "originalPosition": 41,
+              "body": "discussed in #52 ",
+              "createdAt": "2024-02-19T21:39:11Z",
+              "updatedAt": "2024-02-19T21:39:47Z"
             }
           ]
         }
