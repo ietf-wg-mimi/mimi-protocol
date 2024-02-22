@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-20T00:03:30.810402+00:00",
+  "timestamp": "2024-02-22T00:03:12.556821+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -4333,24 +4333,26 @@
       "id": "PR_kwDOKZ8QO85mg0xP",
       "title": "Incorporate the basic mechanism described in the example flows (take 2)",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/50",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohan-wire",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "As requested by Travis, this is a replacement for PR #48 which has cleaner diffs (via individual commits).",
       "createdAt": "2024-02-09T19:24:51Z",
-      "updatedAt": "2024-02-19T21:43:06Z",
+      "updatedAt": "2024-02-20T14:23:08Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "36ad4767944db62e4b270460f06f2e6dfd98adef",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "rohan/basic-mechanism2",
       "headRefOid": "395e200a9d871d2607b1fca76f4db2409d695aba",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-02-20T14:23:08Z",
+      "mergedAt": "2024-02-20T14:23:08Z",
+      "mergedBy": "rohan-wire",
+      "mergeCommit": {
+        "oid": "d72db4b7a23c05d02048dfbbd50d97843a153d9a"
+      },
       "comments": [
         {
           "author": "rohan-wire",
@@ -5924,6 +5926,19 @@
               "updatedAt": "2024-02-19T21:39:47Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85woMVp",
+          "commit": {
+            "abbreviatedOid": "395e200"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thanks for making the changes @rohan-wire! I'd say let's get this merged and then we can see what issue we want to follow up with.",
+          "createdAt": "2024-02-20T06:28:16Z",
+          "updatedAt": "2024-02-20T06:28:16Z",
+          "comments": []
         }
       ]
     },
