@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-22T00:03:12.556821+00:00",
+  "timestamp": "2024-02-25T00:03:44.023466+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -667,7 +667,7 @@
       "labels": [],
       "body": "I feel like it's a missed opportunity by the MIMI WG to essentially ignore the prior art created with the XMPP standard and make no effort to be compatible with the existing XMPP internet standard.\r\n\r\nI'm not sure why an entirely new transport protocol and message format that is not compatible with XMPP is being considered, instead of a XMPP protocol extension for MLS.\r\n\r\nThe advantages of Matrix were eventual consistency and more decentralized rooms, but the protocol proposal makes no mention of those features and the scaling issues Matrix has show that they're probably a bad idea too. Is it really worth breaking compatibility with XMPP just to replace XML with JSON?",
       "createdAt": "2023-12-02T13:48:21Z",
-      "updatedAt": "2024-02-07T10:59:54Z",
+      "updatedAt": "2024-02-22T20:44:42Z",
       "closedAt": null,
       "comments": [
         {
@@ -746,6 +746,27 @@
           "body": "- XMPP over HTTP is long specified via [XEP-0206](https://xmpp.org/extensions/xep-0206.html), with multiple implementations having used it in the wild (it was how XMPP clients in browsers worked before there was WebSocket)\r\n- XMPP over WebSocket is specified via [RFC7395](https://datatracker.ietf.org/doc/rfc7395/)\r\n- XMPP over QUIC was specified before the foundation of the MIMI WG via [XEP-0467](https://xmpp.org/extensions/xep-0467.html). There is a [server-side proxy software](https://github.com/moparisthebest/xmpp-proxy) that can make every existing XMPP server support XMPP over QUIC both for c2s and s2s.\r\n\r\nSo any of the mentioned reasons that speak for using HTTP would not rule out using XMPP in any way. That said, I also don't see a big issue with using something else. Even if XMPP was used as is as a transport protocol, there would be need to add support for new identifiers, discovery and so on, so it's unlikely that any existing XMPP implementation could be compatible with what is within the goals of MIMI.\r\n\r\nWhen it comes to take learnings from XMPP:\r\n- Don't use XML or JSON for transporting binary blobs (or as payload for encrypted messages). It's really just wasting resources and it's impossible to understand those for humans anyway (which was one of the reasons to use plain-text protocols back then).\r\n- Always keep in mind you might lose messages on s2s links during fanout, implying the need to discover this and be able to recover from such loss.",
           "createdAt": "2024-02-07T10:59:53Z",
           "updatedAt": "2024-02-07T10:59:53Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@haansn08 , first of all, I apologize to taking a long time to respond to this issue. \r\n\r\nI quite like the clean semantics of XMPP. It has clean layering; the very relevant distinction between `message`, `presence`, and `iq` stanzas; and it has inter-domain interoperability baked in. Most of largest messaging servers ran on XMPP at some time in the past. Some of them also permitted open-federation. \r\n\r\nSo, why don't they use XMPP now? Open-federation became unsupportable due to spam and abuse, but that is not a reason to switch protocols (you can run an XMPP system that refuses to accept messages to or from most domains). \r\nThe large vendors have volumes in the millions of messages per minute. They were some of the largest XMPP deployments and then transitioned to something else.\r\n\r\nMy understanding is that at some point the time spent parsing each stream to find the beginning and end of a stanza became a real bottleneck in these networks and made it challenging to implement what has become a standard high availability architecture, where a small number of ingress nodes forward to a much larger set of service nodes. \r\n\r\nKeeping track of which elements you are in, not to mention comments and CDATA blobs involve pretty non-trivial string processing if all you want to find is the start and end of a stanza. Chunking fixed length binary blobs is way easier and faster for an ingress node.\r\n\r\nI wasn't familiar with XEP-0467, but it seems to focus on the client to server connection. I could imagine that a binary protocol that just delivers XMPP stanzas over mutual TLS or QUIC could already dramatically improve the ingress situation.\r\n\r\nWhat else has changed since most instant messaging services ran on XMPP? End-to-end encryption. MIMI would not exist if it was not a requirement. Without it vendors could just gateway among protocols. E2EE means that the contents encrypted for the recipients need to be usable by the recipients. That means we need a standard content format, a standard encryption protocol (in this case MLS), compatible usage of that encryption, and a way to negotiation extensions. \r\n\r\nI would be delighted to see implementations of XMPP that use MLS, and I am willing to help implementers make that happen. I would also entertain using XMPP to exchange MLS-encrypted messages *in MIMI* if it includes a credible proposal to solve the high availability problem. \r\n\r\nThat said, I think the semantics of consent, initial keying material, and the details of which MLS extensions are needed (ex: which external_senders are in a group and how they get there; how a welcomed client gets the ratchet tree) are much more pressing. Those questions need to get resolved regardless if MIMI transport happens over HTTP, XMPP, or something else.\r\n\r\nThanks,\r\n-rohan",
+          "createdAt": "2024-02-22T18:39:55Z",
+          "updatedAt": "2024-02-22T18:39:55Z"
+        },
+        {
+          "author": "mar-v-in",
+          "authorAssociation": "NONE",
+          "body": "Hi rohan,\r\n\r\nI secured funding to specify and implement MLS in XMPP (see https://nlnet.nl/project/XMPP-MLS/). Compatibility of this specification with MIMI is important to me and the XMPP community. As of now, I assume that something along the lines of [draft-ietf-mimi-content](https://datatracker.ietf.org/doc/draft-ietf-mimi-content/) will be the MIMI payload format, which is fine for me (we can specify how it maps to XMPP and have an [XEP-0420](https://xmpp.org/extensions/xep-0420.html) envelope inside an additional part to accommodate for XMPP features not supported by MIMI itself where necessary).\r\n\r\nAs a client developer, I am personally not really involved with the selection of the transport protocol of MLS-encrypted MIMI messages - we can have server-side gateways to whatever MIMI decides to do.\r\n\r\nAs I understood, there was no interest within the MIMI WG to use a protocol based on and/or compatible with current XMPP specification, software and deployments and this is a fair decision. If there was a clear signal from MIMI WG that XMPP is desired to be used, I am certain that several community members would be willing to prioritize developments around that. But as many contributors to XMPP don't have a lot of resources they are willing to waste on this (if there is no intent from the MIMI WG to pick these things up, it would likely be wasted), you are unlikely to see large documents being prepared to promote the use of XMPP in MIMI.",
+          "createdAt": "2024-02-22T19:17:53Z",
+          "updatedAt": "2024-02-22T19:17:53Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@mar-v-in \r\nI'm delighted to hear that you have funding to write a XEP for MLS. I'm happy to help, and I would love the MIMI usage of MLS and the XEP to be compatible. Please DM me (IETF Slack, @rohanmahy on Wire, rohan.ietf@gmail.com ).\r\n\r\n> If there was a clear signal from MIMI WG that XMPP is desired to be used, I am certain that several community members would be willing to prioritize developments around that. But as many contributors to XMPP don't have a lot of resources they are willing to waste on this (if there is no intent from the MIMI WG to pick these things up, it would likely be wasted), you are unlikely to see large documents being prepared to promote the use of XMPP in MIMI.\r\n\r\nI think this is a bit of a chicken and egg problem. I think having an idea of how it would work at the bar-napkin or half-page outline level would be useful for the rest of the WG to even understand how it would be possible. ",
+          "createdAt": "2024-02-22T20:43:30Z",
+          "updatedAt": "2024-02-22T20:44:42Z"
         }
       ]
     },
