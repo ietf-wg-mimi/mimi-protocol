@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-25T00:03:44.023466+00:00",
+  "timestamp": "2024-02-27T00:03:51.468621+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -163,7 +163,7 @@
         },
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I think we should first have a discussion about what information goes into room policy and room state. \r\n\r\nwe also need to enumerate what information we are talking about and decide if it needs to be inspected by the hub, and if it needs to be inspected by other providers.",
           "createdAt": "2023-11-12T13:32:40Z",
           "updatedAt": "2023-11-12T13:32:40Z"
@@ -247,21 +247,21 @@
         },
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> If I remember correctly, one of the considerations is that it must be defined either by the WG itself or elsewhere in the IETF.\r\n\r\nIt requires a \"stable reference\". Protobuf 3 probably does not qualify because it is still being changed. Protobuf 2 probably qualifies.",
           "createdAt": "2023-11-12T13:40:37Z",
           "updatedAt": "2023-11-12T13:40:37Z"
         },
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Cons of TLS:\r\nThis is less an issue for the transport protocol than for the content format, but I was unable to locate a javascript TLS presentation language parser that seems to be actively maintained. The most obvious TLS library for js, [forge](https://github.com/digitalbazaar/forge) still mentions Flash in its README and the last commit was in spring of 2022. \r\nAlso, TLS unfortunately does not have typedefs, so when you define a type for reuse or clarity, you have to access it through the type.\r\n\r\nFrankly, I think none of these 4 encodings is really focused on what we would need for a gatekeeper to gatekeeper implementation, which is parsing speed \u00fcber alles. Protobuf base-128 encodes all its integers. CBOR shares its type and length in many cases in the same byte. These are efficiencies for compactness which are undesirable in the MIMI case.",
           "createdAt": "2023-11-13T06:24:17Z",
           "updatedAt": "2023-11-13T06:24:17Z"
         },
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Thanks Andrew for sending out a nice summary.\r\n\r\nAndrew said:\r\n>    Do we care about the encoding scheme being defined by an existing RFC?\r\n>        If this is a blocker, why are we considering options other than TLS Presentation Language or CBOR?\r\n>        Similarly, if this is a blocker, it severely limits our options. What would we need to do to use, say, Protobufs. Would we need to get the encoding spec into an I-D?\r\n\r\nIf we have a good reason to use non-IETF specs, we can as long as there is a stable reference. The key here is the requirements. \r\n\r\n>    Is a canonical representation of the data on the wire a hard requirement?\r\nYes, I think so.  I want to point out that a solution/compromise to this problem in CBOR is to define an array of the mandatory types (so those fields are always in order), and then a map of extensions (which could be empty). This allows safe extensions with only limited impact on speed (you only look for an extension when you need one). You can probably do this in TLS if you juggle the fields hard enough, but it is not especially natural.\r\n",
           "createdAt": "2023-11-13T06:32:32Z",
           "updatedAt": "2023-11-13T06:32:32Z"
@@ -634,7 +634,7 @@
       "comments": [
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "A response to a knock could be an Add or an Invite or a Ban IMO.",
           "createdAt": "2023-11-12T13:28:35Z",
           "updatedAt": "2023-11-12T13:28:35Z"
@@ -749,7 +749,7 @@
         },
         {
           "author": "rohanmahy",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "body": "@haansn08 , first of all, I apologize to taking a long time to respond to this issue. \r\n\r\nI quite like the clean semantics of XMPP. It has clean layering; the very relevant distinction between `message`, `presence`, and `iq` stanzas; and it has inter-domain interoperability baked in. Most of largest messaging servers ran on XMPP at some time in the past. Some of them also permitted open-federation. \r\n\r\nSo, why don't they use XMPP now? Open-federation became unsupportable due to spam and abuse, but that is not a reason to switch protocols (you can run an XMPP system that refuses to accept messages to or from most domains). \r\nThe large vendors have volumes in the millions of messages per minute. They were some of the largest XMPP deployments and then transitioned to something else.\r\n\r\nMy understanding is that at some point the time spent parsing each stream to find the beginning and end of a stanza became a real bottleneck in these networks and made it challenging to implement what has become a standard high availability architecture, where a small number of ingress nodes forward to a much larger set of service nodes. \r\n\r\nKeeping track of which elements you are in, not to mention comments and CDATA blobs involve pretty non-trivial string processing if all you want to find is the start and end of a stanza. Chunking fixed length binary blobs is way easier and faster for an ingress node.\r\n\r\nI wasn't familiar with XEP-0467, but it seems to focus on the client to server connection. I could imagine that a binary protocol that just delivers XMPP stanzas over mutual TLS or QUIC could already dramatically improve the ingress situation.\r\n\r\nWhat else has changed since most instant messaging services ran on XMPP? End-to-end encryption. MIMI would not exist if it was not a requirement. Without it vendors could just gateway among protocols. E2EE means that the contents encrypted for the recipients need to be usable by the recipients. That means we need a standard content format, a standard encryption protocol (in this case MLS), compatible usage of that encryption, and a way to negotiation extensions. \r\n\r\nI would be delighted to see implementations of XMPP that use MLS, and I am willing to help implementers make that happen. I would also entertain using XMPP to exchange MLS-encrypted messages *in MIMI* if it includes a credible proposal to solve the high availability problem. \r\n\r\nThat said, I think the semantics of consent, initial keying material, and the details of which MLS extensions are needed (ex: which external_senders are in a group and how they get there; how a welcomed client gets the ratchet tree) are much more pressing. Those questions need to get resolved regardless if MIMI transport happens over HTTP, XMPP, or something else.\r\n\r\nThanks,\r\n-rohan",
           "createdAt": "2024-02-22T18:39:55Z",
           "updatedAt": "2024-02-22T18:39:55Z"
@@ -763,7 +763,7 @@
         },
         {
           "author": "rohanmahy",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "body": "@mar-v-in \r\nI'm delighted to hear that you have funding to write a XEP for MLS. I'm happy to help, and I would love the MIMI usage of MLS and the XEP to be compatible. Please DM me (IETF Slack, @rohanmahy on Wire, rohan.ietf@gmail.com ).\r\n\r\n> If there was a clear signal from MIMI WG that XMPP is desired to be used, I am certain that several community members would be willing to prioritize developments around that. But as many contributors to XMPP don't have a lot of resources they are willing to waste on this (if there is no intent from the MIMI WG to pick these things up, it would likely be wasted), you are unlikely to see large documents being prepared to promote the use of XMPP in MIMI.\r\n\r\nI think this is a bit of a chicken and egg problem. I think having an idea of how it would work at the bar-napkin or half-page outline level would be useful for the rest of the WG to even understand how it would be possible. ",
           "createdAt": "2024-02-22T20:43:30Z",
           "updatedAt": "2024-02-22T20:44:42Z"
@@ -777,7 +777,7 @@
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/46",
       "state": "OPEN",
       "author": "rohan-wire",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "draft-ralston-mimi-protocol currently uses Matrix-style power levels.\r\ndraft-barnes-mimi-protocol currently implies role-based access control (RBAC).\r\n\r\nI think we have three reasonable choices here:\r\n- keep using power levels\r\n- use role-based access control with a fixed set of roles (for example: owner, admin, moderator, regular-user, visitor, banned, none)\r\n- user role-based access control with administrator defined role labels. Each role label has a set of permissions it can accomplish (for example, can add user, can add remove user, can change user role, can change base policy, etc.)\r\n\r\nTravis brought up that with role-based access control it is necessary to specify the behavior of combinations of roles or permissions. That is true, but I don't think it is unreasonable to enumerate those requirements. I think RBAC maps much better onto the variety of systems we would like to interop with. ",
@@ -801,7 +801,7 @@
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/52",
       "state": "OPEN",
       "author": "rohan-wire",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Figure out if versioning of endpoints includes different options inside the same framing, or a whole new endpoint, discovered by the directory, or something else.",
@@ -817,7 +817,7 @@
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/53",
       "state": "OPEN",
       "author": "rohan-wire",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -833,7 +833,7 @@
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/54",
       "state": "OPEN",
       "author": "rohan-wire",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -849,7 +849,7 @@
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/55",
       "state": "OPEN",
       "author": "rohan-wire",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -949,28 +949,28 @@
       "comments": [
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Hi Travis,\r\n\r\nI don't think this particular list of events is helping us move forward. \r\n\r\nThe m.room.create event is out of scope of MIMI.\r\n\r\nIn the MLS case, I think we had strong consensus to use an MLS Proposal to update the participant list. So, we don't need the m.room.user event.  \r\n\r\nSending an application message does not require a signature, and sending an MLS handshake (and therefore participant list modification) in MLS does not require a signature. Therefore, we should remove them from every event. We can add a signature to the specific events that need them (ex: consent).",
           "createdAt": "2023-10-29T16:43:21Z",
           "updatedAt": "2023-10-30T00:15:28Z"
         },
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Why do other mimi providers need to be notified about a created? It doesn't\r\nseem actionable by a remote provider. Can't they just become aware of a\r\nroom the first time one of their users is added to it?\r\n\r\nOn Sun, Oct 29, 2023, 10:06 Travis Ralston ***@***.***> wrote:\r\n\r\n> ***@***.**** commented on this pull request.\r\n> ------------------------------\r\n>\r\n> In draft-ralston-mimi-protocol.md\r\n> <https://github.com/bifurcation/ietf-mimi-protocol/pull/2#discussion_r1375474716>\r\n> :\r\n>\r\n> > @@ -200,12 +217,18 @@ struct {\r\n>  > **TODO**: Include fields for encryption information. Possibly ciphersuite and\r\n>  > similar so a server can check to ensure it supports the MLS dialect?\r\n>\r\n> +**Fanout considerations**:\r\n> +\r\n> +`CreateEvent` is *unsigned* in all cases it is used. The create event is used\r\n>\r\n> This is not being used as an advertisement to other providers. It's used\r\n> to carry information over the API because the framing is an Event. See\r\n> \"check invite\" API.\r\n>\r\n> \u2014\r\n> Reply to this email directly, view it on GitHub\r\n> <https://github.com/bifurcation/ietf-mimi-protocol/pull/2#discussion_r1375474716>,\r\n> or unsubscribe\r\n> <https://github.com/notifications/unsubscribe-auth/AVXAIJZS7XRGONEZ7QRD62DYB2EHVAVCNFSM6AAAAAA6TONZUOVHI2DSMVQWIX3LMV43YUDVNRWFEZLROVSXG5CSMV3GSZLXHMYTOMBSHE4TMNJXGA>\r\n> .\r\n> You are receiving this because you were mentioned.Message ID:\r\n> ***@***.***>\r\n>\r\n",
           "createdAt": "2023-10-29T20:41:38Z",
           "updatedAt": "2023-10-30T00:15:18Z"
         },
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Your statement is about *users*. Users of a MIMI-capable provider can\r\ncertainly create rooms and MLS groups as they like. Why is this\r\ncontroversial? By the time users on foreign providers start to get involved\r\nthere will be a room and a group, but we need to ne clear about how users\r\nend up in groups because the other users need to authorize them.\r\n-r\r\n\r\n\r\nOn Sun, Oct 29, 2023, 10:06 Travis Ralston ***@***.***> wrote:\r\n\r\n> ***@***.**** commented on this pull request.\r\n> ------------------------------\r\n>\r\n> In draft-ralston-mimi-protocol.md\r\n> <https://github.com/bifurcation/ietf-mimi-protocol/pull/2#discussion_r1375474774>\r\n> :\r\n>\r\n> > @@ -304,84 +331,47 @@ described by {{leaves}}. Accepting is done by joining ({{joins}}) the room.\r\n>  ~~~\r\n>  {: #fig-invites title=\"Invite happy path\" }\r\n>\r\n> -## Joins {#joins}\r\n> -\r\n> -A user can join a room in two ways:\r\n> -\r\n> -1. Using an external commit to Add themselves to the MLS group.\r\n> -2. Receiving a Welcome message from a joined member of the MLS group.\r\n> -\r\n>\r\n> MIMI requires signaling, which does not permit the creation of an MLS\r\n> group outside of a room.\r\n>\r\n> \u2014\r\n> Reply to this email directly, view it on GitHub\r\n> <https://github.com/bifurcation/ietf-mimi-protocol/pull/2#discussion_r1375474774>,\r\n> or unsubscribe\r\n> <https://github.com/notifications/unsubscribe-auth/AVXAIJY23BCAC4HNHCCVB6DYB2EJRAVCNFSM6AAAAAA6TONZUOVHI2DSMVQWIX3LMV43YUDVNRWFEZLROVSXG5CSMV3GSZLXHMYTOMBSHE4TMNRSG4>\r\n> .\r\n> You are receiving this because you were mentioned.Message ID:\r\n> ***@***.***>\r\n>\r\n",
           "createdAt": "2023-10-29T23:45:11Z",
           "updatedAt": "2023-10-30T00:18:51Z"
         },
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Regardless what protocol you use, you will need some binding between\r\nparticipant list changes and the e2e encryption protocol. For MLS, Konrad\r\nand Raphael suggested a proposal, Tom chimed in that they do that too, and\r\nRichard and I both responded favorably. Nobody raised any objection or gave\r\na reason why we would should not.\r\nThanks,\r\n-rohan\r\n\r\nOn Sun, Oct 29, 2023, 10:10 Travis Ralston ***@***.***> wrote:\r\n\r\n> ***@***.**** commented on this pull request.\r\n> ------------------------------\r\n>\r\n> On draft-ralston-mimi-protocol.md\r\n> <https://github.com/bifurcation/ietf-mimi-protocol/pull/2#discussion_r1375475447>\r\n> :\r\n>\r\n> The m.room.create event is out of scope of MIMI.\r\n>\r\n> See\r\n> https://github.com/bifurcation/ietf-mimi-protocol/pull/2/files#r1375474716\r\n>\r\n> In the MLS case, I think we had strong consensus to use an MLS Proposal to\r\n> update the participant list. So, we don't need the m.room.user event.\r\n>\r\n> I don't agree that we had consensus on using MLS Proposals for participant\r\n> list changes. This document is shaped independently of MLS though, so\r\n> events *could* run over MLS Proposals in a different document if desired.\r\n> We should discuss this as a Design Team.\r\n>\r\n> Sending an application message does not require a signature, and sending\r\n> an MLS handshake (and therefore participant list modification) in MLS does\r\n> not require a signature. Therefore, we should remove them from every event.\r\n> We can add a signature to the specific events that need them (ex: consent).\r\n>\r\n> The application message is not signed by the protocol document (in fact,\r\n> it's been removed in this PR). Participant list events are required to be\r\n> signed because they transit multiple hops, however redactions and hash\r\n> chaining were removed in an earlier PR already.\r\n>\r\n> \u2014\r\n> Reply to this email directly, view it on GitHub\r\n> <https://github.com/bifurcation/ietf-mimi-protocol/pull/2#discussion_r1375475447>,\r\n> or unsubscribe\r\n> <https://github.com/notifications/unsubscribe-auth/AVXAIJ3JRMCI42ZDL5EXLC3YB2EYVAVCNFSM6AAAAAA6TONZUOVHI2DSMVQWIX3LMV43YUDVNRWFEZLROVSXG5CSMV3GSZLXHMYTOMBSHE4TONBXG4>\r\n> .\r\n> You are receiving this because you were mentioned.Message ID:\r\n> ***@***.***>\r\n>\r\n",
           "createdAt": "2023-10-29T23:56:02Z",
           "updatedAt": "2023-10-30T00:25:17Z"
@@ -983,7 +983,7 @@
             "abbreviatedOid": "0b4a3ed"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-10-29T16:46:09Z",
@@ -1003,7 +1003,7 @@
             "abbreviatedOid": "0b4a3ed"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-10-29T16:46:46Z",
@@ -1258,7 +1258,7 @@
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/3",
       "state": "MERGED",
       "author": "rohan-wire",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -1286,7 +1286,7 @@
         },
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> For the record: a lot of this PR's content may be different or superceded by what Konrad and I are working on in preparation for the Design Team meeting in a couple of days.\r\n\r\nFair enough. I just wanted to have two things from this PR:\r\n\r\n- a narrative/example walkthrough of the Alice and Bob case (which can point to things defined elsewhere)\r\n- an existence proof that we can make this work for the MLS case, and that the boundary between MLS and everything is a relatively clean boundary.\r\n\r\n",
           "createdAt": "2023-10-30T18:10:30Z",
           "updatedAt": "2023-10-30T18:11:06Z"
@@ -1420,7 +1420,7 @@
             "abbreviatedOid": "1036847"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-11-03T21:15:48Z",
@@ -1440,7 +1440,7 @@
             "abbreviatedOid": "1036847"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-11-03T21:17:36Z",
@@ -1460,7 +1460,7 @@
             "abbreviatedOid": "1036847"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-11-03T21:17:57Z",
@@ -1524,7 +1524,7 @@
             "abbreviatedOid": "edf04de"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "I still have issues with the text, but it is substantially better.\r\n\r\nOne suggestion, is we rename the \"user\" in `m.room.user` to \"invite\"",
           "createdAt": "2023-10-30T18:59:45Z",
@@ -1698,7 +1698,7 @@
             "abbreviatedOid": "eaccd90"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2023-11-02T14:27:20Z",
@@ -1787,7 +1787,7 @@
             "abbreviatedOid": "78aea2a"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2023-11-02T14:55:30Z",
@@ -1844,7 +1844,7 @@
             "abbreviatedOid": "06c2fd5"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "CHANGES_REQUESTED",
           "body": "",
           "createdAt": "2023-11-02T15:37:58Z",
@@ -1870,7 +1870,7 @@
             "abbreviatedOid": "06c2fd5"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-11-02T23:51:19Z",
@@ -1950,7 +1950,7 @@
             "abbreviatedOid": "cde6ff2"
           },
           "author": "rohanmahy",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2023-11-03T19:43:35Z",
@@ -1963,7 +1963,7 @@
             "abbreviatedOid": "06c2fd5"
           },
           "author": "rohanmahy",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-11-03T19:44:28Z",
@@ -1983,7 +1983,7 @@
             "abbreviatedOid": "cde6ff2"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2023-11-03T21:02:50Z",
@@ -2027,7 +2027,7 @@
             "abbreviatedOid": "00e90a1"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-11-03T21:06:33Z",
@@ -2047,7 +2047,7 @@
             "abbreviatedOid": "00e90a1"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2023-11-03T21:06:39Z",
@@ -2119,7 +2119,7 @@
             "abbreviatedOid": "0fca48f"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "CHANGES_REQUESTED",
           "body": "I suggest we commit PR #3 and modify it to use the correct structs and have the same issues and TODOs. I am willing to do the work to make that happen on the flight to Prague tomorrow",
           "createdAt": "2023-11-03T21:09:12Z",
@@ -2145,7 +2145,7 @@
             "abbreviatedOid": "2273474"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-11-06T14:49:12Z",
@@ -2165,7 +2165,7 @@
             "abbreviatedOid": "2273474"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-11-06T14:51:13Z",
@@ -2185,7 +2185,7 @@
             "abbreviatedOid": "2273474"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2023-11-06T14:53:51Z",
@@ -2198,7 +2198,7 @@
             "abbreviatedOid": "2273474"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-11-06T14:56:37Z",
@@ -2224,7 +2224,7 @@
             "abbreviatedOid": "5db00f0"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2023-11-06T14:58:42Z",
@@ -2340,7 +2340,7 @@
             "abbreviatedOid": "35a5fba"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "I'm still not convinced we need this event, but info is a better name.",
           "createdAt": "2023-11-06T15:05:26Z",
@@ -2384,7 +2384,7 @@
             "abbreviatedOid": "a5b994a"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2023-11-06T15:01:35Z",
@@ -2428,7 +2428,7 @@
             "abbreviatedOid": "2b9271a"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2023-11-06T15:11:21Z",
@@ -2444,7 +2444,7 @@
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/20",
       "state": "CLOSED",
       "author": "rohan-wire",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "consensus-required"
@@ -2479,7 +2479,7 @@
         },
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Closing as this is superfluous in PR #50 ",
           "createdAt": "2024-02-09T22:08:21Z",
           "updatedAt": "2024-02-09T22:08:21Z"
@@ -2512,7 +2512,7 @@
             "abbreviatedOid": "b2d8061"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-11-06T21:37:40Z",
@@ -2552,7 +2552,7 @@
             "abbreviatedOid": "b2d8061"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-11-07T07:36:21Z",
@@ -2572,7 +2572,7 @@
             "abbreviatedOid": "b2d8061"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-11-07T07:38:25Z",
@@ -2612,7 +2612,7 @@
             "abbreviatedOid": "b2d8061"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2023-11-07T14:21:16Z",
@@ -2796,7 +2796,7 @@
             "abbreviatedOid": "7a462a6"
           },
           "author": "rohanmahy",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-01-30T01:36:11Z",
@@ -2858,7 +2858,7 @@
             "abbreviatedOid": "34a2255"
           },
           "author": "rohanmahy",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-01-30T01:38:59Z",
@@ -2922,7 +2922,7 @@
             "abbreviatedOid": "34a2255"
           },
           "author": "rohanmahy",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-01-30T17:53:00Z",
@@ -2942,7 +2942,7 @@
             "abbreviatedOid": "34a2255"
           },
           "author": "rohanmahy",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-01-30T17:54:42Z",
@@ -2962,7 +2962,7 @@
             "abbreviatedOid": "34a2255"
           },
           "author": "rohanmahy",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-01-30T17:55:32Z",
@@ -3026,7 +3026,7 @@
             "abbreviatedOid": "34a2255"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-01-31T00:55:11Z",
@@ -3046,7 +3046,7 @@
             "abbreviatedOid": "34a2255"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-01-31T01:00:34Z",
@@ -3146,7 +3146,7 @@
             "abbreviatedOid": "ee93db8"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-01-31T15:08:22Z",
@@ -3166,7 +3166,7 @@
             "abbreviatedOid": "7abe231"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-01-31T15:20:13Z",
@@ -3301,7 +3301,7 @@
             "abbreviatedOid": "1a9ddec"
           },
           "author": "rohanmahy",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-01-30T01:42:20Z",
@@ -3369,7 +3369,7 @@
             "abbreviatedOid": "5c034f6"
           },
           "author": "rohanmahy",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-01-30T04:21:37Z",
@@ -3446,7 +3446,7 @@
             "abbreviatedOid": "66a4383"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-01-31T16:48:40Z",
@@ -3490,7 +3490,7 @@
       "comments": [
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> Do I understand correctly, that there can be only one ApplicationState per appliction_id? In that case, each application can only have one map/array/etc.? What if the application needs different data structures or multiple of one kind?\r\n\r\nEach application_id contains one top-level map/array/etc. An application can have multiple application_ids (each representing a specific type of application state). In barnes-mimi-protocol we proposed two application_ids (participant list, and room base policy). If an application _id needs a complex structure, the top level data structure for each application_id could be a map (which can contain arbitrarily complex data structures below it) or it could be an irreducible blob.\r\n\r\n> More generally, I'm a bit concerned about the introduction of the application_id since it's not part of MLS negotiation mechanism. It's not relevant to MLS interop, because the semantics of the application are outside of MLS, but it seems relevant that clients can signal support for a given application, or that a group can require that an application be supported. I guess what I'm trying to say is that either there is agreement between clients on the application that runs on top of MLS in which case we don't need an application_id, or there isn't, in which case we need a negotiation mechanism.\r\n\r\nI would say the later, but do we need that negotiation in MLS? I was thinking that existence of specific application IDs in the GroupContext means that that state does exist in the group. I think adding a new application ID to the GroupContext would require agreement in a GroupContextExtension proposal or out of band, but I think that negotiation is ok at the app level. I could be convinced otherwise however.\r\n\r\n> \r\n> Regarding opaque vs. non-opaque state, I think I have a slight preference for letting the application handle the AppSync proposals and modify the state itself. The current design seems a bit clunky and limiting.\r\n\r\nI can totally accept that considering I put it together in about 45 minutes. My main motivation was to allow a patch to one element of the participant list or one setting of many to be a small patch instead of, for example, sending the entire participant list of 1000 users just to add or remove one. Anything that accomplishes that goal, or a demonstration that the bandwidth/processing is a non-issue, would make me more comfortable with the opaque blob model.",
           "createdAt": "2024-01-30T16:25:14Z",
           "updatedAt": "2024-01-30T16:25:14Z"
@@ -3504,7 +3504,7 @@
         },
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> Thanks for the clarifications!\r\n> \r\n> I'm not sure it's a great idea on the one hand for applications to require an application_id per piece of state they want to store and on the other hand have application_id be IANA registered. My suggestion would be that each application use an extension id and then define its own AppSync mechanism. This allows the application to define an arbitrary number of proposals with arbitrary semantics, as well as arbitrary state to store in the group context.\r\n\r\nApplications can still define arbitrary semantics of their state, they just don't get arbitrary patching semantics in AppSync. If the thing that you want to change is irreducible, replace the whole thing. If the thing you want to change is a map, list, or array, you can replace/delete/insert into those oft-used data structures without resending the entire (possibly large) data structure. That's all. If folks only want \"replace the whole thing\" semantics, I can live with that, but I am definitely not ok with having the patch semantics vary per application. I've seen that protocol movie before and it bombed.",
           "createdAt": "2024-01-31T15:03:50Z",
           "updatedAt": "2024-01-31T15:03:50Z"
@@ -3517,7 +3517,7 @@
             "abbreviatedOid": "8602a91"
           },
           "author": "rohanmahy",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-01-30T03:58:33Z",
@@ -3614,7 +3614,7 @@
             "abbreviatedOid": "8602a91"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-01-31T01:08:51Z",
@@ -3634,7 +3634,7 @@
             "abbreviatedOid": "8602a91"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-01-31T14:53:25Z",
@@ -3657,7 +3657,7 @@
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/47",
       "state": "MERGED",
       "author": "rohan-wire",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -3721,7 +3721,7 @@
             "abbreviatedOid": "77cd1b7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-06T23:59:30Z",
@@ -3741,7 +3741,7 @@
             "abbreviatedOid": "77cd1b7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-07T00:00:56Z",
@@ -3761,7 +3761,7 @@
             "abbreviatedOid": "77cd1b7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-07T00:01:25Z",
@@ -3857,7 +3857,7 @@
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/48",
       "state": "CLOSED",
       "author": "rohan-wire",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -3876,7 +3876,7 @@
       "comments": [
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> This is a partial review based on the diff presented. It looks like something went very sideways with the diff though - would you be able to restructure the changes to make the diff parsable please?\r\n\r\nIf we had support for stacked diffs this would be easier. I suppose I could redo a new equivalent PR with individual commits: one commit deleting, one commit adding, then one or more commits modifying things that reference the new content. I find it hard to get a clean diff from git for large markdown changes. Git way too aggressively looks for one common word dozens of lines in the middle of a replacement.\r\n\r\nIf you have any concrete suggestions @turt2live @bifurcation please let me know.\r\n",
           "createdAt": "2024-02-07T20:00:16Z",
           "updatedAt": "2024-02-07T20:00:16Z"
@@ -3890,7 +3890,7 @@
         },
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> It appears as though Git is getting confused with which text is \"first\", which commonly happens when new text is added above modified text. It may help to put the net-new sections below the modified/deleted sections of the existing text.\r\n\r\nReplaced with PR #50 . I'll close this one in favor of the other.",
           "createdAt": "2024-02-09T19:30:17Z",
           "updatedAt": "2024-02-09T19:30:17Z"
@@ -3971,7 +3971,7 @@
             "abbreviatedOid": "17f9300"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-07T20:05:09Z",
@@ -3991,7 +3991,7 @@
             "abbreviatedOid": "17f9300"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-07T20:07:56Z",
@@ -4011,7 +4011,7 @@
             "abbreviatedOid": "17f9300"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-07T20:14:20Z",
@@ -4031,7 +4031,7 @@
             "abbreviatedOid": "17f9300"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-07T20:21:37Z",
@@ -4131,7 +4131,7 @@
             "abbreviatedOid": "17f9300"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-08T21:10:39Z",
@@ -4151,7 +4151,7 @@
             "abbreviatedOid": "17f9300"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-08T21:11:05Z",
@@ -4171,7 +4171,7 @@
             "abbreviatedOid": "17f9300"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-08T21:17:41Z",
@@ -4231,7 +4231,7 @@
             "abbreviatedOid": "17f9300"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-09T19:33:14Z",
@@ -4254,7 +4254,7 @@
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/49",
       "state": "MERGED",
       "author": "rohan-wire",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -4300,7 +4300,7 @@
             "abbreviatedOid": "f52763d"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-07T21:12:19Z",
@@ -4356,7 +4356,7 @@
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/50",
       "state": "MERGED",
       "author": "rohan-wire",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "As requested by Travis, this is a replacement for PR #48 which has cleaner diffs (via individual commits).",
@@ -4377,7 +4377,7 @@
       "comments": [
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Hi, I've been through the 120 comments on this PR, created 30 commits, and created 4 new issues. Thanks to @turt2live @kkohbrok and @bifurcation for all the comments. At this point I think I have addressed all substantive comments in some way or another. Here are four specific areas where I had some doubt if I correctly interpreted one of your intentions. \r\n\r\n@turt2live I used language regarding what the hub can do as needing to be consistent with the then-current room policy and part of being consistent is presumably that you can't change it unless you had permission to change it. \r\n\r\n@turt2live one of your comments where you requested changes is blocking this, so I'm going to select \"Dismiss review\". I'm very sorry if I dropped one of your comments, but I think I incorporated all your suggestions in letter or spirit. \r\n\r\n@kkohbrok I believe removing MIMI DS but doing something that allowed clients and providers to implement a very similar MIMI DS \"API\" is what I was asked to do. If that's not what was intended, please open a separate issue or PR.\r\n\r\n@kkohbrok regarding client lifetime handling, I think this is a client issue already handled in RFC9420. If you think MIMI still needs to say something here, please open a PR or issue and I will fix it post-merge.\r\n\r\nClicking merge here in a moment. See you on the other side of this PR.\r\n",
           "createdAt": "2024-02-19T21:37:28Z",
           "updatedAt": "2024-02-19T21:37:28Z"
@@ -4572,7 +4572,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T01:57:56Z",
@@ -4592,7 +4592,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T01:59:33Z",
@@ -4612,7 +4612,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T02:01:20Z",
@@ -4632,7 +4632,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T02:03:13Z",
@@ -4652,7 +4652,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T02:05:57Z",
@@ -4672,7 +4672,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T02:07:14Z",
@@ -4792,7 +4792,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T17:15:12Z",
@@ -4812,7 +4812,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T17:19:01Z",
@@ -4832,7 +4832,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T17:20:19Z",
@@ -4852,7 +4852,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T17:23:39Z",
@@ -4872,7 +4872,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T17:28:03Z",
@@ -4892,7 +4892,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T17:29:27Z",
@@ -4912,7 +4912,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T17:30:38Z",
@@ -4932,7 +4932,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T17:32:18Z",
@@ -5188,7 +5188,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T21:28:31Z",
@@ -5208,7 +5208,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T21:31:16Z",
@@ -5248,7 +5248,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T21:38:13Z",
@@ -5268,7 +5268,7 @@
             "abbreviatedOid": "c077ae6"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T21:42:15Z",
@@ -5288,7 +5288,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-13T21:46:44Z",
@@ -5500,7 +5500,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-14T17:33:16Z",
@@ -5520,7 +5520,7 @@
             "abbreviatedOid": "c077ae6"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-14T17:39:33Z",
@@ -5700,7 +5700,7 @@
             "abbreviatedOid": "467dea7"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-14T18:54:28Z",
@@ -5820,7 +5820,7 @@
             "abbreviatedOid": "395e200"
           },
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-02-14T19:11:52Z",
@@ -5989,7 +5989,7 @@
       "comments": [
         {
           "author": "rohan-wire",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I like the spirit of this PR, but it is not technically correct. The requester asks ahead of time for KeyPackages with whatever the required extensions, proposals, and credentials are. \r\n\r\nFrom PR #50, note the `RequiredCapabilities` line from the struct below and the text about what it is for.\r\n```\r\nstruct {\r\n    Protocol protocol;\r\n    IdentifierUri requestingUser;\r\n    IdentifierUri targetUser;\r\n    IdentifierUri roomId;\r\n    select (protocol) {\r\n        case mls10:\r\n            CipherSuite acceptableCiphersuites<V>;\r\n            RequiredCapabilities requiredCapabilities;\r\n            bool lastResortAllowed;\r\n    };\r\n} KeyMaterialRequest;\r\n```\r\n\r\n\"For MLS, the request includes a non-empty list of acceptable MLS ciphersuites, and an MLS RequiredCapabilities object (which contains credential types, non-default proposal types, and extensions) required by the requesting provider (these lists can be an empty).\"",
           "createdAt": "2024-02-15T04:45:50Z",
           "updatedAt": "2024-02-15T04:45:50Z"
