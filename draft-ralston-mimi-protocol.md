@@ -960,6 +960,135 @@ indicates if the messages in the request were accepted (201 response code), or
 if there was an error. The hub need not wait for a response before sending the
 next fanout message.
 
+## Claim group key information
+
+When a client joins an MLS group without an existing member adding the
+client to the MLS group, that is called an external join. This is useful
+when a new client of an existing user needs to join the groups of all the
+user's rooms. It can also be used when joining an open room, or when a
+client did not have key packages available but their user is already in the
+participation list for the corresponding room. In MIMI, external joins are
+accomplished by fetching the MLS GroupInfo for a room's MLS group, and then sending an external commit incorporating the GroupInfo.
+
+The GroupInfo is
+
+
+\Adds, removes, and policy changes to the room are all forms of updating the
+room state. They are accomplished using the update transaction which is used to
+update the room base policy, participation list, or its underlying MLS group.
+It uses the HTTP POST method.
+
+
+For Bob's new client to join the MLS group and therefore fully participate
+in the room with Alice, Bob needs to fetch the MLS GroupInfo (or analogous
+end-to-end crypto state).
+
+~~~
+POST /groupInfo/{roomId}
+~~~
+
+The request body is as follows:
+
+The request provides an MLS credential proving the requesting client's real or
+pseudonymous identity (for permission to join the group). The request also
+provides an ephemeral public key with which the hub can encrypt the
+GroupInfo and ratchet tree information, and a signature public key
+corresponding to the requester's credential. It also specifies a CipherSuite
+which merely needs to be one ciphersuite in common with the hub. It is
+needed only to specify the algorithms used to sign and encrypt the
+GroupInfoRequest and GroupInfoResponse respectively.
+
+Finally, the request can include an opaque joining code, which the requester
+could use to prove permission to fetch the GroupInfo, even if it is not yet a participant.
+
+
+~~~ tls
+struct {
+  Protocol protocol;
+  select (protocol) {
+    case mls10:
+      CipherSuite cipher_suite;
+      HPKEPublicKey gi_encryption_key;
+      SignaturePublicKey requestingSignatureKey;
+      Credential requestingCredential;
+      opaque joining_code<V>;
+  };
+} GroupInfoRequestTBS;
+
+struct {
+  Protocol protocol;
+  select (protocol) {
+    case mls10:
+      CipherSuite cipher_suite;
+      HPKEPublicKey gi_encryption_key;
+      SignaturePublicKey requestingSignatureKey;
+      Credential requestingCredential;
+      opaque joining_code<V>;
+      /* SignWithLabel(., "GroupInfoRequestTBS", GroupInfoRequestTBS) */
+      opaque signature<V>;
+  };
+} GroupInfoRequest;
+~~~
+
+The response body contains the encrypted GroupInfo and a way to get the ratchet_tree.
+
+~~~ tls
+struct {
+      GroupInfo groupInfo;   /* without embedded ratchet_tree */
+      RatchetTreeOption ratchetTreeOption;
+} MLSGroupInfoPlusTree;
+
+struct {
+    ProtocolVersion version = mls10;
+    CipherSuite cipher_suite;
+    opaque room_id<V>;
+} MimiMLSRoomContext;
+
+encrypted_group_info =
+  EncryptWithLabel(gi_encryption_key, "MLSGroupInfoPlusTree",
+                   mimi_mls_room_context, mls_group_info_plus_tree)
+
+enum {
+  reserved(0),
+  success(1),
+  notAuthorized(2),
+  noSuchRoom(3),
+  (255)
+} GroupInfoCode;
+
+struct {
+  GroupInfoCode status;
+  ProtocolVersion version;
+  select (protocol) {
+    case mls10:
+      CipherSuite cipher_suite;
+      opaque room_id<V>;
+      ExternalSender hub_sender;
+      opaque encrypted_group_info<V>;
+  };
+} GroupInfoResponseTBS;
+
+struct {
+  GroupInfoCode status;
+  ProtocolVersion version;
+  select (protocol) {
+    case mls10:
+      CipherSuite cipher_suite;
+      opaque room_id<V>;
+      ExternalSender hub_sender;
+      opaque encrypted_group_info<V>;
+      /* SignWithLabel(., "GroupInfoResponseTBS", GroupInfoResponseTBS) */
+      opaque signature<V>;
+  };
+} GroupInfoResponse;
+~~~
+
+**ISSUE**: What security properties are needed to protect a
+GroupInfo object in the MIMI context are still under discussion. It is
+possible that the requester only needs to prove possession of their private
+key. The GroupInfo in another context might be sufficiently sensitive that
+it should be encrypted from the end client to the hub provider (unreadable
+by the local provider).
 
 # Relation between MIMI state and cryptographic state
 
