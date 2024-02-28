@@ -831,7 +831,11 @@ struct {
   UpdateResponseCode responseCode;
   string errorDescription;
   select (responseCode) {
+    case success:
+      /* the hub acceptance time (in milliseconds from the UNIX epoch) */
+      uint64 acceptedTimestamp;
     case wrongEpoch:
+      /* current MLS epoch for the MLS group */
       uint64 currentEpoch;
     case invalidProposal:
       ProposalRef invalidProposals<V>;
@@ -878,9 +882,8 @@ The response merely indicates if the message was accepted by the hub provider.
 ~~~ tls
 enum {
   accepted(0),
-  nonMember(1),
-  notAuthorized(2),
-  epochTooOld(3),
+  notAllowed(1),
+  epochTooOld(2),
   (255)
 } SubmitResponseCode;
 
@@ -889,9 +892,26 @@ struct {
   select(protocol) {
     case mls10:
       SubmitResponseCode statusCode;
+      select (statusCode) {
+        case success:
+          /* the hub acceptance time
+             (in milliseconds from the UNIX epoch) */
+          uint64 acceptedTimestamp;
+        case epochTooOld:
+          /* current MLS epoch for the MLS group */
+          uint64 currentEpoch;
+      };
   };
 } SubmitMessageResponse;
 ~~~
+
+The semantics of the `SubmitResponseCode` values are as follows:
+- `success` indicates the `SubmitMessageRequest` was accepted and will be distributed.
+- `notAllowed` indicates that some type of policy or authorization prevented the
+hub provider from accepting the `UpdateRequest`. This could include
+nonsensical inputs such as an MLS epoch more recent than the hub's.
+- `epochTooOld` indicates that the hub provider is using a new MLS epoch
+for the group. The `currentEpoch` is provided in the response.
 
 > **ISSUE:** Do we want to offer a distinction between regular application
 messages and ephemeral applications messages (for example "is typing"
