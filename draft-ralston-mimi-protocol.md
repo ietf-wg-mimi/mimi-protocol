@@ -527,7 +527,7 @@ level section describes the HTTP endpoints exposed to enable these functions.
 ### Server State
 
 Every MIMI server is a publication point for users' key material, via the
-`keyMaterial` endpoint discussed in fetch-key-material [TODO: link].  To support this
+`keyMaterial` endpoint discussed in {{fetch-key-material}}.  To support this
 endpoint, the server stores a set of KeyPackages, where each KeyPackage belongs
 to a specific user and device.
 
