@@ -1039,7 +1039,7 @@ struct {
 } MLSGroupInfoPlusTree;
 
 struct {
-    ProtocolVersion version = mls10;
+    Protocol version = mls10;
     CipherSuite cipher_suite;
     opaque room_id<V>;
 } MimiMLSRoomContext;
@@ -1058,7 +1058,7 @@ enum {
 
 struct {
   GroupInfoCode status;
-  ProtocolVersion version;
+  Protocol version;
   select (protocol) {
     case mls10:
       CipherSuite cipher_suite;
@@ -1070,7 +1070,7 @@ struct {
 
 struct {
   GroupInfoCode status;
-  ProtocolVersion version;
+  Protocol version;
   select (protocol) {
     case mls10:
       CipherSuite cipher_suite;
