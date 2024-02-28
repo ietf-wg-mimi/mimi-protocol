@@ -844,6 +844,7 @@ struct {
 ~~~
 
 The semantics of the `UpdatedResponseCode` values are as follows:
+
 - `success` indicates the `UpdateRequest` was accepted and will be distributed.
 - `wrongEpoch` indicates that the hub provider is using a different epoch. The
 `currentEpoch` is provided in the response.
@@ -906,6 +907,7 @@ struct {
 ~~~
 
 The semantics of the `SubmitResponseCode` values are as follows:
+
 - `success` indicates the `SubmitMessageRequest` was accepted and will be distributed.
 - `notAllowed` indicates that some type of policy or authorization prevented the
 hub provider from accepting the `UpdateRequest`. This could include
