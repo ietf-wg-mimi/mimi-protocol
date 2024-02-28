@@ -2681,14 +2681,24 @@ struct {
 } UpdateRoomResponse
 </pre><a href="#section-5.3-10" class="pilcrow">¶</a>
 </div>
-<p id="section-5.3-11">The semantics of the <code>UpdatedResponseCode</code> values are as follows:
-- <code>success</code> indicates the <code>UpdateRequest</code> was accepted and will be distributed.
-- <code>wrongEpoch</code> indicates that the hub provider is using a different epoch. The
-<code>currentEpoch</code> is provided in the response.
-- <code>notAllowed</code> indicates that some type of policy or authorization prevented the
-hub provider from accepting the <code>UpdateRequest</code>.
-- <code>invalidProposal</code> indicates that at least one proposal is invalid. A list of
-invalidProposals is provided in the response.<a href="#section-5.3-11" class="pilcrow">¶</a></p>
+<p id="section-5.3-11">The semantics of the <code>UpdatedResponseCode</code> values are as follows:<a href="#section-5.3-11" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.3-12.1">
+            <p id="section-5.3-12.1.1"><code>success</code> indicates the <code>UpdateRequest</code> was accepted and will be distributed.<a href="#section-5.3-12.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.3-12.2">
+            <p id="section-5.3-12.2.1"><code>wrongEpoch</code> indicates that the hub provider is using a different epoch. The
+<code>currentEpoch</code> is provided in the response.<a href="#section-5.3-12.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.3-12.3">
+            <p id="section-5.3-12.3.1"><code>notAllowed</code> indicates that some type of policy or authorization prevented the
+hub provider from accepting the <code>UpdateRequest</code>.<a href="#section-5.3-12.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.3-12.4">
+            <p id="section-5.3-12.4.1"><code>invalidProposal</code> indicates that at least one proposal is invalid. A list of
+invalidProposals is provided in the response.<a href="#section-5.3-12.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 </section>
 </div>
 <div id="submit-a-message">
@@ -2746,18 +2756,26 @@ struct {
 } SubmitMessageResponse;
 </pre><a href="#section-5.4-7" class="pilcrow">¶</a>
 </div>
-<p id="section-5.4-8">The semantics of the <code>SubmitResponseCode</code> values are as follows:
-- <code>success</code> indicates the <code>SubmitMessageRequest</code> was accepted and will be distributed.
-- <code>notAllowed</code> indicates that some type of policy or authorization prevented the
+<p id="section-5.4-8">The semantics of the <code>SubmitResponseCode</code> values are as follows:<a href="#section-5.4-8" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.4-9.1">
+            <p id="section-5.4-9.1.1"><code>success</code> indicates the <code>SubmitMessageRequest</code> was accepted and will be distributed.<a href="#section-5.4-9.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.4-9.2">
+            <p id="section-5.4-9.2.1"><code>notAllowed</code> indicates that some type of policy or authorization prevented the
 hub provider from accepting the <code>UpdateRequest</code>. This could include
-nonsensical inputs such as an MLS epoch more recent than the hub's.
-- <code>epochTooOld</code> indicates that the hub provider is using a new MLS epoch
-for the group. The <code>currentEpoch</code> is provided in the response.<a href="#section-5.4-8" class="pilcrow">¶</a></p>
+nonsensical inputs such as an MLS epoch more recent than the hub's.<a href="#section-5.4-9.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.4-9.3">
+            <p id="section-5.4-9.3.1"><code>epochTooOld</code> indicates that the hub provider is using a new MLS epoch
+for the group. The <code>currentEpoch</code> is provided in the response.<a href="#section-5.4-9.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-5.4-9.1">
-            <p id="section-5.4-9.1.1"><strong>ISSUE:</strong> Do we want to offer a distinction between regular application
+<li class="normal ulEmpty" id="section-5.4-10.1">
+            <p id="section-5.4-10.1.1"><strong>ISSUE:</strong> Do we want to offer a distinction between regular application
 messages and ephemeral applications messages (for example "is typing"
-notifications), which do not need to be queued at the target provider.<a href="#section-5.4-9.1.1" class="pilcrow">¶</a></p>
+notifications), which do not need to be queued at the target provider.<a href="#section-5.4-10.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>

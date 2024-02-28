@@ -919,14 +919,19 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
      };
    } UpdateRoomResponse
 
-   The semantics of the UpdatedResponseCode values are as follows: -
-   success indicates the UpdateRequest was accepted and will be
-   distributed. - wrongEpoch indicates that the hub provider is using a
-   different epoch.  The currentEpoch is provided in the response. -
-   notAllowed indicates that some type of policy or authorization
-   prevented the hub provider from accepting the UpdateRequest. -
-   invalidProposal indicates that at least one proposal is invalid.  A
-   list of invalidProposals is provided in the response.
+   The semantics of the UpdatedResponseCode values are as follows:
+
+   *  success indicates the UpdateRequest was accepted and will be
+      distributed.
+
+   *  wrongEpoch indicates that the hub provider is using a different
+      epoch.  The currentEpoch is provided in the response.
+
+   *  notAllowed indicates that some type of policy or authorization
+      prevented the hub provider from accepting the UpdateRequest.
+
+   *  invalidProposal indicates that at least one proposal is invalid.
+      A list of invalidProposals is provided in the response.
 
 5.4.  Submit a Message
 
@@ -976,14 +981,19 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
      };
    } SubmitMessageResponse;
 
-   The semantics of the SubmitResponseCode values are as follows: -
-   success indicates the SubmitMessageRequest was accepted and will be
-   distributed. - notAllowed indicates that some type of policy or
-   authorization prevented the hub provider from accepting the
-   UpdateRequest.  This could include nonsensical inputs such as an MLS
-   epoch more recent than the hub's. - epochTooOld indicates that the
-   hub provider is using a new MLS epoch for the group.  The
-   currentEpoch is provided in the response.
+   The semantics of the SubmitResponseCode values are as follows:
+
+   *  success indicates the SubmitMessageRequest was accepted and will
+      be distributed.
+
+   *  notAllowed indicates that some type of policy or authorization
+      prevented the hub provider from accepting the UpdateRequest.  This
+      could include nonsensical inputs such as an MLS epoch more recent
+      than the hub's.
+
+   *  epochTooOld indicates that the hub provider is using a new MLS
+      epoch for the group.  The currentEpoch is provided in the
+      response.
 
       *ISSUE:* Do we want to offer a distinction between regular
       application messages and ephemeral applications messages (for
