@@ -794,28 +794,41 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
        ClientKeyMaterial clients<V>;
    } KeyMaterialResponse;
 
-   The semantics of the KeyMaterialUserCode are as follows: - success
-   indicates that key material was provided for every client of the
-   target user. - partialSuccess indicates that key material was
-   provided for at least one client of the target user. -
-   incompatibleProtocol indicates that either one of providers supports
-   the protocol requested, or none of the clients of the target user
-   support the protocol requested. - noCompatibleMaterial indicates that
-   none of the clients was able to supply key material compatible with
-   the requiredCapabilities field in the request. - userUnknown
-   indicates that the target user is not known to the target provider. -
-   noConsent indicates that the requester does not have consent to fetch
-   key material for the target user.  The target provider can use this
-   response as a catch all and in place of other status codes such as
-   userUnknown if desired to preserve the privacy of its users. -
-   noConsentForThisRoom indicates that the target user might have
-   allowed a request for another room, but does not for this room.  If
-   the provider does not wish to make this distinction, it can return
-   noConsent instead. - userDeleted indicates that the target provider
-   wishes the requester to know that the target user was previously a
-   valid user of the system and has been deleted.  A target provider can
-   of course use userUnknown if the provider does wish to keep or
-   specify this distinction.
+   The semantics of the KeyMaterialUserCode are as follows:
+
+   *  success indicates that key material was provided for every client
+      of the target user.
+
+   *  partialSuccess indicates that key material was provided for at
+      least one client of the target user.
+
+   *  incompatibleProtocol indicates that either one of providers
+      supports the protocol requested, or none of the clients of the
+      target user support the protocol requested.
+
+   *  noCompatibleMaterial indicates that none of the clients was able
+      to supply key material compatible with the requiredCapabilities
+      field in the request.
+
+   *  userUnknown indicates that the target user is not known to the
+      target provider.
+
+   *  noConsent indicates that the requester does not have consent to
+      fetch key material for the target user.  The target provider can
+      use this response as a catch all and in place of other status
+      codes such as userUnknown if desired to preserve the privacy of
+      its users.
+
+   *  noConsentForThisRoom indicates that the target user might have
+      allowed a request for another room, but does not for this room.
+      If the provider does not wish to make this distinction, it can
+      return noConsent instead.
+
+   *  userDeleted indicates that the target provider wishes the
+      requester to know that the target user was previously a valid user
+      of the system and has been deleted.  A target provider can of
+      course use userUnknown if the provider does wish to keep or
+      specify this distinction.
 
    At minimum, as each MLS KeyPackage is returned to a requesting
    provider (on behalf of a requesting IM client), the target provider
