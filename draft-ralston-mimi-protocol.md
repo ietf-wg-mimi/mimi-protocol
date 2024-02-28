@@ -714,6 +714,7 @@ struct {
 ~~~
 
 The semantics of the `KeyMaterialUserCode` are as follows:
+
 - `success` indicates that key material was provided for every client of the
 target user.
 - `partialSuccess` indicates that key material was provided for at least one
