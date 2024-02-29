@@ -2263,11 +2263,11 @@ possible.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
 (for example a phone, a tablet, and a computer). When a user creates a new
 client, that client needs to be able to join all the MLS groups associated
 with the rooms in which the user is a participant.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
-<p id="section-3.6-2">In MLS in order to initiate joining a group it needs to get the current GroupInfo
+<p id="section-3.6-2">In MLS in order to initiate joining a group the joining client needs to get the current GroupInfo
 and <code>ratchet_tree</code>, and then send an External Commit to the hub. In MIMI,
 the hub keeps or reconstructs a copy of the GroupInfo, assuming that other
 clients may not be available to assist the client with joining.<a href="#section-3.6-2" class="pilcrow">¶</a></p>
-<p id="section-3.6-3">For Cathy's new client to join the MLS group and therefore fully participate
+<p id="section-3.6-3">For Cathy's new client (ClientC3) to join the MLS group and therefore fully participate
 in the room with Alice, ClientC3 needs to fetch the MLS GroupInfo, and then
 generate an External Commit adding ClientC3.<a href="#section-3.6-3" class="pilcrow">¶</a></p>
 <p id="section-3.6-4">Cathy's new client sends the External Commit to the room's MLS group by sending
