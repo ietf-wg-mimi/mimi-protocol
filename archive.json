@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-27T00:03:51.468621+00:00",
+  "timestamp": "2024-02-29T00:03:16.571592+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -52,6 +52,11 @@
       "name": "consensus-required",
       "description": "",
       "color": "C2EE85"
+    },
+    {
+      "name": "IETF-119",
+      "description": "",
+      "color": "fef2c0"
     }
   ],
   "issues": [
@@ -779,10 +784,12 @@
       "author": "rohan-wire",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "IETF-119"
+      ],
       "body": "draft-ralston-mimi-protocol currently uses Matrix-style power levels.\r\ndraft-barnes-mimi-protocol currently implies role-based access control (RBAC).\r\n\r\nI think we have three reasonable choices here:\r\n- keep using power levels\r\n- use role-based access control with a fixed set of roles (for example: owner, admin, moderator, regular-user, visitor, banned, none)\r\n- user role-based access control with administrator defined role labels. Each role label has a set of permissions it can accomplish (for example, can add user, can add remove user, can change user role, can change base policy, etc.)\r\n\r\nTravis brought up that with role-based access control it is necessary to specify the behavior of combinations of roles or permissions. That is true, but I don't think it is unreasonable to enumerate those requirements. I think RBAC maps much better onto the variety of systems we would like to interop with. ",
       "createdAt": "2024-02-06T21:40:00Z",
-      "updatedAt": "2024-02-06T22:20:19Z",
+      "updatedAt": "2024-02-28T16:28:28Z",
       "closedAt": null,
       "comments": [
         {
@@ -791,6 +798,13 @@
           "body": "draft-ralston-mimi-protocol currently does not define any permissions model, especially not power levels, and instead implies some sort of RBAC. I do think we need an RBAC system, but it needs to be user-defined because there's systems which already allow such features. \r\n\r\nUsers should also be able to be assigned multiple roles, which can then lead to conflicts in the user's permissions. To make it predictable, we can add a numeric `order` value to each role, which defines which order the role's included permissions are defined in (in ascending order). Note that I'm assuming permissions are a trinary of [grant, deny, unchanged/default].\r\n\r\nAs an example:\r\n* Role A (power 1) is explicitly allowed to send messages, no changes to being able to add users.\r\n* Role B (power 2) is explicitly allowed to add users, no changes to sending messages.\r\n* Role C (power 3) is explicitly *denied* sending messages, no changes to adding users.\r\n* User A is assigned roles A and C - they are *not* allowed to send messages, and the default value for adding users is applied. \r\n* User B is assigned roles B and C - they are *not* allowed to send messages, and *are* allowed to add other users. \r\n* User C is assigned roles A, B, and C - they have the same permissions as User B.",
           "createdAt": "2024-02-06T22:20:18Z",
           "updatedAt": "2024-02-06T22:20:18Z"
+        },
+        {
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "body": "DT call 2024-02-28:\r\n* Violent agreement that RBAC+labels is a sensible way to go.  Specifically:\r\n    * Underlying set of permissions \r\n    * Predefine labels for common sets of permissions\r\n    * Allow administrators to define other sets of permissions\r\n* @rohanmahy to make a PR with a minimal version of this scheme",
+          "createdAt": "2024-02-28T16:23:15Z",
+          "updatedAt": "2024-02-28T16:23:15Z"
         }
       ]
     },
@@ -819,12 +833,22 @@
       "author": "rohan-wire",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "IETF-119"
+      ],
       "body": "",
       "createdAt": "2024-02-19T19:44:14Z",
-      "updatedAt": "2024-02-19T19:44:14Z",
+      "updatedAt": "2024-02-28T16:47:59Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "body": "DT call 2024-02-28:\r\n* @rohanmahy thinks URIs are the way to go.  Flexibility + compartmentalize vendor specifics\r\n* @bifurcation and @raphaelrobert are more focused on requirements for identitiers -- what does an identifier need to do?\r\n    * User/room -- connect to a provider, identify resource within a provider\r\n    * Requirement to route to the MIMI app from outside the MIMI context?\r\n* @ara4n points out that there are some cases where you want non-provider-specific identifiers\r\n    * General feeling that (a) we will need provider-scoped things, and (b) mapping/discovery can add provider-independent stuff later\r\n* @bifurcation Proposal: Make a simple URI scheme following the [Matrix URI scheme](https://github.com/matrix-org/matrix-spec-proposals/blob/main/proposals/2312-matrix-uri.md )\r\n    * `mimi://example.com/` \r\n    * `mimi://example.com/u/bifurcation`\r\n    * `mimi://example.com/d/bifurcation/uuid`\r\n    * `mimi://example.com/r/clubhouse`\r\n* @rohanmahy to make a PR\r\n\r\n\r\n\r\n\r\n",
+          "createdAt": "2024-02-28T16:47:41Z",
+          "updatedAt": "2024-02-28T16:47:59Z"
+        }
+      ]
     },
     {
       "number": 54,
@@ -835,12 +859,29 @@
       "author": "rohan-wire",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "IETF-119"
+      ],
       "body": "",
       "createdAt": "2024-02-19T20:35:54Z",
-      "updatedAt": "2024-02-19T20:35:54Z",
+      "updatedAt": "2024-02-28T17:12:54Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "body": "DT call 2024-02-28:\r\n* Problem: Hub might think that a `/notify` failed and retry, recipient needs a way to dedup\r\n* Alternatives:\r\n    * Explicit transaction ID set by hub\r\n    * Hash of `/notify` request body (=> no need for an explicit identifier in protocol)\r\n* Either way, recipient needs to keep a strike list of things it has already seen\r\n* Proposal: Add text that says you can dedup by hash, add discussion of tradeoffs\r\n* @bifurcation to make a PR on this\r\n",
+          "createdAt": "2024-02-28T17:04:11Z",
+          "updatedAt": "2024-02-28T17:04:11Z"
+        },
+        {
+          "author": "raphaelrobert",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Adding the arguments against using hashes that were discussed in the DT call 2024-02-28:\r\n - Hashes introduce the requirement that message content must be unique. This blurs the abstraction lines between the protocol levels. E.g. it might be fine to send the exact same message repeatedly at a higher level of the protocol, but those message would be be delivered because the transport layer considers them to be duplicates.\r\n - Messages that are retransmitted must now always be identical. This requirement is probably easier to meet than the first one, but it's there nonetheless.",
+          "createdAt": "2024-02-28T17:12:53Z",
+          "updatedAt": "2024-02-28T17:12:53Z"
+        }
+      ]
     },
     {
       "number": 55,
@@ -855,6 +896,22 @@
       "body": "",
       "createdAt": "2024-02-19T21:07:46Z",
       "updatedAt": "2024-02-19T21:07:46Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 56,
+      "id": "I_kwDOKZ8QO86ApTsj",
+      "title": "Return timestamp to message sender",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/56",
+      "state": "OPEN",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The timestamp in fanout messages needs to be returned to the sender of the message upon accceptance by the DS. This is to make sure that the sender shares the same view of the group's message history as the rest of the group.",
+      "createdAt": "2024-02-28T07:40:45Z",
+      "updatedAt": "2024-02-28T07:40:45Z",
       "closedAt": null,
       "comments": []
     }
@@ -5975,7 +6032,7 @@
       "labels": [],
       "body": "ref https://github.com/bifurcation/ietf-mimi-protocol/pull/50/files#r1486736385",
       "createdAt": "2024-02-14T20:50:57Z",
-      "updatedAt": "2024-02-15T04:45:52Z",
+      "updatedAt": "2024-02-28T16:08:58Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "36ad4767944db62e4b270460f06f2e6dfd98adef",
@@ -5993,6 +6050,73 @@
           "body": "I like the spirit of this PR, but it is not technically correct. The requester asks ahead of time for KeyPackages with whatever the required extensions, proposals, and credentials are. \r\n\r\nFrom PR #50, note the `RequiredCapabilities` line from the struct below and the text about what it is for.\r\n```\r\nstruct {\r\n    Protocol protocol;\r\n    IdentifierUri requestingUser;\r\n    IdentifierUri targetUser;\r\n    IdentifierUri roomId;\r\n    select (protocol) {\r\n        case mls10:\r\n            CipherSuite acceptableCiphersuites<V>;\r\n            RequiredCapabilities requiredCapabilities;\r\n            bool lastResortAllowed;\r\n    };\r\n} KeyMaterialRequest;\r\n```\r\n\r\n\"For MLS, the request includes a non-empty list of acceptable MLS ciphersuites, and an MLS RequiredCapabilities object (which contains credential types, non-default proposal types, and extensions) required by the requesting provider (these lists can be an empty).\"",
           "createdAt": "2024-02-15T04:45:50Z",
           "updatedAt": "2024-02-15T04:45:50Z"
+        },
+        {
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "body": "DT call 2024-02-28: \r\n* @rohanmahy's concern is expressing the `required_capabilities` part\r\n* @bifurcation suggests this is good in the key material fetch section\r\n* @turt2live will look on Friday, @rohanmahy may look at it sooner",
+          "createdAt": "2024-02-28T16:08:56Z",
+          "updatedAt": "2024-02-28T16:08:56Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 57,
+      "id": "PR_kwDOKZ8QO85oOpqQ",
+      "title": "fix link to fetch-key-material",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/57",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-02-28T23:04:10Z",
+      "updatedAt": "2024-02-28T23:04:10Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "d72db4b7a23c05d02048dfbbd50d97843a153d9a",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "rohan/fix-link",
+      "headRefOid": "6925f7c1f261e265f785428031ebce23afb0a285",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 58,
+      "id": "PR_kwDOKZ8QO85oOrVh",
+      "title": "Add accepted timestamp to update and submit primitives",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/58",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- add accepted timestamp to `UpdateRoomResponse` and `SubmitMessageResponse` and adjust related structs\r\n- add missing error codes and semantics to submit primitive",
+      "createdAt": "2024-02-28T23:11:29Z",
+      "updatedAt": "2024-02-28T23:33:18Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "d72db4b7a23c05d02048dfbbd50d97843a153d9a",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "rohan/return-timestamp",
+      "headRefOid": "8ef92827af3106de15b84618c2360693cc475c5a",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Addresses issue #56 ",
+          "createdAt": "2024-02-28T23:13:20Z",
+          "updatedAt": "2024-02-28T23:13:20Z"
         }
       ],
       "reviews": []
