@@ -960,6 +960,28 @@ indicates if the messages in the request were accepted (201 response code), or
 if there was an error. The hub need not wait for a response before sending the
 next fanout message.
 
+If the hub server does not contain an HTTP 201 response code, then it SHOULD
+retry the request, respecting any guidance provided by the server in HTTP header
+fields such as Retry-After.  If a follower server receives a duplicate request
+to the `/notify` endpoint, in the sense of a request from the same hub server
+with the same request body as a previous `/notify` request, then the follower
+server MUST return a 201 Accepted response.  In such cases, the follower server
+SHOULD process only the first request; subsequent duplicate requests SHOULD be
+ignored (despite the success response).
+
+> **NOTE:** These deduplication provisions require follower servers to track
+> which request bodies they have received from which hub servers.  Since the
+> matching here is byte-exact, it can be done by keeping a rolling list of
+> hashes of recent messages.
+>
+> This byte-exact replay criterion might not be the right deduplication
+> strategy.  There might be situations where it is valid for the same hub server
+> to send the same payload multiple times, e.g., due to accidental collisions.
+> 
+> If this is a concern, then an explicit transaction ID could be introduced.
+> The follower server would still have to keep a list of recently seen
+> transaction IDs, but deduplication could be done irrespective of the content
+> of request bodies.
 
 # Relation between MIMI state and cryptographic state
 
