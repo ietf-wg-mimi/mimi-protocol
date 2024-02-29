@@ -459,6 +459,71 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 ~~~
 {: #fig-b-leave title="Bob Leaves the Room" }
 
+## Cathy adds a new device
+
+Many users have multiple clients often running on different devices
+(for example a phone, a tablet, and a computer). When a user creates a new
+client, that client needs to be able to join all the MLS groups associated
+with the rooms in which the user is a participant.
+
+In MLS in order to initiate joining a group it needs to get the current GroupInfo
+and `ratchet_tree`, and then send an External Commit to the hub. In MIMI,
+the hub keeps or reconstructs a copy of the GroupInfo, assuming that other
+clients may not be available to assist the client with joining.
+
+The new client sends the External Commit to the room's MLS group by sending
+an /update to the room.
+
+
+~~~ aasvg
+ClientC3       ServerC         ServerA         ServerB         ClientB*  ClientC*  ClientA*
+  |               |               |               |               |         |         |
+  | Fetch         |               |               |               |         |         |
+  | GroupInfo     |               |               |               |         |         |
+  |~~~~~~~~~~~~~~>| /groupInfo    |               |               |         |         |
+  |               |-------------->|               |               |         |         |
+  | GroupInfo +   |        200 OK |               |               |         |         |
+  | tree          |<--------------|               |               |         |         |
+  |<~~~~~~~~~~~~~~|               |               |               |         |         |
+  |               |               |               |               |         |         |
+  | External      |               |               |               |         |         |
+  | Commit, etc.  |               |               |               |         |         |
+  +~~~~~~~~~~~~~~>| /update       |               |               |         |         |
+  |               +-------------->|               |               |         |         |
+  |               |        200 OK |               |               |         |         |
+  |               |<--------------+               |               |         |         |
+  |      Accepted |               | Commit        |               |         |         |
+  |<~~~~~~~~~~~~~~|               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|
+  |               |               |               |               |         |         |
+  |               |               | /notify       |               |         |         |
+  |               +               +-------------->| Commit        |         |         |
+  |               |               |               +~~~~~~~~~~~~~~>|         |         |
+  |               |       /notify |               |               |         |         |
+  |               |<--------------+               |               |         |         |
+  |               | Commit        |               |               |         |         |
+  |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|         |
+  |               |               |               |               |         |         |
+
+ClientC3->ServerC: [[ request current GroupInfo ]]
+ServerC->ServerA: POST /groupInfo/a.example/clubhouse
+ServerA: Verify that ClientC3 has authorization to join the room
+ServerA->ServerC: 200 OK w/ current GroupInfo and ratchet tree
+ServerC->ClientC3: [[ GroupInfo, tree ]]
+ClientC3: Prepare External Commit Add*
+ClientC3->ServerC: [[ Commit, GroupInfo?, RatchetTree? ]]
+ServerC->ServerA: POST /update/a.example/clubhouse CommitBundle
+ServerA: Verify that Commit is valid and ClientC3 is authorized
+ServerA->ServerC: 200 OK
+ServerC->ClientC3: [[ External Commit was accepted ]]
+ServerA->ClientA*: [[ Commit ]]
+ServerA->ServerB: POST /notify/a.example/clubhouse Commit
+ServerB->ClientB*: [[ Commit ]]
+ServerA->ServerC: POST /notify/a.example/clubhouse Commit
+ServerC->ClientC*: [[ Commit ]]
+~~~
+{: #fig-c3-new-client title="Cathy Adds a new Client" }
+
+
 # Services required at each layer
 
 ## Transport layer
