@@ -5,11 +5,11 @@
 More Instant Messaging Interoperability                       T. Ralston
 Internet-Draft                          The Matrix.org Foundation C.I.C.
 Intended status: Standards Track                              K. Kohbrok
-Expires: 23 August 2024                                        R. Robert
+Expires: 1 September 2024                                      R. Robert
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                        20 February 2024
+                                                        29 February 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 August 2024.
+   This Internet-Draft will expire on 1 September 2024.
 
 Copyright Notice
 
@@ -612,10 +612,9 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 4.3.1.  Server State
 
    Every MIMI server is a publication point for users' key material, via
-   the keyMaterial endpoint discussed in fetch-key-material [TODO:
-   link].  To support this endpoint, the server stores a set of
-   KeyPackages, where each KeyPackage belongs to a specific user and
-   device.
+   the keyMaterial endpoint discussed in Section 5.2.  To support this
+   endpoint, the server stores a set of KeyPackages, where each
+   KeyPackage belongs to a specific user and device.
 
    The hub server for the room stores the state of the room, comprising:
 
