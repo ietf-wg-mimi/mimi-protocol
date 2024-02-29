@@ -480,12 +480,12 @@ Many users have multiple clients often running on different devices
 client, that client needs to be able to join all the MLS groups associated
 with the rooms in which the user is a participant.
 
-In MLS in order to initiate joining a group it needs to get the current GroupInfo
+In MLS in order to initiate joining a group the joining client needs to get the current GroupInfo
 and `ratchet_tree`, and then send an External Commit to the hub. In MIMI,
 the hub keeps or reconstructs a copy of the GroupInfo, assuming that other
 clients may not be available to assist the client with joining.
 
-For Cathy's new client to join the MLS group and therefore fully participate
+For Cathy's new client (ClientC3) to join the MLS group and therefore fully participate
 in the room with Alice, ClientC3 needs to fetch the MLS GroupInfo, and then
 generate an External Commit adding ClientC3.
 
