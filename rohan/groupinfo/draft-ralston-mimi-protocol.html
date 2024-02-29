@@ -1043,7 +1043,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ralston, et al.</td>
-<td class="center">Expires 31 August 2024</td>
+<td class="center">Expires 1 September 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1056,12 +1056,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ralston-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-02-28" class="published">28 February 2024</time>
+<time datetime="2024-02-29" class="published">29 February 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-08-31">31 August 2024</time></dd>
+<dd class="expires"><time datetime="2024-09-01">1 September 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1131,7 +1131,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 31 August 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 1 September 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1188,6 +1188,9 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5">
                 <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-bob-leaves-the-room" class="internal xref">Bob Leaves the Room</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.6">
+                <p id="section-toc.1-1.3.2.6.1"><a href="#section-3.6" class="auto internal xref">3.6</a>.  <a href="#name-cathy-adds-a-new-device" class="internal xref">Cathy adds a new device</a></p>
 </li>
             </ul>
 </li>
@@ -2251,6 +2254,194 @@ possible.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
 </div>
 </section>
 </div>
+<div id="cathy-adds-a-new-device">
+<section id="section-3.6">
+        <h3 id="name-cathy-adds-a-new-device">
+<a href="#section-3.6" class="section-number selfRef">3.6. </a><a href="#name-cathy-adds-a-new-device" class="section-name selfRef">Cathy adds a new device</a>
+        </h3>
+<p id="section-3.6-1">Many users have multiple clients often running on different devices
+(for example a phone, a tablet, and a computer). When a user creates a new
+client, that client needs to be able to join all the MLS groups associated
+with the rooms in which the user is a participant.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
+<p id="section-3.6-2">In MLS in order to initiate joining a group it needs to get the current GroupInfo
+and <code>ratchet_tree</code>, and then send an External Commit to the hub. In MIMI,
+the hub keeps or reconstructs a copy of the GroupInfo, assuming that other
+clients may not be available to assist the client with joining.<a href="#section-3.6-2" class="pilcrow">¶</a></p>
+<p id="section-3.6-3">For Cathy's new client to join the MLS group and therefore fully participate
+in the room with Alice, ClientC3 needs to fetch the MLS GroupInfo, and then
+generate an External Commit adding ClientC3.<a href="#section-3.6-3" class="pilcrow">¶</a></p>
+<p id="section-3.6-4">Cathy's new client sends the External Commit to the room's MLS group by sending
+an /update to the room.<a href="#section-3.6-4" class="pilcrow">¶</a></p>
+<span id="name-cathy-adds-a-new-client"></span><div id="fig-c3-new-client">
+<figure id="figure-8">
+          <div id="section-3.6-5.1">
+            <div class="alignLeft art-svg artwork" id="section-3.6-5.1.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="736" width="736" viewBox="0 0 736 736" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,448" fill="none" stroke="black"></path>
+                <path d="M 152,48 L 152,448" fill="none" stroke="black"></path>
+                <path d="M 280,48 L 280,416" fill="none" stroke="black"></path>
+                <path d="M 408,48 L 408,288" fill="none" stroke="black"></path>
+                <path d="M 408,320 L 408,416" fill="none" stroke="black"></path>
+                <path d="M 536,48 L 536,288" fill="none" stroke="black"></path>
+                <path d="M 536,320 L 536,416" fill="none" stroke="black"></path>
+                <path d="M 616,48 L 616,288" fill="none" stroke="black"></path>
+                <path d="M 616,320 L 616,448" fill="none" stroke="black"></path>
+                <path d="M 696,48 L 696,448" fill="none" stroke="black"></path>
+                <path d="M 32,96 Q 34,92.8 36,96 Q 38,99.2 40,96 Q 42,92.8 44,96 Q 46,99.2 48,96 Q 50,92.8 52,96 Q 54,99.2 56,96 Q 58,92.8 60,96 Q 62,99.2 64,96 Q 66,92.8 68,96 Q 70,99.2 72,96 Q 74,92.8 76,96 Q 78,99.2 80,96 Q 82,92.8 84,96 Q 86,99.2 88,96 Q 90,92.8 92,96 Q 94,99.2 96,96 Q 98,92.8 100,96 Q 102,99.2 104,96 Q 106,92.8 108,96 Q 110,99.2 112,96 Q 114,92.8 116,96 Q 118,99.2 120,96 Q 122,92.8 124,96 Q 126,99.2 128,96 Q 130,92.8 132,96 Q 134,99.2 136,96 Q 138,92.8 140,96 Q 142,99.2 144,96" fill="none" stroke="black"></path>
+                <path d="M 160,112 L 272,112" fill="none" stroke="black"></path>
+                <path d="M 160,144 L 272,144" fill="none" stroke="black"></path>
+                <path d="M 32,160 Q 34,156.8 36,160 Q 38,163.2 40,160 Q 42,156.8 44,160 Q 46,163.2 48,160 Q 50,156.8 52,160 Q 54,163.2 56,160 Q 58,156.8 60,160 Q 62,163.2 64,160 Q 66,156.8 68,160 Q 70,163.2 72,160 Q 74,156.8 76,160 Q 78,163.2 80,160 Q 82,156.8 84,160 Q 86,163.2 88,160 Q 90,156.8 92,160 Q 94,163.2 96,160 Q 98,156.8 100,160 Q 102,163.2 104,160 Q 106,156.8 108,160 Q 110,163.2 112,160 Q 114,156.8 116,160 Q 118,163.2 120,160 Q 122,156.8 124,160 Q 126,163.2 128,160 Q 130,156.8 132,160 Q 134,163.2 136,160 Q 138,156.8 140,160 Q 142,163.2 144,160" fill="none" stroke="black"></path>
+                <path d="M 24,224 Q 26,220.8 28,224 Q 30,227.2 32,224 Q 34,220.8 36,224 Q 38,227.2 40,224 Q 42,220.8 44,224 Q 46,227.2 48,224 Q 50,220.8 52,224 Q 54,227.2 56,224 Q 58,220.8 60,224 Q 62,227.2 64,224 Q 66,220.8 68,224 Q 70,227.2 72,224 Q 74,220.8 76,224 Q 78,227.2 80,224 Q 82,220.8 84,224 Q 86,227.2 88,224 Q 90,220.8 92,224 Q 94,227.2 96,224 Q 98,220.8 100,224 Q 102,227.2 104,224 Q 106,220.8 108,224 Q 110,227.2 112,224 Q 114,220.8 116,224 Q 118,227.2 120,224 Q 122,220.8 124,224 Q 126,227.2 128,224 Q 130,220.8 132,224 Q 134,227.2 136,224 Q 138,220.8 140,224 Q 142,227.2 144,224" fill="none" stroke="black"></path>
+                <path d="M 152,240 L 272,240" fill="none" stroke="black"></path>
+                <path d="M 160,272 L 280,272" fill="none" stroke="black"></path>
+                <path d="M 32,304 Q 34,300.8 36,304 Q 38,307.2 40,304 Q 42,300.8 44,304 Q 46,307.2 48,304 Q 50,300.8 52,304 Q 54,307.2 56,304 Q 58,300.8 60,304 Q 62,307.2 64,304 Q 66,300.8 68,304 Q 70,307.2 72,304 Q 74,300.8 76,304 Q 78,307.2 80,304 Q 82,300.8 84,304 Q 86,307.2 88,304 Q 90,300.8 92,304 Q 94,307.2 96,304 Q 98,300.8 100,304 Q 102,307.2 104,304 Q 106,300.8 108,304 Q 110,307.2 112,304 Q 114,300.8 116,304 Q 118,307.2 120,304 Q 122,300.8 124,304 Q 126,307.2 128,304 Q 130,300.8 132,304 Q 134,307.2 136,304 Q 138,300.8 140,304 Q 142,307.2 144,304" fill="none" stroke="black"></path>
+                <path d="M 280,304 Q 282,300.8 284,304 Q 286,307.2 288,304 Q 290,300.8 292,304 Q 294,307.2 296,304 Q 298,300.8 300,304 Q 302,307.2 304,304 Q 306,300.8 308,304 Q 310,307.2 312,304 Q 314,300.8 316,304 Q 318,307.2 320,304 Q 322,300.8 324,304 Q 326,307.2 328,304 Q 330,300.8 332,304 Q 334,307.2 336,304 Q 338,300.8 340,304 Q 342,307.2 344,304 Q 346,300.8 348,304 Q 350,307.2 352,304 Q 354,300.8 356,304 Q 358,307.2 360,304 Q 362,300.8 364,304 Q 366,307.2 368,304 Q 370,300.8 372,304 Q 374,307.2 376,304 Q 378,300.8 380,304 Q 382,307.2 384,304 Q 386,300.8 388,304 Q 390,307.2 392,304 Q 394,300.8 396,304 Q 398,307.2 400,304 Q 402,300.8 404,304 Q 406,307.2 408,304 Q 410,300.8 412,304 Q 414,307.2 416,304 Q 418,300.8 420,304 Q 422,307.2 424,304 Q 426,300.8 428,304 Q 430,307.2 432,304 Q 434,300.8 436,304 Q 438,307.2 440,304 Q 442,300.8 444,304 Q 446,307.2 448,304 Q 450,300.8 452,304 Q 454,307.2 456,304 Q 458,300.8 460,304 Q 462,307.2 464,304 Q 466,300.8 468,304 Q 470,307.2 472,304 Q 474,300.8 476,304 Q 478,307.2 480,304 Q 482,300.8 484,304 Q 486,307.2 488,304 Q 490,300.8 492,304 Q 494,307.2 496,304 Q 498,300.8 500,304 Q 502,307.2 504,304 Q 506,300.8 508,304 Q 510,307.2 512,304 Q 514,300.8 516,304 Q 518,307.2 520,304 Q 522,300.8 524,304 Q 526,307.2 528,304 Q 530,300.8 532,304 Q 534,307.2 536,304 Q 538,300.8 540,304 Q 542,307.2 544,304 Q 546,300.8 548,304 Q 550,307.2 552,304 Q 554,300.8 556,304 Q 558,307.2 560,304 Q 562,300.8 564,304 Q 566,307.2 568,304 Q 570,300.8 572,304 Q 574,307.2 576,304 Q 578,300.8 580,304 Q 582,307.2 584,304 Q 586,300.8 588,304 Q 590,307.2 592,304 Q 594,300.8 596,304 Q 598,307.2 600,304 Q 602,300.8 604,304 Q 606,307.2 608,304 Q 610,300.8 612,304 Q 614,307.2 616,304 Q 618,300.8 620,304 Q 622,307.2 624,304 Q 626,300.8 628,304 Q 630,307.2 632,304 Q 634,300.8 636,304 Q 638,307.2 640,304 Q 642,300.8 644,304 Q 646,307.2 648,304 Q 650,300.8 652,304 Q 654,307.2 656,304 Q 658,300.8 660,304 Q 662,307.2 664,304 Q 666,300.8 668,304 Q 670,307.2 672,304 Q 674,300.8 676,304 Q 678,307.2 680,304 Q 682,300.8 684,304 Q 686,307.2 688,304" fill="none" stroke="black"></path>
+                <path d="M 280,352 L 400,352" fill="none" stroke="black"></path>
+                <path d="M 408,368 Q 410,364.8 412,368 Q 414,371.2 416,368 Q 418,364.8 420,368 Q 422,371.2 424,368 Q 426,364.8 428,368 Q 430,371.2 432,368 Q 434,364.8 436,368 Q 438,371.2 440,368 Q 442,364.8 444,368 Q 446,371.2 448,368 Q 450,364.8 452,368 Q 454,371.2 456,368 Q 458,364.8 460,368 Q 462,371.2 464,368 Q 466,364.8 468,368 Q 470,371.2 472,368 Q 474,364.8 476,368 Q 478,371.2 480,368 Q 482,364.8 484,368 Q 486,371.2 488,368 Q 490,364.8 492,368 Q 494,371.2 496,368 Q 498,364.8 500,368 Q 502,371.2 504,368 Q 506,364.8 508,368 Q 510,371.2 512,368 Q 514,364.8 516,368 Q 518,371.2 520,368 Q 522,364.8 524,368 Q 526,371.2 528,368" fill="none" stroke="black"></path>
+                <path d="M 160,400 L 280,400" fill="none" stroke="black"></path>
+                <path d="M 152,432 Q 154,428.8 156,432 Q 158,435.2 160,432 Q 162,428.8 164,432 Q 166,435.2 168,432 Q 170,428.8 172,432 Q 174,435.2 176,432 Q 178,428.8 180,432 Q 182,435.2 184,432 Q 186,428.8 188,432 Q 190,435.2 192,432 Q 194,428.8 196,432 Q 198,435.2 200,432 Q 202,428.8 204,432 Q 206,435.2 208,432 Q 210,428.8 212,432 Q 214,435.2 216,432 Q 218,428.8 220,432 Q 222,435.2 224,432 Q 226,428.8 228,432 Q 230,435.2 232,432 Q 234,428.8 236,432 Q 238,435.2 240,432 Q 242,428.8 244,432 Q 246,435.2 248,432 Q 250,428.8 252,432 Q 254,435.2 256,432 Q 258,428.8 260,432 Q 262,435.2 264,432 Q 266,428.8 268,432 Q 270,435.2 272,432 Q 274,428.8 276,432 Q 278,435.2 280,432 Q 282,428.8 284,432 Q 286,435.2 288,432 Q 290,428.8 292,432 Q 294,435.2 296,432 Q 298,428.8 300,432 Q 302,435.2 304,432 Q 306,428.8 308,432 Q 310,435.2 312,432 Q 314,428.8 316,432 Q 318,435.2 320,432 Q 322,428.8 324,432 Q 326,435.2 328,432 Q 330,428.8 332,432 Q 334,435.2 336,432 Q 338,428.8 340,432 Q 342,435.2 344,432 Q 346,428.8 348,432 Q 350,435.2 352,432 Q 354,428.8 356,432 Q 358,435.2 360,432 Q 362,428.8 364,432 Q 366,435.2 368,432 Q 370,428.8 372,432 Q 374,435.2 376,432 Q 378,428.8 380,432 Q 382,435.2 384,432 Q 386,428.8 388,432 Q 390,435.2 392,432 Q 394,428.8 396,432 Q 398,435.2 400,432 Q 402,428.8 404,432 Q 406,435.2 408,432 Q 410,428.8 412,432 Q 414,435.2 416,432 Q 418,428.8 420,432 Q 422,435.2 424,432 Q 426,428.8 428,432 Q 430,435.2 432,432 Q 434,428.8 436,432 Q 438,435.2 440,432 Q 442,428.8 444,432 Q 446,435.2 448,432 Q 450,428.8 452,432 Q 454,435.2 456,432 Q 458,428.8 460,432 Q 462,435.2 464,432 Q 466,428.8 468,432 Q 470,435.2 472,432 Q 474,428.8 476,432 Q 478,435.2 480,432 Q 482,428.8 484,432 Q 486,435.2 488,432 Q 490,428.8 492,432 Q 494,435.2 496,432 Q 498,428.8 500,432 Q 502,435.2 504,432 Q 506,428.8 508,432 Q 510,435.2 512,432 Q 514,428.8 516,432 Q 518,435.2 520,432 Q 522,428.8 524,432 Q 526,435.2 528,432 Q 530,428.8 532,432 Q 534,435.2 536,432 Q 538,428.8 540,432 Q 542,435.2 544,432 Q 546,428.8 548,432 Q 550,435.2 552,432 Q 554,428.8 556,432 Q 558,435.2 560,432 Q 562,428.8 564,432 Q 566,435.2 568,432 Q 570,428.8 572,432 Q 574,435.2 576,432 Q 578,428.8 580,432 Q 582,435.2 584,432 Q 586,428.8 588,432 Q 590,435.2 592,432 Q 594,428.8 596,432 Q 598,435.2 600,432 Q 602,428.8 604,432 Q 606,435.2 608,432" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="696,304 684,298.4 684,309.6" fill="black" transform="rotate(0,688,304)"></polygon>
+                <polygon class="arrowhead" points="616,432 604,426.4 604,437.6" fill="black" transform="rotate(0,608,432)"></polygon>
+                <polygon class="arrowhead" points="536,368 524,362.4 524,373.6" fill="black" transform="rotate(0,528,368)"></polygon>
+                <polygon class="arrowhead" points="408,352 396,346.4 396,357.6" fill="black" transform="rotate(0,400,352)"></polygon>
+                <polygon class="arrowhead" points="280,240 268,234.4 268,245.6" fill="black" transform="rotate(0,272,240)"></polygon>
+                <polygon class="arrowhead" points="280,112 268,106.4 268,117.6" fill="black" transform="rotate(0,272,112)"></polygon>
+                <polygon class="arrowhead" points="168,400 156,394.4 156,405.6" fill="black" transform="rotate(180,160,400)"></polygon>
+                <polygon class="arrowhead" points="168,272 156,266.4 156,277.6" fill="black" transform="rotate(180,160,272)"></polygon>
+                <polygon class="arrowhead" points="168,144 156,138.4 156,149.6" fill="black" transform="rotate(180,160,144)"></polygon>
+                <polygon class="arrowhead" points="152,224 140,218.4 140,229.6" fill="black" transform="rotate(0,144,224)"></polygon>
+                <polygon class="arrowhead" points="152,96 140,90.4 140,101.6" fill="black" transform="rotate(0,144,96)"></polygon>
+                <polygon class="arrowhead" points="40,304 28,298.4 28,309.6" fill="black" transform="rotate(180,32,304)"></polygon>
+                <polygon class="arrowhead" points="40,160 28,154.4 28,165.6" fill="black" transform="rotate(180,32,160)"></polygon>
+                <g class="text">
+                  <text x="36" y="36">ClientC3</text>
+                  <text x="152" y="36">ServerC</text>
+                  <text x="280" y="36">ServerA</text>
+                  <text x="408" y="36">ServerB</text>
+                  <text x="540" y="36">ClientB*</text>
+                  <text x="620" y="36">ClientC*</text>
+                  <text x="700" y="36">ClientA*</text>
+                  <text x="56" y="68">Fetch</text>
+                  <text x="72" y="84">GroupInfo</text>
+                  <text x="204" y="100">/groupInfo</text>
+                  <text x="72" y="132">GroupInfo</text>
+                  <text x="120" y="132">+</text>
+                  <text x="232" y="132">200</text>
+                  <text x="260" y="132">OK</text>
+                  <text x="52" y="148">tree</text>
+                  <text x="68" y="196">External</text>
+                  <text x="64" y="212">Commit,</text>
+                  <text x="116" y="212">etc.</text>
+                  <text x="192" y="228">/update</text>
+                  <text x="232" y="260">200</text>
+                  <text x="260" y="260">OK</text>
+                  <text x="108" y="292">Accepted</text>
+                  <text x="316" y="292">Commit</text>
+                  <text x="320" y="340">/notify</text>
+                  <text x="444" y="356">Commit</text>
+                  <text x="240" y="388">/notify</text>
+                  <text x="188" y="420">Commit</text>
+                  <text x="280" y="452">|</text>
+                  <text x="408" y="452">|</text>
+                  <text x="536" y="452">|</text>
+                  <text x="76" y="484">ClientC3-&gt;ServerC:</text>
+                  <text x="164" y="484">[[</text>
+                  <text x="208" y="484">request</text>
+                  <text x="272" y="484">current</text>
+                  <text x="344" y="484">GroupInfo</text>
+                  <text x="396" y="484">]]</text>
+                  <text x="72" y="500">ServerC-&gt;ServerA:</text>
+                  <text x="164" y="500">POST</text>
+                  <text x="308" y="500">/groupInfo/a.example/clubhouse</text>
+                  <text x="36" y="516">ServerA:</text>
+                  <text x="100" y="516">Verify</text>
+                  <text x="148" y="516">that</text>
+                  <text x="204" y="516">ClientC3</text>
+                  <text x="256" y="516">has</text>
+                  <text x="328" y="516">authorization</text>
+                  <text x="396" y="516">to</text>
+                  <text x="428" y="516">join</text>
+                  <text x="464" y="516">the</text>
+                  <text x="500" y="516">room</text>
+                  <text x="72" y="532">ServerA-&gt;ServerC:</text>
+                  <text x="160" y="532">200</text>
+                  <text x="188" y="532">OK</text>
+                  <text x="212" y="532">w/</text>
+                  <text x="256" y="532">current</text>
+                  <text x="328" y="532">GroupInfo</text>
+                  <text x="384" y="532">and</text>
+                  <text x="432" y="532">ratchet</text>
+                  <text x="484" y="532">tree</text>
+                  <text x="76" y="548">ServerC-&gt;ClientC3:</text>
+                  <text x="164" y="548">[[</text>
+                  <text x="220" y="548">GroupInfo,</text>
+                  <text x="284" y="548">tree</text>
+                  <text x="316" y="548">]]</text>
+                  <text x="40" y="564">ClientC3:</text>
+                  <text x="112" y="564">Prepare</text>
+                  <text x="180" y="564">External</text>
+                  <text x="244" y="564">Commit</text>
+                  <text x="292" y="564">Add*</text>
+                  <text x="76" y="580">ClientC3-&gt;ServerC:</text>
+                  <text x="164" y="580">[[</text>
+                  <text x="208" y="580">Commit,</text>
+                  <text x="288" y="580">GroupInfo?,</text>
+                  <text x="388" y="580">RatchetTree?</text>
+                  <text x="452" y="580">]]</text>
+                  <text x="72" y="596">ServerC-&gt;ServerA:</text>
+                  <text x="164" y="596">POST</text>
+                  <text x="296" y="596">/update/a.example/clubhouse</text>
+                  <text x="460" y="596">CommitBundle</text>
+                  <text x="36" y="612">ServerA:</text>
+                  <text x="100" y="612">Verify</text>
+                  <text x="148" y="612">that</text>
+                  <text x="196" y="612">Commit</text>
+                  <text x="236" y="612">is</text>
+                  <text x="272" y="612">valid</text>
+                  <text x="312" y="612">and</text>
+                  <text x="364" y="612">ClientC3</text>
+                  <text x="412" y="612">is</text>
+                  <text x="468" y="612">authorized</text>
+                  <text x="72" y="628">ServerA-&gt;ServerC:</text>
+                  <text x="160" y="628">200</text>
+                  <text x="188" y="628">OK</text>
+                  <text x="76" y="644">ServerC-&gt;ClientC3:</text>
+                  <text x="164" y="644">[[</text>
+                  <text x="212" y="644">External</text>
+                  <text x="276" y="644">Commit</text>
+                  <text x="320" y="644">was</text>
+                  <text x="372" y="644">accepted</text>
+                  <text x="420" y="644">]]</text>
+                  <text x="76" y="660">ServerA-&gt;ClientA*:</text>
+                  <text x="164" y="660">[[</text>
+                  <text x="204" y="660">Commit</text>
+                  <text x="244" y="660">]]</text>
+                  <text x="72" y="676">ServerA-&gt;ServerB:</text>
+                  <text x="164" y="676">POST</text>
+                  <text x="296" y="676">/notify/a.example/clubhouse</text>
+                  <text x="436" y="676">Commit</text>
+                  <text x="76" y="692">ServerB-&gt;ClientB*:</text>
+                  <text x="164" y="692">[[</text>
+                  <text x="204" y="692">Commit</text>
+                  <text x="244" y="692">]]</text>
+                  <text x="72" y="708">ServerA-&gt;ServerC:</text>
+                  <text x="164" y="708">POST</text>
+                  <text x="296" y="708">/notify/a.example/clubhouse</text>
+                  <text x="436" y="708">Commit</text>
+                  <text x="76" y="724">ServerC-&gt;ClientC*:</text>
+                  <text x="164" y="724">[[</text>
+                  <text x="204" y="724">Commit</text>
+                  <text x="244" y="724">]]</text>
+                </g>
+              </svg><a href="#section-3.6-5.1.1" class="pilcrow">¶</a>
+</div>
+</div>
+<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
+<a href="#name-cathy-adds-a-new-client" class="selfRef">Cathy Adds a new Client</a>
+          </figcaption></figure>
+</div>
+</section>
+</div>
 </section>
 </div>
 <div id="services-required-at-each-layer">
@@ -2375,14 +2566,14 @@ Welcome message to the proper provider.<a href="#section-4.3.1-5" class="pilcrow
 <p id="section-4.3.2-1">The participation list can be changed by adding or removing users.  These
 changes are described without a specific syntax as a list of adds and removes:<a href="#section-4.3.2-1" class="pilcrow">¶</a></p>
 <span id="name-changing-the-state-of-the-r"></span><div id="fig-room-state-change">
-<figure id="figure-8">
+<figure id="figure-9">
             <div class="alignLeft art-ascii-art art-text artwork" id="section-4.3.2-2.1">
 <pre>
 Add: ["diana@d.example", "eric@e.example"],
 Remove: ["bob@b.example"],
 </pre>
 </div>
-<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
+<figcaption><a href="#figure-9" class="selfRef">Figure 9</a>:
 <a href="#name-changing-the-state-of-the-r" class="selfRef">Changing the state of the room</a>
             </figcaption></figure>
 </div>
@@ -2823,32 +3014,25 @@ when a new client of an existing user needs to join the groups of all the
 user's rooms. It can also be used when joining an open room, or when a
 client did not have key packages available but their user is already in the
 participation list for the corresponding room. In MIMI, external joins are
-accomplished by fetching the MLS GroupInfo for a room's MLS group, and then sending an external commit incorporating the GroupInfo.<a href="#section-5.6-1" class="pilcrow">¶</a></p>
-<p id="section-5.6-2">The GroupInfo is<a href="#section-5.6-2" class="pilcrow">¶</a></p>
-<p id="section-5.6-3">\Adds, removes, and policy changes to the room are all forms of updating the
-room state. They are accomplished using the update transaction which is used to
-update the room base policy, participation list, or its underlying MLS group.
-It uses the HTTP POST method.<a href="#section-5.6-3" class="pilcrow">¶</a></p>
-<p id="section-5.6-4">For Bob's new client to join the MLS group and therefore fully participate
-in the room with Alice, Bob needs to fetch the MLS GroupInfo (or analogous
-end-to-end crypto state).<a href="#section-5.6-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.6-5">
+accomplished by fetching the MLS GroupInfo for a room's MLS group, and then
+sending an external commit incorporating the GroupInfo.<a href="#section-5.6-1" class="pilcrow">¶</a></p>
+<p id="section-5.6-2">The GroupInfoRequest uses the HTTP POST method.<a href="#section-5.6-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.6-3">
 <pre>
 POST /groupInfo/{roomId}
-</pre><a href="#section-5.6-5" class="pilcrow">¶</a>
+</pre><a href="#section-5.6-3" class="pilcrow">¶</a>
 </div>
-<p id="section-5.6-6">The request body is as follows:<a href="#section-5.6-6" class="pilcrow">¶</a></p>
-<p id="section-5.6-7">The request provides an MLS credential proving the requesting client's real or
+<p id="section-5.6-4">The request provides an MLS credential proving the requesting client's real or
 pseudonymous identity (for permission to join the group). The request also
 provides an ephemeral public key with which the hub can encrypt the
 GroupInfo and ratchet tree information, and a signature public key
 corresponding to the requester's credential. It also specifies a CipherSuite
 which merely needs to be one ciphersuite in common with the hub. It is
 needed only to specify the algorithms used to sign and encrypt the
-GroupInfoRequest and GroupInfoResponse respectively.<a href="#section-5.6-7" class="pilcrow">¶</a></p>
-<p id="section-5.6-8">Finally, the request can include an opaque joining code, which the requester
-could use to prove permission to fetch the GroupInfo, even if it is not yet a participant.<a href="#section-5.6-8" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-5.6-9">
+GroupInfoRequest and GroupInfoResponse respectively.<a href="#section-5.6-4" class="pilcrow">¶</a></p>
+<p id="section-5.6-5">Finally, the request can include an opaque joining code, which the requester
+could use to prove permission to fetch the GroupInfo, even if it is not yet a participant.<a href="#section-5.6-5" class="pilcrow">¶</a></p>
+<div class="lang-tls sourcecode" id="section-5.6-6">
 <pre>
 struct {
   Protocol protocol;
@@ -2875,10 +3059,11 @@ struct {
       opaque signature&lt;V&gt;;
   };
 } GroupInfoRequest;
-</pre><a href="#section-5.6-9" class="pilcrow">¶</a>
+</pre><a href="#section-5.6-6" class="pilcrow">¶</a>
 </div>
-<p id="section-5.6-10">The response body contains the encrypted GroupInfo and a way to get the ratchet_tree.<a href="#section-5.6-10" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-5.6-11">
+<p id="section-5.6-7">If successful, the response body contains the encrypted GroupInfo and a way
+to get the ratchet_tree.<a href="#section-5.6-7" class="pilcrow">¶</a></p>
+<div class="lang-tls sourcecode" id="section-5.6-8">
 <pre>
 struct {
       GroupInfo groupInfo;   /* without embedded ratchet_tree */
@@ -2928,14 +3113,14 @@ struct {
       opaque signature&lt;V&gt;;
   };
 } GroupInfoResponse;
-</pre><a href="#section-5.6-11" class="pilcrow">¶</a>
+</pre><a href="#section-5.6-8" class="pilcrow">¶</a>
 </div>
-<p id="section-5.6-12"><strong>ISSUE</strong>: What security properties are needed to protect a
+<p id="section-5.6-9"><strong>ISSUE</strong>: What security properties are needed to protect a
 GroupInfo object in the MIMI context are still under discussion. It is
 possible that the requester only needs to prove possession of their private
 key. The GroupInfo in another context might be sufficiently sensitive that
 it should be encrypted from the end client to the hub provider (unreadable
-by the local provider).<a href="#section-5.6-12" class="pilcrow">¶</a></p>
+by the local provider).<a href="#section-5.6-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -3064,7 +3249,7 @@ application state object.<a href="#section-7-7" class="pilcrow">¶</a></p>
 <p id="section-7-8">The content of the <code>application_states</code> extension and the <code>AppSync</code> proposal are
 structured as follows:<a href="#section-7-8" class="pilcrow">¶</a></p>
 <span id="name-the-application_state-exten"></span><div id="fig-app-state">
-<figure id="figure-9">
+<figure id="figure-10">
         <div class="lang-tls sourcecode" id="section-7-9.1">
 <pre>
 enum {
@@ -3104,12 +3289,12 @@ struct {
 } ApplicationStatesExtension;
 </pre>
 </div>
-<figcaption><a href="#figure-9" class="selfRef">Figure 9</a>:
+<figcaption><a href="#figure-10" class="selfRef">Figure 10</a>:
 <a href="#name-the-application_state-exten" class="selfRef">The `application_state` extension</a>
         </figcaption></figure>
 </div>
 <span id="name-the-appsync-proposal-type"></span><div id="fig-app-sync">
-<figure id="figure-10">
+<figure id="figure-11">
         <div class="lang-tls sourcecode" id="section-7-10.1">
 <pre>
 struct {
@@ -3139,7 +3324,7 @@ struct {
 } AppSync;
 </pre>
 </div>
-<figcaption><a href="#figure-10" class="selfRef">Figure 10</a>:
+<figcaption><a href="#figure-11" class="selfRef">Figure 11</a>:
 <a href="#name-the-appsync-proposal-type" class="selfRef">The AppSync proposal type</a>
         </figcaption></figure>
 </div>

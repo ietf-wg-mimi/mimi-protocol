@@ -5,11 +5,11 @@
 More Instant Messaging Interoperability                       T. Ralston
 Internet-Draft                          The Matrix.org Foundation C.I.C.
 Intended status: Standards Track                              K. Kohbrok
-Expires: 31 August 2024                                        R. Robert
+Expires: 1 September 2024                                      R. Robert
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                        28 February 2024
+                                                        29 February 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 August 2024.
+   This Internet-Draft will expire on 1 September 2024.
 
 Copyright Notice
 
@@ -88,6 +88,7 @@ Table of Contents
      3.3.  Bob adds Cathy to the Room
      3.4.  Cathy Sends a Message
      3.5.  Bob Leaves the Room
+     3.6.  Cathy adds a new device
    4.  Services required at each layer
      4.1.  Transport layer
      4.2.  End-to-End Security Layer
@@ -534,6 +535,73 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
                     Figure 7: Bob Leaves the Room
 
+3.6.  Cathy adds a new device
+
+   Many users have multiple clients often running on different devices
+   (for example a phone, a tablet, and a computer).  When a user creates
+   a new client, that client needs to be able to join all the MLS groups
+   associated with the rooms in which the user is a participant.
+
+   In MLS in order to initiate joining a group it needs to get the
+   current GroupInfo and ratchet_tree, and then send an External Commit
+   to the hub.  In MIMI, the hub keeps or reconstructs a copy of the
+   GroupInfo, assuming that other clients may not be available to assist
+   the client with joining.
+
+   For Cathy's new client to join the MLS group and therefore fully
+   participate in the room with Alice, ClientC3 needs to fetch the MLS
+   GroupInfo, and then generate an External Commit adding ClientC3.
+
+   Cathy's new client sends the External Commit to the room's MLS group
+   by sending an /update to the room.
+
+ClientC3       ServerC         ServerA         ServerB         ClientB*  ClientC*  ClientA*
+  |               |               |               |               |         |         |
+  | Fetch         |               |               |               |         |         |
+  | GroupInfo     |               |               |               |         |         |
+  |~~~~~~~~~~~~~~>| /groupInfo    |               |               |         |         |
+  |               |-------------->|               |               |         |         |
+  | GroupInfo +   |        200 OK |               |               |         |         |
+  | tree          |<--------------|               |               |         |         |
+  |<~~~~~~~~~~~~~~|               |               |               |         |         |
+  |               |               |               |               |         |         |
+  | External      |               |               |               |         |         |
+  | Commit, etc.  |               |               |               |         |         |
+  +~~~~~~~~~~~~~~>| /update       |               |               |         |         |
+  |               +-------------->|               |               |         |         |
+  |               |        200 OK |               |               |         |         |
+  |               |<--------------+               |               |         |         |
+  |      Accepted |               | Commit        |               |         |         |
+  |<~~~~~~~~~~~~~~|               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|
+  |               |               |               |               |         |         |
+  |               |               | /notify       |               |         |         |
+  |               +               +-------------->| Commit        |         |         |
+  |               |               |               +~~~~~~~~~~~~~~>|         |         |
+  |               |       /notify |               |               |         |         |
+  |               |<--------------+               |               |         |         |
+  |               | Commit        |               |               |         |         |
+  |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|         |
+  |               |               |               |               |         |         |
+
+ClientC3->ServerC: [[ request current GroupInfo ]]
+ServerC->ServerA: POST /groupInfo/a.example/clubhouse
+ServerA: Verify that ClientC3 has authorization to join the room
+ServerA->ServerC: 200 OK w/ current GroupInfo and ratchet tree
+ServerC->ClientC3: [[ GroupInfo, tree ]]
+ClientC3: Prepare External Commit Add*
+ClientC3->ServerC: [[ Commit, GroupInfo?, RatchetTree? ]]
+ServerC->ServerA: POST /update/a.example/clubhouse CommitBundle
+ServerA: Verify that Commit is valid and ClientC3 is authorized
+ServerA->ServerC: 200 OK
+ServerC->ClientC3: [[ External Commit was accepted ]]
+ServerA->ClientA*: [[ Commit ]]
+ServerA->ServerB: POST /notify/a.example/clubhouse Commit
+ServerB->ClientB*: [[ Commit ]]
+ServerA->ServerC: POST /notify/a.example/clubhouse Commit
+ServerC->ClientC*: [[ Commit ]]
+
+                  Figure 8: Cathy Adds a new Client
+
 4.  Services required at each layer
 
 4.1.  Transport layer
@@ -643,7 +711,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    Add: ["diana@d.example", "eric@e.example"],
    Remove: ["bob@b.example"],
 
-                  Figure 8: Changing the state of the room
+                  Figure 9: Changing the state of the room
 
    To put these changes into effect, a client or server encodes them in
    an AppSync proposal, signs the proposal as a PublicMessage, and
@@ -1045,21 +1113,9 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
    GroupInfo for a room's MLS group, and then sending an external commit
    incorporating the GroupInfo.
 
-   The GroupInfo is
-
-   \Adds, removes, and policy changes to the room are all forms of
-   updating the room state.  They are accomplished using the update
-   transaction which is used to update the room base policy,
-   participation list, or its underlying MLS group.  It uses the HTTP
-   POST method.
-
-   For Bob's new client to join the MLS group and therefore fully
-   participate in the room with Alice, Bob needs to fetch the MLS
-   GroupInfo (or analogous end-to-end crypto state).
+   The GroupInfoRequest uses the HTTP POST method.
 
    POST /groupInfo/{roomId}
-
-   The request body is as follows:
 
    The request provides an MLS credential proving the requesting
    client's real or pseudonymous identity (for permission to join the
@@ -1101,8 +1157,8 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
      };
    } GroupInfoRequest;
 
-   The response body contains the encrypted GroupInfo and a way to get
-   the ratchet_tree.
+   If successful, the response body contains the encrypted GroupInfo and
+   a way to get the ratchet_tree.
 
    struct {
          GroupInfo groupInfo;   /* without embedded ratchet_tree */
@@ -1307,7 +1363,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
      ApplicationState applicationStates<V>;
    } ApplicationStatesExtension;
 
-                Figure 9: The `application_state` extension
+                Figure 10: The `application_state` extension
 
    struct {
      uint32 index;
@@ -1335,7 +1391,7 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
      };
    } AppSync;
 
-                    Figure 10: The AppSync proposal type
+                    Figure 11: The AppSync proposal type
 
    The applicationId determines the structure and interpretation of the
    contents. of an ApplicationState object.  AppSync proposals contain
