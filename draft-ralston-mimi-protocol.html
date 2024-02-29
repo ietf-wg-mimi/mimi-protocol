@@ -1470,20 +1470,70 @@ in the MIMI protocol.  The scenario involves the following actors:<a href="#sect
 servers <code>ServerA</code>, <code>ServerB</code>, and <code>ServerC</code> respectively<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-2.2">
-          <p id="section-3-2.2.1">Users Alice (<code>alice@a.example</code>), Bob (<code>bob@b.example</code>) and Cathy
-(<code>cathy@c.example</code>) of the respective service providers<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.2.1">Users Alice (<code>alice</code>), Bob (<code>bob</code>) and Cathy (<code>cathy</code>) of the service providers <code>a.example</code>, <code>b.example</code>, and <code>c.example</code> respectively.<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-2.3">
           <p id="section-3-2.3.1">Clients <code>ClientA1</code>, <code>ClientA2</code>, <code>ClientB1</code>, etc. belonging to these users<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-2.4">
-          <p id="section-3-2.4.1">A room <code>clubhouse@a.example</code> where the three users interact<a href="#section-3-2.4.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.4.1">A room <code>clubhouse</code> hosted by hub provider <code>a.example</code> where the three users interact.<a href="#section-3-2.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-3-3">As noted in <span>[<a href="#I-D.barnes-mimi-arch" class="cite xref">I-D.barnes-mimi-arch</a>]</span>, the MIMI protocol only defines interactions
+<p id="section-3-3">Inside the protocol, each provider is represented by a domain name in the
+<code>host</code> production of the <code>authority</code> of a MIMI URI <span>[<a href="#RFC3986" class="cite xref">RFC3986</a>]</span>. Specific
+hosts or servers are represented by domain names, but not by MIMI URIs.
+Examples of different types of identifiers represented in a MIMI URI are
+shown in the table below:<a href="#section-3-3" class="pilcrow">¶</a></p>
+<span id="name-mimi-uri-examples"></span><div id="mimi-uri-examples">
+<table class="center" id="table-1">
+        <caption>
+<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#name-mimi-uri-examples" class="selfRef">MIMI URI examples</a>
+        </caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Identifier type</th>
+            <th class="text-left" rowspan="1" colspan="1">Example URI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Provider</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>mimi://a.example</code>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">User</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>mimi://a.example/u/alice</code>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Client</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>mimi://a.example/d/ClientA1</code>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Room</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>mimi://a.example/r/clubhouse</code>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">MLS group</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>mimi://a.example/g/clubhouse</code>
+</td>
+          </tr>
+        </tbody>
+      </table>
+</div>
+<p id="section-3-5">As noted in <span>[<a href="#I-D.barnes-mimi-arch" class="cite xref">I-D.barnes-mimi-arch</a>]</span>, the MIMI protocol only defines interactions
 between service providers' servers.  Interactions between clients and servers
 within a service provider domain are shown here for completeness, but
-surrounded by <code>[[ double brackets ]]</code>.<a href="#section-3-3" class="pilcrow">¶</a></p>
+surrounded by <code>[[ double brackets ]]</code>.<a href="#section-3-5" class="pilcrow">¶</a></p>
 <div id="alice-creates-a-room">
 <section id="section-3.1">
         <h3 id="name-alice-creates-a-room">
@@ -1497,13 +1547,13 @@ which is then the basis for protocol operations related to the room.<a href="#se
 properties:<a href="#section-3.1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.1-3.1">
-            <p id="section-3.1-3.1.1">Identifier: <code>clubhouse@a.example</code><a href="#section-3.1-3.1.1" class="pilcrow">¶</a></p>
+            <p id="section-3.1-3.1.1">Room Identifier: <code>mimi://a.example/r/clubhouse</code><a href="#section-3.1-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.1-3.2">
-            <p id="section-3.1-3.2.1">Participants: <code>[alice@a.example]</code><a href="#section-3.1-3.2.1" class="pilcrow">¶</a></p>
+            <p id="section-3.1-3.2.1">Participants: <code>[mimi://a.example/u/alice]</code><a href="#section-3.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.1-4">ClientA1 also creates an MLS group with group ID <code>clubhouse@a.example</code> and
+<p id="section-3.1-4">ClientA1 also creates an MLS group with group ID <code>mimi://a.example/g/clubhouse</code> and
 ensures via provider-local operations that Alice's other clients are members of
 this MLS group.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
 </section>
@@ -1586,8 +1636,8 @@ simplicity.<a href="#section-3.2-5.1.1" class="pilcrow">¶</a></p>
                   <text x="208" y="260">request</text>
                   <text x="256" y="260">KPs</text>
                   <text x="288" y="260">for</text>
-                  <text x="360" y="260">bob@b.example</text>
-                  <text x="428" y="260">]]</text>
+                  <text x="320" y="260">Bob</text>
+                  <text x="348" y="260">]]</text>
                   <text x="72" y="276">ServerA-&gt;ServerB:</text>
                   <text x="164" y="276">POST</text>
                   <text x="236" y="276">/keyMaterial</text>
@@ -1638,7 +1688,7 @@ simplicity.<a href="#section-3.2-5.1.1" class="pilcrow">¶</a></p>
 <figure id="figure-3">
           <div id="section-3.2-7.1">
             <div class="alignLeft art-svg artwork" id="section-3.2-7.1.1">
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="336" width="656" viewBox="0 0 656 336" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="336" width="672" viewBox="0 0 672 336" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
                 <path d="M 24,48 L 24,192" fill="none" stroke="black"></path>
                 <path d="M 152,48 L 152,192" fill="none" stroke="black"></path>
                 <path d="M 280,48 L 280,192" fill="none" stroke="black"></path>
@@ -1672,8 +1722,8 @@ simplicity.<a href="#section-3.2-5.1.1" class="pilcrow">¶</a></p>
                   <text x="112" y="228">Prepare</text>
                   <text x="172" y="228">Commit</text>
                   <text x="220" y="228">over</text>
-                  <text x="340" y="228">AppSync(+bob@b.example),</text>
-                  <text x="460" y="228">Add*</text>
+                  <text x="300" y="228">AppSync(+Bob),</text>
+                  <text x="380" y="228">Add*</text>
                   <text x="76" y="244">ClientA1-&gt;ServerA:</text>
                   <text x="164" y="244">[[</text>
                   <text x="208" y="244">Commit,</text>
@@ -1702,11 +1752,11 @@ simplicity.<a href="#section-3.2-5.1.1" class="pilcrow">¶</a></p>
                   <text x="480" y="276">Welcome</text>
                   <text x="72" y="292">ServerA-&gt;ServerB:</text>
                   <text x="164" y="292">POST</text>
-                  <text x="296" y="292">/notify/clubhouse@a.example</text>
-                  <text x="436" y="292">Intro{</text>
-                  <text x="500" y="292">Welcome,</text>
-                  <text x="588" y="292">RatchetTree?</text>
-                  <text x="648" y="292">}</text>
+                  <text x="304" y="292">/notify/a.example/r/clubhouse</text>
+                  <text x="452" y="292">Intro{</text>
+                  <text x="516" y="292">Welcome,</text>
+                  <text x="604" y="292">RatchetTree?</text>
+                  <text x="664" y="292">}</text>
                   <text x="36" y="308">ServerB:</text>
                   <text x="116" y="308">Recognizes</text>
                   <text x="180" y="308">that</text>
@@ -1716,7 +1766,7 @@ simplicity.<a href="#section-3.2-5.1.1" class="pilcrow">¶</a></p>
                   <text x="360" y="308">Bob</text>
                   <text x="388" y="308">to</text>
                   <text x="420" y="308">room</text>
-                  <text x="520" y="308">clubhouse@a.example</text>
+                  <text x="480" y="308">clubhouse</text>
                   <text x="76" y="324">ServerB-&gt;ClientB*:</text>
                   <text x="164" y="324">[[</text>
                   <text x="212" y="324">Welcome,</text>
@@ -1794,8 +1844,8 @@ Cathy's clients to ServerB as well as forwarding the Welcome to ServerC.<a href=
                   <text x="208" y="260">request</text>
                   <text x="256" y="260">KPs</text>
                   <text x="288" y="260">for</text>
-                  <text x="360" y="260">bob@b.example</text>
-                  <text x="428" y="260">]]</text>
+                  <text x="320" y="260">Bob</text>
+                  <text x="348" y="260">]]</text>
                   <text x="72" y="276">ServerB-&gt;ServerA:</text>
                   <text x="164" y="276">POST</text>
                   <text x="236" y="276">/keyMaterial</text>
@@ -1912,8 +1962,8 @@ Cathy's clients to ServerB as well as forwarding the Welcome to ServerC.<a href=
                   <text x="112" y="340">Prepare</text>
                   <text x="172" y="340">Commit</text>
                   <text x="220" y="340">over</text>
-                  <text x="348" y="340">AppSync(+cathy@c.example),</text>
-                  <text x="476" y="340">Add*</text>
+                  <text x="308" y="340">AppSync(+Cathy),</text>
+                  <text x="396" y="340">Add*</text>
                   <text x="76" y="356">ClientB1-&gt;ServerB:</text>
                   <text x="164" y="356">[[</text>
                   <text x="208" y="356">Commit,</text>
@@ -1923,8 +1973,8 @@ Cathy's clients to ServerB as well as forwarding the Welcome to ServerC.<a href=
                   <text x="524" y="356">]]</text>
                   <text x="72" y="372">ServerB-&gt;ServerA:</text>
                   <text x="164" y="372">POST</text>
-                  <text x="296" y="372">/update/clubhouse@a.example</text>
-                  <text x="460" y="372">CommitBundle</text>
+                  <text x="304" y="372">/update/a.example/r/clubhouse</text>
+                  <text x="476" y="372">CommitBundle</text>
                   <text x="36" y="388">ServerA:</text>
                   <text x="100" y="388">Verify</text>
                   <text x="148" y="388">that</text>
@@ -1938,11 +1988,11 @@ Cathy's clients to ServerB as well as forwarding the Welcome to ServerC.<a href=
                   <text x="188" y="404">OK</text>
                   <text x="72" y="420">ServerA-&gt;ServerC:</text>
                   <text x="164" y="420">POST</text>
-                  <text x="296" y="420">/notify/clubhouse@a.example</text>
-                  <text x="436" y="420">Intro{</text>
-                  <text x="500" y="420">Welcome,</text>
-                  <text x="588" y="420">RatchetTree?</text>
-                  <text x="648" y="420">}</text>
+                  <text x="304" y="420">/notify/a.example/r/clubhouse</text>
+                  <text x="452" y="420">Intro{</text>
+                  <text x="516" y="420">Welcome,</text>
+                  <text x="604" y="420">RatchetTree?</text>
+                  <text x="664" y="420">}</text>
                   <text x="36" y="436">ServerC:</text>
                   <text x="116" y="436">Recognizes</text>
                   <text x="180" y="436">that</text>
@@ -1951,7 +2001,7 @@ Cathy's clients to ServerB as well as forwarding the Welcome to ServerC.<a href=
                   <text x="316" y="436">adding</text>
                   <text x="368" y="436">Cathy</text>
                   <text x="404" y="436">to</text>
-                  <text x="496" y="436">clubhouse@a.example</text>
+                  <text x="456" y="436">clubhouse</text>
                   <text x="76" y="452">ServerC-&gt;ClientC*:</text>
                   <text x="164" y="452">[[</text>
                   <text x="212" y="452">Welcome,</text>
@@ -1959,8 +2009,8 @@ Cathy's clients to ServerB as well as forwarding the Welcome to ServerC.<a href=
                   <text x="364" y="452">]]</text>
                   <text x="72" y="468">ServerA-&gt;ServerB:</text>
                   <text x="164" y="468">POST</text>
-                  <text x="296" y="468">/notify/clubhouse@a.example</text>
-                  <text x="436" y="468">Commit</text>
+                  <text x="304" y="468">/notify/a.example/r/clubhouse</text>
+                  <text x="452" y="468">Commit</text>
                   <text x="76" y="484">ServerB-&gt;ClientB*:</text>
                   <text x="164" y="484">[[</text>
                   <text x="204" y="484">Commit</text>
@@ -2050,8 +2100,8 @@ clients.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
                   <text x="404" y="324">]]</text>
                   <text x="72" y="340">ServerC-&gt;ServerA:</text>
                   <text x="164" y="340">POST</text>
-                  <text x="296" y="340">/submit/clubhouse@a.example</text>
-                  <text x="516" y="340">MLSMessage(PrivateMessage)</text>
+                  <text x="304" y="340">/submit/a.example/r/clubhouse</text>
+                  <text x="532" y="340">MLSMessage(PrivateMessage)</text>
                   <text x="36" y="356">ServerA:</text>
                   <text x="108" y="356">Verifies</text>
                   <text x="164" y="356">that</text>
@@ -2060,16 +2110,16 @@ clients.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
                   <text x="304" y="356">allowed</text>
                   <text x="72" y="372">ServerA-&gt;ServerC:</text>
                   <text x="164" y="372">POST</text>
-                  <text x="296" y="372">/notify/clubhouse@a.example</text>
-                  <text x="444" y="372">Message{</text>
-                  <text x="588" y="372">MLSMessage(PrivateMessage)</text>
-                  <text x="704" y="372">}</text>
+                  <text x="304" y="372">/notify/a.example/r/clubhouse</text>
+                  <text x="460" y="372">Message{</text>
+                  <text x="604" y="372">MLSMessage(PrivateMessage)</text>
+                  <text x="720" y="372">}</text>
                   <text x="72" y="388">ServerA-&gt;ServerB:</text>
                   <text x="164" y="388">POST</text>
-                  <text x="296" y="388">/notify/clubhouse@a.example</text>
-                  <text x="444" y="388">Message{</text>
-                  <text x="588" y="388">MLSMessage(PrivateMessage)</text>
-                  <text x="704" y="388">}</text>
+                  <text x="304" y="388">/notify/a.example/r/clubhouse</text>
+                  <text x="460" y="388">Message{</text>
+                  <text x="604" y="388">MLSMessage(PrivateMessage)</text>
+                  <text x="720" y="388">}</text>
                   <text x="76" y="404">ServerA-&gt;ClientA*:</text>
                   <text x="164" y="404">[[</text>
                   <text x="284" y="404">MLSMessage(PrivateMessage)</text>
@@ -2176,7 +2226,7 @@ possible.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
                   <text x="40" y="420">ClientB1:</text>
                   <text x="112" y="420">Prepare</text>
                   <text x="180" y="420">Remove*,</text>
-                  <text x="312" y="420">AppSync(-bob@b.example)</text>
+                  <text x="272" y="420">AppSync(-Bob)</text>
                   <text x="76" y="436">ClientB1-&gt;ServerB:</text>
                   <text x="164" y="436">[[</text>
                   <text x="212" y="436">Remove*,</text>
@@ -2184,9 +2234,9 @@ possible.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
                   <text x="324" y="436">]]</text>
                   <text x="72" y="452">ServerB-&gt;ServerA:</text>
                   <text x="164" y="452">POST</text>
-                  <text x="296" y="452">/update/clubhouse@a.example</text>
-                  <text x="444" y="452">Remove*,</text>
-                  <text x="512" y="452">AppSync</text>
+                  <text x="304" y="452">/update/a.example/r/clubhouse</text>
+                  <text x="460" y="452">Remove*,</text>
+                  <text x="528" y="452">AppSync</text>
                   <text x="36" y="468">ServerA:</text>
                   <text x="100" y="468">Verify</text>
                   <text x="148" y="468">that</text>
@@ -2202,8 +2252,8 @@ possible.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
                   <text x="188" y="484">OK</text>
                   <text x="72" y="500">ServerA-&gt;ServerC:</text>
                   <text x="164" y="500">POST</text>
-                  <text x="296" y="500">/notify/clubhouse@a.example</text>
-                  <text x="448" y="500">Proposals</text>
+                  <text x="304" y="500">/notify/a.example/r/clubhouse</text>
+                  <text x="464" y="500">Proposals</text>
                   <text x="80" y="516">ServerC1-&gt;ClientC1:</text>
                   <text x="172" y="516">[[</text>
                   <text x="224" y="516">Proposals</text>
@@ -2217,8 +2267,8 @@ possible.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
                   <text x="580" y="532">]]</text>
                   <text x="72" y="548">ServerC-&gt;ServerA:</text>
                   <text x="164" y="548">POST</text>
-                  <text x="296" y="548">/update/clubhouse@a.example</text>
-                  <text x="460" y="548">CommitBundle</text>
+                  <text x="308" y="548">/update/a.example/r/clubhousee</text>
+                  <text x="484" y="548">CommitBundle</text>
                   <text x="36" y="564">ServerA:</text>
                   <text x="96" y="564">Check</text>
                   <text x="152" y="564">whether</text>
@@ -2232,12 +2282,12 @@ possible.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
                   <text x="188" y="580">OK</text>
                   <text x="72" y="596">ServerA-&gt;ServerB:</text>
                   <text x="164" y="596">POST</text>
-                  <text x="296" y="596">/notify/clubhouse@a.example</text>
-                  <text x="436" y="596">Commit</text>
+                  <text x="304" y="596">/notify/a.example/r/clubhouse</text>
+                  <text x="452" y="596">Commit</text>
                   <text x="72" y="612">ServerA-&gt;ServerC:</text>
                   <text x="164" y="612">POST</text>
-                  <text x="296" y="612">/notify/clubhouse@a.example</text>
-                  <text x="436" y="612">Commit</text>
+                  <text x="304" y="612">/notify/a.example/r/clubhouse</text>
+                  <text x="452" y="612">Commit</text>
                 </g>
               </svg><a href="#section-3.5-5.1.1" class="pilcrow">¶</a>
 </div>
@@ -2375,8 +2425,8 @@ changes are described without a specific syntax as a list of adds and removes:<a
 <figure id="figure-8">
             <div class="alignLeft art-ascii-art art-text artwork" id="section-4.3.2-2.1">
 <pre>
-Add: ["diana@d.example", "eric@e.example"],
-Remove: ["bob@b.example"],
+Add: ["mimi://d.example/u/diana", "mimi://e.example/u/eric"],
+Remove: ["mimi://b.example/u/bob"],
 </pre>
 </div>
 <figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
@@ -2668,7 +2718,7 @@ struct {
 </pre><a href="#section-5.3-7" class="pilcrow">¶</a>
 </div>
 <p id="section-5.3-8">For example, in the first use case described in the Protocol Overview, Alice creates a Commit
-containing an AppSync proposal adding <code>bob@b.example</code>, and Add proposals for all
+containing an AppSync proposal adding Bob (<code>mimi://b.example/b/bob</code>), and Add proposals for all
 Bob's MLS clients.  Alice includes the Welcome message which will be sent for
 Bob, a GroupInfo object for the hub provider, and complete <code>ratchet_tree</code>
 extension.<a href="#section-5.3-8" class="pilcrow">¶</a></p>
@@ -3166,6 +3216,10 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3986">[RFC3986]</dt>
+        <dd>
+<span class="refAuthor">Berners-Lee, T.</span>, <span class="refAuthor">Fielding, R.</span>, and <span class="refAuthor">L. Masinter</span>, <span class="refTitle">"Uniform Resource Identifier (URI): Generic Syntax"</span>, <span class="seriesInfo">STD 66</span>, <span class="seriesInfo">RFC 3986</span>, <span class="seriesInfo">DOI 10.17487/RFC3986</span>, <time datetime="2005-01" class="refDate">January 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3986">https://www.rfc-editor.org/rfc/rfc3986</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC6125">[RFC6125]</dt>
         <dd>
