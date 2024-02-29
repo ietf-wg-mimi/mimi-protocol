@@ -977,7 +977,7 @@ ignored (despite the success response).
 > This byte-exact replay criterion might not be the right deduplication
 > strategy.  There might be situations where it is valid for the same hub server
 > to send the same payload multiple times, e.g., due to accidental collisions.
-> 
+>
 > If this is a concern, then an explicit transaction ID could be introduced.
 > The follower server would still have to keep a list of recently seen
 > transaction IDs, but deduplication could be done irrespective of the content
