@@ -793,28 +793,41 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
        ClientKeyMaterial clients<V>;
    } KeyMaterialResponse;
 
-   The semantics of the KeyMaterialUserCode are as follows: - success
-   indicates that key material was provided for every client of the
-   target user. - partialSuccess indicates that key material was
-   provided for at least one client of the target user. -
-   incompatibleProtocol indicates that either one of providers supports
-   the protocol requested, or none of the clients of the target user
-   support the protocol requested. - noCompatibleMaterial indicates that
-   none of the clients was able to supply key material compatible with
-   the requiredCapabilities field in the request. - userUnknown
-   indicates that the target user is not known to the target provider. -
-   noConsent indicates that the requester does not have consent to fetch
-   key material for the target user.  The target provider can use this
-   response as a catch all and in place of other status codes such as
-   userUnknown if desired to preserve the privacy of its users. -
-   noConsentForThisRoom indicates that the target user might have
-   allowed a request for another room, but does not for this room.  If
-   the provider does not wish to make this distinction, it can return
-   noConsent instead. - userDeleted indicates that the target provider
-   wishes the requester to know that the target user was previously a
-   valid user of the system and has been deleted.  A target provider can
-   of course use userUnknown if the provider does wish to keep or
-   specify this distinction.
+   The semantics of the KeyMaterialUserCode are as follows:
+
+   *  success indicates that key material was provided for every client
+      of the target user.
+
+   *  partialSuccess indicates that key material was provided for at
+      least one client of the target user.
+
+   *  incompatibleProtocol indicates that either one of providers
+      supports the protocol requested, or none of the clients of the
+      target user support the protocol requested.
+
+   *  noCompatibleMaterial indicates that none of the clients was able
+      to supply key material compatible with the requiredCapabilities
+      field in the request.
+
+   *  userUnknown indicates that the target user is not known to the
+      target provider.
+
+   *  noConsent indicates that the requester does not have consent to
+      fetch key material for the target user.  The target provider can
+      use this response as a catch all and in place of other status
+      codes such as userUnknown if desired to preserve the privacy of
+      its users.
+
+   *  noConsentForThisRoom indicates that the target user might have
+      allowed a request for another room, but does not for this room.
+      If the provider does not wish to make this distinction, it can
+      return noConsent instead.
+
+   *  userDeleted indicates that the target provider wishes the
+      requester to know that the target user was previously a valid user
+      of the system and has been deleted.  A target provider can of
+      course use userUnknown if the provider does wish to keep or
+      specify this distinction.
 
    At minimum, as each MLS KeyPackage is returned to a requesting
    provider (on behalf of a requesting IM client), the target provider
@@ -907,21 +920,30 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
      UpdateResponseCode responseCode;
      string errorDescription;
      select (responseCode) {
+       case success:
+         /* the hub acceptance time (in milliseconds from the UNIX epoch) */
+         uint64 acceptedTimestamp;
        case wrongEpoch:
+         /* current MLS epoch for the MLS group */
          uint64 currentEpoch;
        case invalidProposal:
          ProposalRef invalidProposals<V>;
      };
    } UpdateRoomResponse
 
-   The semantics of the UpdatedResponseCode values are as follows: -
-   success indicates the UpdateRequest was accepted and will be
-   distributed. - wrongEpoch indicates that the hub provider is using a
-   different epoch.  The currentEpoch is provided in the response. -
-   notAllowed indicates that some type of policy or authorization
-   prevented the hub provider from accepting the UpdateRequest. -
-   invalidProposal indicates that at least one proposal is invalid.  A
-   list of invalidProposals is provided in the response.
+   The semantics of the UpdatedResponseCode values are as follows:
+
+   *  success indicates the UpdateRequest was accepted and will be
+      distributed.
+
+   *  wrongEpoch indicates that the hub provider is using a different
+      epoch.  The currentEpoch is provided in the response.
+
+   *  notAllowed indicates that some type of policy or authorization
+      prevented the hub provider from accepting the UpdateRequest.
+
+   *  invalidProposal indicates that at least one proposal is invalid.
+      A list of invalidProposals is provided in the response.
 
 5.4.  Submit a Message
 
@@ -949,9 +971,8 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
 
    enum {
      accepted(0),
-     nonMember(1),
-     notAuthorized(2),
-     epochTooOld(3),
+     notAllowed(1),
+     epochTooOld(2),
      (255)
    } SubmitResponseCode;
 
@@ -960,8 +981,31 @@ ServerA->ServerC: POST /notify/clubhouse@a.example Commit
      select(protocol) {
        case mls10:
          SubmitResponseCode statusCode;
+         select (statusCode) {
+           case success:
+             /* the hub acceptance time
+                (in milliseconds from the UNIX epoch) */
+             uint64 acceptedTimestamp;
+           case epochTooOld:
+             /* current MLS epoch for the MLS group */
+             uint64 currentEpoch;
+         };
      };
    } SubmitMessageResponse;
+
+   The semantics of the SubmitResponseCode values are as follows:
+
+   *  success indicates the SubmitMessageRequest was accepted and will
+      be distributed.
+
+   *  notAllowed indicates that some type of policy or authorization
+      prevented the hub provider from accepting the UpdateRequest.  This
+      could include nonsensical inputs such as an MLS epoch more recent
+      than the hub's.
+
+   *  epochTooOld indicates that the hub provider is using a new MLS
+      epoch for the group.  The currentEpoch is provided in the
+      response.
 
       *ISSUE:* Do we want to offer a distinction between regular
       application messages and ephemeral applications messages (for

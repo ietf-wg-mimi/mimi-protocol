@@ -2553,37 +2553,55 @@ struct {
 } KeyMaterialResponse;
 </pre><a href="#section-5.2-11" class="pilcrow">¶</a>
 </div>
-<p id="section-5.2-12">The semantics of the <code>KeyMaterialUserCode</code> are as follows:
-- <code>success</code> indicates that key material was provided for every client of the
-target user.
-- <code>partialSuccess</code> indicates that key material was provided for at least one
-client of the target user.
-- <code>incompatibleProtocol</code> indicates that either one of providers supports the
+<p id="section-5.2-12">The semantics of the <code>KeyMaterialUserCode</code> are as follows:<a href="#section-5.2-12" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.2-13.1">
+            <p id="section-5.2-13.1.1"><code>success</code> indicates that key material was provided for every client of the
+target user.<a href="#section-5.2-13.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.2-13.2">
+            <p id="section-5.2-13.2.1"><code>partialSuccess</code> indicates that key material was provided for at least one
+client of the target user.<a href="#section-5.2-13.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.2-13.3">
+            <p id="section-5.2-13.3.1"><code>incompatibleProtocol</code> indicates that either one of providers supports the
 protocol requested, or none of the clients of the target user support the
-protocol requested.
-- <code>noCompatibleMaterial</code> indicates that none of the clients was able to
+protocol requested.<a href="#section-5.2-13.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.2-13.4">
+            <p id="section-5.2-13.4.1"><code>noCompatibleMaterial</code> indicates that none of the clients was able to
 supply key material compatible with the <code>requiredCapabilities</code> field in the
-request.
-- <code>userUnknown</code> indicates that the target user is not known to the target
-provider.
-- <code>noConsent</code> indicates that the requester does not have consent to fetch
+request.<a href="#section-5.2-13.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.2-13.5">
+            <p id="section-5.2-13.5.1"><code>userUnknown</code> indicates that the target user is not known to the target
+provider.<a href="#section-5.2-13.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.2-13.6">
+            <p id="section-5.2-13.6.1"><code>noConsent</code> indicates that the requester does not have consent to fetch
 key material for the target user. The target provider can use this response
 as a catch all and in place of other status codes such as <code>userUnknown</code> if
-desired to preserve the privacy of its users.
-- <code>noConsentForThisRoom</code> indicates that the target user might have allowed
+desired to preserve the privacy of its users.<a href="#section-5.2-13.6.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.2-13.7">
+            <p id="section-5.2-13.7.1"><code>noConsentForThisRoom</code> indicates that the target user might have allowed
 a request for another room, but does not for this room. If the provider
-does not wish to make this distinction, it can return <code>noConsent</code> instead.
-- <code>userDeleted</code> indicates that the target provider wishes the requester to
+does not wish to make this distinction, it can return <code>noConsent</code> instead.<a href="#section-5.2-13.7.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.2-13.8">
+            <p id="section-5.2-13.8.1"><code>userDeleted</code> indicates that the target provider wishes the requester to
 know that the target user was previously a valid user of the system and has
 been deleted. A target provider can of course use <code>userUnknown</code> if the
-provider does wish to keep or specify this distinction.<a href="#section-5.2-12" class="pilcrow">¶</a></p>
-<p id="section-5.2-13">At minimum, as each MLS KeyPackage is returned to a requesting provider (on
+provider does wish to keep or specify this distinction.<a href="#section-5.2-13.8.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.2-14">At minimum, as each MLS KeyPackage is returned to a requesting provider (on
 behalf of a requesting IM client), the target provider needs to associate its
 <code>KeyPackageRef</code> with the target client and the hub provider needs to associate
 its <code>KeyPackageRef</code> with the target provider. This ensures that Welcome messages
 can be correctly routed to the target provider and client. These associations
 can be deleted after a Welcome message is forwarded or after the KeyPackage
-<code>leaf_node.lifetime.not_after</code> time has passed.<a href="#section-5.2-13" class="pilcrow">¶</a></p>
+<code>leaf_node.lifetime.not_after</code> time has passed.<a href="#section-5.2-14" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="update-room-state">
@@ -2669,7 +2687,11 @@ struct {
   UpdateResponseCode responseCode;
   string errorDescription;
   select (responseCode) {
+    case success:
+      /* the hub acceptance time (in milliseconds from the UNIX epoch) */
+      uint64 acceptedTimestamp;
     case wrongEpoch:
+      /* current MLS epoch for the MLS group */
       uint64 currentEpoch;
     case invalidProposal:
       ProposalRef invalidProposals&lt;V&gt;;
@@ -2677,14 +2699,24 @@ struct {
 } UpdateRoomResponse
 </pre><a href="#section-5.3-10" class="pilcrow">¶</a>
 </div>
-<p id="section-5.3-11">The semantics of the <code>UpdatedResponseCode</code> values are as follows:
-- <code>success</code> indicates the <code>UpdateRequest</code> was accepted and will be distributed.
-- <code>wrongEpoch</code> indicates that the hub provider is using a different epoch. The
-<code>currentEpoch</code> is provided in the response.
-- <code>notAllowed</code> indicates that some type of policy or authorization prevented the
-hub provider from accepting the <code>UpdateRequest</code>.
-- <code>invalidProposal</code> indicates that at least one proposal is invalid. A list of
-invalidProposals is provided in the response.<a href="#section-5.3-11" class="pilcrow">¶</a></p>
+<p id="section-5.3-11">The semantics of the <code>UpdatedResponseCode</code> values are as follows:<a href="#section-5.3-11" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.3-12.1">
+            <p id="section-5.3-12.1.1"><code>success</code> indicates the <code>UpdateRequest</code> was accepted and will be distributed.<a href="#section-5.3-12.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.3-12.2">
+            <p id="section-5.3-12.2.1"><code>wrongEpoch</code> indicates that the hub provider is using a different epoch. The
+<code>currentEpoch</code> is provided in the response.<a href="#section-5.3-12.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.3-12.3">
+            <p id="section-5.3-12.3.1"><code>notAllowed</code> indicates that some type of policy or authorization prevented the
+hub provider from accepting the <code>UpdateRequest</code>.<a href="#section-5.3-12.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.3-12.4">
+            <p id="section-5.3-12.4.1"><code>invalidProposal</code> indicates that at least one proposal is invalid. A list of
+invalidProposals is provided in the response.<a href="#section-5.3-12.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 </section>
 </div>
 <div id="submit-a-message">
@@ -2719,9 +2751,8 @@ of PrivateMessage (an application message).<a href="#section-5.4-5" class="pilcr
 <pre>
 enum {
   accepted(0),
-  nonMember(1),
-  notAuthorized(2),
-  epochTooOld(3),
+  notAllowed(1),
+  epochTooOld(2),
   (255)
 } SubmitResponseCode;
 
@@ -2730,15 +2761,39 @@ struct {
   select(protocol) {
     case mls10:
       SubmitResponseCode statusCode;
+      select (statusCode) {
+        case success:
+          /* the hub acceptance time
+             (in milliseconds from the UNIX epoch) */
+          uint64 acceptedTimestamp;
+        case epochTooOld:
+          /* current MLS epoch for the MLS group */
+          uint64 currentEpoch;
+      };
   };
 } SubmitMessageResponse;
 </pre><a href="#section-5.4-7" class="pilcrow">¶</a>
 </div>
+<p id="section-5.4-8">The semantics of the <code>SubmitResponseCode</code> values are as follows:<a href="#section-5.4-8" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.4-9.1">
+            <p id="section-5.4-9.1.1"><code>success</code> indicates the <code>SubmitMessageRequest</code> was accepted and will be distributed.<a href="#section-5.4-9.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.4-9.2">
+            <p id="section-5.4-9.2.1"><code>notAllowed</code> indicates that some type of policy or authorization prevented the
+hub provider from accepting the <code>UpdateRequest</code>. This could include
+nonsensical inputs such as an MLS epoch more recent than the hub's.<a href="#section-5.4-9.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.4-9.3">
+            <p id="section-5.4-9.3.1"><code>epochTooOld</code> indicates that the hub provider is using a new MLS epoch
+for the group. The <code>currentEpoch</code> is provided in the response.<a href="#section-5.4-9.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-5.4-8.1">
-            <p id="section-5.4-8.1.1"><strong>ISSUE:</strong> Do we want to offer a distinction between regular application
+<li class="normal ulEmpty" id="section-5.4-10.1">
+            <p id="section-5.4-10.1.1"><strong>ISSUE:</strong> Do we want to offer a distinction between regular application
 messages and ephemeral applications messages (for example "is typing"
-notifications), which do not need to be queued at the target provider.<a href="#section-5.4-8.1.1" class="pilcrow">¶</a></p>
+notifications), which do not need to be queued at the target provider.<a href="#section-5.4-10.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
