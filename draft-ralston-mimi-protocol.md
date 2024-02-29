@@ -471,9 +471,12 @@ and `ratchet_tree`, and then send an External Commit to the hub. In MIMI,
 the hub keeps or reconstructs a copy of the GroupInfo, assuming that other
 clients may not be available to assist the client with joining.
 
-The new client sends the External Commit to the room's MLS group by sending
-an /update to the room.
+For Cathy's new client to join the MLS group and therefore fully participate
+in the room with Alice, ClientC3 needs to fetch the MLS GroupInfo, and then
+generate an External Commit adding ClientC3.
 
+Cathy's new client sends the External Commit to the room's MLS group by sending
+an /update to the room.
 
 ~~~ aasvg
 ClientC3       ServerC         ServerA         ServerB         ClientB*  ClientC*  ClientA*
@@ -1033,26 +1036,14 @@ when a new client of an existing user needs to join the groups of all the
 user's rooms. It can also be used when joining an open room, or when a
 client did not have key packages available but their user is already in the
 participation list for the corresponding room. In MIMI, external joins are
-accomplished by fetching the MLS GroupInfo for a room's MLS group, and then sending an external commit incorporating the GroupInfo.
+accomplished by fetching the MLS GroupInfo for a room's MLS group, and then
+sending an external commit incorporating the GroupInfo.
 
-The GroupInfo is
-
-
-\Adds, removes, and policy changes to the room are all forms of updating the
-room state. They are accomplished using the update transaction which is used to
-update the room base policy, participation list, or its underlying MLS group.
-It uses the HTTP POST method.
-
-
-For Bob's new client to join the MLS group and therefore fully participate
-in the room with Alice, Bob needs to fetch the MLS GroupInfo (or analogous
-end-to-end crypto state).
+The GroupInfoRequest uses the HTTP POST method.
 
 ~~~
 POST /groupInfo/{roomId}
 ~~~
-
-The request body is as follows:
 
 The request provides an MLS credential proving the requesting client's real or
 pseudonymous identity (for permission to join the group). The request also
@@ -1095,7 +1086,8 @@ struct {
 } GroupInfoRequest;
 ~~~
 
-The response body contains the encrypted GroupInfo and a way to get the ratchet_tree.
+If successful, the response body contains the encrypted GroupInfo and a way
+to get the ratchet_tree.
 
 ~~~ tls
 struct {
