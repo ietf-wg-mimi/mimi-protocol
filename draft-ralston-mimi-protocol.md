@@ -682,7 +682,9 @@ GET /.well-known/mimi-protocol-directory
   "update": "https://mimi.example.com/v1/update{roomId}",
   "notify": "https://mimi.example.com/v1/notify/{roomId}",
   "submitMessage":
-     "https://mimi.example.com/v1/submitMessage/{roomId}"
+     "https://mimi.example.com/v1/submitMessage/{roomId}",
+  "groupInfo":
+     "https://mimi.example.com/v1/groupInfo/{roomId}"
 }
 ~~~
 
