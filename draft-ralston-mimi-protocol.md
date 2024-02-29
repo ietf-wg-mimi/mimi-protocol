@@ -186,10 +186,24 @@ in the MIMI protocol.  The scenario involves the following actors:
 
 * Service providers `a.example`, `b.example`, and `c.example` represented by
   servers `ServerA`, `ServerB`, and `ServerC` respectively
-* Users Alice (`alice@a.example`), Bob (`bob@b.example`) and Cathy
-  (`cathy@c.example`) of the respective service providers
+* Users Alice (`alice`), Bob (`bob`) and Cathy (`cathy`) of the service providers `a.example`, `b.example`, and `c.example` respectively.
 * Clients `ClientA1`, `ClientA2`, `ClientB1`, etc. belonging to these users
-* A room `clubhouse@a.example` where the three users interact
+* A room `clubhouse` hosted by hub provider `a.example` where the three users interact.
+
+Inside the protocol, each provider is represented by a domain name in the
+`host` production of the `authority` of a MIMI URI {{!RFC3986}}. Specific
+hosts or servers are represented by domain names, but not by MIMI URIs.
+Examples of different types of identifiers represented in a MIMI URI are
+shown in the table below:
+
+| Identifier type | Example URI |
+|-+-|
+| Provider  | `mimi://a.example`             |
+| User      | `mimi://a.example/u/alice`     |
+| Client    | `mimi://a.example/d/ClientA1`  |
+| Room      | `mimi://a.example/r/clubhouse` |
+| MLS group | `mimi://a.example/g/clubhouse` |
+{: #mimi-uri-examples title="MIMI URI examples"}
 
 As noted in {{!I-D.barnes-mimi-arch}}, the MIMI protocol only defines interactions
 between service providers' servers.  Interactions between clients and servers
@@ -206,10 +220,10 @@ which is then the basis for protocol operations related to the room.
 Here, we assume that Alice uses ClientA1 to create a room with the following
 properties:
 
-* Identifier: `clubhouse@a.example`
-* Participants: `[alice@a.example]`
+* Room Identifier: `mimi://a.example/r/clubhouse`
+* Participants: `[mimi://a.example/u/alice]`
 
-ClientA1 also creates an MLS group with group ID `clubhouse@a.example` and
+ClientA1 also creates an MLS group with group ID `mimi://a.example/g/clubhouse` and
 ensures via provider-local operations that Alice's other clients are members of
 this MLS group.
 
@@ -254,7 +268,7 @@ ClientA1       ServerA         ServerB         ClientB*
   |               |               |               |
 
 ClientB*->ServerB: [[ Store KeyPackages ]]
-ClientA1->ServerA: [[ request KPs for bob@b.example ]]
+ClientA1->ServerA: [[ request KPs for Bob ]]
 ServerA->ServerB: POST /keyMaterial KeyMaterialRequest
 ServerB: Verify that Alice is authorized to fetch KeyPackages
 ServerB: Mark returned KPs as reserved for Alice’s use
@@ -277,12 +291,12 @@ ClientA1       ServerA         ServerB         ClientB*
   |<~~~~~~~~~~~~~~+               |               |
   |               |               |               |
 
-ClientA1: Prepare Commit over AppSync(+bob@b.example), Add*
+ClientA1: Prepare Commit over AppSync(+Bob), Add*
 ClientA1->ServerA: [[ Commit, Welcome, GroupInfo?, RatchetTree? ]]
 ServerA: Verify that AppSync, Adds are allowed by policy
 ServerA: Identifies Welcome domains based on KP hash in Welcome
-ServerA->ServerB: POST /notify/clubhouse@a.example Intro{ Welcome, RatchetTree? }
-ServerB: Recognizes that Welcome is adding Bob to room clubhouse@a.example
+ServerA->ServerB: POST /notify/a.example/r/clubhouse Intro{ Welcome, RatchetTree? }
+ServerB: Recognizes that Welcome is adding Bob to room clubhouse
 ServerB->ClientB*: [[ Welcome, RatchetTree? ]]
 ~~~
 {: #fig-ab-add title="Alice Adds Bob to the Room and Bob's Clients to the MLS Group" }
@@ -312,7 +326,7 @@ ClientB1       ServerB         ServerA         ServerC         ClientC*
   |               |               |               |               |
 
 ClientC*->ServerC: [[ Store KeyPackages ]]
-ClientB1->ServerB: [[ request KPs for bob@b.example ]]
+ClientB1->ServerB: [[ request KPs for Bob ]]
 ServerB->ServerA: POST /keyMaterial KeyMaterialRequest
 ServerA->ServerC: POST /keyMaterial KeyMaterialRequest
 ServerB: Verify that Bob is authorized to fetch KeyPackages
@@ -344,15 +358,15 @@ ClientB1       ServerB         ServerA         ServerC         ClientC*  ClientB
   |               |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|
   |               |               |               |               |         |         |
 
-ClientB1: Prepare Commit over AppSync(+cathy@c.example), Add*
+ClientB1: Prepare Commit over AppSync(+Cathy), Add*
 ClientB1->ServerB: [[ Commit, Welcome, GroupInfo?, RatchetTree? ]]
-ServerB->ServerA: POST /update/clubhouse@a.example CommitBundle
+ServerB->ServerA: POST /update/a.example/r/clubhouse CommitBundle
 ServerA: Verify that Adds are allowed by policy
 ServerA->ServerB: 200 OK
-ServerA->ServerC: POST /notify/clubhouse@a.example Intro{ Welcome, RatchetTree? }
-ServerC: Recognizes that Welcome is adding Cathy to clubhouse@a.example
+ServerA->ServerC: POST /notify/a.example/r/clubhouse Intro{ Welcome, RatchetTree? }
+ServerC: Recognizes that Welcome is adding Cathy to clubhouse
 ServerC->ClientC*: [[ Welcome, RatchetTree? ]]
-ServerA->ServerB: POST /notify/clubhouse@a.example Commit
+ServerA->ServerB: POST /notify/a.example/r/clubhouse Commit
 ServerB->ClientB*: [[ Commit ]]
 ServerA->ClientA*: [[ Commit ]]
 ~~~
@@ -387,10 +401,10 @@ ClientC1       ServerC         ServerA         ServerB         ClientB*  ClientC
   |               |               |               |               |         |         |
 
 ClientC1->ServerC: [[ MLSMessage(PrivateMessage) ]]
-ServerC->ServerA: POST /submit/clubhouse@a.example MLSMessage(PrivateMessage)
+ServerC->ServerA: POST /submit/a.example/r/clubhouse MLSMessage(PrivateMessage)
 ServerA: Verifies that message is allowed
-ServerA->ServerC: POST /notify/clubhouse@a.example Message{ MLSMessage(PrivateMessage) }
-ServerA->ServerB: POST /notify/clubhouse@a.example Message{ MLSMessage(PrivateMessage) }
+ServerA->ServerC: POST /notify/a.example/r/clubhouse Message{ MLSMessage(PrivateMessage) }
+ServerA->ServerB: POST /notify/a.example/r/clubhouse Message{ MLSMessage(PrivateMessage) }
 ServerA->ClientA*: [[ MLSMessage(PrivateMessage) ]]
 ServerB->ClientB*: [[ MLSMessage(PrivateMessage) ]]
 ServerC->ClientC*: [[ MLSMessage(PrivateMessage) ]]
@@ -443,19 +457,19 @@ ClientB1       ServerB         ServerA         ServerC         ClientC1
   |               |<--------------+-------------->|               |
   |               |               |               |               |
 
-ClientB1: Prepare Remove*, AppSync(-bob@b.example)
+ClientB1: Prepare Remove*, AppSync(-Bob)
 ClientB1->ServerB: [[ Remove*, AppSync ]]
-ServerB->ServerA: POST /update/clubhouse@a.example Remove*, AppSync
+ServerB->ServerA: POST /update/a.example/r/clubhouse Remove*, AppSync
 ServerA: Verify that Removes, AppSync are allowed by policy; cache
 ServerA->ServerB: 200 OK
-ServerA->ServerC: POST /notify/clubhouse@a.example Proposals
+ServerA->ServerC: POST /notify/a.example/r/clubhouse Proposals
 ServerC1->ClientC1: [[ Proposals ]]
 ClientC1->ServerC: [[ Commit(Props), Welcome, GroupInfo?, RatchetTree? ]]
-ServerC->ServerA: POST /update/clubhouse@a.example CommitBundle
+ServerC->ServerA: POST /update/a.example/r/clubhousee CommitBundle
 ServerA: Check whether Commit includes queued proposals; accept
 ServerA->ServerC: 200 OK
-ServerA->ServerB: POST /notify/clubhouse@a.example Commit
-ServerA->ServerC: POST /notify/clubhouse@a.example Commit
+ServerA->ServerB: POST /notify/a.example/r/clubhouse Commit
+ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
 ~~~
 {: #fig-b-leave title="Bob Leaves the Room" }
 
@@ -595,7 +609,7 @@ level section describes the HTTP endpoints exposed to enable these functions.
 ### Server State
 
 Every MIMI server is a publication point for users' key material, via the
-`keyMaterial` endpoint discussed in fetch-key-material [TODO: link].  To support this
+`keyMaterial` endpoint discussed in {{fetch-key-material}}.  To support this
 endpoint, the server stores a set of KeyPackages, where each KeyPackage belongs
 to a specific user and device.
 
@@ -619,8 +633,8 @@ The participation list can be changed by adding or removing users.  These
 changes are described without a specific syntax as a list of adds and removes:
 
 ~~~ ascii-art
-Add: ["diana@d.example", "eric@e.example"],
-Remove: ["bob@b.example"],
+Add: ["mimi://d.example/u/diana", "mimi://e.example/u/eric"],
+Remove: ["mimi://b.example/u/bob"],
 ~~~
 {: #fig-room-state-change title="Changing the state of the room" }
 
@@ -782,6 +796,7 @@ struct {
 ~~~
 
 The semantics of the `KeyMaterialUserCode` are as follows:
+
 - `success` indicates that key material was provided for every client of the
 target user.
 - `partialSuccess` indicates that key material was provided for at least one
@@ -879,7 +894,7 @@ struct {
 ~~~
 
 For example, in the first use case described in the Protocol Overview, Alice creates a Commit
-containing an AppSync proposal adding `bob@b.example`, and Add proposals for all
+containing an AppSync proposal adding Bob (`mimi://b.example/b/bob`), and Add proposals for all
 Bob's MLS clients.  Alice includes the Welcome message which will be sent for
 Bob, a GroupInfo object for the hub provider, and complete `ratchet_tree`
 extension.
@@ -899,7 +914,11 @@ struct {
   UpdateResponseCode responseCode;
   string errorDescription;
   select (responseCode) {
+    case success:
+      /* the hub acceptance time (in milliseconds from the UNIX epoch) */
+      uint64 acceptedTimestamp;
     case wrongEpoch:
+      /* current MLS epoch for the MLS group */
       uint64 currentEpoch;
     case invalidProposal:
       ProposalRef invalidProposals<V>;
@@ -908,6 +927,7 @@ struct {
 ~~~
 
 The semantics of the `UpdatedResponseCode` values are as follows:
+
 - `success` indicates the `UpdateRequest` was accepted and will be distributed.
 - `wrongEpoch` indicates that the hub provider is using a different epoch. The
 `currentEpoch` is provided in the response.
@@ -946,9 +966,8 @@ The response merely indicates if the message was accepted by the hub provider.
 ~~~ tls
 enum {
   accepted(0),
-  nonMember(1),
-  notAuthorized(2),
-  epochTooOld(3),
+  notAllowed(1),
+  epochTooOld(2),
   (255)
 } SubmitResponseCode;
 
@@ -957,9 +976,27 @@ struct {
   select(protocol) {
     case mls10:
       SubmitResponseCode statusCode;
+      select (statusCode) {
+        case success:
+          /* the hub acceptance time
+             (in milliseconds from the UNIX epoch) */
+          uint64 acceptedTimestamp;
+        case epochTooOld:
+          /* current MLS epoch for the MLS group */
+          uint64 currentEpoch;
+      };
   };
 } SubmitMessageResponse;
 ~~~
+
+The semantics of the `SubmitResponseCode` values are as follows:
+
+- `success` indicates the `SubmitMessageRequest` was accepted and will be distributed.
+- `notAllowed` indicates that some type of policy or authorization prevented the
+hub provider from accepting the `UpdateRequest`. This could include
+nonsensical inputs such as an MLS epoch more recent than the hub's.
+- `epochTooOld` indicates that the hub provider is using a new MLS epoch
+for the group. The `currentEpoch` is provided in the response.
 
 > **ISSUE:** Do we want to offer a distinction between regular application
 messages and ephemeral applications messages (for example "is typing"
