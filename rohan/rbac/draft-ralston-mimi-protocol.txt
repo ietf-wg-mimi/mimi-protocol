@@ -161,10 +161,11 @@ Table of Contents
    other necessary functionality.  The following functions are likely to
    be needed by the complete protocol, but are not covered here:
 
-   Authorization policy:  In this document, we assume that all
-      participants in a room have equal capability.  Actual messaging
-      systems have authorization policies for which clients can take
-      which actions in a room.
+   Authorization policy:  In this document, we introduce a notional
+      concept of roles for participants, and permissions for roles.
+      Actual messaging systems have more complex and well-specified
+      authorization policies about which clients can take which actions
+      in a room.
 
    Advanced join/leave flows:  In this document, all adds / removes /
       joins / leaves are initiated from within the group, since this
