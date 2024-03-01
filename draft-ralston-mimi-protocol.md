@@ -26,6 +26,11 @@ venue:
 
 author:
  -
+    fullname: Richard L. Barnes
+    role: editor
+    organization: Cisco
+    email: rlb@ipv.sx
+ -
     fullname: Travis Ralston
     organization: The Matrix.org Foundation C.I.C.
     email: travisr@matrix.org
@@ -34,6 +39,10 @@ author:
     organization: Phoenix R&D
     email: konrad.kohbrok@datashrine.de
  -
+    fullname: Rohan Mahy
+    organization: Unaffiliated
+    email: rohan.ietf@gmail.com
+ -
     fullname: Raphael Robert
     organization: Phoenix R&D
     email: ietf@raphaelrobert.com
@@ -41,11 +50,6 @@ author:
     fullname: Matthew Hodgson
     organization: The Matrix.org Foundation C.I.C.
     email: matthew@matrix.org
-
-contributor:
-- name: Rohan Mahy
-  org: Wire
-  email: rohan.mahy@wire.com
 
 normative:
 
