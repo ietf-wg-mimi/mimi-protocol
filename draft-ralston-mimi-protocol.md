@@ -282,14 +282,14 @@ ServerA->ClientA1: [[ KPs ]]
 ClientA1       ServerA         ServerB         ClientB*
   |               |               |               |
   | Commit, etc.  |               |               |
-  +~~~~~~~~~~~~~~>| /notify       |               |
-  |               +-------------->| Welcome, Tree |
+  +~~~~~~~~~~~~~~>|               |               |
+  |      Accepted | /notify       |               |
+  |<~~~~~~~~~~~~~~+-------------->|               |
+  |               |        200 OK | Welcome, Tree |
+  |               |<--------------+~~~~~~~~~~~~~~>|
   |               |               +~~~~~~~~~~~~~~>|
-  |               |               +~~~~~~~~~~~~~~>|
-  |               |        200 OK |               |
-  |      Accepted |<--------------+               |
-  |<~~~~~~~~~~~~~~+               |               |
   |               |               |               |
+
 
 ClientA1: Prepare Commit over AppSync(+Bob), Add*
 ClientA1->ServerA: [[ Commit, Welcome, GroupInfo?, RatchetTree? ]]
