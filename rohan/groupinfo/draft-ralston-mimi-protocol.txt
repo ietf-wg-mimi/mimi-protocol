@@ -1198,31 +1198,35 @@ ServerC->ClientC*: [[ Commit ]]
 
    When a client joins an MLS group without an existing member adding
    the client to the MLS group, that is called an external join.  This
-   is useful when a new client of an existing user needs to join the
-   groups of all the user's rooms.  It can also be used when joining an
-   open room, or when a client did not have key packages available but
-   their user is already in the participation list for the corresponding
-   room.  In MIMI, external joins are accomplished by fetching the MLS
-   GroupInfo for a room's MLS group, and then sending an external commit
-   incorporating the GroupInfo.
+   is useful a) when a new client of an existing user needs to join the
+   groups of all the user's rooms.  It can also be used b) when a client
+   did not have key packages available but their user is already in the
+   participation list for the corresponding room, c) when joining an
+   open room, or d) when joining using an external authentication
+   joining code.  In MIMI, external joins are accomplished by fetching
+   the MLS GroupInfo for a room's MLS group, and then sending an
+   external commit incorporating the GroupInfo.
 
    The GroupInfoRequest uses the HTTP POST method.
 
    POST /groupInfo/{roomId}
 
    The request provides an MLS credential proving the requesting
-   client's real or pseudonymous identity (for permission to join the
-   group).  The request also provides an ephemeral public key with which
-   the hub can encrypt the GroupInfo and ratchet tree information, and a
+   client's real or pseudonymous identity.  This user identity is used
+   by the hub to correlate this request with the subsequent external
+   commit.  The credential may constitute sufficient permission to
+   authorize providing the GroupInfo and later joining the group.
+   Alternatively, the request can include an optional opaque joining
+   code, which the requester could use to prove permission to fetch the
+   GroupInfo, even if it is not yet a participant.
+
+   The request also provides an ephemeral public key with which the hub
+   can encrypt the GroupInfo and ratchet tree information, and a
    signature public key corresponding to the requester's credential.  It
    also specifies a CipherSuite which merely needs to be one ciphersuite
    in common with the hub.  It is needed only to specify the algorithms
    used to sign and encrypt the GroupInfoRequest and GroupInfoResponse
    respectively.
-
-   Finally, the request can include an opaque joining code, which the
-   requester could use to prove permission to fetch the GroupInfo, even
-   if it is not yet a participant.
 
    struct {
      Protocol protocol;
@@ -1232,7 +1236,7 @@ ServerC->ClientC*: [[ Commit ]]
          HPKEPublicKey gi_encryption_key;
          SignaturePublicKey requestingSignatureKey;
          Credential requestingCredential;
-         opaque joining_code<V>;
+         optional opaque joining_code<V>;
      };
    } GroupInfoRequestTBS;
 
