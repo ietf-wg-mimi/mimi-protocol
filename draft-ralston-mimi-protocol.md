@@ -1117,12 +1117,11 @@ code, which the requester could use to prove permission to fetch the GroupInfo,
 even if it is not yet a participant.
 
 The request also
-provides an ephemeral public key with which the hub can encrypt the
-GroupInfo and ratchet tree information, and a signature public key
+provides a signature public key
 corresponding to the requester's credential. It also specifies a CipherSuite
 which merely needs to be one ciphersuite in common with the hub. It is
-needed only to specify the algorithms used to sign and encrypt the
-GroupInfoRequest and GroupInfoResponse respectively.
+needed only to specify the algorithms used to sign the
+GroupInfoRequest and GroupInfoResponse.
 
 ~~~ tls
 struct {
@@ -1130,7 +1129,6 @@ struct {
   select (protocol) {
     case mls10:
       CipherSuite cipher_suite;
-      HPKEPublicKey gi_encryption_key;
       SignaturePublicKey requestingSignatureKey;
       Credential requestingCredential;
       optional opaque joining_code<V>;
@@ -1142,7 +1140,6 @@ struct {
   select (protocol) {
     case mls10:
       CipherSuite cipher_suite;
-      HPKEPublicKey gi_encryption_key;
       SignaturePublicKey requestingSignatureKey;
       Credential requestingCredential;
       opaque joining_code<V>;
@@ -1152,25 +1149,10 @@ struct {
 } GroupInfoRequest;
 ~~~
 
-If successful, the response body contains the encrypted GroupInfo and a way
+If successful, the response body contains the GroupInfo and a way
 to get the ratchet_tree.
 
 ~~~ tls
-struct {
-      GroupInfo groupInfo;   /* without embedded ratchet_tree */
-      RatchetTreeOption ratchetTreeOption;
-} MLSGroupInfoPlusTree;
-
-struct {
-    Protocol version = mls10;
-    CipherSuite cipher_suite;
-    opaque room_id<V>;
-} MimiMLSRoomContext;
-
-encrypted_group_info =
-  EncryptWithLabel(gi_encryption_key, "MLSGroupInfoPlusTree",
-                   mimi_mls_room_context, mls_group_info_plus_tree)
-
 enum {
   reserved(0),
   success(1),
@@ -1180,26 +1162,28 @@ enum {
 } GroupInfoCode;
 
 struct {
-  GroupInfoCode status;
   Protocol version;
+  GroupInfoCode status;
   select (protocol) {
     case mls10:
       CipherSuite cipher_suite;
       opaque room_id<V>;
       ExternalSender hub_sender;
-      opaque encrypted_group_info<V>;
+      GroupInfo groupInfo;   /* without embedded ratchet_tree */
+      RatchetTreeOption ratchetTreeOption;
   };
 } GroupInfoResponseTBS;
 
 struct {
-  GroupInfoCode status;
   Protocol version;
+  GroupInfoCode status;
   select (protocol) {
     case mls10:
       CipherSuite cipher_suite;
       opaque room_id<V>;
       ExternalSender hub_sender;
-      opaque encrypted_group_info<V>;
+      GroupInfo groupInfo;   /* without embedded ratchet_tree */
+      RatchetTreeOption ratchetTreeOption;
       /* SignWithLabel(., "GroupInfoResponseTBS", GroupInfoResponseTBS) */
       opaque signature<V>;
   };
