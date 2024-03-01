@@ -88,6 +88,7 @@ Table of Contents
      3.3.  Bob adds Cathy to the Room
      3.4.  Cathy Sends a Message
      3.5.  Bob Leaves the Room
+     3.6.  Cathy adds a new device
    4.  Services required at each layer
      4.1.  Transport layer
      4.2.  End-to-End Security Layer
@@ -100,6 +101,7 @@ Table of Contents
      5.3.  Update Room State
      5.4.  Submit a Message
      5.5.  Fanout Messages and Room Events
+     5.6.  Claim group key information
    6.  Relation between MIMI state and cryptographic state
      6.1.  Room state
      6.2.  Cryptographic room representation
@@ -167,9 +169,10 @@ Table of Contents
       which actions in a room.
 
    Advanced join/leave flows:  In this document, all adds / removes /
-      joins / leaves are initiated from within the group, since this
-      aligns well with MLS.  Messaging application support a variety of
-      other flows, some of which this protocol will need to support.
+      joins / leaves are initiated from within the group, or by a new
+      joiner who already has permission to join, as this aligns well
+      with MLS.  Messaging applications support a variety of other
+      flows, some of which this protocol will need to support.
 
    Consent:  In this document, we assume that any required consent has
       already been obtained, e.g., a user consenting to be added to a
@@ -556,6 +559,73 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
 
                     Figure 7: Bob Leaves the Room
 
+3.6.  Cathy adds a new device
+
+   Many users have multiple clients often running on different devices
+   (for example a phone, a tablet, and a computer).  When a user creates
+   a new client, that client needs to be able to join all the MLS groups
+   associated with the rooms in which the user is a participant.
+
+   In MLS in order to initiate joining a group the joining client needs
+   to get the current GroupInfo and ratchet_tree, and then send an
+   External Commit to the hub.  In MIMI, the hub keeps or reconstructs a
+   copy of the GroupInfo, assuming that other clients may not be
+   available to assist the client with joining.
+
+   For Cathy's new client (ClientC3) to join the MLS group and therefore
+   fully participate in the room with Alice, ClientC3 needs to fetch the
+   MLS GroupInfo, and then generate an External Commit adding ClientC3.
+
+   Cathy's new client sends the External Commit to the room's MLS group
+   by sending an /update to the room.
+
+ClientC3       ServerC         ServerA         ServerB         ClientB*  ClientC*  ClientA*
+  |               |               |               |               |         |         |
+  | Fetch         |               |               |               |         |         |
+  | GroupInfo     |               |               |               |         |         |
+  |~~~~~~~~~~~~~~>| /groupInfo    |               |               |         |         |
+  |               |-------------->|               |               |         |         |
+  | GroupInfo +   |        200 OK |               |               |         |         |
+  | tree          |<--------------|               |               |         |         |
+  |<~~~~~~~~~~~~~~|               |               |               |         |         |
+  |               |               |               |               |         |         |
+  | External      |               |               |               |         |         |
+  | Commit, etc.  |               |               |               |         |         |
+  +~~~~~~~~~~~~~~>| /update       |               |               |         |         |
+  |               +-------------->|               |               |         |         |
+  |               |        200 OK |               |               |         |         |
+  |               |<--------------+               |               |         |         |
+  |      Accepted |               | Commit        |               |         |         |
+  |<~~~~~~~~~~~~~~|               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|
+  |               |               |               |               |         |         |
+  |               |               | /notify       |               |         |         |
+  |               +               +-------------->| Commit        |         |         |
+  |               |               |               +~~~~~~~~~~~~~~>|         |         |
+  |               |       /notify |               |               |         |         |
+  |               |<--------------+               |               |         |         |
+  |               | Commit        |               |               |         |         |
+  |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|         |
+  |               |               |               |               |         |         |
+
+ClientC3->ServerC: [[ request current GroupInfo ]]
+ServerC->ServerA: POST /groupInfo/a.example/clubhouse
+ServerA: Verify that ClientC3 has authorization to join the room
+ServerA->ServerC: 200 OK w/ current GroupInfo and ratchet tree
+ServerC->ClientC3: [[ GroupInfo, tree ]]
+ClientC3: Prepare External Commit Add*
+ClientC3->ServerC: [[ Commit, GroupInfo?, RatchetTree? ]]
+ServerC->ServerA: POST /update/a.example/clubhouse CommitBundle
+ServerA: Verify that Commit is valid and ClientC3 is authorized
+ServerA->ServerC: 200 OK
+ServerC->ClientC3: [[ External Commit was accepted ]]
+ServerA->ClientA*: [[ Commit ]]
+ServerA->ServerB: POST /notify/a.example/clubhouse Commit
+ServerB->ClientB*: [[ Commit ]]
+ServerA->ServerC: POST /notify/a.example/clubhouse Commit
+ServerC->ClientC*: [[ Commit ]]
+
+                  Figure 8: Cathy Adds a new Client
+
 4.  Services required at each layer
 
 4.1.  Transport layer
@@ -664,7 +734,7 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
    Add: ["mimi://d.example/u/diana", "mimi://e.example/u/eric"],
    Remove: ["mimi://b.example/u/bob"],
 
-                  Figure 8: Changing the state of the room
+                  Figure 9: Changing the state of the room
 
    To put these changes into effect, a client or server encodes them in
    an AppSync proposal, signs the proposal as a PublicMessage, and
@@ -707,7 +777,9 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
      "update": "https://mimi.example.com/v1/update{roomId}",
      "notify": "https://mimi.example.com/v1/notify/{roomId}",
      "submitMessage":
-        "https://mimi.example.com/v1/submitMessage/{roomId}"
+        "https://mimi.example.com/v1/submitMessage/{roomId}",
+     "groupInfo":
+        "https://mimi.example.com/v1/groupInfo/{roomId}"
    }
 
 5.2.  Fetch Key Material
@@ -1123,6 +1195,108 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
       of recently seen transaction IDs, but deduplication could be done
       irrespective of the content of request bodies.
 
+5.6.  Claim group key information
+
+   When a client joins an MLS group without an existing member adding
+   the client to the MLS group, that is called an external join.  This
+   is useful a) when a new client of an existing user needs to join the
+   groups of all the user's rooms.  It can also be used b) when a client
+   did not have key packages available but their user is already in the
+   participation list for the corresponding room, c) when joining an
+   open room, or d) when joining using an external authentication
+   joining code.  In MIMI, external joins are accomplished by fetching
+   the MLS GroupInfo for a room's MLS group, and then sending an
+   external commit incorporating the GroupInfo.
+
+   The GroupInfoRequest uses the HTTP POST method.
+
+   POST /groupInfo/{roomId}
+
+   The request provides an MLS credential proving the requesting
+   client's real or pseudonymous identity.  This user identity is used
+   by the hub to correlate this request with the subsequent external
+   commit.  The credential may constitute sufficient permission to
+   authorize providing the GroupInfo and later joining the group.
+   Alternatively, the request can include an optional opaque joining
+   code, which the requester could use to prove permission to fetch the
+   GroupInfo, even if it is not yet a participant.
+
+   The request also provides a signature public key corresponding to the
+   requester's credential.  It also specifies a CipherSuite which merely
+   needs to be one ciphersuite in common with the hub.  It is needed
+   only to specify the algorithms used to sign the GroupInfoRequest and
+   GroupInfoResponse.
+
+   struct {
+     Protocol protocol;
+     select (protocol) {
+       case mls10:
+         CipherSuite cipher_suite;
+         SignaturePublicKey requestingSignatureKey;
+         Credential requestingCredential;
+         optional opaque joining_code<V>;
+     };
+   } GroupInfoRequestTBS;
+
+   struct {
+     Protocol protocol;
+     select (protocol) {
+       case mls10:
+         CipherSuite cipher_suite;
+         SignaturePublicKey requestingSignatureKey;
+         Credential requestingCredential;
+         opaque joining_code<V>;
+         /* SignWithLabel(., "GroupInfoRequestTBS", GroupInfoRequestTBS) */
+         opaque signature<V>;
+     };
+   } GroupInfoRequest;
+
+   If successful, the response body contains the GroupInfo and a way to
+   get the ratchet_tree.
+
+   enum {
+     reserved(0),
+     success(1),
+     notAuthorized(2),
+     noSuchRoom(3),
+     (255)
+   } GroupInfoCode;
+
+   struct {
+     Protocol version;
+     GroupInfoCode status;
+     select (protocol) {
+       case mls10:
+         CipherSuite cipher_suite;
+         opaque room_id<V>;
+         ExternalSender hub_sender;
+         GroupInfo groupInfo;   /* without embedded ratchet_tree */
+         RatchetTreeOption ratchetTreeOption;
+     };
+   } GroupInfoResponseTBS;
+
+   struct {
+     Protocol version;
+     GroupInfoCode status;
+     select (protocol) {
+       case mls10:
+         CipherSuite cipher_suite;
+         opaque room_id<V>;
+         ExternalSender hub_sender;
+         GroupInfo groupInfo;   /* without embedded ratchet_tree */
+         RatchetTreeOption ratchetTreeOption;
+         /* SignWithLabel(., "GroupInfoResponseTBS", GroupInfoResponseTBS) */
+         opaque signature<V>;
+     };
+   } GroupInfoResponse;
+
+   *ISSUE*: What security properties are needed to protect a GroupInfo
+   object in the MIMI context are still under discussion.  It is
+   possible that the requester only needs to prove possession of their
+   private key.  The GroupInfo in another context might be sufficiently
+   sensitive that it should be encrypted from the end client to the hub
+   provider (unreadable by the local provider).
+
 6.  Relation between MIMI state and cryptographic state
 
 6.1.  Room state
@@ -1270,7 +1444,7 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
      ApplicationState applicationStates<V>;
    } ApplicationStatesExtension;
 
-                Figure 9: The `application_state` extension
+                Figure 10: The `application_state` extension
 
    struct {
      uint32 index;
@@ -1298,7 +1472,7 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
      };
    } AppSync;
 
-                    Figure 10: The AppSync proposal type
+                    Figure 11: The AppSync proposal type
 
    The applicationId determines the structure and interpretation of the
    contents. of an ApplicationState object.  AppSync proposals contain
