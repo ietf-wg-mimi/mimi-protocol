@@ -217,11 +217,16 @@ This operation is local to the service provider, and does not entail any MIMI
 protocol operations.  However, it must establish the initial state of the room,
 which is then the basis for protocol operations related to the room.
 
+For authorization purposes, MIMI uses permissions based on room-defined roles.
+For example, a room might have a role named "admin", which has `canAddUser`,
+`canRemoveUser`, and `canSetUserRole` permisions.
+
 Here, we assume that Alice uses ClientA1 to create a room with the following
 properties:
 
 * Room Identifier: `mimi://a.example/r/clubhouse`
-* Participants: `[mimi://a.example/u/alice]`
+* Roles: `["admin", [canAddUser, canRemoveUser, canSetUserRole]]`
+* Participants: `[[mimi://a.example/u/alice, "admin"]]`
 
 ClientA1 also creates an MLS group with group ID `mimi://a.example/g/clubhouse` and
 ensures via provider-local operations that Alice's other clients are members of
@@ -562,11 +567,13 @@ Welcome message to the proper provider.
 ### Participation List Changes
 
 The participation list can be changed by adding or removing users.  These
-changes are described without a specific syntax as a list of adds and removes:
+changes are described without a specific syntax as a list of adds, removes,
+and updates:
 
 ~~~ ascii-art
 Add: ["mimi://d.example/u/diana", "mimi://e.example/u/eric"],
 Remove: ["mimi://b.example/u/bob"],
+Update: [["mimi://c.example/u/cathy", "admin"]]
 ~~~
 {: #fig-room-state-change title="Changing the state of the room" }
 
