@@ -112,7 +112,8 @@ clients can take which actions in a room.
 
 Advanced join/leave flows:
 : In this document, all adds / removes / joins / leaves are initiated from
-within the group, since this aligns well with MLS.  Messaging application
+within the group, or by a new joiner who already has permission to join,
+as this aligns well with MLS.  Messaging applications
 support a variety of other flows, some of which this protocol will need to
 support.
 
