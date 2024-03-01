@@ -1039,11 +1039,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">MIMI+MLS Protocol</td>
-<td class="right">February 2024</td>
+<td class="right">March 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ralston, et al.</td>
-<td class="center">Expires 1 September 2024</td>
+<td class="center">Expires 2 September 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1056,12 +1056,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ralston-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-02-29" class="published">29 February 2024</time>
+<time datetime="2024-03-01" class="published">1 March 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-09-01">1 September 2024</time></dd>
+<dd class="expires"><time datetime="2024-09-02">2 September 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1131,7 +1131,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 1 September 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 2 September 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2912,6 +2912,29 @@ removed as a malicious or abusive client, or if it obviously deleted.<a href="#s
 indicates if the messages in the request were accepted (201 response code), or
 if there was an error. The hub need not wait for a response before sending the
 next fanout message.<a href="#section-5.5-10" class="pilcrow">¶</a></p>
+<p id="section-5.5-11">If the hub server does not contain an HTTP 201 response code, then it <span class="bcp14">SHOULD</span>
+retry the request, respecting any guidance provided by the server in HTTP header
+fields such as Retry-After.  If a follower server receives a duplicate request
+to the <code>/notify</code> endpoint, in the sense of a request from the same hub server
+with the same request body as a previous <code>/notify</code> request, then the follower
+server <span class="bcp14">MUST</span> return a 201 Accepted response.  In such cases, the follower server
+<span class="bcp14">SHOULD</span> process only the first request; subsequent duplicate requests <span class="bcp14">SHOULD</span> be
+ignored (despite the success response).<a href="#section-5.5-11" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5.5-12.1">
+            <p id="section-5.5-12.1.1"><strong>NOTE:</strong> These deduplication provisions require follower servers to track
+which request bodies they have received from which hub servers.  Since the
+matching here is byte-exact, it can be done by keeping a rolling list of
+hashes of recent messages.<a href="#section-5.5-12.1.1" class="pilcrow">¶</a></p>
+<p id="section-5.5-12.1.2">This byte-exact replay criterion might not be the right deduplication
+strategy.  There might be situations where it is valid for the same hub server
+to send the same payload multiple times, e.g., due to accidental collisions.<a href="#section-5.5-12.1.2" class="pilcrow">¶</a></p>
+<p id="section-5.5-12.1.3">If this is a concern, then an explicit transaction ID could be introduced.
+The follower server would still have to keep a list of recently seen
+transaction IDs, but deduplication could be done irrespective of the content
+of request bodies.<a href="#section-5.5-12.1.3" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 </section>
 </div>
 </section>
