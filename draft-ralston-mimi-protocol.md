@@ -548,7 +548,7 @@ to a specific user and device.
 Each KeyPackage includes a list of its MLS client's capabilities (MLS
 protocol versions, cipher suites, extensions, proposal types, and credential
 types). When claiming KeyPackages, the requester includes the list of
-`RequiredCapabilites` to insure the new joiner is compatible with and
+`RequiredCapabilites` to ensure the new joiner is compatible with and
 capable of participating in the corresponding room.
 
 The hub server for the room stores the state of the room, comprising:
