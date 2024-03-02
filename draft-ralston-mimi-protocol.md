@@ -432,29 +432,31 @@ The hub thus guarantees the leaving client that they will be removed as soon as
 possible.
 
 ~~~ aasvg
-ClientB1       ServerB         ServerA         ServerC         ClientC1
-  |               |               |               |               |
-  | Proposals     |               |               |               |
-  +~~~~~~~~~~~~~~>| /update       |               |               |
-  |               +-------------->|               |               |
-  |               |        200 OK |               |               |
-  |               |<--------------+               |               |
-  |      Accepted |               |  /notify      |               |
-  |<~~~~~~~~~~~~~~+               +-------------->|               |
-  |               |               |               | Proposals     |
-  |               |               |               +~~~~~~~~~~~~~~>|
-  |               |               |               |               |
-  |               |               |               | Commit(Props) |
-  |               |               |               |<~~~~~~~~~~~~~~+
-  |               |               |       /update |               |
-  |               |               |<--------------+               |
-  |               |               | 200 OK        |               |
-  |               |               +-------------->|               |
-  |               |               |               | Accepted      |
-  |               |               |               +~~~~~~~~~~~~~~>|
-  |               |       /notify | /notify       |               |
-  |               |<--------------+-------------->|               |
-  |               |               |               |               |
+ClientB1       ServerB         ServerA         ServerC         ClientC1  C2
+  |               |               |               |               |       |
+  | Proposals     |               |               |               |       |
+  +~~~~~~~~~~~~~~>| /update       |               |               |       |
+  |               +-------------->|               |               |       |
+  |               |        200 OK |               |               |       |
+  |               |<--------------+               |               |       |
+  |      Accepted |               |  /notify      |               |       |
+  |<~~~~~~~~~~~~~~+               +-------------->|               |       |
+  |               |               |               | Proposals     |       |
+  |               |               |               +~~~~~~~~~~~~~~>|       |
+  |               |               |               |               |       |
+  |               |               |               | Commit(Props) |       |
+  |               |               |               |<~~~~~~~~~~~~~~+       |
+  |               |               |       /update |               |       |
+  |               |               |<--------------+               |       |
+  |               |               | 200 OK        |               |       |
+  |               |               +-------------->|               |       |
+  |               |               |               | Accepted      |       |
+  |               |               |               +~~~~~~~~~~~~~~>|       |
+  |               |       /notify | /notify       |               |       |
+  |        Commit |<--------------+-------------->| Commit        |       |
+  |<~~~~~~~~~~~~~~+               |               +~~~~~~~~~~~~~~~~~~~~~~>|
+  |               |               |               +~~~~~~~~~~~~~~>|       |
+  |               |               |               |               |       |
 
 ClientB1: Prepare Remove*, AppSync(-Bob)
 ClientB1->ServerB: [[ Remove*, AppSync ]]
@@ -469,6 +471,9 @@ ServerA: Check whether Commit includes queued proposals; accept
 ServerA->ServerC: 200 OK
 ServerA->ServerB: POST /notify/a.example/r/clubhouse Commit
 ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
+ServerB->ClientB1: [[ Commit ]]
+ServerC->ClientC2: [[ Commit ]]
+ServerC->ClientC1: [[ Commit ]] (up to provider)
 ~~~
 {: #fig-b-leave title="Bob Leaves the Room" }
 
