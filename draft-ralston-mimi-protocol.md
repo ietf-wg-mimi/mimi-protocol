@@ -339,31 +339,30 @@ ServerB->ClientB1: [[ KPs ]]
 {: #fig-bc-kp-fetch title="Bob Fetches KeyPackages for Cathy's Clients" }
 
 ~~~ aasvg
-ClientB1       ServerB         ServerA         ServerC         ClientC*  ClientB*  ClientA*
-  |               |               |               |               |         |         |
-  | Commit, etc.  |               |               |               |         |         |
-  +~~~~~~~~~~~~~~>| /update       |               |               |         |         |
-  |               +-------------->|               |               |         |         |
-  |               |        200 OK |               |               |         |         |
-  |               |<--------------+               |               |         |         |
-  |      Accepted |               | /notify       |               |         |         |
-  |<~~~~~~~~~~~~~~+               +-------------->| Welcome, Tree |         |         |
-  |               |               |               +~~~~~~~~~~~~~~>|         |         |
-  |               |               |               +~~~~~~~~~~~~~~>|         |         |
-  |               |       /notify |               |               |         |         |
-  |               |<--------------+               |               |         |         |
-  |               | Commit        |               |               |         |         |
-  |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|         |
-  |               |               | Commit        |               |         |         |
-  |               |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|
-  |               |               |               |               |         |         |
+Client                                         Client    Client  Client
+B1         ServerB     ServerA     ServerC      C*        B*        A*
+|             |           |           |           |         |         |
+| Commit, etc |           |           |           |         |         |
++~~~~~~~~~~~~>| /update   |           |           |         |         |
+|             +---------->|           |           |         |         |
+|             |    200 OK |           |           |         |         |
+|             |<----------+           |           |         |         |
+|    Accepted |           | /notify   | Welcome,  |         |         |
+|<~~~~~~~~~~~~+           +---------->| Tree      |         |         |
+|             |           |           +~~~~~~~~~~>|         |         |
+|             |   /notify | Commit    +~~~~~~~~~~>|         |         |
+|             |<----------+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|
+|             | Commit    |           |           |         |         |
+|             +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|         |
+|             |           |           |           |         |         |
 
 ClientB1: Prepare Commit over AppSync(+Cathy), Add*
 ClientB1->ServerB: [[ Commit, Welcome, GroupInfo?, RatchetTree? ]]
 ServerB->ServerA: POST /update/a.example/r/clubhouse CommitBundle
 ServerA: Verify that Adds are allowed by policy
 ServerA->ServerB: 200 OK
-ServerA->ServerC: POST /notify/a.example/r/clubhouse Intro{ Welcome, RatchetTree? }
+ServerA->ServerC: POST /notify/a.example/r/clubhouse
+                       Intro{ Welcome, RatchetTree? }
 ServerC: Recognizes that Welcome is adding Cathy to clubhouse
 ServerC->ClientC*: [[ Welcome, RatchetTree? ]]
 ServerA->ServerB: POST /notify/a.example/r/clubhouse Commit
