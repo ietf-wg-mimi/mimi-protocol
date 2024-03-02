@@ -5,11 +5,11 @@
 More Instant Messaging Interoperability                       T. Ralston
 Internet-Draft                          The Matrix.org Foundation C.I.C.
 Intended status: Standards Track                              K. Kohbrok
-Expires: 2 September 2024                                      R. Robert
+Expires: 3 September 2024                                      R. Robert
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                            1 March 2024
+                                                            2 March 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 September 2024.
+   This Internet-Draft will expire on 3 September 2024.
 
 Copyright Notice
 
@@ -642,7 +642,7 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
    Each KeyPackage includes a list of its MLS client's capabilities (MLS
    protocol versions, cipher suites, extensions, proposal types, and
    credential types).  When claiming KeyPackages, the requester includes
-   the list of RequiredCapabilites to insure the new joiner is
+   the list of RequiredCapabilites to ensure the new joiner is
    compatible with and capable of participating in the corresponding
    room.
 
