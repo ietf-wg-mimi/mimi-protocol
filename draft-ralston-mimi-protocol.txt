@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                R. L. Barnes, Ed.
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              T. Ralston
-Expires: 3 September 2024               The Matrix.org Foundation C.I.C.
+Expires: 4 September 2024               The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 3 September 2024               The Matrix.org Foundation C.I.C.
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                            2 March 2024
+                                                            3 March 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 September 2024.
+   This Internet-Draft will expire on 4 September 2024.
 
 Copyright Notice
 
@@ -99,7 +99,7 @@ Table of Contents
      4.2.  End-to-End Security Layer
      4.3.  Application Layer
        4.3.1.  Server State
-       4.3.2.  Participation List Changes
+       4.3.2.  Participant List Changes
    5.  MIMI Endpoints and Framing
      5.1.  Directory
      5.2.  Fetch Key Material
@@ -167,10 +167,11 @@ Table of Contents
    other necessary functionality.  The following functions are likely to
    be needed by the complete protocol, but are not covered here:
 
-   Authorization policy:  In this document, we assume that all
-      participants in a room have equal capability.  Actual messaging
-      systems have authorization policies for which clients can take
-      which actions in a room.
+   Authorization policy:  In this document, we introduce a notional
+      concept of roles for participants, and permissions for roles.
+      Actual messaging systems have more complex and well-specified
+      authorization policies about which clients can take which actions
+      in a room.
 
    Advanced join/leave flows:  In this document, all adds / removes /
       joins / leaves are initiated from within the group, or by a new
@@ -303,12 +304,20 @@ Table of Contents
    establish the initial state of the room, which is then the basis for
    protocol operations related to the room.
 
+   For authorization purposes, MIMI uses permissions based on room-
+   defined roles.  For example, a room might have a role named "admin",
+   which has canAddUser, canRemoveUser, and canSetUserRole permisions.
+
    Here, we assume that Alice uses ClientA1 to create a room with the
-   following properties:
+   following base policy properties:
 
    *  Room Identifier: mimi://a.example/r/clubhouse
 
-   *  Participants: [mimi://a.example/u/alice]
+   *  Roles: admin = [canAddUser, canRemoveUser, canSetUserRole]
+
+   And the following participant list:
+
+   *  Participants: [[mimi://a.example/u/alice, "admin"]]
 
    ClientA1 also creates an MLS group with group ID mimi://a.example/g/
    clubhouse and ensures via provider-local operations that Alice's
@@ -723,10 +732,11 @@ ServerC->ClientC*: [[ Commit ]]
    The hub server for the room stores the state of the room, comprising:
 
    *  The _base policy_ of the room, which does not depend on the
-      specific participants in the room.
+      specific participants in the room.  For example, this includes the
+      room roles and their permissions.
 
-   *  The _participation list_: a list of the users who are participants
-      of the room, and their permissions in the room.
+   *  The _participant list_: a list of the users who are participants
+      of the room, and each user's role in the room.
 
       *TODO*: We need a more full description of the room, room state
       syntax.
@@ -736,14 +746,16 @@ ServerC->ClientC*: [[ Commit ]]
    of the provider from which they were received.  This information is
    then used to route Welcome message to the proper provider.
 
-4.3.2.  Participation List Changes
+4.3.2.  Participant List Changes
 
-   The participation list can be changed by adding or removing users.
-   These changes are described without a specific syntax as a list of
-   adds and removes:
+   The participant list can be changed by adding or removing users, or
+   changing a user's role.  These changes are described without a
+   specific syntax as a list of adds, removes, and role changes:
 
-   Add: ["mimi://d.example/u/diana", "mimi://e.example/u/eric"],
+   Add: ["mimi://d.example/u/diana", "admin"],
+        ["mimi://e.example/u/eric", "admin"],
    Remove: ["mimi://b.example/u/bob"],
+   SetRole: [["mimi://c.example/u/cathy", "admin"]]
 
                   Figure 9: Changing the state of the room
 
