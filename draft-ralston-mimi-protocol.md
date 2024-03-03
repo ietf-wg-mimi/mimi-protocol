@@ -223,10 +223,13 @@ For example, a room might have a role named "admin", which has `canAddUser`,
 `canRemoveUser`, and `canSetUserRole` permisions.
 
 Here, we assume that Alice uses ClientA1 to create a room with the following
-properties:
+base policy properties:
 
 * Room Identifier: `mimi://a.example/r/clubhouse`
-* Roles: `["admin", [canAddUser, canRemoveUser, canSetUserRole]]`
+* Roles: `admin = [canAddUser, canRemoveUser, canSetUserRole]`
+
+And the following participant list:
+
 * Participants: `[[mimi://a.example/u/alice, "admin"]]`
 
 ClientA1 also creates an MLS group with group ID `mimi://a.example/g/clubhouse` and
@@ -554,9 +557,10 @@ to a specific user and device.
 The hub server for the room stores the state of the room, comprising:
 
 * The *base policy* of the room, which does not depend on the specific
-  participants in the room.
-* The *participation list*: a list of the users who are participants of the
-  room, and their permissions in the room.
+  participants in the room. For example, this includes the room roles
+  and their permissions.
+* The *participant list*: a list of the users who are participants of the
+  room, and each user's role in the room.
 
 > **TODO**: We need a more full description of the room, room state syntax.
 
@@ -565,16 +569,17 @@ KeyPackageRef values for the returned KeyPackages, and the identity of the
 provider from which they were received.  This information is then used to route
 Welcome message to the proper provider.
 
-### Participation List Changes
+### Participant List Changes
 
-The participation list can be changed by adding or removing users.  These
-changes are described without a specific syntax as a list of adds, removes,
-and updates:
+The participant list can be changed by adding or removing users, or changing
+a user's role.  These changes are described without a specific syntax as a
+list of adds, removes, and role changes:
 
 ~~~ ascii-art
-Add: ["mimi://d.example/u/diana", "mimi://e.example/u/eric"],
+Add: ["mimi://d.example/u/diana", "admin"],
+     ["mimi://e.example/u/eric", "admin"],
 Remove: ["mimi://b.example/u/bob"],
-Update: [["mimi://c.example/u/cathy", "admin"]]
+SetRole: [["mimi://c.example/u/cathy", "admin"]]
 ~~~
 {: #fig-room-state-change title="Changing the state of the room" }
 
