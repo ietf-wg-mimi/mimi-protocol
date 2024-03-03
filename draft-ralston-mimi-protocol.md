@@ -110,9 +110,10 @@ following functions are likely to be needed by the complete protocol, but are
 not covered here:
 
 Authorization policy:
-: In this document, we assume that all participants in a room have equal
-capability.  Actual messaging systems have authorization policies for which
-clients can take which actions in a room.
+: In this document, we introduce a notional concept of roles for
+participants, and permissions for roles. Actual messaging systems have more
+complex and well-specified authorization policies about which clients can
+take which actions in a room.
 
 Advanced join/leave flows:
 : In this document, all adds / removes / joins / leaves are initiated from
@@ -222,11 +223,19 @@ This operation is local to the service provider, and does not entail any MIMI
 protocol operations.  However, it must establish the initial state of the room,
 which is then the basis for protocol operations related to the room.
 
+For authorization purposes, MIMI uses permissions based on room-defined roles.
+For example, a room might have a role named "admin", which has `canAddUser`,
+`canRemoveUser`, and `canSetUserRole` permisions.
+
 Here, we assume that Alice uses ClientA1 to create a room with the following
-properties:
+base policy properties:
 
 * Room Identifier: `mimi://a.example/r/clubhouse`
-* Participants: `[mimi://a.example/u/alice]`
+* Roles: `admin = [canAddUser, canRemoveUser, canSetUserRole]`
+
+And the following participant list:
+
+* Participants: `[[mimi://a.example/u/alice, "admin"]]`
 
 ClientA1 also creates an MLS group with group ID `mimi://a.example/g/clubhouse` and
 ensures via provider-local operations that Alice's other clients are members of
@@ -627,9 +636,10 @@ capable of participating in the corresponding room.
 The hub server for the room stores the state of the room, comprising:
 
 * The *base policy* of the room, which does not depend on the specific
-  participants in the room.
-* The *participation list*: a list of the users who are participants of the
-  room, and their permissions in the room.
+  participants in the room. For example, this includes the room roles
+  and their permissions.
+* The *participant list*: a list of the users who are participants of the
+  room, and each user's role in the room.
 
 > **TODO**: We need a more full description of the room, room state syntax.
 
@@ -638,14 +648,17 @@ KeyPackageRef values for the returned KeyPackages, and the identity of the
 provider from which they were received.  This information is then used to route
 Welcome message to the proper provider.
 
-### Participation List Changes
+### Participant List Changes
 
-The participation list can be changed by adding or removing users.  These
-changes are described without a specific syntax as a list of adds and removes:
+The participant list can be changed by adding or removing users, or changing
+a user's role.  These changes are described without a specific syntax as a
+list of adds, removes, and role changes:
 
 ~~~ ascii-art
-Add: ["mimi://d.example/u/diana", "mimi://e.example/u/eric"],
+Add: ["mimi://d.example/u/diana", "admin"],
+     ["mimi://e.example/u/eric", "admin"],
 Remove: ["mimi://b.example/u/bob"],
+SetRole: [["mimi://c.example/u/cathy", "admin"]]
 ~~~
 {: #fig-room-state-change title="Changing the state of the room" }
 
