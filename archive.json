@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-29T00:03:16.571592+00:00",
+  "timestamp": "2024-03-03T00:03:31.208594+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -789,7 +789,7 @@
       ],
       "body": "draft-ralston-mimi-protocol currently uses Matrix-style power levels.\r\ndraft-barnes-mimi-protocol currently implies role-based access control (RBAC).\r\n\r\nI think we have three reasonable choices here:\r\n- keep using power levels\r\n- use role-based access control with a fixed set of roles (for example: owner, admin, moderator, regular-user, visitor, banned, none)\r\n- user role-based access control with administrator defined role labels. Each role label has a set of permissions it can accomplish (for example, can add user, can add remove user, can change user role, can change base policy, etc.)\r\n\r\nTravis brought up that with role-based access control it is necessary to specify the behavior of combinations of roles or permissions. That is true, but I don't think it is unreasonable to enumerate those requirements. I think RBAC maps much better onto the variety of systems we would like to interop with. ",
       "createdAt": "2024-02-06T21:40:00Z",
-      "updatedAt": "2024-02-28T16:28:28Z",
+      "updatedAt": "2024-03-02T19:23:29Z",
       "closedAt": null,
       "comments": [
         {
@@ -805,6 +805,20 @@
           "body": "DT call 2024-02-28:\r\n* Violent agreement that RBAC+labels is a sensible way to go.  Specifically:\r\n    * Underlying set of permissions \r\n    * Predefine labels for common sets of permissions\r\n    * Allow administrators to define other sets of permissions\r\n* @rohanmahy to make a PR with a minimal version of this scheme",
           "createdAt": "2024-02-28T16:23:15Z",
           "updatedAt": "2024-02-28T16:23:15Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Created PR #62 ",
+          "createdAt": "2024-03-01T22:14:47Z",
+          "updatedAt": "2024-03-01T22:14:47Z"
+        },
+        {
+          "author": "alvestrand",
+          "authorAssociation": "NONE",
+          "body": "Back in the LDAP days, we figured out that additive permissions (you can do the sum of all the roles that you are assigned) was possible to reason about.\r\nSubtractive ACLs (\"if you're in group FOO then you can do BAZ except when you're also in group BAR) made it almost impossible for users to figure out what policy they had specified.\r\n\r\nThat may be a warning - Keep It Simple.",
+          "createdAt": "2024-03-02T19:23:28Z",
+          "updatedAt": "2024-03-02T19:23:28Z"
         }
       ]
     },
@@ -829,7 +843,7 @@
       "id": "I_kwDOKZ8QO85_vDF3",
       "title": "Define the specific form that identifiers take in MIMI",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/53",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohan-wire",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -838,8 +852,8 @@
       ],
       "body": "",
       "createdAt": "2024-02-19T19:44:14Z",
-      "updatedAt": "2024-02-28T16:47:59Z",
-      "closedAt": null,
+      "updatedAt": "2024-02-29T16:30:51Z",
+      "closedAt": "2024-02-29T16:30:51Z",
       "comments": [
         {
           "author": "bifurcation",
@@ -847,6 +861,20 @@
           "body": "DT call 2024-02-28:\r\n* @rohanmahy thinks URIs are the way to go.  Flexibility + compartmentalize vendor specifics\r\n* @bifurcation and @raphaelrobert are more focused on requirements for identitiers -- what does an identifier need to do?\r\n    * User/room -- connect to a provider, identify resource within a provider\r\n    * Requirement to route to the MIMI app from outside the MIMI context?\r\n* @ara4n points out that there are some cases where you want non-provider-specific identifiers\r\n    * General feeling that (a) we will need provider-scoped things, and (b) mapping/discovery can add provider-independent stuff later\r\n* @bifurcation Proposal: Make a simple URI scheme following the [Matrix URI scheme](https://github.com/matrix-org/matrix-spec-proposals/blob/main/proposals/2312-matrix-uri.md )\r\n    * `mimi://example.com/` \r\n    * `mimi://example.com/u/bifurcation`\r\n    * `mimi://example.com/d/bifurcation/uuid`\r\n    * `mimi://example.com/r/clubhouse`\r\n* @rohanmahy to make a PR\r\n\r\n\r\n\r\n\r\n",
           "createdAt": "2024-02-28T16:47:41Z",
           "updatedAt": "2024-02-28T16:47:59Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "2 notes of things that are slightly different in PR #59  from what was discussed on the design team call\r\n- the client/device identifier is shown as `mimi://example.com/d/{clientId}` but could have one or more path segments after the `/d/`.\r\n- I added an MLS group identifier in case we want it to separately have a domain identifier. It is easy to remove if we don't want it.",
+          "createdAt": "2024-02-29T00:27:46Z",
+          "updatedAt": "2024-02-29T00:28:40Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing as PR #59 was merged.",
+          "createdAt": "2024-02-29T16:30:51Z",
+          "updatedAt": "2024-02-29T16:30:51Z"
         }
       ]
     },
@@ -855,7 +883,7 @@
       "id": "I_kwDOKZ8QO85_vTpN",
       "title": "Clarify handling of duplicate messages",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/54",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohan-wire",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -864,8 +892,8 @@
       ],
       "body": "",
       "createdAt": "2024-02-19T20:35:54Z",
-      "updatedAt": "2024-02-28T17:12:54Z",
-      "closedAt": null,
+      "updatedAt": "2024-02-29T21:25:53Z",
+      "closedAt": "2024-02-29T21:25:53Z",
       "comments": [
         {
           "author": "bifurcation",
@@ -880,6 +908,13 @@
           "body": "Adding the arguments against using hashes that were discussed in the DT call 2024-02-28:\r\n - Hashes introduce the requirement that message content must be unique. This blurs the abstraction lines between the protocol levels. E.g. it might be fine to send the exact same message repeatedly at a higher level of the protocol, but those message would be be delivered because the transport layer considers them to be duplicates.\r\n - Messages that are retransmitted must now always be identical. This requirement is probably easier to meet than the first one, but it's there nonetheless.",
           "createdAt": "2024-02-28T17:12:53Z",
           "updatedAt": "2024-02-28T17:12:53Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing with PR #60 merged.",
+          "createdAt": "2024-02-29T21:25:53Z",
+          "updatedAt": "2024-02-29T21:25:53Z"
         }
       ]
     },
@@ -895,25 +930,41 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-02-19T21:07:46Z",
-      "updatedAt": "2024-02-19T21:07:46Z",
+      "updatedAt": "2024-03-01T23:20:37Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@kkohbrok this only seems to apply to groupInfo/ requests and reponses. I made sure the Protocol is included. What threat are we solving by including the request endpoint?",
+          "createdAt": "2024-03-01T23:20:36Z",
+          "updatedAt": "2024-03-01T23:20:36Z"
+        }
+      ]
     },
     {
       "number": 56,
       "id": "I_kwDOKZ8QO86ApTsj",
       "title": "Return timestamp to message sender",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/56",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "kkohbrok",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "The timestamp in fanout messages needs to be returned to the sender of the message upon accceptance by the DS. This is to make sure that the sender shares the same view of the group's message history as the rest of the group.",
       "createdAt": "2024-02-28T07:40:45Z",
-      "updatedAt": "2024-02-28T07:40:45Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-02-29T06:47:28Z",
+      "closedAt": "2024-02-29T06:47:28Z",
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Address in PR #58 ",
+          "createdAt": "2024-02-29T06:47:28Z",
+          "updatedAt": "2024-02-29T06:47:28Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -6025,21 +6076,21 @@
       "id": "PR_kwDOKZ8QO85m56LK",
       "title": "Clarify that KeyPackages *are* the negotiation mechanism for support",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/51",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "ref https://github.com/bifurcation/ietf-mimi-protocol/pull/50/files#r1486736385",
       "createdAt": "2024-02-14T20:50:57Z",
-      "updatedAt": "2024-02-28T16:08:58Z",
+      "updatedAt": "2024-03-02T23:43:11Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "36ad4767944db62e4b270460f06f2e6dfd98adef",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "travis/negotiate",
       "headRefOid": "4b24bca596e91a5f6af863424111a42fab42118e",
-      "closedAt": null,
+      "closedAt": "2024-03-02T23:43:08Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -6057,6 +6108,13 @@
           "body": "DT call 2024-02-28: \r\n* @rohanmahy's concern is expressing the `required_capabilities` part\r\n* @bifurcation suggests this is good in the key material fetch section\r\n* @turt2live will look on Friday, @rohanmahy may look at it sooner",
           "createdAt": "2024-02-28T16:08:56Z",
           "updatedAt": "2024-02-28T16:08:56Z"
+        },
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing in favour of https://github.com/bifurcation/ietf-mimi-protocol/pull/63",
+          "createdAt": "2024-03-02T23:43:08Z",
+          "updatedAt": "2024-03-02T23:43:08Z"
         }
       ],
       "reviews": []
@@ -6066,50 +6124,68 @@
       "id": "PR_kwDOKZ8QO85oOpqQ",
       "title": "fix link to fetch-key-material",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/57",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-02-28T23:04:10Z",
-      "updatedAt": "2024-02-28T23:04:10Z",
+      "updatedAt": "2024-02-29T02:26:49Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "d72db4b7a23c05d02048dfbbd50d97843a153d9a",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "rohan/fix-link",
       "headRefOid": "6925f7c1f261e265f785428031ebce23afb0a285",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-02-29T02:26:49Z",
+      "mergedAt": "2024-02-29T02:26:49Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "a0972f8be15588efd6dea9bea757ec1f1edaf8e0"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85xtvqH",
+          "commit": {
+            "abbreviatedOid": "6925f7c"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-02-29T02:26:44Z",
+          "updatedAt": "2024-02-29T02:26:44Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 58,
       "id": "PR_kwDOKZ8QO85oOrVh",
       "title": "Add accepted timestamp to update and submit primitives",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/58",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "- add accepted timestamp to `UpdateRoomResponse` and `SubmitMessageResponse` and adjust related structs\r\n- add missing error codes and semantics to submit primitive",
       "createdAt": "2024-02-28T23:11:29Z",
-      "updatedAt": "2024-02-28T23:33:18Z",
+      "updatedAt": "2024-02-29T06:41:41Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "d72db4b7a23c05d02048dfbbd50d97843a153d9a",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "rohan/return-timestamp",
       "headRefOid": "8ef92827af3106de15b84618c2360693cc475c5a",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-02-29T06:41:41Z",
+      "mergedAt": "2024-02-29T06:41:41Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "8b79f9275b6254723084f88ddfedf9bc86874e7b"
+      },
       "comments": [
         {
           "author": "rohanmahy",
@@ -6119,6 +6195,449 @@
           "updatedAt": "2024-02-28T23:13:20Z"
         }
       ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85xugF2",
+          "commit": {
+            "abbreviatedOid": "8ef9282"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Looks good, thanks for taking care of the issue @rohanmahy!",
+          "createdAt": "2024-02-29T05:47:36Z",
+          "updatedAt": "2024-02-29T05:47:36Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 59,
+      "id": "PR_kwDOKZ8QO85oO6bs",
+      "title": "Add MIMI URI scheme",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/59",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- Add basic description of new MIMI URI scheme under example actors\r\n- Adjust Bob and Alice flow messages to use the URI\r\n\r\nAddresses issue #53 ",
+      "createdAt": "2024-02-29T00:20:03Z",
+      "updatedAt": "2024-02-29T16:20:06Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "d72db4b7a23c05d02048dfbbd50d97843a153d9a",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "rohan/identifiers",
+      "headRefOid": "11bda8b78f918c8efedf014a2216b22d73a48de2",
+      "closedAt": "2024-02-29T16:20:05Z",
+      "mergedAt": "2024-02-29T16:20:05Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "e6cb4ec7787e81dac4cb2f2870bc129df2272504"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85xugSo",
+          "commit": {
+            "abbreviatedOid": "11bda8b"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-02-29T05:48:27Z",
+          "updatedAt": "2024-02-29T05:48:27Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85xzewO",
+          "commit": {
+            "abbreviatedOid": "11bda8b"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-02-29T16:19:57Z",
+          "updatedAt": "2024-02-29T16:19:57Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 60,
+      "id": "PR_kwDOKZ8QO85oPUkw",
+      "title": "Describe retries, deduplication and trade-offs",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/60",
+      "state": "MERGED",
+      "author": "bifurcation",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #54 ",
+      "createdAt": "2024-02-29T02:26:16Z",
+      "updatedAt": "2024-03-01T00:26:43Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "d72db4b7a23c05d02048dfbbd50d97843a153d9a",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "dedup",
+      "headRefOid": "499bbfaac9b6fcc49f9856c9aa4e8e60711251a6",
+      "closedAt": "2024-03-01T00:26:19Z",
+      "mergedAt": "2024-03-01T00:26:19Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "5e1cd5892cd61f3392df4041c80921e54d3bcf48"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85xugzG",
+          "commit": {
+            "abbreviatedOid": "3f78626"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-02-29T05:50:35Z",
+          "updatedAt": "2024-02-29T05:50:35Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85xuxCL",
+          "commit": {
+            "abbreviatedOid": "3f78626"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-02-29T06:45:10Z",
+          "updatedAt": "2024-02-29T06:45:10Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 61,
+      "id": "PR_kwDOKZ8QO85oQs3-",
+      "title": "Add new External join flow for new client and related mechanism",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/61",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- Add a flow for Cathy's adding a new client ClientC3 to the Alice, Bob, Cathy flow. \r\n- Add GroupInfo fetching mechanism",
+      "createdAt": "2024-02-29T07:55:54Z",
+      "updatedAt": "2024-03-02T23:55:12Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "5e1cd5892cd61f3392df4041c80921e54d3bcf48",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "rohan/groupinfo",
+      "headRefOid": "4ff7140bb37e16bf5f4714c27da998629972f120",
+      "closedAt": "2024-03-01T23:14:35Z",
+      "mergedAt": "2024-03-01T23:14:35Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "7e1719f65858e08594367a221f7c7cb49b1d5c83"
+      },
+      "comments": [
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@rohanmahy were @bifurcation's comments incorporated somewhere?",
+          "createdAt": "2024-03-02T23:39:50Z",
+          "updatedAt": "2024-03-02T23:39:50Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> @rohanmahy were @bifurcation's comments incorporated somewhere?\r\n\r\nThe first and second comments I provided some specific comments. I don't believe there needs to be a change. I'm fine with removing \"or reconstruct\". \r\n\r\nFor his last comment, I kept consistency with the current order (order these are introduced). If someone suggests a different ordering that's fine, but I would like to understand the premise of the ordering, or if there is a desire for the *section* to come earlier. When we address the versioning issue would be an excellent time to resolve this.",
+          "createdAt": "2024-03-02T23:55:10Z",
+          "updatedAt": "2024-03-02T23:55:10Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85xvciY",
+          "commit": {
+            "abbreviatedOid": "b299d3a"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Thanks for the PR! Looks good with a few comments.",
+          "createdAt": "2024-02-29T08:32:51Z",
+          "updatedAt": "2024-02-29T10:52:23Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "```suggestion\r\nIn MLS in order to initiate joining a group the joining client needs to get the current GroupInfo\r\n```",
+              "createdAt": "2024-02-29T08:32:51Z",
+              "updatedAt": "2024-02-29T10:52:23Z"
+            },
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\nFor Cathy's new client (ClientC3) to join the MLS group and therefore fully participate\r\n```",
+              "createdAt": "2024-02-29T08:35:16Z",
+              "updatedAt": "2024-02-29T10:52:23Z"
+            },
+            {
+              "originalPosition": 117,
+              "body": "We should probably elaborate a bit on the authentication story here, i.e. point out that the hub needs to validate the `requestingCredential` against the sender's guest server, as well as the fact that the credential is somehow bound to the `requestingSignatureKey`.",
+              "createdAt": "2024-02-29T08:55:35Z",
+              "updatedAt": "2024-02-29T10:52:23Z"
+            },
+            {
+              "originalPosition": 118,
+              "body": "For clarity, I'd refactor this slightly include the sender type (participant vs. non-participant) and then have a select statement that includes the authentication info needed to authenticate that particular sender type.",
+              "createdAt": "2024-02-29T08:57:27Z",
+              "updatedAt": "2024-02-29T10:52:23Z"
+            },
+            {
+              "originalPosition": 150,
+              "body": "Isn't all of this already in the GroupInfo?\r\n\r\nAlso, I would add the `hub_sender` that ends up signing the `GroupInfoTBS` s.t. the HPKE ciphertext is bound to the signer.",
+              "createdAt": "2024-02-29T09:04:19Z",
+              "updatedAt": "2024-02-29T10:52:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85x-gSC",
+          "commit": {
+            "abbreviatedOid": "4ff7140"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "Looks OK to me with a couple minor comments.",
+          "createdAt": "2024-03-01T22:58:38Z",
+          "updatedAt": "2024-03-01T23:01:42Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "```suggestion\r\nthe hub keeps a copy of the GroupInfo, assuming that other\r\n```\r\n\r\nThe hub cannot create a valid GroupInfo, since it has to be signed by a member of the group.  ",
+              "createdAt": "2024-03-01T22:58:38Z",
+              "updatedAt": "2024-03-01T23:01:42Z"
+            },
+            {
+              "originalPosition": 62,
+              "body": "It would be good to show how a GroupInfo gets populated.  Maybe it should be added to the add flows above?",
+              "createdAt": "2024-03-01T23:00:16Z",
+              "updatedAt": "2024-03-01T23:01:42Z"
+            },
+            {
+              "originalPosition": 92,
+              "body": "Nit: I would move this up to be after `update`.",
+              "createdAt": "2024-03-01T23:00:46Z",
+              "updatedAt": "2024-03-01T23:01:42Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 62,
+      "id": "PR_kwDOKZ8QO85odNNm",
+      "title": "Introduce very lightweight notion of role-based access control",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/62",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-03-01T22:13:40Z",
+      "updatedAt": "2024-03-02T23:43:45Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "5e1cd5892cd61f3392df4041c80921e54d3bcf48",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "rohan/rbac",
+      "headRefOid": "990742b2d9cdb9b7410002f71705551b81b995d7",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85yArZ7",
+          "commit": {
+            "abbreviatedOid": "990742b"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-03-02T23:43:45Z",
+          "updatedAt": "2024-03-02T23:43:45Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 63,
+      "id": "PR_kwDOKZ8QO85odWyx",
+      "title": "Add explanation of KP capabilities",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/63",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "alternate to PR #51 ",
+      "createdAt": "2024-03-01T22:55:47Z",
+      "updatedAt": "2024-03-02T23:56:16Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "5e1cd5892cd61f3392df4041c80921e54d3bcf48",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "rohan/kp-nego",
+      "headRefOid": "4569228392b8e98576822278bfca9bd236084572",
+      "closedAt": "2024-03-02T23:56:16Z",
+      "mergedAt": "2024-03-02T23:56:16Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "e44c1f073b0c7211852bfb614e98698ff8e6c815"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85yArY4",
+          "commit": {
+            "abbreviatedOid": "14a8df2"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "thanks!",
+          "createdAt": "2024-03-02T23:42:50Z",
+          "updatedAt": "2024-03-02T23:42:55Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\r\n`RequiredCapabilites` to ensure the new joiner is compatible with and\r\n```",
+              "createdAt": "2024-03-02T23:42:50Z",
+              "updatedAt": "2024-03-02T23:42:55Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 64,
+      "id": "PR_kwDOKZ8QO85odYiV",
+      "title": "Update CODEOWNERS",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/64",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "add all authors/contributors as CODEOWNERS",
+      "createdAt": "2024-03-01T23:02:49Z",
+      "updatedAt": "2024-03-02T16:39:46Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "5e1cd5892cd61f3392df4041c80921e54d3bcf48",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "fix-codeowners",
+      "headRefOid": "042ac23fc20c3867f440b313ce18039957a149d9",
+      "closedAt": "2024-03-02T16:39:46Z",
+      "mergedAt": "2024-03-02T16:39:46Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "b9aae386ea4b374de1973f9c1d0d80b4bdd0ef52"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85yAU9F",
+          "commit": {
+            "abbreviatedOid": "042ac23"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-03-02T16:25:53Z",
+          "updatedAt": "2024-03-02T16:25:53Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 65,
+      "id": "PR_kwDOKZ8QO85odgR6",
+      "title": "Add Richard as editor move Rohan to an author",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/65",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-03-01T23:37:48Z",
+      "updatedAt": "2024-03-02T16:40:06Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "7e1719f65858e08594367a221f7c7cb49b1d5c83",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "authors",
+      "headRefOid": "0b4f0bbcf3195d733c933711d3735c596f33664d",
+      "closedAt": "2024-03-02T16:40:06Z",
+      "mergedAt": "2024-03-02T16:40:06Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "04c6913770a4adbe603f2dc84248fdd51f5ac59a"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85yAU8O",
+          "commit": {
+            "abbreviatedOid": "0b4f0bb"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-03-02T16:25:32Z",
+          "updatedAt": "2024-03-02T16:25:32Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 66,
+      "id": "PR_kwDOKZ8QO85odr9w",
+      "title": "Fix ASCII art / AASVG diagrams",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/66",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- [x]  Send responses as soon as feasible in \"Alice Adds Bob\" flow\r\n- [ ]  Make ASCII art fit in 72 characters (only done so far for Bob Adds Cathy flow)\r\n- [ ]  Show fanouts to multiple servers and clients closer/tighter in time \r\n- [ ]  Show fanouts to Clients of final commits (done for Bob leaves room flow)\r\n- [ ]  Consider a consistent order of Servers and Clients",
+      "createdAt": "2024-03-02T00:26:22Z",
+      "updatedAt": "2024-03-02T15:01:09Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "7e1719f65858e08594367a221f7c7cb49b1d5c83",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "rohan/fix-diagrams",
+      "headRefOid": "311c71bbb5f14b40ca9f6a8fd052198504830e02",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
       "reviews": []
     }
   ]
