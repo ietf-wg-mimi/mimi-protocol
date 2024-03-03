@@ -5,11 +5,11 @@
 More Instant Messaging Interoperability                       T. Ralston
 Internet-Draft                          The Matrix.org Foundation C.I.C.
 Intended status: Standards Track                              K. Kohbrok
-Expires: 2 September 2024                                      R. Robert
+Expires: 4 September 2024                                      R. Robert
                                                              Phoenix R&D
                                                               M. Hodgson
                                         The Matrix.org Foundation C.I.C.
-                                                            1 March 2024
+                                                            3 March 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 September 2024.
+   This Internet-Draft will expire on 4 September 2024.
 
 Copyright Notice
 
@@ -93,7 +93,7 @@ Table of Contents
      4.2.  End-to-End Security Layer
      4.3.  Application Layer
        4.3.1.  Server State
-       4.3.2.  Participation List Changes
+       4.3.2.  Participant List Changes
    5.  MIMI Endpoints and Framing
      5.1.  Directory
      5.2.  Fetch Key Material
@@ -302,11 +302,13 @@ Table of Contents
    which has canAddUser, canRemoveUser, and canSetUserRole permisions.
 
    Here, we assume that Alice uses ClientA1 to create a room with the
-   following properties:
+   following base policy properties:
 
    *  Room Identifier: mimi://a.example/r/clubhouse
 
-   *  Roles: ["admin", [canAddUser, canRemoveUser, canSetUserRole]]
+   *  Roles: admin = [canAddUser, canRemoveUser, canSetUserRole]
+
+   And the following participant list:
 
    *  Participants: [[mimi://a.example/u/alice, "admin"]]
 
@@ -649,10 +651,11 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
    The hub server for the room stores the state of the room, comprising:
 
    *  The _base policy_ of the room, which does not depend on the
-      specific participants in the room.
+      specific participants in the room.  For example, this includes the
+      room roles and their permissions.
 
-   *  The _participation list_: a list of the users who are participants
-      of the room, and their permissions in the room.
+   *  The _participant list_: a list of the users who are participants
+      of the room, and each user's role in the room.
 
       *TODO*: We need a more full description of the room, room state
       syntax.
@@ -662,15 +665,16 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
    of the provider from which they were received.  This information is
    then used to route Welcome message to the proper provider.
 
-4.3.2.  Participation List Changes
+4.3.2.  Participant List Changes
 
-   The participation list can be changed by adding or removing users.
-   These changes are described without a specific syntax as a list of
-   adds, removes, and updates:
+   The participant list can be changed by adding or removing users, or
+   changing a user's role.  These changes are described without a
+   specific syntax as a list of adds, removes, and role changes:
 
-   Add: ["mimi://d.example/u/diana", "mimi://e.example/u/eric"],
+   Add: ["mimi://d.example/u/diana", "admin"],
+        ["mimi://e.example/u/eric", "admin"],
    Remove: ["mimi://b.example/u/bob"],
-   Update: [["mimi://c.example/u/cathy", "admin"]]
+   SetRole: [["mimi://c.example/u/cathy", "admin"]]
 
                   Figure 8: Changing the state of the room
 
