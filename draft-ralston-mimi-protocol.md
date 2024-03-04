@@ -295,14 +295,14 @@ ServerA->ClientA1: [[ KPs ]]
 ClientA1       ServerA         ServerB         ClientB*
   |               |               |               |
   | Commit, etc.  |               |               |
-  +~~~~~~~~~~~~~~>| /notify       |               |
-  |               +-------------->| Welcome, Tree |
+  +~~~~~~~~~~~~~~>|               |               |
+  |      Accepted | /notify       |               |
+  |<~~~~~~~~~~~~~~+-------------->|               |
+  |               |        200 OK | Welcome, Tree |
+  |               |<--------------+~~~~~~~~~~~~~~>|
   |               |               +~~~~~~~~~~~~~~>|
-  |               |               +~~~~~~~~~~~~~~>|
-  |               |        200 OK |               |
-  |      Accepted |<--------------+               |
-  |<~~~~~~~~~~~~~~+               |               |
   |               |               |               |
+
 
 ClientA1: Prepare Commit over AppSync(+Bob), Add*
 ClientA1->ServerA: [[ Commit, Welcome, GroupInfo?, RatchetTree? ]]
@@ -352,31 +352,30 @@ ServerB->ClientB1: [[ KPs ]]
 {: #fig-bc-kp-fetch title="Bob Fetches KeyPackages for Cathy's Clients" }
 
 ~~~ aasvg
-ClientB1       ServerB         ServerA         ServerC         ClientC*  ClientB*  ClientA*
-  |               |               |               |               |         |         |
-  | Commit, etc.  |               |               |               |         |         |
-  +~~~~~~~~~~~~~~>| /update       |               |               |         |         |
-  |               +-------------->|               |               |         |         |
-  |               |        200 OK |               |               |         |         |
-  |               |<--------------+               |               |         |         |
-  |      Accepted |               | /notify       |               |         |         |
-  |<~~~~~~~~~~~~~~+               +-------------->| Welcome, Tree |         |         |
-  |               |               |               +~~~~~~~~~~~~~~>|         |         |
-  |               |               |               +~~~~~~~~~~~~~~>|         |         |
-  |               |       /notify |               |               |         |         |
-  |               |<--------------+               |               |         |         |
-  |               | Commit        |               |               |         |         |
-  |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|         |
-  |               |               | Commit        |               |         |         |
-  |               |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|
-  |               |               |               |               |         |         |
+Client                                         Client    Client  Client
+B1         ServerB     ServerA     ServerC      C*        B*        A*
+|             |           |           |           |         |         |
+| Commit, etc |           |           |           |         |         |
++~~~~~~~~~~~~>| /update   |           |           |         |         |
+|             +---------->|           |           |         |         |
+|             |    200 OK |           |           |         |         |
+|             |<----------+           |           |         |         |
+|    Accepted |           | /notify   | Welcome,  |         |         |
+|<~~~~~~~~~~~~+           +---------->| Tree      |         |         |
+|             |           |           +~~~~~~~~~~>|         |         |
+|             |   /notify | Commit    +~~~~~~~~~~>|         |         |
+|             |<----------+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|
+|             | Commit    |           |           |         |         |
+|             +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|         |
+|             |           |           |           |         |         |
 
 ClientB1: Prepare Commit over AppSync(+Cathy), Add*
 ClientB1->ServerB: [[ Commit, Welcome, GroupInfo?, RatchetTree? ]]
 ServerB->ServerA: POST /update/a.example/r/clubhouse CommitBundle
 ServerA: Verify that Adds are allowed by policy
 ServerA->ServerB: 200 OK
-ServerA->ServerC: POST /notify/a.example/r/clubhouse Intro{ Welcome, RatchetTree? }
+ServerA->ServerC: POST /notify/a.example/r/clubhouse
+                       Intro{ Welcome, RatchetTree? }
 ServerC: Recognizes that Welcome is adding Cathy to clubhouse
 ServerC->ClientC*: [[ Welcome, RatchetTree? ]]
 ServerA->ServerB: POST /notify/a.example/r/clubhouse Commit
@@ -446,29 +445,31 @@ The hub thus guarantees the leaving client that they will be removed as soon as
 possible.
 
 ~~~ aasvg
-ClientB1       ServerB         ServerA         ServerC         ClientC1
-  |               |               |               |               |
-  | Proposals     |               |               |               |
-  +~~~~~~~~~~~~~~>| /update       |               |               |
-  |               +-------------->|               |               |
-  |               |        200 OK |               |               |
-  |               |<--------------+               |               |
-  |      Accepted |               |  /notify      |               |
-  |<~~~~~~~~~~~~~~+               +-------------->|               |
-  |               |               |               | Proposals     |
-  |               |               |               +~~~~~~~~~~~~~~>|
-  |               |               |               |               |
-  |               |               |               | Commit(Props) |
-  |               |               |               |<~~~~~~~~~~~~~~+
-  |               |               |       /update |               |
-  |               |               |<--------------+               |
-  |               |               | 200 OK        |               |
-  |               |               +-------------->|               |
-  |               |               |               | Accepted      |
-  |               |               |               +~~~~~~~~~~~~~~>|
-  |               |       /notify | /notify       |               |
-  |               |<--------------+-------------->|               |
-  |               |               |               |               |
+ClientB1       ServerB         ServerA         ServerC         ClientC1  C2
+  |               |               |               |               |       |
+  | Proposals     |               |               |               |       |
+  +~~~~~~~~~~~~~~>| /update       |               |               |       |
+  |               +-------------->|               |               |       |
+  |               |        200 OK |               |               |       |
+  |               |<--------------+               |               |       |
+  |      Accepted |               |  /notify      |               |       |
+  |<~~~~~~~~~~~~~~+               +-------------->|               |       |
+  |               |               |               | Proposals     |       |
+  |               |               |               +~~~~~~~~~~~~~~>|       |
+  |               |               |               |               |       |
+  |               |               |               | Commit(Props) |       |
+  |               |               |               |<~~~~~~~~~~~~~~+       |
+  |               |               |       /update |               |       |
+  |               |               |<--------------+               |       |
+  |               |               | 200 OK        |               |       |
+  |               |               +-------------->|               |       |
+  |               |               |               | Accepted      |       |
+  |               |               |               +~~~~~~~~~~~~~~>|       |
+  |               |       /notify | /notify       |               |       |
+  |        Commit |<--------------+-------------->| Commit        |       |
+  |<~~~~~~~~~~~~~~+               |               +~~~~~~~~~~~~~~~~~~~~~~>|
+  |               |               |               +~~~~~~~~~~~~~~>|       |
+  |               |               |               |               |       |
 
 ClientB1: Prepare Remove*, AppSync(-Bob)
 ClientB1->ServerB: [[ Remove*, AppSync ]]
@@ -483,6 +484,9 @@ ServerA: Check whether Commit includes queued proposals; accept
 ServerA->ServerC: 200 OK
 ServerA->ServerB: POST /notify/a.example/r/clubhouse Commit
 ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
+ServerB->ClientB1: [[ Commit ]]
+ServerC->ClientC2: [[ Commit ]]
+ServerC->ClientC1: [[ Commit ]] (up to provider)
 ~~~
 {: #fig-b-leave title="Bob Leaves the Room" }
 
