@@ -27,13 +27,12 @@ venue:
 author:
  -
     fullname: Richard L. Barnes
-    role: editor
     organization: Cisco
     email: rlb@ipv.sx
  -
-    fullname: Travis Ralston
+    fullname: Matthew Hodgson
     organization: The Matrix.org Foundation C.I.C.
-    email: travisr@matrix.org
+    email: matthew@matrix.org
  -
     fullname: Konrad Kohbrok
     organization: Phoenix R&D
@@ -43,13 +42,13 @@ author:
     organization: Unaffiliated
     email: rohan.ietf@gmail.com
  -
+    fullname: Travis Ralston
+    organization: The Matrix.org Foundation C.I.C.
+    email: travisr@matrix.org
+ -
     fullname: Raphael Robert
     organization: Phoenix R&D
     email: ietf@raphaelrobert.com
- -
-    fullname: Matthew Hodgson
-    organization: The Matrix.org Foundation C.I.C.
-    email: matthew@matrix.org
 
 normative:
 
