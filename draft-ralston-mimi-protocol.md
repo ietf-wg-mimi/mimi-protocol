@@ -850,6 +850,15 @@ know that the target user was previously a valid user of the system and has
 been deleted. A target provider can of course use `userUnknown` if the
 provider does wish to keep or specify this distinction.
 
+The semantics of the `KeyMaterialClientCode` are as follows:
+
+- `success` indicates that key material was provided for the specified
+client.
+- `keyMaterialExhausted` indicates that there was no keying material
+available for the specified client.
+- `nothingCompatible` indicates that the specified clients had no key
+material compatible with the `requiredCapabilities` field in the request.
+
 At minimum, as each MLS KeyPackage is returned to a requesting provider (on
 behalf of a requesting IM client), the target provider needs to associate its
 `KeyPackageRef` with the target client and the hub provider needs to associate
@@ -1158,7 +1167,7 @@ struct {
       CipherSuite cipher_suite;
       SignaturePublicKey requestingSignatureKey;
       Credential requestingCredential;
-      optional opaque joining_code<V>;
+      optional opaque joiningCode<V>;
   };
 } GroupInfoRequestTBS;
 
@@ -1169,7 +1178,7 @@ struct {
       CipherSuite cipher_suite;
       SignaturePublicKey requestingSignatureKey;
       Credential requestingCredential;
-      opaque joining_code<V>;
+      opaque joiningCode<V>;
       /* SignWithLabel(., "GroupInfoRequestTBS", GroupInfoRequestTBS) */
       opaque signature<V>;
   };
@@ -1216,6 +1225,19 @@ struct {
   };
 } GroupInfoResponse;
 ~~~
+
+The semantics of the `GroupInfoCode` are as follows:
+
+- `success` indicates that GroupInfo and ratchet tree was provided as
+requested.
+- `notAuthorized` indicates that the requester was not authorized to access
+the GroupInfo.
+- `noSuchRoom` indicates that the requested room does not exist. If the hub
+does not want to reveal if a room ID does not exist it can use
+`notAuthorized` instead.
+
+> **TODO**: Consider adding additional failure codes/semantics for joining
+> codes (ex: code expired, already used, invalid)
 
 **ISSUE**: What security properties are needed to protect a
 GroupInfo object in the MIMI context are still under discussion. It is
