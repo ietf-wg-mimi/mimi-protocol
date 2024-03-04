@@ -2898,13 +2898,28 @@ been deleted. A target provider can of course use <code>userUnknown</code> if th
 provider does wish to keep or specify this distinction.<a href="#section-5.2-13.8.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-5.2-14">At minimum, as each MLS KeyPackage is returned to a requesting provider (on
+<p id="section-5.2-14">The semantics of the <code>KeyMaterialClientCode</code> are as follows:<a href="#section-5.2-14" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.2-15.1">
+            <p id="section-5.2-15.1.1"><code>success</code> indicates that key material was provided for the specified
+client.<a href="#section-5.2-15.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.2-15.2">
+            <p id="section-5.2-15.2.1"><code>keyMaterialExhausted</code> indicates that there was no keying material
+available for the specified client.<a href="#section-5.2-15.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.2-15.3">
+            <p id="section-5.2-15.3.1"><code>nothingCompatible</code> indicates that the specified clients had no key
+material compatible with the <code>requiredCapabilities</code> field in the request.<a href="#section-5.2-15.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.2-16">At minimum, as each MLS KeyPackage is returned to a requesting provider (on
 behalf of a requesting IM client), the target provider needs to associate its
 <code>KeyPackageRef</code> with the target client and the hub provider needs to associate
 its <code>KeyPackageRef</code> with the target provider. This ensures that Welcome messages
 can be correctly routed to the target provider and client. These associations
 can be deleted after a Welcome message is forwarded or after the KeyPackage
-<code>leaf_node.lifetime.not_after</code> time has passed.<a href="#section-5.2-14" class="pilcrow">¶</a></p>
+<code>leaf_node.lifetime.not_after</code> time has passed.<a href="#section-5.2-16" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="update-room-state">
@@ -3232,7 +3247,7 @@ struct {
       CipherSuite cipher_suite;
       SignaturePublicKey requestingSignatureKey;
       Credential requestingCredential;
-      optional opaque joining_code&lt;V&gt;;
+      optional opaque joiningCode&lt;V&gt;;
   };
 } GroupInfoRequestTBS;
 
@@ -3243,7 +3258,7 @@ struct {
       CipherSuite cipher_suite;
       SignaturePublicKey requestingSignatureKey;
       Credential requestingCredential;
-      opaque joining_code&lt;V&gt;;
+      opaque joiningCode&lt;V&gt;;
       /* SignWithLabel(., "GroupInfoRequestTBS", GroupInfoRequestTBS) */
       opaque signature&lt;V&gt;;
   };
@@ -3291,12 +3306,34 @@ struct {
 } GroupInfoResponse;
 </pre><a href="#section-5.6-8" class="pilcrow">¶</a>
 </div>
-<p id="section-5.6-9"><strong>ISSUE</strong>: What security properties are needed to protect a
+<p id="section-5.6-9">The semantics of the <code>GroupInfoCode</code> are as follows:<a href="#section-5.6-9" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.6-10.1">
+            <p id="section-5.6-10.1.1"><code>success</code> indicates that GroupInfo and ratchet tree was provided as
+requested.<a href="#section-5.6-10.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.6-10.2">
+            <p id="section-5.6-10.2.1"><code>notAuthorized</code> indicates that the requester was not authorized to access
+the GroupInfo.<a href="#section-5.6-10.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.6-10.3">
+            <p id="section-5.6-10.3.1"><code>noSuchRoom</code> indicates that the requested room does not exist. If the hub
+does not want to reveal if a room ID does not exist it can use
+<code>notAuthorized</code> instead.<a href="#section-5.6-10.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5.6-11.1">
+            <p id="section-5.6-11.1.1"><strong>TODO</strong>: Consider adding additional failure codes/semantics for joining
+codes (ex: code expired, already used, invalid)<a href="#section-5.6-11.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.6-12"><strong>ISSUE</strong>: What security properties are needed to protect a
 GroupInfo object in the MIMI context are still under discussion. It is
 possible that the requester only needs to prove possession of their private
 key. The GroupInfo in another context might be sufficiently sensitive that
 it should be encrypted from the end client to the hub provider (unreadable
-by the local provider).<a href="#section-5.6-9" class="pilcrow">¶</a></p>
+by the local provider).<a href="#section-5.6-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
