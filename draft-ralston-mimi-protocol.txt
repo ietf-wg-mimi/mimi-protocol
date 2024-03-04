@@ -2,19 +2,19 @@
 
 
 
-More Instant Messaging Interoperability                R. L. Barnes, Ed.
+More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
-Intended status: Standards Track                              T. Ralston
-Expires: 4 September 2024               The Matrix.org Foundation C.I.C.
+Intended status: Standards Track                              M. Hodgson
+Expires: 5 September 2024               The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
                                                             Unaffiliated
+                                                              T. Ralston
+                                        The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                              M. Hodgson
-                                        The Matrix.org Foundation C.I.C.
-                                                            3 March 2024
+                                                            4 March 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 September 2024.
+   This Internet-Draft will expire on 5 September 2024.
 
 Copyright Notice
 
@@ -1643,14 +1643,14 @@ Acknowledgments
 
 Authors' Addresses
 
-   Richard L. Barnes (editor)
+   Richard L. Barnes
    Cisco
    Email: rlb@ipv.sx
 
 
-   Travis Ralston
+   Matthew Hodgson
    The Matrix.org Foundation C.I.C.
-   Email: travisr@matrix.org
+   Email: matthew@matrix.org
 
 
    Konrad Kohbrok
@@ -1663,11 +1663,11 @@ Authors' Addresses
    Email: rohan.ietf@gmail.com
 
 
+   Travis Ralston
+   The Matrix.org Foundation C.I.C.
+   Email: travisr@matrix.org
+
+
    Raphael Robert
    Phoenix R&D
    Email: ietf@raphaelrobert.com
-
-
-   Matthew Hodgson
-   The Matrix.org Foundation C.I.C.
-   Email: matthew@matrix.org
