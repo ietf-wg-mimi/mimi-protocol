@@ -284,7 +284,7 @@ ClientB*->ServerB: [[ Store KeyPackages ]]
 ClientA1->ServerA: [[ request KPs for Bob ]]
 ServerA->ServerB: POST /keyMaterial KeyMaterialRequest
 ServerB: Verify that Alice is authorized to fetch KeyPackages
-ServerB: Mark returned KPs as reserved for Alice’s use
+ServerB: Mark returned KPs as reserved for Alice's use
 ServerB->ServerA: 200 OK KeyMaterialResponse
 ServerA: Remember that these KPs go to b.example
 ServerA->ClientA1: [[ KPs ]]
@@ -343,7 +343,7 @@ ClientB1->ServerB: [[ request KPs for Bob ]]
 ServerB->ServerA: POST /keyMaterial KeyMaterialRequest
 ServerA->ServerC: POST /keyMaterial KeyMaterialRequest
 ServerB: Verify that Bob is authorized to fetch KeyPackages
-ServerB: Mark returned KPs as reserved for Bob’s use
+ServerB: Mark returned KPs as reserved for Bob's use
 ServerC->ServerA: 200 OK KeyMaterialResponse
 ServerA: Remember that these KPs go to b.example
 ServerA->ServerB: 200 OK KeyMaterialResponse
