@@ -850,6 +850,15 @@ know that the target user was previously a valid user of the system and has
 been deleted. A target provider can of course use `userUnknown` if the
 provider does wish to keep or specify this distinction.
 
+The semantics of the `KeyMaterialClientCode` are as follows:
+
+- `success` indicates that key material was provided for the specified
+client.
+- `keyMaterialExhausted` indicates that there was no keying material
+available for the specified client.
+- `nothingCompatible` indicates that the specified clients had no key
+material compatible with the `requiredCapabilities` field in the request.
+
 At minimum, as each MLS KeyPackage is returned to a requesting provider (on
 behalf of a requesting IM client), the target provider needs to associate its
 `KeyPackageRef` with the target client and the hub provider needs to associate
