@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-03T00:03:31.208594+00:00",
+  "timestamp": "2024-03-05T00:03:31.783951+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -780,7 +780,7 @@
       "id": "I_kwDOKZ8QO85-dr3a",
       "title": "power levels or role-based authorization?",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/46",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohan-wire",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -789,8 +789,8 @@
       ],
       "body": "draft-ralston-mimi-protocol currently uses Matrix-style power levels.\r\ndraft-barnes-mimi-protocol currently implies role-based access control (RBAC).\r\n\r\nI think we have three reasonable choices here:\r\n- keep using power levels\r\n- use role-based access control with a fixed set of roles (for example: owner, admin, moderator, regular-user, visitor, banned, none)\r\n- user role-based access control with administrator defined role labels. Each role label has a set of permissions it can accomplish (for example, can add user, can add remove user, can change user role, can change base policy, etc.)\r\n\r\nTravis brought up that with role-based access control it is necessary to specify the behavior of combinations of roles or permissions. That is true, but I don't think it is unreasonable to enumerate those requirements. I think RBAC maps much better onto the variety of systems we would like to interop with. ",
       "createdAt": "2024-02-06T21:40:00Z",
-      "updatedAt": "2024-03-02T19:23:29Z",
-      "closedAt": null,
+      "updatedAt": "2024-03-03T06:48:12Z",
+      "closedAt": "2024-03-03T06:48:12Z",
       "comments": [
         {
           "author": "turt2live",
@@ -819,6 +819,13 @@
           "body": "Back in the LDAP days, we figured out that additive permissions (you can do the sum of all the roles that you are assigned) was possible to reason about.\r\nSubtractive ACLs (\"if you're in group FOO then you can do BAZ except when you're also in group BAR) made it almost impossible for users to figure out what policy they had specified.\r\n\r\nThat may be a warning - Keep It Simple.",
           "createdAt": "2024-03-02T19:23:28Z",
           "updatedAt": "2024-03-02T19:23:28Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Merged #62. Closing.",
+          "createdAt": "2024-03-03T06:48:12Z",
+          "updatedAt": "2024-03-03T06:48:12Z"
         }
       ]
     },
@@ -923,15 +930,15 @@
       "id": "I_kwDOKZ8QO85_vcd3",
       "title": "Make sure endpoint, and protocol are included in any MIMI signatures",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/55",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohan-wire",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-02-19T21:07:46Z",
-      "updatedAt": "2024-03-01T23:20:37Z",
-      "closedAt": null,
+      "updatedAt": "2024-03-04T16:28:39Z",
+      "closedAt": "2024-03-04T16:28:39Z",
       "comments": [
         {
           "author": "rohanmahy",
@@ -939,6 +946,13 @@
           "body": "@kkohbrok this only seems to apply to groupInfo/ requests and reponses. I made sure the Protocol is included. What threat are we solving by including the request endpoint?",
           "createdAt": "2024-03-01T23:20:36Z",
           "updatedAt": "2024-03-01T23:20:36Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "My main concern was to ensure that sender and recipient agree on what kind of request they're making. But now that I think about that's probably covered by including the payload name as label in the signature context. I think this is good to be closed as long as we keep properly labelling when signing.",
+          "createdAt": "2024-03-04T16:28:39Z",
+          "updatedAt": "2024-03-04T16:28:39Z"
         }
       ]
     },
@@ -965,6 +979,38 @@
           "updatedAt": "2024-02-29T06:47:28Z"
         }
       ]
+    },
+    {
+      "number": 68,
+      "id": "I_kwDOKZ8QO86BLlLy",
+      "title": "Make more ASCII art flow changes",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/68",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- [ ]  Make ASCII art fit in 72 characters (only done so far for Bob Adds Cathy flow)\r\n- [ ]  Show fanouts to multiple servers and clients closer/tighter in time? \r\n- [ ]  Show fanouts to Clients of final commits (done for Bob leaves room flow)\r\n- [ ]  Consider a consistent order of Servers and Clients\r\n- [ ]  Overall make all ascii art diagrams in the document consistent",
+      "createdAt": "2024-03-04T16:50:55Z",
+      "updatedAt": "2024-03-04T16:50:55Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 70,
+      "id": "I_kwDOKZ8QO86BMBBk",
+      "title": "idnits: There are 2 instances of lines with non-ascii characters in the document.",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/issues/70",
+      "state": "CLOSED",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "during submission of 02 document:\r\n```\r\nidnits 2.17.00 (12 Aug 2021)\r\n\r\n/a/www/www6s/staging/draft-ralston-mimi-protocol-02.txt:\r\n\r\n  Showing Errors (**), Flaws (~~), Warnings (==), and Comments (--).\r\n  Errors MUST be fixed before draft submission.  Flaws SHOULD be fixed before draft submission.\r\n\r\n  Checking boilerplate required by [RFC 5378](https://datatracker.ietf.org/doc/rfc5378/) and the IETF Trust (see\r\n  https://trustee.ietf.org/license-info):\r\n  ----------------------------------------------------------------------------\r\n\r\n     No issues found here.\r\n\r\n  Checking nits according to https://www.ietf.org/id-info/1id-guidelines.txt:\r\n  ----------------------------------------------------------------------------\r\n\r\n  == There are 2 instances of lines with non-ascii characters in the document.\r\n\r\n\r\n  Running in submission checking mode -- *not* checking nits according to\r\n  https://www.ietf.org/id-info/checklist .\r\n  ----------------------------------------------------------------------------\r\n\r\n\r\n     Summary: 0 errors (**), 0 flaws (~~), 1 warning (==), 0 comments (--).\r\n```",
+      "createdAt": "2024-03-04T17:52:14Z",
+      "updatedAt": "2024-03-04T18:28:10Z",
+      "closedAt": "2024-03-04T18:28:10Z",
+      "comments": []
     }
   ],
   "pulls": [
@@ -6446,24 +6492,26 @@
       "id": "PR_kwDOKZ8QO85odNNm",
       "title": "Introduce very lightweight notion of role-based access control",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/62",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-03-01T22:13:40Z",
-      "updatedAt": "2024-03-02T23:43:45Z",
+      "updatedAt": "2024-03-03T06:47:37Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5e1cd5892cd61f3392df4041c80921e54d3bcf48",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "rohan/rbac",
-      "headRefOid": "990742b2d9cdb9b7410002f71705551b81b995d7",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "d6eae33af63136dca0ddefdfd1cc543d78ae18fd",
+      "closedAt": "2024-03-03T06:47:37Z",
+      "mergedAt": "2024-03-03T06:47:37Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "615b710af6d5cface7856b885a132e3ca5cbe8c2"
+      },
       "comments": [],
       "reviews": [
         {
@@ -6478,6 +6526,78 @@
           "createdAt": "2024-03-02T23:43:45Z",
           "updatedAt": "2024-03-02T23:43:45Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85yAvDR",
+          "commit": {
+            "abbreviatedOid": "990742b"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-03-03T01:01:41Z",
+          "updatedAt": "2024-03-03T01:07:12Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "Suggest enclosing the permissions in double quotes as well.  Or removing them from the label name.  Maybe something like:\r\n\r\n```\r\nadmin = [canAddUser, canRemoveUser, canSetUserRole]\r\n```",
+              "createdAt": "2024-03-03T01:01:41Z",
+              "updatedAt": "2024-03-03T01:07:12Z"
+            },
+            {
+              "originalPosition": 43,
+              "body": "What are the semantics of Add with respect to roles?  I assume every user has to have an assigned role.  Are new users assigned a default role, or does the Add need to specify a role?\r\n\r\nUpdate has an unfortunate resonance with the MLS operation of the same name (and different semantic).  I would suggest using `SetRole` for this, which aligns well with the example permissions above.",
+              "createdAt": "2024-03-03T01:05:03Z",
+              "updatedAt": "2024-03-03T01:07:12Z"
+            },
+            {
+              "originalPosition": 38,
+              "body": "You need to elaborate a little more here and above.\r\n\r\n* The base policy is probably where the role definitions go\r\n* The participation list has a list of participants and their roles (cf. \"permissions\" now)\r\n* The participation list can be modified by adding users, removing users, **or setting a user's role**\r\n\r\nAlso, \"participant list\" seems more natural to me than \"participation list\"",
+              "createdAt": "2024-03-03T01:06:58Z",
+              "updatedAt": "2024-03-03T01:07:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85yBHrQ",
+          "commit": {
+            "abbreviatedOid": "990742b"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-03T06:46:57Z",
+          "updatedAt": "2024-03-03T06:46:57Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "OK updated.",
+              "createdAt": "2024-03-03T06:46:57Z",
+              "updatedAt": "2024-03-03T06:46:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85yBHsY",
+          "commit": {
+            "abbreviatedOid": "990742b"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-03T06:47:30Z",
+          "updatedAt": "2024-03-03T06:47:30Z",
+          "comments": [
+            {
+              "originalPosition": 43,
+              "body": "ok modified as suggested",
+              "createdAt": "2024-03-03T06:47:30Z",
+              "updatedAt": "2024-03-03T06:47:30Z"
+            }
+          ]
         }
       ]
     },
@@ -6619,26 +6739,181 @@
       "id": "PR_kwDOKZ8QO85odr9w",
       "title": "Fix ASCII art / AASVG diagrams",
       "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/66",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "- [x]  Send responses as soon as feasible in \"Alice Adds Bob\" flow\r\n- [ ]  Make ASCII art fit in 72 characters (only done so far for Bob Adds Cathy flow)\r\n- [ ]  Show fanouts to multiple servers and clients closer/tighter in time \r\n- [ ]  Show fanouts to Clients of final commits (done for Bob leaves room flow)\r\n- [ ]  Consider a consistent order of Servers and Clients",
+      "body": "Send responses as soon as feasible in \"Alice Adds Bob\" flow\r\n\r\nFor Bob Adds Cathy flow \r\n- make ASCII art fit in 72 characters (only done so far for Bob Adds Cathy flow)\r\n- show fanout to multiple servers and clients closer/tighter in time \r\n\r\nShow fanouts to Clients of final commits for Bob leaves room flow\r\n",
       "createdAt": "2024-03-02T00:26:22Z",
-      "updatedAt": "2024-03-02T15:01:09Z",
+      "updatedAt": "2024-03-04T16:56:45Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "7e1719f65858e08594367a221f7c7cb49b1d5c83",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "rohan/fix-diagrams",
-      "headRefOid": "311c71bbb5f14b40ca9f6a8fd052198504830e02",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "25b8cff7a40269ff289ad4a0d0b3e0acfb20a813",
+      "closedAt": "2024-03-04T16:56:44Z",
+      "mergedAt": "2024-03-04T16:56:44Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "cfe2d6d8ce148bf11af9a214e5dc765dc0b7507d"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85yIT5O",
+          "commit": {
+            "abbreviatedOid": "311c71b"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-03-04T16:34:20Z",
+          "updatedAt": "2024-03-04T16:34:20Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 67,
+      "id": "PR_kwDOKZ8QO85omxTh",
+      "title": "Update author list",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/67",
+      "state": "MERGED",
+      "author": "bifurcation",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "* Remove `editor` role from Barnes\r\n* Put authors in alphabetical order by last name",
+      "createdAt": "2024-03-04T15:35:41Z",
+      "updatedAt": "2024-03-04T16:04:49Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "615b710af6d5cface7856b885a132e3ca5cbe8c2",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "author-tweak",
+      "headRefOid": "78a711485a7ea4164e25aa717235975b409eba04",
+      "closedAt": "2024-03-04T16:04:49Z",
+      "mergedAt": "2024-03-04T16:04:49Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "f885208a79044e9882289efa031178444466156a"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85yHx5M",
+          "commit": {
+            "abbreviatedOid": "78a7114"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-03-04T15:36:52Z",
+          "updatedAt": "2024-03-04T15:36:52Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85yIBpT",
+          "commit": {
+            "abbreviatedOid": "78a7114"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-03-04T16:03:30Z",
+          "updatedAt": "2024-03-04T16:03:30Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 69,
+      "id": "PR_kwDOKZ8QO85onf54",
+      "title": "Add missing status semantics",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/69",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Add missing status semantics for:\r\n- KeyMaterialClientCode\r\n- GroupInfoCode\r\n",
+      "createdAt": "2024-03-04T17:17:42Z",
+      "updatedAt": "2024-03-04T17:30:15Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "cfe2d6d8ce148bf11af9a214e5dc765dc0b7507d",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "rohan/missing-status",
+      "headRefOid": "36781c9a90ea9ccea81c94693b135895b113ef99",
+      "closedAt": "2024-03-04T17:30:15Z",
+      "mergedAt": "2024-03-04T17:30:15Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "a872090b97512cd4a1a0021a5cc35f6681659dcb"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85yIr80",
+          "commit": {
+            "abbreviatedOid": "36781c9"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-03-04T17:18:59Z",
+          "updatedAt": "2024-03-04T17:18:59Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 71,
+      "id": "PR_kwDOKZ8QO85onzCf",
+      "title": "Appease idnits: replace non-ascii characters",
+      "url": "https://github.com/bifurcation/ietf-mimi-protocol/pull/71",
+      "state": "MERGED",
+      "author": "turt2live",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes https://github.com/bifurcation/ietf-mimi-protocol/issues/70\r\n\r\nNot critical for submission, given it was posted with these \"errors\" anyways.",
+      "createdAt": "2024-03-04T18:07:26Z",
+      "updatedAt": "2024-03-04T18:30:05Z",
+      "baseRepository": "bifurcation/ietf-mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "a872090b97512cd4a1a0021a5cc35f6681659dcb",
+      "headRepository": "bifurcation/ietf-mimi-protocol",
+      "headRefName": "travis/ascii",
+      "headRefOid": "2d7bad8ef131b73ab76b84e93d9bed034a3a39e2",
+      "closedAt": "2024-03-04T18:28:09Z",
+      "mergedAt": "2024-03-04T18:28:09Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "353cc7e612b6de148df168fc0a9b6b58acae6c36"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO85yJLFa",
+          "commit": {
+            "abbreviatedOid": "2d7bad8"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-03-04T18:26:39Z",
+          "updatedAt": "2024-03-04T18:26:39Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
