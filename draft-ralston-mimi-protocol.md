@@ -1247,11 +1247,10 @@ by the local provider).
 
 ## Convey explicit consent
 
-There are many ways that a provider could implicitly determine consent.
-This section describes a mechanism by which providers can explicitly request
-consent from a user of another provider, cancel such a request, convey that
-consent was granted, or convey that consent was revoked or preemptively
-denied.
+As discussed in {{consent}}, there are many ways that a provider could
+implicitly determine consent. This section describes a mechanism by which providers can explicitly request consent from a user of another provider,
+cancel such a request, convey that consent was granted, or convey that
+consent was revoked or preemptively denied.
 
 ~~~
 POST /requestConsent/{targetDomain}
