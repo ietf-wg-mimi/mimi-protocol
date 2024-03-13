@@ -1246,6 +1246,23 @@ key. The GroupInfo in another context might be sufficiently sensitive that
 it should be encrypted from the end client to the hub provider (unreadable
 by the local provider).
 
+## Download files
+
+The proxyDownload endpoint is used to prevent a provider from learning about the
+IP addresses and online status of clients associated with another provider, when
+that client downloads an attachment in a specific room.
+
+The URL includes both the room ID and the original download URL. The download
+URL MUST be for a hostname associated with one of the providers with active
+participants in the room.
+
+~~~
+GET /proxyDownload/{roomId}/{downloadUrl}
+~~~
+
+If the request succeeds, the response body contains the contents of the
+downloaded URL.
+
 # Relation between MIMI state and cryptographic state
 
 ## Room state
