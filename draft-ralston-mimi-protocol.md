@@ -711,7 +711,11 @@ GET /.well-known/mimi-protocol-directory
   "submitMessage":
      "https://mimi.example.com/v1/submitMessage/{roomId}",
   "groupInfo":
-     "https://mimi.example.com/v1/groupInfo/{roomId}"
+     "https://mimi.example.com/v1/groupInfo/{roomId}",
+  "requestConsent":
+     "https://mimi.example.com/v1/requestConsent/{targetUser}",
+  "updateConsent":
+     "https://mimi.example.com/v1/updateConsent/{requesterUser}"
 }
 ~~~
 
@@ -1245,6 +1249,99 @@ possible that the requester only needs to prove possession of their private
 key. The GroupInfo in another context might be sufficiently sensitive that
 it should be encrypted from the end client to the hub provider (unreadable
 by the local provider).
+
+# Explicit consent
+
+There are many ways that a provider could implicitly determine consent.
+This section describes a mechanism by which providers can explicitly request
+consent from a user of another provider, cancel such a request, convey that
+consent was granted, or convey that consent was revoked or preemptively
+denied.
+
+~~~
+POST /requestConsent/{targetDomain}
+POST /updateConsent/{requesterDomain}
+~~~
+
+A `requestContent` request is used by one provider to request explicit
+consent from a target user at another provider to fetch the target's
+KeyPackages (which is a prerequisite for adding the target to a group); or
+to cancel that request.
+The request body is a `ConsentEntry`, with a `consentOperation` of `request`
+or `cancel` respectively. It includes the URI of requesting user in the
+`requesterUri` and the target user URI in the `targetUri`. If consent is only
+requested for a single room, the requester includes the `roomId`. The
+combination of the `requesterUri`, `targetUri`, and optional `roomId`
+represents the `ConsentScope`. A `cancel` MUST use the same `ConsentScope`
+as a previous `request`.
+
+The response to a `requestConsent` request is usually a 201 Accepted
+(indicating the `requestConsent` was received), optionally a 404 Not Found
+(indicating the `targetUri` is unknown), or a 500-class response. The
+201 response code merely indicates that the request was received. A provider
+that does not wish to reveal if a user is not found can respond with a 201
+Accepted. Likewise in response to a `cancel` which has no `request` matching the
+`ConsentScope`, a 201 Accepted is sent and no further action is taken.
+
+~~~ tls
+enum {
+  cancel(0),
+  request(1),
+  grant(2),
+  revoke(3),
+  (255)
+} ConsentOperation;
+
+struct {
+  ConsentOperation consentOperation;
+  IdentifierUri requesterUri;
+  IdentifierUri targetUri;
+  optional<RoomId> roomId;
+  select (consentOperation) {
+      case grant:
+          KeyPackage clientKeyPackages<V>;
+  };
+} ConsentEntry;
+
+struct {
+  IdentifierUri requesterUri;
+  IdentifierUri targetUri;
+  optional<RoomId> roomId;
+} ConsentScope;
+~~~
+
+An `updateContent` request is used by one provider to provide explicit
+notice from a target user at one provider that consent for a specific
+"requester" was granted, revoked, or preemptively denied. In this context,
+the requester is the party that will later request KeyPackages for the target. The request body is
+a `ConsentEntry`, with a `consentOperation` of `grant` (for a grant), or
+`revoke` for revocation or denial. Like a request, it includes the URI of the
+"requesting user" in the `requesterUri` and the target user URI in the
+`targetUri`. If consent is only granted or denied for a single room, the request includes the optional `roomId`.
+
+A `grant` or `revoke` does not need to be in response to an explicit request, nor does the `ConsentScope` need to match a previous `request` for the same `targetUri` and `requesterUri` pair.
+
+For example, in some systems there is a notion of a bilateral connection
+request. The party that initiates the connection request (for example Alice)
+would send a `requestConsent` for the target (ex: Bob), and send an
+unsolicited `updateConsent` with Bob as the "requestor" and itself (Alice)
+as the target.
+
+In a `grant`, the sender includes a list of `clientKeyPackages` for the
+target user, which can be empty. For the case of a bilateral connection,
+a grant of consent with a matching `ConsentScope` often results in an
+immediate Add to a group. If the list is non-empty this reduces the
+number of messages which need to be sent.
+
+The response to an `updateConsent` is usually a 201 Accepted (indicating
+the `updateConsent` was received), optionally a 404 Not Found (indicating the
+`requesterUri` is unknown), or a 500-class response. The response code
+merely indicates that the request was received. A provider that does not
+wish to reveal if a user is not found can respond with a 201 Accepted.
+
+> **NOTE**: Blocking a user might be privacy sensitive. If this is the case
+> the target provider does not need to send a `revoke` to inform the
+> requester provider.
 
 # Relation between MIMI state and cryptographic state
 
