@@ -262,9 +262,9 @@ of the KeyPackages they handle, so that they can route a Welcome message for
 those KeyPackages to the proper recipients -- ServerA to ServerB, and ServerB to
 Bob's clients.
 
-> **NOTE:** In the full protocol, it will be necessary to have consent and access
-> control on these operations.  We have elided that step here in the interest of
-> simplicity.
+> **NOTE:** In the protocol, it is necessary to have consent (see {{consent}})
+> and access control on these operations.  We have elided that step here in
+> the interest of simplicity.
 
 ~~~ aasvg
 ClientA1       ServerA         ServerB         ClientB*
@@ -1552,6 +1552,61 @@ be sent by an authorized external sender.
 
 > **TODO:** IANA registry for `application_id`; register extension and proposal types
 >as safe extensions
+
+# Consent
+
+Most instant messaging systems have some notion of how a user consents to be
+added to a room, and how they manipulate this consent.
+
+In the connection-oriented model, once two users are connected, either user
+can add the other to any number of rooms. In other systems (often with many
+large and/or public rooms), a user needs to consent individually to be added
+to a room.
+
+The MIMI consent mechanism supports both models and allows them to coexist.
+It allows a user to request consent, grant consent, revoke consent, and
+cancel a request for consent. Each of these consent operations can indicate
+a specific room, or indicate any room.
+
+A connection grant or revoke does not need to specify a room if a connection
+request did, or vice versa. A connection grant or revoke does not even need
+to follow a connection request.
+
+For example, Alice could ask for consent to add Bob to a specific room. Bob
+could send a connection grant for Alice to add him to any room, or a
+connection revoke preventing Alice from adding him to any room. Similarly,
+Alice might have sent a connection request to add Bob for any room (as a
+connection request), which Bob ignored or did not see. Later, Bob wants to
+join a specific room administered by Alice. Bob sends a connection grant for
+the specific room for Alice and sends a Knock request to Alice asking to be
+added. Finally, Cathy could send a connection grant for Bob (even if Bob did
+not initiate a connection request to Cathy), and Alice could recognize Cathy
+on the system and send a connection revoke for her preemptively.
+
+> **NOTE**: Many providers use additional factors to apply default consent
+> within their service such as a user belonging to a specific workgroup or
+> employer, participating in a related room (ex: WhatsApp "communities"), or
+> presence of a user in the other user's contact list. MIMI does not need to
+> provide a way to replicate or describe these supplemental mechanisms,
+> since they are strongly linked to specific provider policies.
+
+Consent requests have sensitive privacy implications. The sender of a
+consent request should receive an acknowledgement that the request was
+received by the provider of the target user. For privacy reasons, the
+requestor should not know if the target user received or viewed the request.
+The original requestor will obviously find out if the target grants consent,
+but a consent revocation/rejection is typically not communicated to the
+revoked/rejected user (again for privacy reasons).
+
+Consent operations are only sent directly between the acting provider
+(sending the request, grant, revoke, or cancel) and the target provider (the
+object of the consent). In other words, the two providers must have a direct
+peering relationship.
+
+In our example, Alice requests consent from Bob for any room. Later, Bob
+sends a grants consent to Alice to add him to any room. At the same time as
+sending the consent request, Alice grants consent to Bob to add her to any
+room.
 
 # Security Considerations
 
