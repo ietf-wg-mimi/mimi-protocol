@@ -1246,6 +1246,59 @@ key. The GroupInfo in another context might be sufficiently sensitive that
 it should be encrypted from the end client to the hub provider (unreadable
 by the local provider).
 
+## Report abuse
+
+Abuse reports are only sent to the hub provider. They are sent as an HTTP
+POST request.
+
+~~~
+POST /reportAbuse/{roomId}
+~~~
+
+The `reportingUser` optionally contains the identity of the user sending the
+`abuseReport`, while the `allegedAbuserUri` contains the URI of the alleged
+sender of abusive messages. The `group_id`, `epoch`, and
+`allegedAbuserLeafIndex`, all identify the alleged abusing client at a
+snapshot in time. The `reasonCode` is reserved to identify the type of abuse,
+and the `note` is a UTF8 human-readable string, which can be empty.
+
+> **TODO**: Find a standard taxonomy of reason codes to reference for
+> the `AbuseType`. The IANA Messaging Abuse Report Format parameters are
+> insufficient.
+
+Finally, abuse reports can optionally contain a handful of (end-to-end
+encrypted) abusive messages, and the keys necessary to decrypt them in an
+`AbusiveMessage` struct.
+
+~~~ tls
+struct {
+  /* an application message (wire_format = private_message and */
+  /* content_type = application) and the key and nonce to decrypt */
+  /* just this single application message */
+  MLSMessage applicationMessage;
+  opaque key<V>;
+  opaque nonce<V>;
+} AbusiveMessage;
+
+enum {
+  reserved(0),
+  (255)
+} AbuseType;
+
+struct {
+  IdentifierUri reportingUser;
+  IdentifierUri allegedAbuserUri;
+  opaque group_id<V>;
+  uint64 epoch;
+  uint32 allegedAbuserLeafIndex;
+  AbuseType reasonCode;
+  opaque note<V>;
+  AbusiveMessage messages<V>;
+} AbuseReport;
+~~~
+
+There is no response body. The response code only indicates if the abuse report was accepted, not if any specific automated or human action was taken.
+
 # Relation between MIMI state and cryptographic state
 
 ## Room state
