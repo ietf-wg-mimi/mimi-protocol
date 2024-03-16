@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 14 September 2024              The Matrix.org Foundation C.I.C.
+Expires: 17 September 2024              The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 14 September 2024              The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                           13 March 2024
+                                                           16 March 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 September 2024.
+   This Internet-Draft will expire on 17 September 2024.
 
 Copyright Notice
 
@@ -1363,7 +1363,7 @@ ServerC->ClientC*: [[ Commit ]]
    POST /requestConsent/{targetDomain}
    POST /updateConsent/{requesterDomain}
 
-   A requestContent request is used by one provider to request explicit
+   A requestConsent request is used by one provider to request explicit
    consent from a target user at another provider to fetch the target's
    KeyPackages (which is a prerequisite for adding the target to a
    group); or to cancel that request.  The request body is a
@@ -1409,7 +1409,7 @@ ServerC->ClientC*: [[ Commit ]]
      optional<RoomId> roomId;
    } ConsentScope;
 
-   An updateContent request is used by one provider to provide explicit
+   An updateConsent request is used by one provider to provide explicit
    notice from a target user at one provider that consent for a specific
    "requester" was granted, revoked, or preemptively denied.  In this
    context, the requester is the party that will later request
