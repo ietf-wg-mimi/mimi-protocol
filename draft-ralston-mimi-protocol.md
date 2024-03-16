@@ -1257,7 +1257,7 @@ POST /requestConsent/{targetDomain}
 POST /updateConsent/{requesterDomain}
 ~~~
 
-A `requestContent` request is used by one provider to request explicit
+A `requestConsent` request is used by one provider to request explicit
 consent from a target user at another provider to fetch the target's
 KeyPackages (which is a prerequisite for adding the target to a group); or
 to cancel that request.
@@ -1304,7 +1304,7 @@ struct {
 } ConsentScope;
 ~~~
 
-An `updateContent` request is used by one provider to provide explicit
+An `updateConsent` request is used by one provider to provide explicit
 notice from a target user at one provider that consent for a specific
 "requester" was granted, revoked, or preemptively denied. In this context,
 the requester is the party that will later request KeyPackages for the target. The request body is
