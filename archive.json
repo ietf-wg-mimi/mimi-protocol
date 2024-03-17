@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-14T00:03:23.908060+00:00",
+  "timestamp": "2024-03-17T00:03:40.576370+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -6927,13 +6927,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-03-13T02:11:04Z",
-      "updatedAt": "2024-03-13T17:39:55Z",
+      "updatedAt": "2024-03-16T20:23:56Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "rohan/consent",
-      "headRefOid": "9278c907fb55fcf9f3e2f7a92fc7c453439f4fa5",
+      "headRefOid": "4bfe00bce5d2a790cf659dbf47a3645048951f7a",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -7018,6 +7018,86 @@
               "updatedAt": "2024-03-13T17:39:56Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85zsIPv",
+          "commit": {
+            "abbreviatedOid": "4bfe00b"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-16T04:34:31Z",
+          "updatedAt": "2024-03-16T04:34:31Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "Thanks for asking. I think they do not. Alice's domain would need to have a consent relationship of some type directly with the domain of the target client.\r\n\r\nThe KeyPackage request gets routed through the hub, so it can route the subsequent Welcome.",
+              "createdAt": "2024-03-16T04:34:31Z",
+              "updatedAt": "2024-03-16T04:34:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85zsIay",
+          "commit": {
+            "abbreviatedOid": "4bfe00b"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-16T04:39:32Z",
+          "updatedAt": "2024-03-16T04:39:32Z",
+          "comments": [
+            {
+              "originalPosition": 86,
+              "body": "OK, I think I can say that in prose. How about?\r\n\r\n\"For a `requestContent`, the `targetUri` needs to be in one of the domains of the receiving server, and the `requesterUri` needs to be in one of the domains of the sending server. \r\n\r\nFor `updateConsent` the `requesterUri` needs to be in one of the domains of the receiving server, and the `targetUri` needs to be in one of the domains of the sending server.\"",
+              "createdAt": "2024-03-16T04:39:32Z",
+              "updatedAt": "2024-03-16T04:39:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85zsIsx",
+          "commit": {
+            "abbreviatedOid": "4bfe00b"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-16T04:48:57Z",
+          "updatedAt": "2024-03-16T04:48:58Z",
+          "comments": [
+            {
+              "originalPosition": 132,
+              "body": "Thanks for pointing that out. I think there is a lot of usage of these terms predating the [2023 UK Online Safety Act](https://www.legislation.gov.uk/ukpga/2023/50/enacted). Block is used by XMPP and WhatsApp, and I think mute could be confused for audio/video muting, muting notifications, or revoking voice in a group chat. I don't have a strong feeling about which set terms we use.\r\n\r\nI'll make a slide.",
+              "createdAt": "2024-03-16T04:48:57Z",
+              "updatedAt": "2024-03-16T04:48:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85ztiSS",
+          "commit": {
+            "abbreviatedOid": "9278c90"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-16T20:23:56Z",
+          "updatedAt": "2024-03-16T20:23:56Z",
+          "comments": [
+            {
+              "originalPosition": 103,
+              "body": "I think the may several of these systems work, the requester never finds out if consent was rejected or the user just never responded (for privacy reasons). I think it is fine to say that a server can just come right out and say no, you don't get consent if this is consistent with their privacy policies. However the most likely case seems that they never get an answer.\r\n\r\nI expect in some systems updateConsent with a reject will only be used to remove consent after it had been previously granted.",
+              "createdAt": "2024-03-16T20:23:56Z",
+              "updatedAt": "2024-03-16T20:23:56Z"
+            }
+          ]
         }
       ]
     },
@@ -7033,7 +7113,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-03-13T13:26:24Z",
-      "updatedAt": "2024-03-13T17:52:08Z",
+      "updatedAt": "2024-03-16T21:50:21Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
@@ -7044,7 +7124,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "alvestrand",
+          "authorAssociation": "NONE",
+          "body": "In the case where the abuse comes from the abuser's provider (such as when the \"abuser\" is a fake identity created by the abuser's provider in order to achieve abusive outcomes like spam or phishing), sending an abuse complaint verbatim to the abuser's provider is exactly the wrong thing to do.\r\n\r\nThe abuser's provider may need to get told that sanctions have been imposed against his user, but telling him why feeds into machine learning on how to avoid anti-abuse mechanisms.\r\n\r\n",
+          "createdAt": "2024-03-16T21:50:20Z",
+          "updatedAt": "2024-03-16T21:50:20Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOKZ8QO85zU26i",
@@ -7065,6 +7153,26 @@
               "updatedAt": "2024-03-13T17:52:08Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85zsJFb",
+          "commit": {
+            "abbreviatedOid": "5c6223f"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-16T05:04:20Z",
+          "updatedAt": "2024-03-16T05:04:20Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": ">Feels a bit weird that abuse would only be reported to the hub. \r\nWhat does the MIMI protocol need to provide at minimum?  Let's consider the reporting client, the reporting provider, the hub, the abuser's provider, and the abuser's client.\r\n\r\nThe clients don't run the MIMI protocol. The reporting provider got informed using a provider-specific protocol, the hub (especially in it's role of policy enforcer) definitely needs to get this information. So that leaves the abuser's provider.\r\n\r\n>The provider which sent the content should receive that report, and there may need to be redirection from the server to the moderators of the room.\r\n\r\nI will argue that the abuser provider shouldn't automatically get the report, and in some cases should never get the (unredacted) report. The peering relationship between the hub and the abuser provider should specify the details of what the abuser's provider gets. Also, after the report is sent, the hub may do all kinds of analysis and/or send the content to a human moderator to look at. Only after the hub provider decides something is or is not in their policy would they have any cause to send something to another provider. In any case, I think this need not be part of a real-time protocol in MIMI. \r\n\r\nI think all the actions you listed in your can of worms refer to a subset of the information in the original report. ",
+              "createdAt": "2024-03-16T05:04:20Z",
+              "updatedAt": "2024-03-16T05:04:20Z"
+            }
+          ]
         }
       ]
     },
@@ -7080,7 +7188,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-03-13T13:36:02Z",
-      "updatedAt": "2024-03-13T17:49:13Z",
+      "updatedAt": "2024-03-16T05:07:31Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
@@ -7110,6 +7218,26 @@
               "body": "This feature feels like it should be part of the discovery document rather than protocol. It feels distinct enough to be a dedicated document with search capabilities and global directories. ",
               "createdAt": "2024-03-13T17:49:13Z",
               "updatedAt": "2024-03-13T17:49:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85zsJJq",
+          "commit": {
+            "abbreviatedOid": "83608cc"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-16T05:07:31Z",
+          "updatedAt": "2024-03-16T05:07:31Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "The discovery documents are explicitly about discovering _which provider_ is associated with a specific SII. This is entirely about searching inside a provider, instead of finding a provider, so I think it is still in scope. This is a good question for the WG though. ",
+              "createdAt": "2024-03-16T05:07:31Z",
+              "updatedAt": "2024-03-16T05:07:31Z"
             }
           ]
         }
