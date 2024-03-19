@@ -1341,9 +1341,9 @@ the `updateConsent` was received), optionally a 404 Not Found (indicating the
 merely indicates that the request was received. A provider that does not
 wish to reveal if a user is not found can respond with a 201 Accepted.
 
-> **NOTE**: Blocking a user might be privacy sensitive. If this is the case
-> the target provider does not need to send a `revoke` to inform the
-> requester provider.
+> **NOTE**: Revoking consent for a user might be privacy sensitive. If this
+> is the case the target provider does not need to send a `revoke` to inform
+> the requester provider.
 
 # Relation between MIMI state and cryptographic state
 
