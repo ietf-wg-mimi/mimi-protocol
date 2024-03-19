@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-17T00:03:40.576370+00:00",
+  "timestamp": "2024-03-19T00:03:24.930900+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -6927,7 +6927,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-03-13T02:11:04Z",
-      "updatedAt": "2024-03-16T20:23:56Z",
+      "updatedAt": "2024-03-18T23:12:51Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
@@ -7096,6 +7096,66 @@
               "body": "I think the may several of these systems work, the requester never finds out if consent was rejected or the user just never responded (for privacy reasons). I think it is fine to say that a server can just come right out and say no, you don't get consent if this is consistent with their privacy policies. However the most likely case seems that they never get an answer.\r\n\r\nI expect in some systems updateConsent with a reject will only be used to remove consent after it had been previously granted.",
               "createdAt": "2024-03-16T20:23:56Z",
               "updatedAt": "2024-03-16T20:23:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85z5aQf",
+          "commit": {
+            "abbreviatedOid": "9278c90"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-18T23:11:37Z",
+          "updatedAt": "2024-03-18T23:11:38Z",
+          "comments": [
+            {
+              "originalPosition": 103,
+              "body": "hmm, good point. Most requests would be ignored - given the rarity, two requests seems fine.\r\n\r\nThanks for working through the suggestion. Resolving.",
+              "createdAt": "2024-03-18T23:11:38Z",
+              "updatedAt": "2024-03-18T23:11:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85z5axp",
+          "commit": {
+            "abbreviatedOid": "9278c90"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-18T23:12:29Z",
+          "updatedAt": "2024-03-18T23:12:29Z",
+          "comments": [
+            {
+              "originalPosition": 86,
+              "body": "Looks good to me, though the plural of \"domains\" is a bit scary - not sure we've discussed a provider having multiple domains yet.",
+              "createdAt": "2024-03-18T23:12:29Z",
+              "updatedAt": "2024-03-18T23:12:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85z5a_A",
+          "commit": {
+            "abbreviatedOid": "9278c90"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-18T23:12:51Z",
+          "updatedAt": "2024-03-18T23:12:51Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "(this makes sense - it should be clarified in the text)",
+              "createdAt": "2024-03-18T23:12:51Z",
+              "updatedAt": "2024-03-18T23:12:51Z"
             }
           ]
         }
