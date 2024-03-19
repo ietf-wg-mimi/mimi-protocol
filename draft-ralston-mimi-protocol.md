@@ -1252,6 +1252,11 @@ implicitly determine consent. This section describes a mechanism by which provid
 cancel such a request, convey that consent was granted, or convey that
 consent was revoked or preemptively denied.
 
+Since they are not necessarily in the context of a room, consent requests
+are sent directly from the provider of the user requesting consent, to the
+provider of the target user. (There is no concept of a hub outside of the
+context of a room.)
+
 ~~~
 POST /requestConsent/{targetDomain}
 POST /updateConsent/{requesterDomain}
