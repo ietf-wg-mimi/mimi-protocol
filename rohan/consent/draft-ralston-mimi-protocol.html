@@ -22,14 +22,14 @@ integrates the Messaging Layer Security (MLS) protocol to provide end-to-end sec
 assurances, including authentication of protocol participants, confidentiality
 of messages exchanged within a room, and agreement on the state of the room. 
     " name="description">
-<meta content="xml2rfc 3.20.0" name="generator">
+<meta content="xml2rfc 3.20.1" name="generator">
 <meta content="mimi" name="keyword">
 <meta content="interoperable messaging" name="keyword">
 <meta content="chat" name="keyword">
 <meta content="secure messaging" name="keyword">
 <meta content="draft-ralston-mimi-protocol-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.20.0
+  xml2rfc 3.20.1
     Python 3.11.8
     ConfigArgParse 1.7
     google-i18n-address 3.1.0
@@ -1045,7 +1045,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 17 September 2024</td>
+<td class="center">Expires 20 September 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1058,12 +1058,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ralston-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-03-16" class="published">16 March 2024</time>
+<time datetime="2024-03-19" class="published">19 March 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-09-17">17 September 2024</time></dd>
+<dd class="expires"><time datetime="2024-09-20">20 September 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1141,7 +1141,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 17 September 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 20 September 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3365,14 +3365,17 @@ requested for a single room, the requester includes the <code>roomId</code>. The
 combination of the <code>requesterUri</code>, <code>targetUri</code>, and optional <code>roomId</code>
 represents the <code>ConsentScope</code>. A <code>cancel</code> <span class="bcp14">MUST</span> use the same <code>ConsentScope</code>
 as a previous <code>request</code>.<a href="#section-5.7-3" class="pilcrow">¶</a></p>
-<p id="section-5.7-4">The response to a <code>requestConsent</code> request is usually a 201 Accepted
+<p id="section-5.7-4">For a <code>requestContent</code>, the <code>targetUri</code> needs to be in one of the domains of
+the receiving provider, and the <code>requesterUri</code> needs to be in one of the
+domains of the sending provider.<a href="#section-5.7-4" class="pilcrow">¶</a></p>
+<p id="section-5.7-5">The response to a <code>requestConsent</code> request is usually a 201 Accepted
 (indicating the <code>requestConsent</code> was received), optionally a 404 Not Found
 (indicating the <code>targetUri</code> is unknown), or a 500-class response. The
 201 response code merely indicates that the request was received. A provider
 that does not wish to reveal if a user is not found can respond with a 201
 Accepted. Likewise in response to a <code>cancel</code> which has no <code>request</code> matching the
-<code>ConsentScope</code>, a 201 Accepted is sent and no further action is taken.<a href="#section-5.7-4" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-5.7-5">
+<code>ConsentScope</code>, a 201 Accepted is sent and no further action is taken.<a href="#section-5.7-5" class="pilcrow">¶</a></p>
+<div class="lang-tls sourcecode" id="section-5.7-6">
 <pre>
 enum {
   cancel(0),
@@ -3398,37 +3401,40 @@ struct {
   IdentifierUri targetUri;
   optional&lt;RoomId&gt; roomId;
 } ConsentScope;
-</pre><a href="#section-5.7-5" class="pilcrow">¶</a>
+</pre><a href="#section-5.7-6" class="pilcrow">¶</a>
 </div>
-<p id="section-5.7-6">An <code>updateConsent</code> request is used by one provider to provide explicit
+<p id="section-5.7-7">An <code>updateConsent</code> request is used by one provider to provide explicit
 notice from a target user at one provider that consent for a specific
 "requester" was granted, revoked, or preemptively denied. In this context,
 the requester is the party that will later request KeyPackages for the target. The request body is
 a <code>ConsentEntry</code>, with a <code>consentOperation</code> of <code>grant</code> (for a grant), or
 <code>revoke</code> for revocation or denial. Like a request, it includes the URI of the
 "requesting user" in the <code>requesterUri</code> and the target user URI in the
-<code>targetUri</code>. If consent is only granted or denied for a single room, the request includes the optional <code>roomId</code>.<a href="#section-5.7-6" class="pilcrow">¶</a></p>
-<p id="section-5.7-7">A <code>grant</code> or <code>revoke</code> does not need to be in response to an explicit request, nor does the <code>ConsentScope</code> need to match a previous <code>request</code> for the same <code>targetUri</code> and <code>requesterUri</code> pair.<a href="#section-5.7-7" class="pilcrow">¶</a></p>
-<p id="section-5.7-8">For example, in some systems there is a notion of a bilateral connection
+<code>targetUri</code>. If consent is only granted or denied for a single room, the request includes the optional <code>roomId</code>.<a href="#section-5.7-7" class="pilcrow">¶</a></p>
+<p id="section-5.7-8">A <code>grant</code> or <code>revoke</code> does not need to be in response to an explicit request, nor does the <code>ConsentScope</code> need to match a previous <code>request</code> for the same <code>targetUri</code> and <code>requesterUri</code> pair.<a href="#section-5.7-8" class="pilcrow">¶</a></p>
+<p id="section-5.7-9">For example, in some systems there is a notion of a bilateral connection
 request. The party that initiates the connection request (for example Alice)
 would send a <code>requestConsent</code> for the target (ex: Bob), and send an
 unsolicited <code>updateConsent</code> with Bob as the "requestor" and itself (Alice)
-as the target.<a href="#section-5.7-8" class="pilcrow">¶</a></p>
-<p id="section-5.7-9">In a <code>grant</code>, the sender includes a list of <code>clientKeyPackages</code> for the
+as the target.<a href="#section-5.7-9" class="pilcrow">¶</a></p>
+<p id="section-5.7-10">In a <code>grant</code>, the sender includes a list of <code>clientKeyPackages</code> for the
 target user, which can be empty. For the case of a bilateral connection,
 a grant of consent with a matching <code>ConsentScope</code> often results in an
 immediate Add to a group. If the list is non-empty this reduces the
-number of messages which need to be sent.<a href="#section-5.7-9" class="pilcrow">¶</a></p>
-<p id="section-5.7-10">The response to an <code>updateConsent</code> is usually a 201 Accepted (indicating
+number of messages which need to be sent.<a href="#section-5.7-10" class="pilcrow">¶</a></p>
+<p id="section-5.7-11">For <code>updateConsent</code> the <code>requesterUri</code> needs to be in one of the domains of
+the receiving provider, and the <code>targetUri</code> needs to be in one of the
+domains of the sending provider.<a href="#section-5.7-11" class="pilcrow">¶</a></p>
+<p id="section-5.7-12">The response to an <code>updateConsent</code> is usually a 201 Accepted (indicating
 the <code>updateConsent</code> was received), optionally a 404 Not Found (indicating the
 <code>requesterUri</code> is unknown), or a 500-class response. The response code
 merely indicates that the request was received. A provider that does not
-wish to reveal if a user is not found can respond with a 201 Accepted.<a href="#section-5.7-10" class="pilcrow">¶</a></p>
+wish to reveal if a user is not found can respond with a 201 Accepted.<a href="#section-5.7-12" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-5.7-11.1">
-            <p id="section-5.7-11.1.1"><strong>NOTE</strong>: Blocking a user might be privacy sensitive. If this is the case
+<li class="normal ulEmpty" id="section-5.7-13.1">
+            <p id="section-5.7-13.1.1"><strong>NOTE</strong>: Blocking a user might be privacy sensitive. If this is the case
 the target provider does not need to send a <code>revoke</code> to inform the
-requester provider.<a href="#section-5.7-11.1.1" class="pilcrow">¶</a></p>
+requester provider.<a href="#section-5.7-13.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>

@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 17 September 2024              The Matrix.org Foundation C.I.C.
+Expires: 20 September 2024              The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 17 September 2024              The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                           16 March 2024
+                                                           19 March 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 September 2024.
+   This Internet-Draft will expire on 20 September 2024.
 
 Copyright Notice
 
@@ -1375,6 +1375,10 @@ ServerC->ClientC*: [[ Commit ]]
    represents the ConsentScope.  A cancel MUST use the same ConsentScope
    as a previous request.
 
+   For a requestContent, the targetUri needs to be in one of the domains
+   of the receiving provider, and the requesterUri needs to be in one of
+   the domains of the sending provider.
+
    The response to a requestConsent request is usually a 201 Accepted
    (indicating the requestConsent was received), optionally a 404 Not
    Found (indicating the targetUri is unknown), or a 500-class response.
@@ -1435,6 +1439,10 @@ ServerC->ClientC*: [[ Commit ]]
    connection, a grant of consent with a matching ConsentScope often
    results in an immediate Add to a group.  If the list is non-empty
    this reduces the number of messages which need to be sent.
+
+   For updateConsent the requesterUri needs to be in one of the domains
+   of the receiving provider, and the targetUri needs to be in one of
+   the domains of the sending provider.
 
    The response to an updateConsent is usually a 201 Accepted
    (indicating the updateConsent was received), optionally a 404 Not
