@@ -3348,13 +3348,17 @@ by the local provider).<a href="#section-5.6-12" class="pilcrow">¶</a></p>
 implicitly determine consent. This section describes a mechanism by which providers can explicitly request consent from a user of another provider,
 cancel such a request, convey that consent was granted, or convey that
 consent was revoked or preemptively denied.<a href="#section-5.7-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.7-2">
+<p id="section-5.7-2">Since they are not necessarily in the context of a room, consent requests
+are sent directly from the provider of the user requesting consent, to the
+provider of the target user. (There is no concept of a hub outside of the
+context of a room.)<a href="#section-5.7-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.7-3">
 <pre>
 POST /requestConsent/{targetDomain}
 POST /updateConsent/{requesterDomain}
-</pre><a href="#section-5.7-2" class="pilcrow">¶</a>
+</pre><a href="#section-5.7-3" class="pilcrow">¶</a>
 </div>
-<p id="section-5.7-3">A <code>requestConsent</code> request is used by one provider to request explicit
+<p id="section-5.7-4">A <code>requestConsent</code> request is used by one provider to request explicit
 consent from a target user at another provider to fetch the target's
 KeyPackages (which is a prerequisite for adding the target to a group); or
 to cancel that request.
@@ -3364,18 +3368,18 @@ or <code>cancel</code> respectively. It includes the URI of requesting user in t
 requested for a single room, the requester includes the <code>roomId</code>. The
 combination of the <code>requesterUri</code>, <code>targetUri</code>, and optional <code>roomId</code>
 represents the <code>ConsentScope</code>. A <code>cancel</code> <span class="bcp14">MUST</span> use the same <code>ConsentScope</code>
-as a previous <code>request</code>.<a href="#section-5.7-3" class="pilcrow">¶</a></p>
-<p id="section-5.7-4">For a <code>requestContent</code>, the <code>targetUri</code> needs to be in one of the domains of
+as a previous <code>request</code>.<a href="#section-5.7-4" class="pilcrow">¶</a></p>
+<p id="section-5.7-5">For a <code>requestContent</code>, the <code>targetUri</code> needs to be in one of the domains of
 the receiving provider, and the <code>requesterUri</code> needs to be in one of the
-domains of the sending provider.<a href="#section-5.7-4" class="pilcrow">¶</a></p>
-<p id="section-5.7-5">The response to a <code>requestConsent</code> request is usually a 201 Accepted
+domains of the sending provider.<a href="#section-5.7-5" class="pilcrow">¶</a></p>
+<p id="section-5.7-6">The response to a <code>requestConsent</code> request is usually a 201 Accepted
 (indicating the <code>requestConsent</code> was received), optionally a 404 Not Found
 (indicating the <code>targetUri</code> is unknown), or a 500-class response. The
 201 response code merely indicates that the request was received. A provider
 that does not wish to reveal if a user is not found can respond with a 201
 Accepted. Likewise in response to a <code>cancel</code> which has no <code>request</code> matching the
-<code>ConsentScope</code>, a 201 Accepted is sent and no further action is taken.<a href="#section-5.7-5" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-5.7-6">
+<code>ConsentScope</code>, a 201 Accepted is sent and no further action is taken.<a href="#section-5.7-6" class="pilcrow">¶</a></p>
+<div class="lang-tls sourcecode" id="section-5.7-7">
 <pre>
 enum {
   cancel(0),
@@ -3401,40 +3405,40 @@ struct {
   IdentifierUri targetUri;
   optional&lt;RoomId&gt; roomId;
 } ConsentScope;
-</pre><a href="#section-5.7-6" class="pilcrow">¶</a>
+</pre><a href="#section-5.7-7" class="pilcrow">¶</a>
 </div>
-<p id="section-5.7-7">An <code>updateConsent</code> request is used by one provider to provide explicit
+<p id="section-5.7-8">An <code>updateConsent</code> request is used by one provider to provide explicit
 notice from a target user at one provider that consent for a specific
 "requester" was granted, revoked, or preemptively denied. In this context,
 the requester is the party that will later request KeyPackages for the target. The request body is
 a <code>ConsentEntry</code>, with a <code>consentOperation</code> of <code>grant</code> (for a grant), or
 <code>revoke</code> for revocation or denial. Like a request, it includes the URI of the
 "requesting user" in the <code>requesterUri</code> and the target user URI in the
-<code>targetUri</code>. If consent is only granted or denied for a single room, the request includes the optional <code>roomId</code>.<a href="#section-5.7-7" class="pilcrow">¶</a></p>
-<p id="section-5.7-8">A <code>grant</code> or <code>revoke</code> does not need to be in response to an explicit request, nor does the <code>ConsentScope</code> need to match a previous <code>request</code> for the same <code>targetUri</code> and <code>requesterUri</code> pair.<a href="#section-5.7-8" class="pilcrow">¶</a></p>
-<p id="section-5.7-9">For example, in some systems there is a notion of a bilateral connection
+<code>targetUri</code>. If consent is only granted or denied for a single room, the request includes the optional <code>roomId</code>.<a href="#section-5.7-8" class="pilcrow">¶</a></p>
+<p id="section-5.7-9">A <code>grant</code> or <code>revoke</code> does not need to be in response to an explicit request, nor does the <code>ConsentScope</code> need to match a previous <code>request</code> for the same <code>targetUri</code> and <code>requesterUri</code> pair.<a href="#section-5.7-9" class="pilcrow">¶</a></p>
+<p id="section-5.7-10">For example, in some systems there is a notion of a bilateral connection
 request. The party that initiates the connection request (for example Alice)
 would send a <code>requestConsent</code> for the target (ex: Bob), and send an
 unsolicited <code>updateConsent</code> with Bob as the "requestor" and itself (Alice)
-as the target.<a href="#section-5.7-9" class="pilcrow">¶</a></p>
-<p id="section-5.7-10">In a <code>grant</code>, the sender includes a list of <code>clientKeyPackages</code> for the
+as the target.<a href="#section-5.7-10" class="pilcrow">¶</a></p>
+<p id="section-5.7-11">In a <code>grant</code>, the sender includes a list of <code>clientKeyPackages</code> for the
 target user, which can be empty. For the case of a bilateral connection,
 a grant of consent with a matching <code>ConsentScope</code> often results in an
 immediate Add to a group. If the list is non-empty this reduces the
-number of messages which need to be sent.<a href="#section-5.7-10" class="pilcrow">¶</a></p>
-<p id="section-5.7-11">For <code>updateConsent</code> the <code>requesterUri</code> needs to be in one of the domains of
+number of messages which need to be sent.<a href="#section-5.7-11" class="pilcrow">¶</a></p>
+<p id="section-5.7-12">For <code>updateConsent</code> the <code>requesterUri</code> needs to be in one of the domains of
 the receiving provider, and the <code>targetUri</code> needs to be in one of the
-domains of the sending provider.<a href="#section-5.7-11" class="pilcrow">¶</a></p>
-<p id="section-5.7-12">The response to an <code>updateConsent</code> is usually a 201 Accepted (indicating
+domains of the sending provider.<a href="#section-5.7-12" class="pilcrow">¶</a></p>
+<p id="section-5.7-13">The response to an <code>updateConsent</code> is usually a 201 Accepted (indicating
 the <code>updateConsent</code> was received), optionally a 404 Not Found (indicating the
 <code>requesterUri</code> is unknown), or a 500-class response. The response code
 merely indicates that the request was received. A provider that does not
-wish to reveal if a user is not found can respond with a 201 Accepted.<a href="#section-5.7-12" class="pilcrow">¶</a></p>
+wish to reveal if a user is not found can respond with a 201 Accepted.<a href="#section-5.7-13" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-5.7-13.1">
-            <p id="section-5.7-13.1.1"><strong>NOTE</strong>: Revoking consent for a user might be privacy sensitive. If this
+<li class="normal ulEmpty" id="section-5.7-14.1">
+            <p id="section-5.7-14.1.1"><strong>NOTE</strong>: Revoking consent for a user might be privacy sensitive. If this
 is the case the target provider does not need to send a <code>revoke</code> to inform
-the requester provider.<a href="#section-5.7-13.1.1" class="pilcrow">¶</a></p>
+the requester provider.<a href="#section-5.7-14.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
