@@ -1269,6 +1269,10 @@ combination of the `requesterUri`, `targetUri`, and optional `roomId`
 represents the `ConsentScope`. A `cancel` MUST use the same `ConsentScope`
 as a previous `request`.
 
+For a `requestContent`, the `targetUri` needs to be in one of the domains of
+the receiving provider, and the `requesterUri` needs to be in one of the
+domains of the sending provider.
+
 The response to a `requestConsent` request is usually a 201 Accepted
 (indicating the `requestConsent` was received), optionally a 404 Not Found
 (indicating the `targetUri` is unknown), or a 500-class response. The
@@ -1326,6 +1330,10 @@ target user, which can be empty. For the case of a bilateral connection,
 a grant of consent with a matching `ConsentScope` often results in an
 immediate Add to a group. If the list is non-empty this reduces the
 number of messages which need to be sent.
+
+For `updateConsent` the `requesterUri` needs to be in one of the domains of
+the receiving provider, and the `targetUri` needs to be in one of the
+domains of the sending provider.
 
 The response to an `updateConsent` is usually a 201 Accepted (indicating
 the `updateConsent` was received), optionally a 404 Not Found (indicating the
