@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-19T00:03:24.930900+00:00",
+  "timestamp": "2024-03-21T00:03:29.427009+00:00",
   "repo": "bifurcation/ietf-mimi-protocol",
   "labels": [
     {
@@ -6927,13 +6927,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-03-13T02:11:04Z",
-      "updatedAt": "2024-03-18T23:12:51Z",
+      "updatedAt": "2024-03-19T21:54:24Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
       "headRepository": "bifurcation/ietf-mimi-protocol",
       "headRefName": "rohan/consent",
-      "headRefOid": "4bfe00bce5d2a790cf659dbf47a3645048951f7a",
+      "headRefOid": "dd9199ea036c66081e1a251cbf17746efeb7860e",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -7093,9 +7093,9 @@
           "comments": [
             {
               "originalPosition": 103,
-              "body": "I think the may several of these systems work, the requester never finds out if consent was rejected or the user just never responded (for privacy reasons). I think it is fine to say that a server can just come right out and say no, you don't get consent if this is consistent with their privacy policies. However the most likely case seems that they never get an answer.\r\n\r\nI expect in some systems updateConsent with a reject will only be used to remove consent after it had been previously granted.",
+              "body": "I think the way several of these systems work, the requester never finds out if consent was rejected or the user just never responded (for privacy reasons). I think it is fine to say that a server can just come right out and say no, you don't get consent if this is consistent with their privacy policies. However the most likely case seems that they never get an answer.\r\n\r\nI expect in some systems updateConsent with a reject will only be used to remove consent after it had been previously granted.",
               "createdAt": "2024-03-16T20:23:56Z",
-              "updatedAt": "2024-03-16T20:23:56Z"
+              "updatedAt": "2024-03-19T21:41:53Z"
             }
           ]
         },
@@ -7158,6 +7158,46 @@
               "updatedAt": "2024-03-18T23:12:51Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO850E9hv",
+          "commit": {
+            "abbreviatedOid": "9278c90"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-19T21:46:56Z",
+          "updatedAt": "2024-03-19T21:46:56Z",
+          "comments": [
+            {
+              "originalPosition": 132,
+              "body": "OK, changed \"Blocking\" to \"Revoking consent\".",
+              "createdAt": "2024-03-19T21:46:56Z",
+              "updatedAt": "2024-03-19T21:46:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO850FADv",
+          "commit": {
+            "abbreviatedOid": "9278c90"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-19T21:54:24Z",
+          "updatedAt": "2024-03-19T21:54:24Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "OK, add a short paragraph in https://github.com/bifurcation/ietf-mimi-protocol/pull/72/commits/dd9199ea036c66081e1a251cbf17746efeb7860e . Hopefully that does the trick.",
+              "createdAt": "2024-03-19T21:54:24Z",
+              "updatedAt": "2024-03-19T21:54:24Z"
+            }
+          ]
         }
       ]
     },
@@ -7173,7 +7213,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-03-13T13:26:24Z",
-      "updatedAt": "2024-03-16T21:50:21Z",
+      "updatedAt": "2024-03-20T17:28:47Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
@@ -7231,6 +7271,26 @@
               "body": ">Feels a bit weird that abuse would only be reported to the hub. \r\nWhat does the MIMI protocol need to provide at minimum?  Let's consider the reporting client, the reporting provider, the hub, the abuser's provider, and the abuser's client.\r\n\r\nThe clients don't run the MIMI protocol. The reporting provider got informed using a provider-specific protocol, the hub (especially in it's role of policy enforcer) definitely needs to get this information. So that leaves the abuser's provider.\r\n\r\n>The provider which sent the content should receive that report, and there may need to be redirection from the server to the moderators of the room.\r\n\r\nI will argue that the abuser provider shouldn't automatically get the report, and in some cases should never get the (unredacted) report. The peering relationship between the hub and the abuser provider should specify the details of what the abuser's provider gets. Also, after the report is sent, the hub may do all kinds of analysis and/or send the content to a human moderator to look at. Only after the hub provider decides something is or is not in their policy would they have any cause to send something to another provider. In any case, I think this need not be part of a real-time protocol in MIMI. \r\n\r\nI think all the actions you listed in your can of worms refer to a subset of the information in the original report. ",
               "createdAt": "2024-03-16T05:04:20Z",
               "updatedAt": "2024-03-16T05:04:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO850NHhp",
+          "commit": {
+            "abbreviatedOid": "5c6223f"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-20T17:28:47Z",
+          "updatedAt": "2024-03-20T17:28:47Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "(the quotes look a bit mangled, ftr)\r\n\r\nI think we're jumping to an edge case here. Reports over federation *should not* contain details of the reporter, for several safety reasons. Following the path of a report:\r\n\r\n* Alice reports Bob's message to their local provider. The local provider receives information about Alice's client, Bob's message, decryption keys, and possibly a user-supplied label/reason for the report, among other details. As this is a provider-local operation, it is out of scope for MIMI.\r\n* Alice's local provider does some filtering and processing on the report. This may be automated, or it may be subject to human review. In this case, the report cannot be handled by Alice's local provider, and so Bob's provider needs to be involved.\r\n* Alice's local provider creates a *minimal* report to send to Bob's server. Specific details include the message identifier which was reported, maybe decryption keys (assuming they don't contain identifying information of the reporter), and optionally a classification label/reason. The label/reason *may* be different from the original report.\r\n* Bob's local provider upon receiving this report processes it, potentially maliciously forwarding it to Bob directly. This is why we don't include information about who did the report, just where it came from. \r\n\r\nI've not indicated which server is the hub here because I don't think it applies. Forwarding all reports to the hub feels like a risk, as the hub provider is then responsible for all abuse mitigation for the room - not something MIMI's consumers are likely to agree with. Instead, reports can be sent directly to the server which emitted the content, removing the need for a platform moderation team to monitor reports on platforms they don't control.",
+              "createdAt": "2024-03-20T17:28:47Z",
+              "updatedAt": "2024-03-20T17:28:48Z"
             }
           ]
         }
@@ -7315,7 +7375,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-03-13T13:40:11Z",
-      "updatedAt": "2024-03-13T17:48:00Z",
+      "updatedAt": "2024-03-20T22:13:56Z",
       "baseRepository": "bifurcation/ietf-mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
@@ -7326,7 +7386,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Once we have more room policy established, we can have attachments policies. One of these could specify if attachments are to be stored in the local sender's provider domain or the hub's domain. The download proxy primitive could then be restricted to only working for URLs in the specified domain, or even restricted to a specific path.",
+          "createdAt": "2024-03-20T22:13:55Z",
+          "updatedAt": "2024-03-20T22:13:55Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOKZ8QO85zU0pF",
