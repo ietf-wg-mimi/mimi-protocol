@@ -2,18 +2,23 @@
 
 
 
-More Instant Messaging Interoperability                       T. Ralston
-Internet-Draft                          The Matrix.org Foundation C.I.C.
-Intended status: Standards Track                              K. Kohbrok
-Expires: 2 September 2024                                      R. Robert
+More Instant Messaging Interoperability                     R. L. Barnes
+Internet-Draft                                                     Cisco
+Intended status: Standards Track                              M. Hodgson
+Expires: 4 October 2024                 The Matrix.org Foundation C.I.C.
+                                                              K. Kohbrok
                                                              Phoenix R&D
-                                                              M. Hodgson
+                                                                 R. Mahy
+                                                            Unaffiliated
+                                                              T. Ralston
                                         The Matrix.org Foundation C.I.C.
-                                                            1 March 2024
+                                                               R. Robert
+                                                             Phoenix R&D
+                                                            2 April 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
-                   draft-ralston-mimi-protocol-latest
+                    draft-ietf-mimi-protocol-latest
 
 Abstract
 
@@ -36,7 +41,7 @@ About This Document
    The latest revision of this draft can be found at
    https://bifurcation.github.io/ietf-mimi-protocol/draft-ralston-mimi-
    protocol.html.  Status information for this document may be found at
-   https://datatracker.ietf.org/doc/draft-ralston-mimi-protocol/.
+   https://datatracker.ietf.org/doc/draft-ietf-mimi-protocol/.
 
    Discussion of this document takes place on the More Instant Messaging
    Interoperability Working Group mailing list (mailto:mimi@ietf.org),
@@ -61,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 September 2024.
+   This Internet-Draft will expire on 4 October 2024.
 
 Copyright Notice
 
@@ -88,18 +93,20 @@ Table of Contents
      3.3.  Bob adds Cathy to the Room
      3.4.  Cathy Sends a Message
      3.5.  Bob Leaves the Room
+     3.6.  Cathy adds a new device
    4.  Services required at each layer
      4.1.  Transport layer
      4.2.  End-to-End Security Layer
      4.3.  Application Layer
        4.3.1.  Server State
-       4.3.2.  Participation List Changes
+       4.3.2.  Participant List Changes
    5.  MIMI Endpoints and Framing
      5.1.  Directory
      5.2.  Fetch Key Material
      5.3.  Update Room State
      5.4.  Submit a Message
      5.5.  Fanout Messages and Room Events
+     5.6.  Claim group key information
    6.  Relation between MIMI state and cryptographic state
      6.1.  Room state
      6.2.  Cryptographic room representation
@@ -112,7 +119,6 @@ Table of Contents
      10.1.  Normative References
      10.2.  Informative References
    Acknowledgments
-   Contributors
    Authors' Addresses
 
 1.  Introduction
@@ -161,15 +167,17 @@ Table of Contents
    other necessary functionality.  The following functions are likely to
    be needed by the complete protocol, but are not covered here:
 
-   Authorization policy:  In this document, we assume that all
-      participants in a room have equal capability.  Actual messaging
-      systems have authorization policies for which clients can take
-      which actions in a room.
+   Authorization policy:  In this document, we introduce a notional
+      concept of roles for participants, and permissions for roles.
+      Actual messaging systems have more complex and well-specified
+      authorization policies about which clients can take which actions
+      in a room.
 
    Advanced join/leave flows:  In this document, all adds / removes /
-      joins / leaves are initiated from within the group, since this
-      aligns well with MLS.  Messaging application support a variety of
-      other flows, some of which this protocol will need to support.
+      joins / leaves are initiated from within the group, or by a new
+      joiner who already has permission to join, as this aligns well
+      with MLS.  Messaging applications support a variety of other
+      flows, some of which this protocol will need to support.
 
    Consent:  In this document, we assume that any required consent has
       already been obtained, e.g., a user consenting to be added to a
@@ -296,12 +304,20 @@ Table of Contents
    establish the initial state of the room, which is then the basis for
    protocol operations related to the room.
 
+   For authorization purposes, MIMI uses permissions based on room-
+   defined roles.  For example, a room might have a role named "admin",
+   which has canAddUser, canRemoveUser, and canSetUserRole permisions.
+
    Here, we assume that Alice uses ClientA1 to create a room with the
-   following properties:
+   following base policy properties:
 
    *  Room Identifier: mimi://a.example/r/clubhouse
 
-   *  Participants: [mimi://a.example/u/alice]
+   *  Roles: admin = [canAddUser, canRemoveUser, canSetUserRole]
+
+   And the following participant list:
+
+   *  Participants: [[mimi://a.example/u/alice, "admin"]]
 
    ClientA1 also creates an MLS group with group ID mimi://a.example/g/
    clubhouse and ensures via provider-local operations that Alice's
@@ -352,7 +368,7 @@ Table of Contents
    ClientA1->ServerA: [[ request KPs for Bob ]]
    ServerA->ServerB: POST /keyMaterial KeyMaterialRequest
    ServerB: Verify that Alice is authorized to fetch KeyPackages
-   ServerB: Mark returned KPs as reserved for Alice’s use
+   ServerB: Mark returned KPs as reserved for Alice's use
    ServerB->ServerA: 200 OK KeyMaterialResponse
    ServerA: Remember that these KPs go to b.example
    ServerA->ClientA1: [[ KPs ]]
@@ -362,14 +378,14 @@ Table of Contents
 ClientA1       ServerA         ServerB         ClientB*
   |               |               |               |
   | Commit, etc.  |               |               |
-  +~~~~~~~~~~~~~~>| /notify       |               |
-  |               +-------------->| Welcome, Tree |
+  +~~~~~~~~~~~~~~>|               |               |
+  |      Accepted | /notify       |               |
+  |<~~~~~~~~~~~~~~+-------------->|               |
+  |               |        200 OK | Welcome, Tree |
+  |               |<--------------+~~~~~~~~~~~~~~>|
   |               |               +~~~~~~~~~~~~~~>|
-  |               |               +~~~~~~~~~~~~~~>|
-  |               |        200 OK |               |
-  |      Accepted |<--------------+               |
-  |<~~~~~~~~~~~~~~+               |               |
   |               |               |               |
+
 
 ClientA1: Prepare Commit over AppSync(+Bob), Add*
 ClientA1->ServerA: [[ Commit, Welcome, GroupInfo?, RatchetTree? ]]
@@ -410,7 +426,7 @@ ServerB->ClientB*: [[ Welcome, RatchetTree? ]]
  ServerB->ServerA: POST /keyMaterial KeyMaterialRequest
  ServerA->ServerC: POST /keyMaterial KeyMaterialRequest
  ServerB: Verify that Bob is authorized to fetch KeyPackages
- ServerB: Mark returned KPs as reserved for Bob’s use
+ ServerB: Mark returned KPs as reserved for Bob's use
  ServerC->ServerA: 200 OK KeyMaterialResponse
  ServerA: Remember that these KPs go to b.example
  ServerA->ServerB: 200 OK KeyMaterialResponse
@@ -418,39 +434,38 @@ ServerB->ClientB*: [[ Welcome, RatchetTree? ]]
 
          Figure 4: Bob Fetches KeyPackages for Cathy's Clients
 
-ClientB1       ServerB         ServerA         ServerC         ClientC*  ClientB*  ClientA*
-  |               |               |               |               |         |         |
-  | Commit, etc.  |               |               |               |         |         |
-  +~~~~~~~~~~~~~~>| /update       |               |               |         |         |
-  |               +-------------->|               |               |         |         |
-  |               |        200 OK |               |               |         |         |
-  |               |<--------------+               |               |         |         |
-  |      Accepted |               | /notify       |               |         |         |
-  |<~~~~~~~~~~~~~~+               +-------------->| Welcome, Tree |         |         |
-  |               |               |               +~~~~~~~~~~~~~~>|         |         |
-  |               |               |               +~~~~~~~~~~~~~~>|         |         |
-  |               |       /notify |               |               |         |         |
-  |               |<--------------+               |               |         |         |
-  |               | Commit        |               |               |         |         |
-  |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|         |
-  |               |               | Commit        |               |         |         |
-  |               |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|
-  |               |               |               |               |         |         |
+ Client                                         Client    Client  Client
+ B1         ServerB     ServerA     ServerC      C*        B*        A*
+ |             |           |           |           |         |         |
+ | Commit, etc |           |           |           |         |         |
+ +~~~~~~~~~~~~>| /update   |           |           |         |         |
+ |             +---------->|           |           |         |         |
+ |             |    200 OK |           |           |         |         |
+ |             |<----------+           |           |         |         |
+ |    Accepted |           | /notify   | Welcome,  |         |         |
+ |<~~~~~~~~~~~~+           +---------->| Tree      |         |         |
+ |             |           |           +~~~~~~~~~~>|         |         |
+ |             |   /notify | Commit    +~~~~~~~~~~>|         |         |
+ |             |<----------+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|
+ |             | Commit    |           |           |         |         |
+ |             +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|         |
+ |             |           |           |           |         |         |
 
-ClientB1: Prepare Commit over AppSync(+Cathy), Add*
-ClientB1->ServerB: [[ Commit, Welcome, GroupInfo?, RatchetTree? ]]
-ServerB->ServerA: POST /update/a.example/r/clubhouse CommitBundle
-ServerA: Verify that Adds are allowed by policy
-ServerA->ServerB: 200 OK
-ServerA->ServerC: POST /notify/a.example/r/clubhouse Intro{ Welcome, RatchetTree? }
-ServerC: Recognizes that Welcome is adding Cathy to clubhouse
-ServerC->ClientC*: [[ Welcome, RatchetTree? ]]
-ServerA->ServerB: POST /notify/a.example/r/clubhouse Commit
-ServerB->ClientB*: [[ Commit ]]
-ServerA->ClientA*: [[ Commit ]]
+ ClientB1: Prepare Commit over AppSync(+Cathy), Add*
+ ClientB1->ServerB: [[ Commit, Welcome, GroupInfo?, RatchetTree? ]]
+ ServerB->ServerA: POST /update/a.example/r/clubhouse CommitBundle
+ ServerA: Verify that Adds are allowed by policy
+ ServerA->ServerB: 200 OK
+ ServerA->ServerC: POST /notify/a.example/r/clubhouse
+                        Intro{ Welcome, RatchetTree? }
+ ServerC: Recognizes that Welcome is adding Cathy to clubhouse
+ ServerC->ClientC*: [[ Welcome, RatchetTree? ]]
+ ServerA->ServerB: POST /notify/a.example/r/clubhouse Commit
+ ServerB->ClientB*: [[ Commit ]]
+ ServerA->ClientA*: [[ Commit ]]
 
-   Figure 5: Bob Adds Cathy to the Room and Cathy's Clients to the
-                              MLS Group
+    Figure 5: Bob Adds Cathy to the Room and Cathy's Clients to the
+                               MLS Group
 
 3.4.  Cathy Sends a Message
 
@@ -516,29 +531,31 @@ ServerC->ClientC*: [[ MLSMessage(PrivateMessage) ]]
    The hub thus guarantees the leaving client that they will be removed
    as soon as possible.
 
-ClientB1       ServerB         ServerA         ServerC         ClientC1
-  |               |               |               |               |
-  | Proposals     |               |               |               |
-  +~~~~~~~~~~~~~~>| /update       |               |               |
-  |               +-------------->|               |               |
-  |               |        200 OK |               |               |
-  |               |<--------------+               |               |
-  |      Accepted |               |  /notify      |               |
-  |<~~~~~~~~~~~~~~+               +-------------->|               |
-  |               |               |               | Proposals     |
-  |               |               |               +~~~~~~~~~~~~~~>|
-  |               |               |               |               |
-  |               |               |               | Commit(Props) |
-  |               |               |               |<~~~~~~~~~~~~~~+
-  |               |               |       /update |               |
-  |               |               |<--------------+               |
-  |               |               | 200 OK        |               |
-  |               |               +-------------->|               |
-  |               |               |               | Accepted      |
-  |               |               |               +~~~~~~~~~~~~~~>|
-  |               |       /notify | /notify       |               |
-  |               |<--------------+-------------->|               |
-  |               |               |               |               |
+ClientB1       ServerB         ServerA         ServerC         ClientC1  C2
+  |               |               |               |               |       |
+  | Proposals     |               |               |               |       |
+  +~~~~~~~~~~~~~~>| /update       |               |               |       |
+  |               +-------------->|               |               |       |
+  |               |        200 OK |               |               |       |
+  |               |<--------------+               |               |       |
+  |      Accepted |               |  /notify      |               |       |
+  |<~~~~~~~~~~~~~~+               +-------------->|               |       |
+  |               |               |               | Proposals     |       |
+  |               |               |               +~~~~~~~~~~~~~~>|       |
+  |               |               |               |               |       |
+  |               |               |               | Commit(Props) |       |
+  |               |               |               |<~~~~~~~~~~~~~~+       |
+  |               |               |       /update |               |       |
+  |               |               |<--------------+               |       |
+  |               |               | 200 OK        |               |       |
+  |               |               +-------------->|               |       |
+  |               |               |               | Accepted      |       |
+  |               |               |               +~~~~~~~~~~~~~~>|       |
+  |               |       /notify | /notify       |               |       |
+  |        Commit |<--------------+-------------->| Commit        |       |
+  |<~~~~~~~~~~~~~~+               |               +~~~~~~~~~~~~~~~~~~~~~~>|
+  |               |               |               +~~~~~~~~~~~~~~>|       |
+  |               |               |               |               |       |
 
 ClientB1: Prepare Remove*, AppSync(-Bob)
 ClientB1->ServerB: [[ Remove*, AppSync ]]
@@ -553,8 +570,78 @@ ServerA: Check whether Commit includes queued proposals; accept
 ServerA->ServerC: 200 OK
 ServerA->ServerB: POST /notify/a.example/r/clubhouse Commit
 ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
+ServerB->ClientB1: [[ Commit ]]
+ServerC->ClientC2: [[ Commit ]]
+ServerC->ClientC1: [[ Commit ]] (up to provider)
 
                     Figure 7: Bob Leaves the Room
+
+3.6.  Cathy adds a new device
+
+   Many users have multiple clients often running on different devices
+   (for example a phone, a tablet, and a computer).  When a user creates
+   a new client, that client needs to be able to join all the MLS groups
+   associated with the rooms in which the user is a participant.
+
+   In MLS in order to initiate joining a group the joining client needs
+   to get the current GroupInfo and ratchet_tree, and then send an
+   External Commit to the hub.  In MIMI, the hub keeps or reconstructs a
+   copy of the GroupInfo, assuming that other clients may not be
+   available to assist the client with joining.
+
+   For Cathy's new client (ClientC3) to join the MLS group and therefore
+   fully participate in the room with Alice, ClientC3 needs to fetch the
+   MLS GroupInfo, and then generate an External Commit adding ClientC3.
+
+   Cathy's new client sends the External Commit to the room's MLS group
+   by sending an /update to the room.
+
+ClientC3       ServerC         ServerA         ServerB         ClientB*  ClientC*  ClientA*
+  |               |               |               |               |         |         |
+  | Fetch         |               |               |               |         |         |
+  | GroupInfo     |               |               |               |         |         |
+  |~~~~~~~~~~~~~~>| /groupInfo    |               |               |         |         |
+  |               |-------------->|               |               |         |         |
+  | GroupInfo +   |        200 OK |               |               |         |         |
+  | tree          |<--------------|               |               |         |         |
+  |<~~~~~~~~~~~~~~|               |               |               |         |         |
+  |               |               |               |               |         |         |
+  | External      |               |               |               |         |         |
+  | Commit, etc.  |               |               |               |         |         |
+  +~~~~~~~~~~~~~~>| /update       |               |               |         |         |
+  |               +-------------->|               |               |         |         |
+  |               |        200 OK |               |               |         |         |
+  |               |<--------------+               |               |         |         |
+  |      Accepted |               | Commit        |               |         |         |
+  |<~~~~~~~~~~~~~~|               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|
+  |               |               |               |               |         |         |
+  |               |               | /notify       |               |         |         |
+  |               +               +-------------->| Commit        |         |         |
+  |               |               |               +~~~~~~~~~~~~~~>|         |         |
+  |               |       /notify |               |               |         |         |
+  |               |<--------------+               |               |         |         |
+  |               | Commit        |               |               |         |         |
+  |               +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|         |
+  |               |               |               |               |         |         |
+
+ClientC3->ServerC: [[ request current GroupInfo ]]
+ServerC->ServerA: POST /groupInfo/a.example/clubhouse
+ServerA: Verify that ClientC3 has authorization to join the room
+ServerA->ServerC: 200 OK w/ current GroupInfo and ratchet tree
+ServerC->ClientC3: [[ GroupInfo, tree ]]
+ClientC3: Prepare External Commit Add*
+ClientC3->ServerC: [[ Commit, GroupInfo?, RatchetTree? ]]
+ServerC->ServerA: POST /update/a.example/clubhouse CommitBundle
+ServerA: Verify that Commit is valid and ClientC3 is authorized
+ServerA->ServerC: 200 OK
+ServerC->ClientC3: [[ External Commit was accepted ]]
+ServerA->ClientA*: [[ Commit ]]
+ServerA->ServerB: POST /notify/a.example/clubhouse Commit
+ServerB->ClientB*: [[ Commit ]]
+ServerA->ServerC: POST /notify/a.example/clubhouse Commit
+ServerC->ClientC*: [[ Commit ]]
+
+                  Figure 8: Cathy Adds a new Client
 
 4.  Services required at each layer
 
@@ -639,13 +726,21 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
    endpoint, the server stores a set of KeyPackages, where each
    KeyPackage belongs to a specific user and device.
 
+   Each KeyPackage includes a list of its MLS client's capabilities (MLS
+   protocol versions, cipher suites, extensions, proposal types, and
+   credential types).  When claiming KeyPackages, the requester includes
+   the list of RequiredCapabilites to ensure the new joiner is
+   compatible with and capable of participating in the corresponding
+   room.
+
    The hub server for the room stores the state of the room, comprising:
 
    *  The _base policy_ of the room, which does not depend on the
-      specific participants in the room.
+      specific participants in the room.  For example, this includes the
+      room roles and their permissions.
 
-   *  The _participation list_: a list of the users who are participants
-      of the room, and their permissions in the room.
+   *  The _participant list_: a list of the users who are participants
+      of the room, and each user's role in the room.
 
       *TODO*: We need a more full description of the room, room state
       syntax.
@@ -655,16 +750,18 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
    of the provider from which they were received.  This information is
    then used to route Welcome message to the proper provider.
 
-4.3.2.  Participation List Changes
+4.3.2.  Participant List Changes
 
-   The participation list can be changed by adding or removing users.
-   These changes are described without a specific syntax as a list of
-   adds and removes:
+   The participant list can be changed by adding or removing users, or
+   changing a user's role.  These changes are described without a
+   specific syntax as a list of adds, removes, and role changes:
 
-   Add: ["mimi://d.example/u/diana", "mimi://e.example/u/eric"],
+   Add: ["mimi://d.example/u/diana", "admin"],
+        ["mimi://e.example/u/eric", "admin"],
    Remove: ["mimi://b.example/u/bob"],
+   SetRole: [["mimi://c.example/u/cathy", "admin"]]
 
-                  Figure 8: Changing the state of the room
+                  Figure 9: Changing the state of the room
 
    To put these changes into effect, a client or server encodes them in
    an AppSync proposal, signs the proposal as a PublicMessage, and
@@ -707,7 +804,9 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
      "update": "https://mimi.example.com/v1/update{roomId}",
      "notify": "https://mimi.example.com/v1/notify/{roomId}",
      "submitMessage":
-        "https://mimi.example.com/v1/submitMessage/{roomId}"
+        "https://mimi.example.com/v1/submitMessage/{roomId}",
+     "groupInfo":
+        "https://mimi.example.com/v1/groupInfo/{roomId}"
    }
 
 5.2.  Fetch Key Material
@@ -851,6 +950,18 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
       of the system and has been deleted.  A target provider can of
       course use userUnknown if the provider does wish to keep or
       specify this distinction.
+
+   The semantics of the KeyMaterialClientCode are as follows:
+
+   *  success indicates that key material was provided for the specified
+      client.
+
+   *  keyMaterialExhausted indicates that there was no keying material
+      available for the specified client.
+
+   *  nothingCompatible indicates that the specified clients had no key
+      material compatible with the requiredCapabilities field in the
+      request.
 
    At minimum, as each MLS KeyPackage is returned to a requesting
    provider (on behalf of a requesting IM client), the target provider
@@ -1123,6 +1234,123 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
       of recently seen transaction IDs, but deduplication could be done
       irrespective of the content of request bodies.
 
+5.6.  Claim group key information
+
+   When a client joins an MLS group without an existing member adding
+   the client to the MLS group, that is called an external join.  This
+   is useful a) when a new client of an existing user needs to join the
+   groups of all the user's rooms.  It can also be used b) when a client
+   did not have key packages available but their user is already in the
+   participation list for the corresponding room, c) when joining an
+   open room, or d) when joining using an external authentication
+   joining code.  In MIMI, external joins are accomplished by fetching
+   the MLS GroupInfo for a room's MLS group, and then sending an
+   external commit incorporating the GroupInfo.
+
+   The GroupInfoRequest uses the HTTP POST method.
+
+   POST /groupInfo/{roomId}
+
+   The request provides an MLS credential proving the requesting
+   client's real or pseudonymous identity.  This user identity is used
+   by the hub to correlate this request with the subsequent external
+   commit.  The credential may constitute sufficient permission to
+   authorize providing the GroupInfo and later joining the group.
+   Alternatively, the request can include an optional opaque joining
+   code, which the requester could use to prove permission to fetch the
+   GroupInfo, even if it is not yet a participant.
+
+   The request also provides a signature public key corresponding to the
+   requester's credential.  It also specifies a CipherSuite which merely
+   needs to be one ciphersuite in common with the hub.  It is needed
+   only to specify the algorithms used to sign the GroupInfoRequest and
+   GroupInfoResponse.
+
+   struct {
+     Protocol protocol;
+     select (protocol) {
+       case mls10:
+         CipherSuite cipher_suite;
+         SignaturePublicKey requestingSignatureKey;
+         Credential requestingCredential;
+         optional opaque joiningCode<V>;
+     };
+   } GroupInfoRequestTBS;
+
+   struct {
+     Protocol protocol;
+     select (protocol) {
+       case mls10:
+         CipherSuite cipher_suite;
+         SignaturePublicKey requestingSignatureKey;
+         Credential requestingCredential;
+         opaque joiningCode<V>;
+         /* SignWithLabel(., "GroupInfoRequestTBS", GroupInfoRequestTBS) */
+         opaque signature<V>;
+     };
+   } GroupInfoRequest;
+
+   If successful, the response body contains the GroupInfo and a way to
+   get the ratchet_tree.
+
+   enum {
+     reserved(0),
+     success(1),
+     notAuthorized(2),
+     noSuchRoom(3),
+     (255)
+   } GroupInfoCode;
+
+   struct {
+     Protocol version;
+     GroupInfoCode status;
+     select (protocol) {
+       case mls10:
+         CipherSuite cipher_suite;
+         opaque room_id<V>;
+         ExternalSender hub_sender;
+         GroupInfo groupInfo;   /* without embedded ratchet_tree */
+         RatchetTreeOption ratchetTreeOption;
+     };
+   } GroupInfoResponseTBS;
+
+   struct {
+     Protocol version;
+     GroupInfoCode status;
+     select (protocol) {
+       case mls10:
+         CipherSuite cipher_suite;
+         opaque room_id<V>;
+         ExternalSender hub_sender;
+         GroupInfo groupInfo;   /* without embedded ratchet_tree */
+         RatchetTreeOption ratchetTreeOption;
+         /* SignWithLabel(., "GroupInfoResponseTBS", GroupInfoResponseTBS) */
+         opaque signature<V>;
+     };
+   } GroupInfoResponse;
+
+   The semantics of the GroupInfoCode are as follows:
+
+   *  success indicates that GroupInfo and ratchet tree was provided as
+      requested.
+
+   *  notAuthorized indicates that the requester was not authorized to
+      access the GroupInfo.
+
+   *  noSuchRoom indicates that the requested room does not exist.  If
+      the hub does not want to reveal if a room ID does not exist it can
+      use notAuthorized instead.
+
+      *TODO*: Consider adding additional failure codes/semantics for
+      joining codes (ex: code expired, already used, invalid)
+
+   *ISSUE*: What security properties are needed to protect a GroupInfo
+   object in the MIMI context are still under discussion.  It is
+   possible that the requester only needs to prove possession of their
+   private key.  The GroupInfo in another context might be sufficiently
+   sensitive that it should be encrypted from the end client to the hub
+   provider (unreadable by the local provider).
+
 6.  Relation between MIMI state and cryptographic state
 
 6.1.  Room state
@@ -1270,7 +1498,7 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
      ApplicationState applicationStates<V>;
    } ApplicationStatesExtension;
 
-                Figure 9: The `application_state` extension
+                Figure 10: The `application_state` extension
 
    struct {
      uint32 index;
@@ -1298,7 +1526,7 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
      };
    } AppSync;
 
-                    Figure 10: The AppSync proposal type
+                    Figure 11: The AppSync proposal type
 
    The applicationId determines the structure and interpretation of the
    contents. of an ApplicationState object.  AppSync proposals contain
@@ -1382,9 +1610,9 @@ ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
    [I-D.barnes-mimi-arch]
               Barnes, R., "An Architecture for More Instant Messaging
               Interoperability (MIMI)", Work in Progress, Internet-
-              Draft, draft-barnes-mimi-arch-02, 23 October 2023,
+              Draft, draft-barnes-mimi-arch-03, 4 March 2024,
               <https://datatracker.ietf.org/doc/html/draft-barnes-mimi-
-              arch-02>.
+              arch-03>.
 
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
@@ -1444,18 +1672,16 @@ Acknowledgments
 
       *TODO*:
 
-Contributors
-
-   Rohan Mahy
-   Wire
-   Email: rohan.mahy@wire.com
-
-
 Authors' Addresses
 
-   Travis Ralston
+   Richard L. Barnes
+   Cisco
+   Email: rlb@ipv.sx
+
+
+   Matthew Hodgson
    The Matrix.org Foundation C.I.C.
-   Email: travisr@matrix.org
+   Email: matthew@matrix.org
 
 
    Konrad Kohbrok
@@ -1463,11 +1689,16 @@ Authors' Addresses
    Email: konrad.kohbrok@datashrine.de
 
 
+   Rohan Mahy
+   Unaffiliated
+   Email: rohan.ietf@gmail.com
+
+
+   Travis Ralston
+   The Matrix.org Foundation C.I.C.
+   Email: travisr@matrix.org
+
+
    Raphael Robert
    Phoenix R&D
    Email: ietf@raphaelrobert.com
-
-
-   Matthew Hodgson
-   The Matrix.org Foundation C.I.C.
-   Email: matthew@matrix.org
