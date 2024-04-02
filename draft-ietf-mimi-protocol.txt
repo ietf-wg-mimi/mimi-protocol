@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 5 September 2024               The Matrix.org Foundation C.I.C.
+Expires: 4 October 2024                 The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,11 +14,11 @@ Expires: 5 September 2024               The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                            4 March 2024
+                                                            2 April 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
-                   draft-ralston-mimi-protocol-latest
+                    draft-ietf-mimi-protocol-latest
 
 Abstract
 
@@ -41,7 +41,7 @@ About This Document
    The latest revision of this draft can be found at
    https://bifurcation.github.io/ietf-mimi-protocol/draft-ralston-mimi-
    protocol.html.  Status information for this document may be found at
-   https://datatracker.ietf.org/doc/draft-ralston-mimi-protocol/.
+   https://datatracker.ietf.org/doc/draft-ietf-mimi-protocol/.
 
    Discussion of this document takes place on the More Instant Messaging
    Interoperability Working Group mailing list (mailto:mimi@ietf.org),
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 September 2024.
+   This Internet-Draft will expire on 4 October 2024.
 
 Copyright Notice
 
@@ -1610,9 +1610,9 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.barnes-mimi-arch]
               Barnes, R., "An Architecture for More Instant Messaging
               Interoperability (MIMI)", Work in Progress, Internet-
-              Draft, draft-barnes-mimi-arch-02, 23 October 2023,
+              Draft, draft-barnes-mimi-arch-03, 4 March 2024,
               <https://datatracker.ietf.org/doc/html/draft-barnes-mimi-
-              arch-02>.
+              arch-03>.
 
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
