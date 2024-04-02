@@ -3,7 +3,7 @@ title: "More Instant Messaging Interoperability (MIMI) using HTTPS and MLS"
 abbrev: "MIMI+MLS Protocol"
 category: std
 
-docname: draft-ralston-mimi-protocol-latest
+docname: draft-ietf-mimi-protocol-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
