@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-04-09T00:32:11.201232+00:00",
+  "timestamp": "2024-04-11T00:32:42.481577+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -57,6 +57,11 @@
       "name": "IETF-119",
       "description": "",
       "color": "fef2c0"
+    },
+    {
+      "name": "WG reviewed",
+      "description": "Issue has been reviewed in a MIMI WG meeting",
+      "color": "B28596"
     }
   ],
   "issues": [
@@ -1010,6 +1015,22 @@
       "createdAt": "2024-03-04T17:52:14Z",
       "updatedAt": "2024-03-04T18:28:10Z",
       "closedAt": "2024-03-04T18:28:10Z",
+      "comments": []
+    },
+    {
+      "number": 77,
+      "id": "I_kwDOKZ8QO86FQ9fg",
+      "title": "Minimize metadata leakage",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/77",
+      "state": "OPEN",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We should avoid leaking metadata in the MIMI protocol, for example:\r\n\r\n* The number of devices used by each user\r\n* Which users are participating in which groups\r\n\r\nThe demands of policy enforcement will require some level of metadata exposure.  But we should avoid exposing metadata more broadly than is required.",
+      "createdAt": "2024-04-10T14:58:07Z",
+      "updatedAt": "2024-04-10T14:58:23Z",
+      "closedAt": null,
       "comments": []
     }
   ],
@@ -6924,10 +6945,12 @@
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "WG reviewed"
+      ],
       "body": "",
       "createdAt": "2024-03-13T02:11:04Z",
-      "updatedAt": "2024-03-19T21:54:24Z",
+      "updatedAt": "2024-04-10T18:30:38Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
@@ -6952,6 +6975,13 @@
           "body": "There's not need to make the scoping mandatory. However, it would be a bit more involved than just changing the text a little bit. Here's what I roughly had in mind:\r\n\r\n- Whenever a provider responds with a KeyPackage, it also provides as proof of consent a signature over the KeyPackage (or hash thereof), as well as a over the scope of the consent and the validity period of the proof of consent. The scope might include the name of the requester (or a pseudonym or similar) and optionally a room id.\r\n- If the consent mechanism is implicit, the provider can just sign the KeyPackage without additional information\r\n- Whenever a KeyPackage is used to add someone to a group, the adder has to provide the signature and scope of consent. - Other group members can then verify that the adder is actually allowed to use the KeyPackage in this context by verifying that the senders name/pseudonym, the room id and the validity period.\r\n\r\nWe could also use this mechanism to ensure that a requester always adds all clients of a given user: When a user requests KeyPackages for a user, the provider would provide a signature over all of the KeyPackages in the response.\r\n\r\nI'll try to come up with a proposal for how we can hide requester Metadata in a follow-up PR.",
           "createdAt": "2024-03-13T10:41:16Z",
           "updatedAt": "2024-03-13T10:41:16Z"
+        },
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Interim 2024-04-10:\r\n* Clear to merge once conflicts are resolved.",
+          "createdAt": "2024-04-10T16:20:26Z",
+          "updatedAt": "2024-04-10T16:20:26Z"
         }
       ],
       "reviews": [
@@ -7210,10 +7240,12 @@
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "WG reviewed"
+      ],
       "body": "",
       "createdAt": "2024-03-13T13:26:24Z",
-      "updatedAt": "2024-03-20T17:28:47Z",
+      "updatedAt": "2024-04-10T18:30:47Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
@@ -7231,6 +7263,20 @@
           "body": "In the case where the abuse comes from the abuser's provider (such as when the \"abuser\" is a fake identity created by the abuser's provider in order to achieve abusive outcomes like spam or phishing), sending an abuse complaint verbatim to the abuser's provider is exactly the wrong thing to do.\r\n\r\nThe abuser's provider may need to get told that sanctions have been imposed against his user, but telling him why feeds into machine learning on how to avoid anti-abuse mechanisms.\r\n\r\n",
           "createdAt": "2024-03-16T21:50:20Z",
           "updatedAt": "2024-03-16T21:50:20Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Discussion about the potential for a reporter to forge an abusive message at interim meeting 10-Apr-2024:\r\n\r\n- Travis says the abuse reports should go to the reporter's provider, while the hub provider is specified in the PR currently. Harald says you shouldn't reveal abuse reports to the alleged abuser's provider.\r\n- The situation is better than if we only have AEAD, but we still may need some additional franking (by the hub using a symmetric algorithm)\r\n- There is a risk of \"outing\" a pseudonymized user.\r\n",
+          "createdAt": "2024-04-10T16:36:59Z",
+          "updatedAt": "2024-04-10T16:36:59Z"
+        },
+        {
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Interim 2024-04-10\r\n* Need to address risk of forgery by reporter\r\n    * Deployed state of the art is \"franking\"\r\n    * MLS signature could help obviate the need for franking\r\n    * Even in metadata-limited case, signature keys are used, but they're not linked to the real identity\r\n        * Might not be able to rely much on signature here; might need franking\r\n        * Or might need to deanonymize a participant in the event of abuse\r\n    * Would be good to protect reporter identity in this process \r\n* Should abuse reports go to the hub?\r\n    * Reporter provider, hub, abuser's provider, other providers?\r\n    * Could also augment a standard thing with out-of-band mechanisms\r\n    * Reporter provider will get it through the submission process\r\n    * Should not provide it to abuser's provider\r\n    * So the question reduces to whether to provide to the hub\r\n    * Might need more review of use cases, maybe a generic \"send report to provider\", irrespective of room topology\r\n* Conclusions:\r\n    * If we have a reporting mechanism, need to address reporter forgery\r\n    * We should define an abuse endpoint for providing inputs to anti-abuse processes\r\n* TODO: @rohanmahy will revise to reflect discussion, bring back to the group\r\n\r\n\r\n\r\n",
+          "createdAt": "2024-04-10T16:56:53Z",
+          "updatedAt": "2024-04-10T16:56:53Z"
         }
       ],
       "reviews": [
@@ -7305,10 +7351,12 @@
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "WG reviewed"
+      ],
       "body": "",
       "createdAt": "2024-03-13T13:36:02Z",
-      "updatedAt": "2024-03-16T05:07:31Z",
+      "updatedAt": "2024-04-10T18:30:57Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
@@ -7358,6 +7406,46 @@
               "body": "The discovery documents are explicitly about discovering _which provider_ is associated with a specific SII. This is entirely about searching inside a provider, instead of finding a provider, so I think it is still in scope. This is a good question for the WG though. ",
               "createdAt": "2024-03-16T05:07:31Z",
               "updatedAt": "2024-03-16T05:07:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO852wOzy",
+          "commit": {
+            "abbreviatedOid": "83608cc"
+          },
+          "author": "OR13",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-04-10T17:56:07Z",
+          "updatedAt": "2024-04-10T17:56:08Z",
+          "comments": [
+            {
+              "originalPosition": 76,
+              "body": "concrete example here, would be interesting.\r\n\r\nI liked the visual description of how this might be realized discussed on the call.\r\n\r\n\"Search Messaging Provider\" -> \"Find `alice@vendor.example` on Messaging Provider\" -> get instance of data model needed to start connection...",
+              "createdAt": "2024-04-10T17:56:07Z",
+              "updatedAt": "2024-04-10T17:56:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO852wP-g",
+          "commit": {
+            "abbreviatedOid": "83608cc"
+          },
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-04-10T17:59:01Z",
+          "updatedAt": "2024-04-10T17:59:01Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "GET is inappropriate since there is a request body. I think POST or the not-yet-quite-standard QUERY methods would work.",
+              "createdAt": "2024-04-10T17:59:01Z",
+              "updatedAt": "2024-04-10T17:59:01Z"
             }
           ]
         }
