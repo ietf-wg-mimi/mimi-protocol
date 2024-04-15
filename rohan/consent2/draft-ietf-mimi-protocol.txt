@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 5 September 2024               The Matrix.org Foundation C.I.C.
+Expires: 17 October 2024                The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,11 +14,11 @@ Expires: 5 September 2024               The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                            4 March 2024
+                                                           15 April 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
-                   draft-ralston-mimi-protocol-latest
+                    draft-ietf-mimi-protocol-latest
 
 Abstract
 
@@ -41,7 +41,7 @@ About This Document
    The latest revision of this draft can be found at
    https://bifurcation.github.io/ietf-mimi-protocol/draft-ralston-mimi-
    protocol.html.  Status information for this document may be found at
-   https://datatracker.ietf.org/doc/draft-ralston-mimi-protocol/.
+   https://datatracker.ietf.org/doc/draft-ietf-mimi-protocol/.
 
    Discussion of this document takes place on the More Instant Messaging
    Interoperability Working Group mailing list (mailto:mimi@ietf.org),
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 September 2024.
+   This Internet-Draft will expire on 17 October 2024.
 
 Copyright Notice
 
@@ -107,17 +107,19 @@ Table of Contents
      5.4.  Submit a Message
      5.5.  Fanout Messages and Room Events
      5.6.  Claim group key information
+     5.7.  Convey explicit consent
    6.  Relation between MIMI state and cryptographic state
      6.1.  Room state
      6.2.  Cryptographic room representation
      6.3.  Proposal-commit paradigm
      6.4.  Authenticating proposals
    7.  MLS Application State Synchronization
-   8.  Security Considerations
-   9.  IANA Considerations
-   10. References
-     10.1.  Normative References
-     10.2.  Informative References
+   8.  Consent
+   9.  Security Considerations
+   10. IANA Considerations
+   11. References
+     11.1.  Normative References
+     11.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -178,11 +180,6 @@ Table of Contents
       joiner who already has permission to join, as this aligns well
       with MLS.  Messaging applications support a variety of other
       flows, some of which this protocol will need to support.
-
-   Consent:  In this document, we assume that any required consent has
-      already been obtained, e.g., a user consenting to be added to a
-      room by another user.  The full protocol will need some mechanisms
-      for establishing this consent.
 
    Identifiers:  Certain entities in the MIMI system need to be
       identified in the protocol.  In this document, we define a
@@ -347,9 +344,9 @@ Table of Contents
    KeyPackages to the proper recipients -- ServerA to ServerB, and
    ServerB to Bob's clients.
 
-      *NOTE:* In the full protocol, it will be necessary to have consent
-      and access control on these operations.  We have elided that step
-      here in the interest of simplicity.
+      *NOTE:* In the protocol, it is necessary to have consent (see
+      Section 8) and access control on these operations.  We have elided
+      that step here in the interest of simplicity.
 
    ClientA1       ServerA         ServerB         ClientB*
      |               |               |               |
@@ -806,7 +803,11 @@ ServerC->ClientC*: [[ Commit ]]
      "submitMessage":
         "https://mimi.example.com/v1/submitMessage/{roomId}",
      "groupInfo":
-        "https://mimi.example.com/v1/groupInfo/{roomId}"
+        "https://mimi.example.com/v1/groupInfo/{roomId}",
+     "requestConsent":
+        "https://mimi.example.com/v1/requestConsent/{targetUser}",
+     "updateConsent":
+        "https://mimi.example.com/v1/updateConsent/{requesterUser}"
    }
 
 5.2.  Fetch Key Material
@@ -1351,6 +1352,114 @@ ServerC->ClientC*: [[ Commit ]]
    sensitive that it should be encrypted from the end client to the hub
    provider (unreadable by the local provider).
 
+5.7.  Convey explicit consent
+
+   As discussed in Section 8, there are many ways that a provider could
+   implicitly determine consent.  This section describes a mechanism by
+   which providers can explicitly request consent from a user of another
+   provider, cancel such a request, convey that consent was granted, or
+   convey that consent was revoked or preemptively denied.
+
+   Since they are not necessarily in the context of a room, consent
+   requests are sent directly from the provider of the user requesting
+   consent, to the provider of the target user.  (There is no concept of
+   a hub outside of the context of a room.)
+
+   POST /requestConsent/{targetDomain}
+   POST /updateConsent/{requesterDomain}
+
+   A requestConsent request is used by one provider to request explicit
+   consent from a target user at another provider to fetch the target's
+   KeyPackages (which is a prerequisite for adding the target to a
+   group); or to cancel that request.  The request body is a
+   ConsentEntry, with a consentOperation of request or cancel
+   respectively.  It includes the URI of requesting user in the
+   requesterUri and the target user URI in the targetUri.  If consent is
+   only requested for a single room, the requester includes the roomId.
+   The combination of the requesterUri, targetUri, and optional roomId
+   represents the ConsentScope.  A cancel MUST use the same ConsentScope
+   as a previous request.
+
+   For a requestContent, the targetUri needs to be in one of the domains
+   of the receiving provider, and the requesterUri needs to be in one of
+   the domains of the sending provider.
+
+   The response to a requestConsent request is usually a 201 Accepted
+   (indicating the requestConsent was received), optionally a 404 Not
+   Found (indicating the targetUri is unknown), or a 500-class response.
+   The 201 response code merely indicates that the request was received.
+   A provider that does not wish to reveal if a user is not found can
+   respond with a 201 Accepted.  Likewise in response to a cancel which
+   has no request matching the ConsentScope, a 201 Accepted is sent and
+   no further action is taken.
+
+   enum {
+     cancel(0),
+     request(1),
+     grant(2),
+     revoke(3),
+     (255)
+   } ConsentOperation;
+
+   struct {
+     ConsentOperation consentOperation;
+     IdentifierUri requesterUri;
+     IdentifierUri targetUri;
+     optional<RoomId> roomId;
+     select (consentOperation) {
+         case grant:
+             KeyPackage clientKeyPackages<V>;
+     };
+   } ConsentEntry;
+
+   struct {
+     IdentifierUri requesterUri;
+     IdentifierUri targetUri;
+     optional<RoomId> roomId;
+   } ConsentScope;
+
+   An updateConsent request is used by one provider to provide explicit
+   notice from a target user at one provider that consent for a specific
+   "requester" was granted, revoked, or preemptively denied.  In this
+   context, the requester is the party that will later request
+   KeyPackages for the target.  The request body is a ConsentEntry, with
+   a consentOperation of grant (for a grant), or revoke for revocation
+   or denial.  Like a request, it includes the URI of the "requesting
+   user" in the requesterUri and the target user URI in the targetUri.
+   If consent is only granted or denied for a single room, the request
+   includes the optional roomId.
+
+   A grant or revoke does not need to be in response to an explicit
+   request, nor does the ConsentScope need to match a previous request
+   for the same targetUri and requesterUri pair.
+
+   For example, in some systems there is a notion of a bilateral
+   connection request.  The party that initiates the connection request
+   (for example Alice) would send a requestConsent for the target (ex:
+   Bob), and send an unsolicited updateConsent with Bob as the
+   "requestor" and itself (Alice) as the target.
+
+   In a grant, the sender includes a list of clientKeyPackages for the
+   target user, which can be empty.  For the case of a bilateral
+   connection, a grant of consent with a matching ConsentScope often
+   results in an immediate Add to a group.  If the list is non-empty
+   this reduces the number of messages which need to be sent.
+
+   For updateConsent the requesterUri needs to be in one of the domains
+   of the receiving provider, and the targetUri needs to be in one of
+   the domains of the sending provider.
+
+   The response to an updateConsent is usually a 201 Accepted
+   (indicating the updateConsent was received), optionally a 404 Not
+   Found (indicating the requesterUri is unknown), or a 500-class
+   response.  The response code merely indicates that the request was
+   received.  A provider that does not wish to reveal if a user is not
+   found can respond with a 201 Accepted.
+
+      *NOTE*: Revoking consent for a user might be privacy sensitive.
+      If this is the case the target provider does not need to send a
+      revoke to inform the requester provider.
+
 6.  Relation between MIMI state and cryptographic state
 
 6.1.  Room state
@@ -1572,7 +1681,66 @@ ServerC->ClientC*: [[ Commit ]]
       *TODO:* IANA registry for application_id; register extension and
       proposal types as safe extensions
 
-8.  Security Considerations
+8.  Consent
+
+   Most instant messaging systems have some notion of how a user
+   consents to be added to a room, and how they manipulate this consent.
+
+   In the connection-oriented model, once two users are connected,
+   either user can add the other to any number of rooms.  In other
+   systems (often with many large and/or public rooms), a user needs to
+   consent individually to be added to a room.
+
+   The MIMI consent mechanism supports both models and allows them to
+   coexist.  It allows a user to request consent, grant consent, revoke
+   consent, and cancel a request for consent.  Each of these consent
+   operations can indicate a specific room, or indicate any room.
+
+   A connection grant or revoke does not need to specify a room if a
+   connection request did, or vice versa.  A connection grant or revoke
+   does not even need to follow a connection request.
+
+   For example, Alice could ask for consent to add Bob to a specific
+   room.  Bob could send a connection grant for Alice to add him to any
+   room, or a connection revoke preventing Alice from adding him to any
+   room.  Similarly, Alice might have sent a connection request to add
+   Bob for any room (as a connection request), which Bob ignored or did
+   not see.  Later, Bob wants to join a specific room administered by
+   Alice.  Bob sends a connection grant for the specific room for Alice
+   and sends a Knock request to Alice asking to be added.  Finally,
+   Cathy could send a connection grant for Bob (even if Bob did not
+   initiate a connection request to Cathy), and Alice could recognize
+   Cathy on the system and send a connection revoke for her
+   preemptively.
+
+      *NOTE*: Many providers use additional factors to apply default
+      consent within their service such as a user belonging to a
+      specific workgroup or employer, participating in a related room
+      (ex: WhatsApp "communities"), or presence of a user in the other
+      user's contact list.  MIMI does not need to provide a way to
+      replicate or describe these supplemental mechanisms, since they
+      are strongly linked to specific provider policies.
+
+   Consent requests have sensitive privacy implications.  The sender of
+   a consent request should receive an acknowledgement that the request
+   was received by the provider of the target user.  For privacy
+   reasons, the requestor should not know if the target user received or
+   viewed the request.  The original requestor will obviously find out
+   if the target grants consent, but a consent revocation/rejection is
+   typically not communicated to the revoked/rejected user (again for
+   privacy reasons).
+
+   Consent operations are only sent directly between the acting provider
+   (sending the request, grant, revoke, or cancel) and the target
+   provider (the object of the consent).  In other words, the two
+   providers must have a direct peering relationship.
+
+   In our example, Alice requests consent from Bob for any room.  Later,
+   Bob sends a grants consent to Alice to add him to any room.  At the
+   same time as sending the consent request, Alice grants consent to Bob
+   to add her to any room.
+
+9.  Security Considerations
 
    The MIMI protocol incorporates several layers of security.
 
@@ -1601,18 +1769,18 @@ ServerC->ClientC*: [[ Commit ]]
    this cost is offset by the simplicity of not having multiple policy
    enforcement points.
 
-9.  IANA Considerations
+10.  IANA Considerations
 
-10.  References
+11.  References
 
-10.1.  Normative References
+11.1.  Normative References
 
    [I-D.barnes-mimi-arch]
               Barnes, R., "An Architecture for More Instant Messaging
               Interoperability (MIMI)", Work in Progress, Internet-
-              Draft, draft-barnes-mimi-arch-02, 23 October 2023,
+              Draft, draft-barnes-mimi-arch-03, 4 March 2024,
               <https://datatracker.ietf.org/doc/html/draft-barnes-mimi-
-              arch-02>.
+              arch-03>.
 
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
@@ -1661,7 +1829,7 @@ ServerC->ClientC*: [[ Commit ]]
               Security (MLS) Protocol", RFC 9420, DOI 10.17487/RFC9420,
               July 2023, <https://www.rfc-editor.org/rfc/rfc9420>.
 
-10.2.  Informative References
+11.2.  Informative References
 
    [RFC8555]  Barnes, R., Hoffman-Andrews, J., McCarney, D., and J.
               Kasten, "Automatic Certificate Management Environment
