@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-04-14T00:32:21.202377+00:00",
+  "timestamp": "2024-04-16T00:31:58.184655+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -7531,6 +7531,32 @@
       "mergeCommit": {
         "oid": "eddb965307c64078e744573c39d5dffbc5f50bf4"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 78,
+      "id": "PR_kwDOKZ8QO85stsn8",
+      "title": "Add consent primitive and related discussions. Replaces PR #72",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/78",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This replaces PR #72 \r\n\r\nIt was created merely to deal with merge conflicts created when migrating the repo. Otherwise it has identical content to #72 \r\n",
+      "createdAt": "2024-04-15T18:43:37Z",
+      "updatedAt": "2024-04-15T18:43:37Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "eddb965307c64078e744573c39d5dffbc5f50bf4",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "rohan/consent2",
+      "headRefOid": "b4a39f0b97042f7eda64c0f3cd57c00e6da75d6b",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
