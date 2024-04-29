@@ -121,11 +121,6 @@ as this aligns well with MLS.  Messaging applications
 support a variety of other flows, some of which this protocol will need to
 support.
 
-Consent:
-: In this document, we assume that any required consent has already been
-obtained, e.g., a user consenting to be added to a room by another user.  The
-full protocol will need some mechanisms for establishing this consent.
-
 Identifiers:
 : Certain entities in the MIMI system need to be identified in the protocol.  In
 this document, we define a notional syntax for identifiers, but a more
@@ -262,9 +257,9 @@ of the KeyPackages they handle, so that they can route a Welcome message for
 those KeyPackages to the proper recipients -- ServerA to ServerB, and ServerB to
 Bob's clients.
 
-> **NOTE:** In the full protocol, it will be necessary to have consent and access
-> control on these operations.  We have elided that step here in the interest of
-> simplicity.
+> **NOTE:** In the protocol, it is necessary to have consent (see {{consent}})
+> and access control on these operations.  We have elided that step here in
+> the interest of simplicity.
 
 ~~~ aasvg
 ClientA1       ServerA         ServerB         ClientB*
@@ -711,7 +706,11 @@ GET /.well-known/mimi-protocol-directory
   "submitMessage":
      "https://mimi.example.com/v1/submitMessage/{roomId}",
   "groupInfo":
-     "https://mimi.example.com/v1/groupInfo/{roomId}"
+     "https://mimi.example.com/v1/groupInfo/{roomId}",
+  "requestConsent":
+     "https://mimi.example.com/v1/requestConsent/{targetUser}",
+  "updateConsent":
+     "https://mimi.example.com/v1/updateConsent/{requesterUser}"
 }
 ~~~
 
@@ -1246,6 +1245,111 @@ key. The GroupInfo in another context might be sufficiently sensitive that
 it should be encrypted from the end client to the hub provider (unreadable
 by the local provider).
 
+## Convey explicit consent
+
+As discussed in {{consent}}, there are many ways that a provider could
+implicitly determine consent. This section describes a mechanism by which providers can explicitly request consent from a user of another provider,
+cancel such a request, convey that consent was granted, or convey that
+consent was revoked or preemptively denied.
+
+Since they are not necessarily in the context of a room, consent requests
+are sent directly from the provider of the user requesting consent, to the
+provider of the target user. (There is no concept of a hub outside of the
+context of a room.)
+
+~~~
+POST /requestConsent/{targetDomain}
+POST /updateConsent/{requesterDomain}
+~~~
+
+A `requestConsent` request is used by one provider to request explicit
+consent from a target user at another provider to fetch the target's
+KeyPackages (which is a prerequisite for adding the target to a group); or
+to cancel that request.
+The request body is a `ConsentEntry`, with a `consentOperation` of `request`
+or `cancel` respectively. It includes the URI of requesting user in the
+`requesterUri` and the target user URI in the `targetUri`. If consent is only
+requested for a single room, the requester includes the `roomId`. The
+combination of the `requesterUri`, `targetUri`, and optional `roomId`
+represents the `ConsentScope`. A `cancel` MUST use the same `ConsentScope`
+as a previous `request`.
+
+For a `requestContent`, the `targetUri` needs to be in one of the domains of
+the receiving provider, and the `requesterUri` needs to be in one of the
+domains of the sending provider.
+
+The response to a `requestConsent` request is usually a 201 Accepted
+(indicating the `requestConsent` was received), optionally a 404 Not Found
+(indicating the `targetUri` is unknown), or a 500-class response. The
+201 response code merely indicates that the request was received. A provider
+that does not wish to reveal if a user is not found can respond with a 201
+Accepted. Likewise in response to a `cancel` which has no `request` matching the
+`ConsentScope`, a 201 Accepted is sent and no further action is taken.
+
+~~~ tls
+enum {
+  cancel(0),
+  request(1),
+  grant(2),
+  revoke(3),
+  (255)
+} ConsentOperation;
+
+struct {
+  ConsentOperation consentOperation;
+  IdentifierUri requesterUri;
+  IdentifierUri targetUri;
+  optional<RoomId> roomId;
+  select (consentOperation) {
+      case grant:
+          KeyPackage clientKeyPackages<V>;
+  };
+} ConsentEntry;
+
+struct {
+  IdentifierUri requesterUri;
+  IdentifierUri targetUri;
+  optional<RoomId> roomId;
+} ConsentScope;
+~~~
+
+An `updateConsent` request is used by one provider to provide explicit
+notice from a target user at one provider that consent for a specific
+"requester" was granted, revoked, or preemptively denied. In this context,
+the requester is the party that will later request KeyPackages for the target. The request body is
+a `ConsentEntry`, with a `consentOperation` of `grant` (for a grant), or
+`revoke` for revocation or denial. Like a request, it includes the URI of the
+"requesting user" in the `requesterUri` and the target user URI in the
+`targetUri`. If consent is only granted or denied for a single room, the request includes the optional `roomId`.
+
+A `grant` or `revoke` does not need to be in response to an explicit request, nor does the `ConsentScope` need to match a previous `request` for the same `targetUri` and `requesterUri` pair.
+
+For example, in some systems there is a notion of a bilateral connection
+request. The party that initiates the connection request (for example Alice)
+would send a `requestConsent` for the target (ex: Bob), and send an
+unsolicited `updateConsent` with Bob as the "requestor" and itself (Alice)
+as the target.
+
+In a `grant`, the sender includes a list of `clientKeyPackages` for the
+target user, which can be empty. For the case of a bilateral connection,
+a grant of consent with a matching `ConsentScope` often results in an
+immediate Add to a group. If the list is non-empty this reduces the
+number of messages which need to be sent.
+
+For `updateConsent` the `requesterUri` needs to be in one of the domains of
+the receiving provider, and the `targetUri` needs to be in one of the
+domains of the sending provider.
+
+The response to an `updateConsent` is usually a 201 Accepted (indicating
+the `updateConsent` was received), optionally a 404 Not Found (indicating the
+`requesterUri` is unknown), or a 500-class response. The response code
+merely indicates that the request was received. A provider that does not
+wish to reveal if a user is not found can respond with a 201 Accepted.
+
+> **NOTE**: Revoking consent for a user might be privacy sensitive. If this
+> is the case the target provider does not need to send a `revoke` to inform
+> the requester provider.
+
 # Relation between MIMI state and cryptographic state
 
 ## Room state
@@ -1455,6 +1559,61 @@ be sent by an authorized external sender.
 
 > **TODO:** IANA registry for `application_id`; register extension and proposal types
 >as safe extensions
+
+# Consent
+
+Most instant messaging systems have some notion of how a user consents to be
+added to a room, and how they manipulate this consent.
+
+In the connection-oriented model, once two users are connected, either user
+can add the other to any number of rooms. In other systems (often with many
+large and/or public rooms), a user needs to consent individually to be added
+to a room.
+
+The MIMI consent mechanism supports both models and allows them to coexist.
+It allows a user to request consent, grant consent, revoke consent, and
+cancel a request for consent. Each of these consent operations can indicate
+a specific room, or indicate any room.
+
+A connection grant or revoke does not need to specify a room if a connection
+request did, or vice versa. A connection grant or revoke does not even need
+to follow a connection request.
+
+For example, Alice could ask for consent to add Bob to a specific room. Bob
+could send a connection grant for Alice to add him to any room, or a
+connection revoke preventing Alice from adding him to any room. Similarly,
+Alice might have sent a connection request to add Bob for any room (as a
+connection request), which Bob ignored or did not see. Later, Bob wants to
+join a specific room administered by Alice. Bob sends a connection grant for
+the specific room for Alice and sends a Knock request to Alice asking to be
+added. Finally, Cathy could send a connection grant for Bob (even if Bob did
+not initiate a connection request to Cathy), and Alice could recognize Cathy
+on the system and send a connection revoke for her preemptively.
+
+> **NOTE**: Many providers use additional factors to apply default consent
+> within their service such as a user belonging to a specific workgroup or
+> employer, participating in a related room (ex: WhatsApp "communities"), or
+> presence of a user in the other user's contact list. MIMI does not need to
+> provide a way to replicate or describe these supplemental mechanisms,
+> since they are strongly linked to specific provider policies.
+
+Consent requests have sensitive privacy implications. The sender of a
+consent request should receive an acknowledgement that the request was
+received by the provider of the target user. For privacy reasons, the
+requestor should not know if the target user received or viewed the request.
+The original requestor will obviously find out if the target grants consent,
+but a consent revocation/rejection is typically not communicated to the
+revoked/rejected user (again for privacy reasons).
+
+Consent operations are only sent directly between the acting provider
+(sending the request, grant, revoke, or cancel) and the target provider (the
+object of the consent). In other words, the two providers must have a direct
+peering relationship.
+
+In our example, Alice requests consent from Bob for any room. Later, Bob
+sends a grants consent to Alice to add him to any room. At the same time as
+sending the consent request, Alice grants consent to Bob to add her to any
+room.
 
 # Security Considerations
 
