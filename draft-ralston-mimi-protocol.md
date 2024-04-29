@@ -1253,7 +1253,7 @@ specific provider. It is only sent from the local provider to the target
 provider (it does not transit a hub).
 
 ~~~
-GET /identifierQuery/{domain}
+POST /identifierQuery/{domain}
 ~~~
 
 The request body is described as:
