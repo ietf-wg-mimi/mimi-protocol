@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 14 September 2024              The Matrix.org Foundation C.I.C.
+Expires: 31 October 2024                The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 14 September 2024              The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                           13 March 2024
+                                                           29 April 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 September 2024.
+   This Internet-Draft will expire on 31 October 2024.
 
 Copyright Notice
 
@@ -1358,7 +1358,7 @@ ServerC->ClientC*: [[ Commit ]]
    on a specific provider.  It is only sent from the local provider to
    the target provider (it does not transit a hub).
 
-   GET /identifierQuery/{domain}
+   POST /identifierQuery/{domain}
 
    The request body is described as:
 
@@ -1693,9 +1693,9 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
               Extensions", Work in Progress, Internet-Draft, draft-ietf-
-              mls-extensions-03, 23 October 2023,
+              mls-extensions-04, 24 April 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mls-
-              extensions-03>.
+              extensions-04>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
