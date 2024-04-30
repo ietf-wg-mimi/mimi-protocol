@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-04-28T00:36:09.495042+00:00",
+  "timestamp": "2024-04-30T00:31:52.929864+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -6941,7 +6941,7 @@
       "id": "PR_kwDOKZ8QO85pc4Ih",
       "title": "Add consent discussion and mechanism",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/72",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -6950,14 +6950,14 @@
       ],
       "body": "",
       "createdAt": "2024-03-13T02:11:04Z",
-      "updatedAt": "2024-04-10T18:30:38Z",
+      "updatedAt": "2024-04-29T15:49:08Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "rohan/consent",
       "headRefOid": "dd9199ea036c66081e1a251cbf17746efeb7860e",
-      "closedAt": null,
+      "closedAt": "2024-04-29T15:49:08Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -6982,6 +6982,13 @@
           "body": "Interim 2024-04-10:\r\n* Clear to merge once conflicts are resolved.",
           "createdAt": "2024-04-10T16:20:26Z",
           "updatedAt": "2024-04-10T16:20:26Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Replaced by #78 . Closing.",
+          "createdAt": "2024-04-29T15:49:08Z",
+          "updatedAt": "2024-04-29T15:49:08Z"
         }
       ],
       "reviews": [
@@ -7356,13 +7363,13 @@
       ],
       "body": "",
       "createdAt": "2024-03-13T13:36:02Z",
-      "updatedAt": "2024-04-10T18:30:57Z",
+      "updatedAt": "2024-04-29T19:22:43Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "rohan/findInternal",
-      "headRefOid": "83608ccb201f268e3116a3e33ffb162c837aed78",
+      "headRefOid": "c75a54215ca5933bc444408cb4f97c824ba1c8e2",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -7446,6 +7453,46 @@
               "body": "GET is inappropriate since there is a request body. I think POST or the not-yet-quite-standard QUERY methods would work.",
               "createdAt": "2024-04-10T17:59:01Z",
               "updatedAt": "2024-04-10T17:59:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO85473wA",
+          "commit": {
+            "abbreviatedOid": "83608cc"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-04-29T16:13:10Z",
+          "updatedAt": "2024-04-29T16:13:10Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "The QUERY method is described in https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/\r\nThe draft has expired twice since becoming a WG item and three times as an individual draft. As of today it has 88 [open issues](https://github.com/httpwg/http-extensions/issues) in the github repo. Even though I think this usage is 100% aligned with QUERY, I don't want to depend on this work which appears to be proceeding slowly.\r\n\r\nI added a commit to just use POST instead of GET.",
+              "createdAt": "2024-04-29T16:13:10Z",
+              "updatedAt": "2024-04-29T16:13:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO8549iOi",
+          "commit": {
+            "abbreviatedOid": "83608cc"
+          },
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-04-29T19:22:43Z",
+          "updatedAt": "2024-04-29T19:22:43Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "I think that's a sensible choice. You might add a note that this POST request is idempotent and safe in the sense defined by [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110#idempotent.methods).",
+              "createdAt": "2024-04-29T19:22:43Z",
+              "updatedAt": "2024-04-29T19:22:43Z"
             }
           ]
         }
@@ -7539,24 +7586,26 @@
       "id": "PR_kwDOKZ8QO85stsn8",
       "title": "Add consent primitive and related discussions. Replaces PR #72",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/78",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This replaces PR #72 \r\n\r\nIt was created merely to deal with merge conflicts created when migrating the repo. Otherwise it has identical content to #72 \r\n",
       "createdAt": "2024-04-15T18:43:37Z",
-      "updatedAt": "2024-04-15T18:43:37Z",
+      "updatedAt": "2024-04-29T15:48:35Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "eddb965307c64078e744573c39d5dffbc5f50bf4",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "rohan/consent2",
       "headRefOid": "b4a39f0b97042f7eda64c0f3cd57c00e6da75d6b",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-04-29T15:48:34Z",
+      "mergedAt": "2024-04-29T15:48:34Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "b8960de20eb846cb964462c4d18076b8c4f52924"
+      },
       "comments": [],
       "reviews": []
     }
