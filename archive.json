@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-05-07T00:33:06.138597+00:00",
+  "timestamp": "2024-05-09T00:33:27.905661+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -70,18 +70,28 @@
       "id": "I_kwDOKZ8QO851kCPb",
       "title": "Prepare document for IETF 118",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/6",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "kkohbrok",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
         "kkohbrok"
       ],
-      "labels": [],
-      "body": "Tasks:\r\n\r\n- [x] #7\r\n- [x] #9\r\n- [ ] Merge m.room.create event and m.room.participant_list into single event?\r\n- [ ] #11\r\n- [ ] Define struct to use for fan-out messages, or better even a general MIMI message struct, which can contain an event or a fan-out message\r\n- [ ] Update #3 by replacing the individual structs with links to various parts of the document\r\n- [ ] Go over introduction and abstract\r\n\r\nMaybe move to after IETF 118\r\n- [ ] Change event naming scheme away from `m.xxx.yyy`?\r\n- [ ] Add section on Adds (representing a \"forced join\")\r\n- [ ] Allow patch-style operation instead of the current one-change-at-a time mechanism in m.room.user event\r\n- [ ] Figure out if KeyPackage retrieval should be tied to a room (at least optionally)",
+      "labels": [
+        "WG reviewed"
+      ],
+      "body": "Tasks:\r\n\r\n- [x] #7\r\n- [x] #9\r\n- [ ] Merge m.room.create event and m.room.participant_list into single event?\r\n- [x] #11\r\n- [ ] Define struct to use for fan-out messages, or better even a general MIMI message struct, which can contain an event or a fan-out message\r\n- [ ] Update #3 by replacing the individual structs with links to various parts of the document\r\n- [ ] Go over introduction and abstract\r\n\r\nMaybe move to after IETF 118\r\n- [ ] Change event naming scheme away from `m.xxx.yyy`?\r\n- [ ] Add section on Adds (representing a \"forced join\")\r\n- [ ] Allow patch-style operation instead of the current one-change-at-a time mechanism in m.room.user event\r\n- [ ] Figure out if KeyPackage retrieval should be tied to a room (at least optionally)",
       "createdAt": "2023-11-01T13:26:46Z",
-      "updatedAt": "2023-11-03T10:25:57Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-05-08T17:47:00Z",
+      "closedAt": "2024-05-08T17:46:18Z",
+      "comments": [
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "IETF 118 is long over, everything here is stale per Richard.",
+          "createdAt": "2024-05-08T17:46:18Z",
+          "updatedAt": "2024-05-08T17:46:18Z"
+        }
+      ]
     },
     {
       "number": 7,
@@ -122,15 +132,17 @@
       "id": "I_kwDOKZ8QO851qU9n",
       "title": "Change language in Section on \"Invites\" to reflect that atomic operations are possible",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/11",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "kkohbrok",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "WG reviewed"
+      ],
       "body": "",
       "createdAt": "2023-11-02T11:17:26Z",
-      "updatedAt": "2023-11-02T11:17:26Z",
-      "closedAt": null,
+      "updatedAt": "2024-05-08T17:46:59Z",
+      "closedAt": "2024-05-08T17:46:59Z",
       "comments": []
     },
     {
@@ -843,12 +855,22 @@
       "author": "rohan-wire",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "WG reviewed"
+      ],
       "body": "Figure out if versioning of endpoints includes different options inside the same framing, or a whole new endpoint, discovered by the directory, or something else.",
       "createdAt": "2024-02-19T19:33:42Z",
-      "updatedAt": "2024-02-19T19:33:43Z",
+      "updatedAt": "2024-05-08T17:53:41Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "WG review: We don't yet really understand what the requirements are here. Do we want to allow in-band protocol version disparities?\r\n\r\nPotential requirement: do all the providers participating in a room need to support the same version?",
+          "createdAt": "2024-05-08T17:53:39Z",
+          "updatedAt": "2024-05-08T17:53:39Z"
+        }
+      ]
     },
     {
       "number": 53,
@@ -994,12 +1016,22 @@
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "WG reviewed"
+      ],
       "body": "- [ ]  Make ASCII art fit in 72 characters (only done so far for Bob Adds Cathy flow)\r\n- [ ]  Show fanouts to multiple servers and clients closer/tighter in time? \r\n- [ ]  Show fanouts to Clients of final commits (done for Bob leaves room flow)\r\n- [ ]  Consider a consistent order of Servers and Clients\r\n- [ ]  Overall make all ascii art diagrams in the document consistent",
       "createdAt": "2024-03-04T16:50:55Z",
-      "updatedAt": "2024-03-04T16:50:55Z",
+      "updatedAt": "2024-05-08T17:54:54Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "WG review: this is something we'd do before last call, to sync artwork up with where the protocol ends up. Still relevant, but no immediate action needed.",
+          "createdAt": "2024-05-08T17:54:54Z",
+          "updatedAt": "2024-05-08T17:54:54Z"
+        }
+      ]
     },
     {
       "number": 70,
@@ -1022,16 +1054,24 @@
       "id": "I_kwDOKZ8QO86FQ9fg",
       "title": "Minimize metadata leakage",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/77",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bifurcation",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "We should avoid leaking metadata in the MIMI protocol, for example:\r\n\r\n* The number of devices used by each user\r\n* Which users are participating in which groups\r\n\r\nThe demands of policy enforcement will require some level of metadata exposure.  But we should avoid exposing metadata more broadly than is required.",
       "createdAt": "2024-04-10T14:58:07Z",
-      "updatedAt": "2024-04-10T14:58:23Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-05-08T17:55:54Z",
+      "closedAt": "2024-05-08T17:55:53Z",
+      "comments": [
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "WG review: While this might result in protocol doc changes, the discussion is tracked in https://github.com/ietf-wg-mimi/mimi-arch/issues/15, so closing this.",
+          "createdAt": "2024-05-08T17:55:53Z",
+          "updatedAt": "2024-05-08T17:55:53Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -7507,10 +7547,12 @@
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "WG reviewed"
+      ],
       "body": "",
       "createdAt": "2024-03-13T13:40:11Z",
-      "updatedAt": "2024-03-20T22:13:56Z",
+      "updatedAt": "2024-05-08T17:43:40Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
