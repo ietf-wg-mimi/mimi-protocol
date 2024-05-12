@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-05-09T00:33:27.905661+00:00",
+  "timestamp": "2024-05-12T00:36:48.805776+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -860,7 +860,7 @@
       ],
       "body": "Figure out if versioning of endpoints includes different options inside the same framing, or a whole new endpoint, discovered by the directory, or something else.",
       "createdAt": "2024-02-19T19:33:42Z",
-      "updatedAt": "2024-05-08T17:53:41Z",
+      "updatedAt": "2024-05-11T02:19:44Z",
       "closedAt": null,
       "comments": [
         {
@@ -869,6 +869,13 @@
           "body": "WG review: We don't yet really understand what the requirements are here. Do we want to allow in-band protocol version disparities?\r\n\r\nPotential requirement: do all the providers participating in a room need to support the same version?",
           "createdAt": "2024-05-08T17:53:39Z",
           "updatedAt": "2024-05-08T17:53:39Z"
+        },
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I haven't yet caught up on the discussion at the interim, so apologies if I've missed something here.\r\n\r\nThe protocol may have multiple disparate versions associated with it:\r\n\r\n* The policy profile, and any rules associated with that policy.\r\n* The synchronization approach for participation and membership, if any.\r\n* The actual transport layer/HTTP endpoints.\r\n* Encoding formats at the above levels, potentially.\r\n\r\nAt the transport level there should be some support for versioning which is not bound to the room/group itself. Servers should be able to negotiate with each other the versions of endpoints without affecting the overall room operation (in most cases). Where a room behaviour *requires* a certain operation to take place, that would obviously have impact and need to be taken into consideration. For example, a non-MLS room may require certain transport considerations to exist, though within those considerations versioning can be applied to upgrade/change body encoding and similar.\r\n\r\nPolicy and user/client synchronization may not require explicit versioning in the protocol, though a concept of \"this room is replaced by X\" may need to exist. For example, formalizing what an MLS ReInit looks like in user experience terms, and reflecting that back as protocol capability.",
+          "createdAt": "2024-05-11T02:19:43Z",
+          "updatedAt": "2024-05-11T02:19:43Z"
         }
       ]
     },
