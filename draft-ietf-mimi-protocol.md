@@ -914,46 +914,46 @@ struct {
 } RatchetTreeOption;
 
 struct {
-  select (room.protocol) {
-    case mls10:
-      PublicMessage proposalOrCommit;
-      select (proposalOrCommit.content.content_type) {
-        case commit:
-          /* Both the Welcome and GroupInfo omit the ratchet_tree */
-          optional<Welcome> welcome;
-          GroupInfo groupInfo;
-          RatchetTreeOption ratchetTreeOption;
-        case proposal:
-          PublicMessage moreProposals<V>; /* a list of additional proposals */
-      };
-  };
-} UpdateRequest;
-~~~
+  opaque key<V>;
+  opaque nonce<V>;
+} DecryptionInfo;
 
-EncryptWithLabel(hub_pubkey, "handshake for hub", group_context, handshakes)
+encryptedDecyptInfo = Seal<Base>(
+  /* public key and hash use algorithm from ciphersuite */
+  hubPublicKey,   /* public key of Hub */
+  Hash(message),  /* info = hash of message*/
+  "",             /* AAD = none */
+  DecryptionInfo  /* plaintext */
+)
 
-group_context = {
-  opaque group_id<V>;
-  uint64 epoch;
-  /* add handshake hash? */
-};
+struct {
+  MLSMessage message;  /* a PublicMessage or PrivateMessage */
+  select (message.wire_format) {
+    case mls_private_message:
+      opaque encryptedDecryptInfo<V>;
+  }
+} DecryptableMLSMessage;
 
+struct {
+  /* A Proposal or Commit which is either a PublicMessage or a */
+  /* PrivateMessage with DecryptionInfo for the hub (only) */
+  DecryptableMLSMessage proposalOrCommit;
+  select (proposalOrCommit.content.content_type) {
+    case commit:
+      /* Both the Welcome and GroupInfo omit the ratchet_tree */
+      optional<Welcome> welcome;
+      GroupInfo groupInfo;
+      RatchetTreeOption ratchetTreeOption;
+    case proposal:
+      /* a list of additional (decryptable) proposals */
+      DecryptableMLSMessage moreProposals<V>;
+} DecryptableHandshakeBundle;
 
-~~~
 struct {
   select (room.protocol) {
     case mls10:
-      PrivateMessage proposalOrCommit;
-      select (proposalOrCommit.content.content_type) {
-        case commit:
-          /* Both the Welcome and GroupInfo omit the ratchet_tree */
-          optional<Welcome> welcome;
-          GroupInfo groupInfo;
-          RatchetTreeOption ratchetTreeOption;
-        case proposal:
-          PrivateMessage moreProposals<V>; /* a list of additional proposals */
-
-      };
+      DecryptableHandshakeBundle bundle;
+    };
   };
 } UpdateRequest;
 ~~~
@@ -963,6 +963,9 @@ containing an AppSync proposal adding Bob (`mimi://b.example/b/bob`), and Add pr
 Bob's MLS clients.  Alice includes the Welcome message which will be sent for
 Bob, a GroupInfo object for the hub provider, and complete `ratchet_tree`
 extension.
+
+If private handshake messages are conveyed, the decryption key and nonce for
+each Commit and each Proposal is re-encrypted for the hub and sent with the Commit or Proposal using the HPKE `Seal<Base>` function (see {{Section 6.1 of !RFC9180}}) using a public key for the Hub using the algorithms in the group's ciphersuite, and where the `info` parameter is the hash of the MLSMessage object wrapping the private handshake message. The `aad` field is empty.
 
 The response body is described below:
 
