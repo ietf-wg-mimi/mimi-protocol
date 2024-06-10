@@ -930,6 +930,34 @@ struct {
 } UpdateRequest;
 ~~~
 
+EncryptWithLabel(hub_pubkey, "handshake for hub", group_context, handshakes)
+
+group_context = {
+  opaque group_id<V>;
+  uint64 epoch;
+  /* add handshake hash? */
+};
+
+
+~~~
+struct {
+  select (room.protocol) {
+    case mls10:
+      PrivateMessage proposalOrCommit;
+      select (proposalOrCommit.content.content_type) {
+        case commit:
+          /* Both the Welcome and GroupInfo omit the ratchet_tree */
+          optional<Welcome> welcome;
+          GroupInfo groupInfo;
+          RatchetTreeOption ratchetTreeOption;
+        case proposal:
+          PrivateMessage moreProposals<V>; /* a list of additional proposals */
+
+      };
+  };
+} UpdateRequest;
+~~~
+
 For example, in the first use case described in the Protocol Overview, Alice creates a Commit
 containing an AppSync proposal adding Bob (`mimi://b.example/b/bob`), and Add proposals for all
 Bob's MLS clients.  Alice includes the Welcome message which will be sent for
