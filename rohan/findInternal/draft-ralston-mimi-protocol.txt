@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 31 October 2024                The Matrix.org Foundation C.I.C.
+Expires: 12 December 2024               The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 31 October 2024                The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                           29 April 2024
+                                                            10 June 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 October 2024.
+   This Internet-Draft will expire on 12 December 2024.
 
 Copyright Notice
 
@@ -1356,7 +1356,9 @@ ServerC->ClientC*: [[ Commit ]]
 
    The identifier query is to find the internal URI for a specific user
    on a specific provider.  It is only sent from the local provider to
-   the target provider (it does not transit a hub).
+   the target provider (it does not transit a hub).  Note that this POST
+   request is idempotent and safe in the sense defined by Section 9.2.2
+   of [RFC9110].
 
    POST /identifierQuery/{domain}
 
