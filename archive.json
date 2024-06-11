@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-06-09T00:39:01.693772+00:00",
+  "timestamp": "2024-06-11T00:35:10.966248+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -7410,13 +7410,13 @@
       ],
       "body": "",
       "createdAt": "2024-03-13T13:36:02Z",
-      "updatedAt": "2024-04-29T19:22:43Z",
+      "updatedAt": "2024-06-10T15:09:48Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "rohan/findInternal",
-      "headRefOid": "c75a54215ca5933bc444408cb4f97c824ba1c8e2",
+      "headRefOid": "f484896d4e13854b681d4d3406e2354ce7236eca",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -7542,6 +7542,26 @@
               "updatedAt": "2024-04-29T19:22:43Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO859psFG",
+          "commit": {
+            "abbreviatedOid": "c75a542"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-06-10T15:09:11Z",
+          "updatedAt": "2024-06-10T15:09:22Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "```suggestion\r\nprovider (it does not transit a hub). Note that this POST request is idempotent and safe in the sense defined by {{Section 9.2.2 of RFC9110}}.\r\n```",
+              "createdAt": "2024-06-10T15:09:11Z",
+              "updatedAt": "2024-06-10T15:09:22Z"
+            }
+          ]
         }
       ]
     },
@@ -7655,6 +7675,32 @@
       "mergeCommit": {
         "oid": "b8960de20eb846cb964462c4d18076b8c4f52924"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 79,
+      "id": "PR_kwDOKZ8QO85yBtWO",
+      "title": "Semi-private handshake messages in Update Room",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/79",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "According to room policy, members could send handshake messages (Commits and Proposals) as PublicMessage or PrivateMessage. When a PrivateMessage the key and nonce used to encrypt the PrivateMessage is HPKE encrypted for the hub and included in the message.\r\nthe HPKE `Seal<Base>` `info` is the hash of the complete MLSMessage that would have been sent.\r\n",
+      "createdAt": "2024-06-10T21:05:55Z",
+      "updatedAt": "2024-06-10T21:05:55Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "b8960de20eb846cb964462c4d18076b8c4f52924",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "rohan/semiPrivateCommit",
+      "headRefOid": "f8c5cb8d0d4806465e101415c209e1214558e985",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
