@@ -913,19 +913,44 @@ struct {
   };
 } RatchetTreeOption;
 
+encryptedDecyptInfo = Seal<Base>(
+  /* public key and hash use algorithm from ciphersuite */
+  hubPublicKey,   /* public key of Hub */
+  Hash(message),  /* info = hash of message*/
+  "",             /* AAD = none */
+  FramedMessage   /* MLS FramedMessage of handshake (plaintext) */
+)
+
+struct {
+  MLSMessage message;  /* a PublicMessage or PrivateMessage */
+  select (message.wire_format) {
+    case mls_private_message:
+      /* FramedMessage of the PrivateMessage encrypted for the hub */
+      opaque encryptedFramedMessage<V>;
+      /* proof that the FramedMessage came from a group member */
+      opaque confirmationProof<V>;
+  }
+} HubSharedHandshakeMessage;
+
+struct {
+  /* A Proposal or Commit which is either a PublicMessage; or a */
+  /* PrivateMessage with shared copy encrypted for the hub */
+  HubSharedHandshakeMessage proposalOrCommit;
+  select (proposalOrCommit.content.content_type) {
+    case commit:
+      /* Both the Welcome and GroupInfo omit the ratchet_tree */
+      optional<Welcome> welcome;
+      GroupInfo groupInfo;
+      RatchetTreeOption ratchetTreeOption;
+    case proposal:
+      /* a list of additional (decryptable) proposals */
+      HubSharedHandshakeMessage moreProposals<V>;
+} HandshakeBundle;
+
 struct {
   select (room.protocol) {
     case mls10:
-      PublicMessage proposalOrCommit;
-      select (proposalOrCommit.content.content_type) {
-        case commit:
-          /* Both the Welcome and GroupInfo omit the ratchet_tree */
-          optional<Welcome> welcome;
-          GroupInfo groupInfo;
-          RatchetTreeOption ratchetTreeOption;
-        case proposal:
-          PublicMessage moreProposals<V>; /* a list of additional proposals */
-      };
+      HandshakeBundle bundle;
   };
 } UpdateRequest;
 ~~~
