@@ -913,22 +913,28 @@ struct {
   };
 } RatchetTreeOption;
 
-encryptedDecyptInfo = Seal<Base>(
+struct {
+  /* the key and nonce to decrypt just the corresponding */
+  /* single PrivateMessage handshake message */
+  opaque key<V>;
+  opaque nonce<V>;
+} KeyAndNonce;
+
+encryptedDecyptionInfo = Seal<Base>(
   /* public key and hash use algorithm from ciphersuite */
   hubPublicKey,   /* public key of Hub */
-  Hash(message),  /* info = hash of message*/
+  "",             /* info = none e*/
   "",             /* AAD = none */
-  FramedMessage   /* MLS FramedMessage of handshake (plaintext) */
+  KeyAndNonce     /* key and nonce to decrypt handshake */
 )
 
 struct {
   MLSMessage message;  /* a PublicMessage or PrivateMessage */
   select (message.wire_format) {
     case mls_private_message:
-      /* FramedMessage of the PrivateMessage encrypted for the hub */
-      opaque encryptedFramedMessage<V>;
-      /* proof that the FramedMessage came from a group member */
-      opaque confirmationProof<V>;
+      /* share the key (and nonce) of this PrivateMessage */
+      /* handshake message encrypted only for the hub */
+      opaque encryptedDecyptionInfo<V>;
   }
 } HubSharedHandshakeMessage;
 
@@ -960,6 +966,15 @@ containing an AppSync proposal adding Bob (`mimi://b.example/b/bob`), and Add pr
 Bob's MLS clients.  Alice includes the Welcome message which will be sent for
 Bob, a GroupInfo object for the hub provider, and complete `ratchet_tree`
 extension.
+
+A handshake message could be sent by the client as an MLS
+`PublicMessage` (which is visible to all providers) or as an MLS
+`PrivateMessage` (which is normally visible only to members). When
+a client sends a `PrivateMessage` it MUST also send n copy of the
+(unique per-message) decryption key and nonce for that
+`PrivateMessage`, encrypted for the Hub provider. This allows the
+Hub to accomplish its responsibilities without the other providers
+in the network from being aware of the membership of non-local users.
 
 The response body is described below:
 
