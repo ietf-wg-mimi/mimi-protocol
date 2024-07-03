@@ -2,16 +2,16 @@
 
 This is the working area for the individual Internet-Draft, "MIMI Protocol".
 
-* [Editor's Copy](https://bifurcation.github.io/ietf-mimi-protocol/#go.draft-ralston-mimi-protocol.html)
-* [Datatracker Page](https://datatracker.ietf.org/doc/draft-ralston-mimi-protocol)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-ralston-mimi-protocol)
-* [Compare Editor's Copy to Individual Draft](https://bifurcation.github.io/ietf-mimi-protocol/#go.draft-ralston-mimi-protocol.diff)
+* [Editor's Copy](https://ietf-wg-mimi.github.io/mimi-protocol/#go.draft-ietf-mimi-protocol.html)
+* [Datatracker Page](https://datatracker.ietf.org/doc/draft-ietf-mimi-protocol)
+* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-ietf-mimi-protocol)
+* [Compare Editor's Copy to Individual Draft](https://ietf-wg-mimi.github.io/mimi-protocol/#go.draft-ietf-mimi-protocol.diff)
 
 
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/bifurcation/ietf-mimi-protocol/blob/main/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/ietf-wg-mimi/mimi-protocol/blob/main/CONTRIBUTING.md).
 
 Contributions can be made by creating pull requests.
 The GitHub interface supports creating pull requests using the Edit (✏) button.
