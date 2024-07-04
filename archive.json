@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-02T00:35:45.275706+00:00",
+  "timestamp": "2024-07-04T00:35:39.854087+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -7716,17 +7716,45 @@
       "labels": [],
       "body": "WIP\r\n\r\nAlternate (to #79 ) way to have a semi-private handshake (private, plus shared encrypted with the hub).",
       "createdAt": "2024-06-13T12:00:32Z",
-      "updatedAt": "2024-06-13T12:00:32Z",
+      "updatedAt": "2024-07-03T16:02:54Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "b8960de20eb846cb964462c4d18076b8c4f52924",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "rohan/semiPrivateAlt",
-      "headRefOid": "1f4b9554f5e71414d8d98d8df226c60012ac383b",
+      "headRefOid": "128327db9368eb491ddbbca34055875a698dbfa8",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 81,
+      "id": "PR_kwDOKZ8QO850V12e",
+      "title": "Fix README to point to correct locations",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/81",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-07-03T15:17:21Z",
+      "updatedAt": "2024-07-03T15:17:46Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "b8960de20eb846cb964462c4d18076b8c4f52924",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "fix-readme",
+      "headRefOid": "abe3083eec9c499d063e32434332505a6a06f3d6",
+      "closedAt": "2024-07-03T15:17:46Z",
+      "mergedAt": "2024-07-03T15:17:46Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "50ad85ec9bc33c74a9a09484b19005f48d34d503"
+      },
       "comments": [],
       "reviews": []
     }
