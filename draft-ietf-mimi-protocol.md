@@ -1250,7 +1250,7 @@ by the local provider).
 
 The identifier query is to find the internal URI for a specific user on a
 specific provider. It is only sent from the local provider to the target
-provider (it does not transit a hub).
+provider (it does not transit a hub). Note that this POST request is idempotent and safe in the sense defined by {{Section 9.2.2 of RFC9110}}.
 
 ~~~
 POST /identifierQuery/{domain}
