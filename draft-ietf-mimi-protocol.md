@@ -1250,11 +1250,29 @@ by the local provider).
 
 The identifier query is to find the internal URI for a specific user on a
 specific provider. It is only sent from the local provider to the target
-provider (it does not transit a hub). Note that this POST request is idempotent and safe in the sense defined by {{Section 9.2.2 of RFC9110}}.
+provider (it does not transit a hub).
+
+Note that this POST request is
+idempotent and safe in the sense defined by {{Section 9.2.2 of RFC9110}}.
 
 ~~~
 POST /identifierQuery/{domain}
 ~~~
+
+Consider three users Xavier, Yolanda, and Zach all with accounts on provider
+XYZ. Xavier is a sales person and wants to be contactable easily by
+potential clients on the XYZ provider. He configures his profile on XYZ so
+that searching for his first or last name or handle will find his profile
+and allow Alice to send him a consent request (it is out of scope how
+Alice verifies she has found the intended Xavier and not a different
+Xavier or an impostor).
+Yolanda has her XYZ handle on her business cards and the email signature
+she uses with clients. She configures her profile so that a query for her
+exact handle will find her profile and allow Alice to send her a consent
+request. Zach does not wish to be queryable at all. He has configured his
+account so even an exact handle search returns no results. He could still
+send a join link out-of-band to Alice for her to join a room of Zach's
+choosing.
 
 The request body is described as:
 
@@ -1286,7 +1304,17 @@ struct {
 
 The response body is described as an `IdentifierResponse`. It can contain
 multiple matches depending on the type of query and the policy of the target
-provider:
+provider.
+
+The response contains a code indicating the status of the query. `success`
+means that at least one result matched the query. `notFound` means that
+while the request was acceptable, no results matched the query.
+`ambiguous` means that a field (ex: handle) or combination of fields
+(ex: first and last name) need to match exactly for the provider to return
+any responses. `forbidden` means that use of this endpoint is not allowed
+by the provider or that an unspecified field or combination of fields is
+not allowed in an identifier query. `unsupportedField` means that the
+provider does not support queries on one of the fields queried.
 
 ~~~ tls
 enum {
