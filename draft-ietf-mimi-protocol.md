@@ -590,7 +590,7 @@ Every application message sent within a room is authenticated and confidentialit
 by virtue of being encapsulated in an MLS PrivateMessage object.
 
 MIMI uses the MLS application state synchronization mechanism
-({{mls-application-state-synchronization}}) to ensure that the clients involved
+({{I-D.barnes-mls-appsync}}) to ensure that the clients involved
 in a MIMI room agree on the state of the room.  Each MIMI message that changes
 the state of the room is encapsulated in an AppSync proposal and transmitted
 inside an MLS PublicMessage object.
