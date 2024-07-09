@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-07T00:39:30.996944+00:00",
+  "timestamp": "2024-07-09T00:36:11.569290+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -7401,7 +7401,7 @@
       "id": "PR_kwDOKZ8QO85pggWR",
       "title": "Initial stab at finding internal identifiers primitive",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/74",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -7410,17 +7410,19 @@
       ],
       "body": "",
       "createdAt": "2024-03-13T13:36:02Z",
-      "updatedAt": "2024-07-07T00:05:05Z",
+      "updatedAt": "2024-07-07T16:04:11Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "50ad85ec9bc33c74a9a09484b19005f48d34d503",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "rohan/findInternal",
       "headRefOid": "0056cb61f9bc76c4ab225b893c71821cf08540f4",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-07-07T16:04:02Z",
+      "mergedAt": "2024-07-07T16:04:02Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "ac27aa788b6277fbe0001347bbcd2ef35660a16c"
+      },
       "comments": [],
       "reviews": [
         {
@@ -7777,6 +7779,48 @@
       },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 82,
+      "id": "PR_kwDOKZ8QO850nj39",
+      "title": "Move the definition of MLS AppSync to its own spec",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/82",
+      "state": "MERGED",
+      "author": "bifurcation",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Rohan and I separately published [draft-barnes-mls-appsync](https://datatracker.ietf.org/doc/draft-barnes-mls-appsync/), which is currently just a copy/paste of the content from this document.  No technical changes, just moving things around.",
+      "createdAt": "2024-07-07T18:15:21Z",
+      "updatedAt": "2024-07-07T20:21:14Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "ac27aa788b6277fbe0001347bbcd2ef35660a16c",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "no-appsync",
+      "headRefOid": "a986cb12599ddca42a9f22cb18116c0b72e1ef3b",
+      "closedAt": "2024-07-07T20:21:14Z",
+      "mergedAt": "2024-07-07T20:21:14Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "da9fa250389b16a3bf2ab39a11b54d9a6c6bff9e"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86A3D8s",
+          "commit": {
+            "abbreviatedOid": "a986cb1"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-07-07T20:20:58Z",
+          "updatedAt": "2024-07-07T20:20:58Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
