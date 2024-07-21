@@ -53,6 +53,44 @@ author:
 normative:
 
 informative:
+  SecretConversations:
+    target: https://about.fb.com/wp-content/uploads/2016/07/messenger-secret-conversations-technical-whitepaper.pdf)
+    title: "Messenger Secret Conversations: Technical Whitepaper, Version 2.0"
+    date: 2017-05-18
+    author:
+        org: Facebook
+  Grubbs2017:
+    target: https://eprint.iacr.org/2017/664.pdf
+    title: Message Franking via Committing Authenticated Encryption
+    date: 2017
+    author:
+      -
+        name: Paul Grubbs
+        org: Cornell Tech
+      -
+        name: Jiahui Lu
+        org: Shanghai Jiao Tong University
+      -
+        name: Thomas Ristenpart
+        org: Cornell Tech
+  InvisibleSalamanders:
+    target: https://link.springer.com/content/pdf/10.1007/978-3-319-96884-1_6.pdf
+    title: "Fast Message Franking: From Invisible Salamanders to Encryptment"
+    date: 2018
+    author:
+      -
+        name: Yevgeniy Dodis
+        org: New York University
+      -
+        name: Paul Grubbs
+        org: Cornell Tech
+      -
+        name: Thomas Ristenpart
+        org: Cornell Tech
+      -
+        name: Joanne Woodage
+        org: Royal Holloway, University of London
+
 
 --- abstract
 
@@ -1069,6 +1107,110 @@ notifications), which do not need to be queued at the target provider.
 
 ### Message Franking
 
+Franking is the placing of a cryptographic "stamp" on a message. In the
+MIMI context, the Hub is able to mark that it received a message without
+learning the message content. A receiver that decrypts the message can use
+a valid frank to prove it was received by the Hub and that the content was
+sent by a specific sender. Outsiders (including follower providers) never
+learn the content of the message, nor the sender.
+
+Franking was popularized by Facebook and described in their whitepaper
+{{SecretConversations}} about their end-to-end encryption system. This
+franking mechanism is largely motivated by that solution with two
+significant changes as discussed in the final paragraph of this section.
+
+#### Client creation and sending
+
+When ready to send an application message with the MIMI content format,
+the sender generates a new random 256-bit `franking_key`.
+
+Next the sender attaches to the message the `franking_key` and any other
+fields the sender wishes to commit that are not otherwise represented in the
+content. For a MIMI content object, the sender creates a CBOR "FrankingAssertion" map containing the `franking_key`, sender URI, and room
+URI. It adds this FrankingAssertion to the extensions map at the top level
+of the MIMI content using the integer key TBD1.
+
+~~~ cbor-diag
+/ FrankingAssertion map /
+{
+  / FrankingKey    / 1: h'9c8af7674941aa95f8df37bd36ea89f2
+                          a3ab433aa5baa8e5e465f08a7e8e3b57',
+  / SenderURI      / 2: "mimi://b.example/u/alice",
+  / RoomURI        / 3: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+  / EncryptedTime  / 4: 1721421755553
+}
+~~~
+
+Note that this "commitment" does not vouch for the validity of these values,
+it just means that the sender is claiming it sent the values in the content,
+and cannot later deny to a receiver that it sent them.
+
+Then the client calculates the `franking_tag`, as the HMAC SHA256 of the
+`application_data` (which includes the FrankingAssertion extension), using the `franking_key`:
+
+```
+franking_tag = HMAC_SHA256( franking_key, application_data)
+```
+
+The client includes the `franking_tag` in the Additional Authenticated Data
+of the MLS PrivateMessage using the Safe Extension `FrankAAD`. The client
+uses the MIMI submitMessage to send its message, and also asserts a sender
+identity to the Hub, which could be a valid pseudonym, and needs to match
+the sender URI value embedded in the message. If the message is accepted,
+the response includes the accepted timestamp and the serverFrank (generated
+by the server).
+
+#### Hub processing
+
+When the Hub receives an acceptable application message with the `FrankAAD`
+AAD extension and a valid sender identity, it calculates a server frank for
+the message as follows:
+
+```
+context = senderURI || roomURI || acceptedTimestamp
+serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
+franking_context_hash = SHA256(context)
+```
+
+`HUBkey` is a secret symmetric key used on the Hub which the Hub can use to verify its own tags.
+
+The Hub fans out the encrypted message (which includes the `franking_tag`),
+the `serverFrank`, the `acceptedTimestamp`, the room URI, and the
+`franking_context_hash`. Note that the `senderURI` is not included in the
+application message, so the sender can remain anonymous with respect to
+follower providers.
+
+#### Receiver verification of frank
+
+When a client receives and decrypts an otherwise valid application message
+from a hub provider, the client looks for the existence of a frank
+(consisting of the `franking_tag` in the AAD, the `serverFrank` and the
+`franking_context_hash`. If so it verifies the construction of the
+`franking_tag` from the content of the message, and the construction of
+the `franking_context_hash` from the sender URI, room ID, and
+`acceptedTimestamp`.
+
+The receiving client receives a sender identifier in three different locations. The receiver verifies that they are all the same:
+
+- the sender's identity in its credential in its MLS LeafNode
+- the sender's identity asserted in the FrankingAssertion map inside the MIMI Content
+- the (hidden) sender's identity in the context used to create the `serverFrank`. The client hashes the concatenation of the sender's identity, the room ID, and the acceptedTimestamp. If this hash matches the context_validation hash, then the identity used by the server was correct.
+
+The receiver needs to store the frank with the decoded message so it can be
+used later.
+
+#### Comparison with the Facebook franking scheme
+
+Unlike in the Facebook franking scheme {{SecretConversations}}, the sender
+"commits to" its `franking_tag` as Additional Authenticated Data (AAD) inside the end-to-end encrypted message, and the hub only sends a hash of
+its context. This first change insures that the client cannot come up with
+another `franking_key` and message that has the same `franking_tag`
+{{Grubbs2017}}{{InvisibleSalamanders}}. According to {{Grubbs2017}},
+"... [Facebook's] franking scheme does not bind [the franking tag] to [the
+ciphertext] by including [the franking tag] in the associated data during
+encryption".
+The second change allows receivers to validate the sender URI in the hub's
+context, without revealing the sender URI to follower providers.
 
 
 ## Fanout Messages and Room Events
