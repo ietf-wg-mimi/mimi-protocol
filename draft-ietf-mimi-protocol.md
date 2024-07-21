@@ -712,7 +712,9 @@ GET /.well-known/mimi-protocol-directory
   "updateConsent":
      "https://mimi.example.com/v1/updateConsent/{requesterUser}",
   "identifierQuery":
-     "https://mimi.example.com/v1/identifierQuery/{domain}"
+     "https://mimi.example.com/v1/identifierQuery/{domain}",
+  "reportAbuse":
+     "https://mimi.example.com/v1/reportAbuse/{roomId}"
 }
 ~~~
 
@@ -993,14 +995,21 @@ struct {
     case mls10:
       /* PrivateMessage containing an application message */
       MLSMessage appMessage;
+      IdentifierURI sendingUri;
   };
 } SubmitMessageRequest;
 ~~~
 
-If the protocol is MLS 1.0, the request body is an MLSMessage with a WireFormat
-of PrivateMessage (an application message).
+If the protocol is MLS 1.0, the request body (`appMessage`) is an MLSMessage
+with a WireFormat of PrivateMessage, and a `content_type` of `application`.
+The `sendingUri` is a valid URI of the sender and is an active participant
+in the room.
 
-The response merely indicates if the message was accepted by the hub provider.
+The response indicates if the message was accepted by the hub provider. If a
+`frankingTag` was included in the `FrankAAD` extension in the PrivateMessage
+Additional Authenticated Data (AAD) in the request, the server attempts to
+frank the message and includes the `serverFrank` in a successful response
+(see the next subsection).
 
 ~~~ tls
 enum {
@@ -1020,6 +1029,7 @@ struct {
           /* the hub acceptance time
              (in milliseconds from the UNIX epoch) */
           uint64 acceptedTimestamp;
+          optional uint8[32] serverFrank;
         case epochTooOld:
           /* current MLS epoch for the MLS group */
           uint64 currentEpoch;
@@ -1040,6 +1050,10 @@ for the group. The `currentEpoch` is provided in the response.
 > **ISSUE:** Do we want to offer a distinction between regular application
 messages and ephemeral applications messages (for example "is typing"
 notifications), which do not need to be queued at the target provider.
+
+### Message Franking
+
+
 
 ## Fanout Messages and Room Events
 
@@ -1067,6 +1081,12 @@ POST /notify/{roomId}
 
 ~~~ tls
 struct {
+  uint8[32] franking_tag;
+  uint8[32] serverFrank;
+  uint8[32] franking_context_hash;
+} Frank;
+
+struct {
   /* the hub acceptance time (in milliseconds from the UNIX epoch) */
   uint64 timestamp;
   select (protocol) {
@@ -1076,8 +1096,10 @@ struct {
          or a Welcome message.                               */
       MLSMessage message;
       select (message.wire_format) {
+        case application:
+           optional Frank frank;
         case welcome:
-          RatchetTreeOption ratchetTreeOption;
+           RatchetTreeOption ratchetTreeOption;
       };
   };
 } FanoutMessage;
@@ -1460,6 +1482,52 @@ struct {
 > **TODO**: The format of specific identifiers is discussed in
 > {{?I-D.mahy-mimi-identity}}. Any specific conventions which are needed
 > should be merged into this document.
+
+## Report abuse
+
+Abuse reports are only sent to the hub provider. They are sent as an HTTP
+POST request.
+
+~~~
+POST /reportAbuse/{roomId}
+~~~
+
+The `reportingUser` optionally contains the identity of the user sending the
+`abuseReport`, while the `allegedAbuserUri` contains the URI of the alleged
+sender of abusive messages. The `reasonCode` is reserved to identify the type of
+abuse, and the `note` is a UTF8 human-readable string, which can be empty.
+
+> **TODO**: Find a standard taxonomy of reason codes to reference for
+> the `AbuseType`. The IANA Messaging Abuse Report Format parameters are
+> insufficient.
+
+Finally, abuse reports can optionally contain a handful of allegedly
+`AbusiveMessage`s, each of which contains an allegedly abusive message, its franks, and its timestamp.
+
+~~~ tls
+struct {
+  /* the MIMI Content message containing */
+  /* alleged abusive content */
+  opaque mimi_content<V>;
+  Frank frank;
+  uint64 acceptedTimestamp;
+} AbusiveMessage;
+
+enum {
+  reserved(0),
+  (255)
+} AbuseType;
+
+struct {
+  IdentifierUri reportingUser;
+  IdentifierUri allegedAbuserUri;
+  AbuseType reasonCode;
+  opaque note<V>;
+  AbusiveMessage messages<V>;
+} AbuseReport;
+~~~
+
+There is no response body. The response code only indicates if the abuse report was accepted, not if any specific automated or human action was taken.
 
 # Relation between MIMI state and cryptographic state
 
