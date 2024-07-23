@@ -916,18 +916,25 @@ struct {
 } RatchetTreeOption;
 
 struct {
+  /* A Proposal or Commit which is either a PublicMessage; */
+  /* or a SemiPrivateMessage                               */
+  MLSMessage proposalOrCommit;
+  select (proposalOrCommit.content.content_type) {
+    case commit:
+      /* Both the Welcome and GroupInfo omit the ratchet_tree */
+      optional<Welcome> welcome;
+      GroupInfo groupInfo;
+      RatchetTreeOption ratchetTreeOption;
+    case proposal:
+      /* a list of additional proposals, each represented */
+      /* as either PublicMessage or SemiPrivateMessage    */
+      MLSMessage moreProposals<V>;
+} HandshakeBundle;
+
+struct {
   select (room.protocol) {
     case mls10:
-      PublicMessage proposalOrCommit;
-      select (proposalOrCommit.content.content_type) {
-        case commit:
-          /* Both the Welcome and GroupInfo omit the ratchet_tree */
-          optional<Welcome> welcome;
-          GroupInfo groupInfo;
-          RatchetTreeOption ratchetTreeOption;
-        case proposal:
-          PublicMessage moreProposals<V>; /* a list of additional proposals */
-      };
+      HandshakeBundle bundle;
   };
 } UpdateRequest;
 ~~~
@@ -937,6 +944,15 @@ containing an AppSync proposal adding Bob (`mimi://b.example/b/bob`), and Add pr
 Bob's MLS clients.  Alice includes the Welcome message which will be sent for
 Bob, a GroupInfo object for the hub provider, and complete `ratchet_tree`
 extension.
+
+A handshake message could be sent by the client as an MLS
+`PublicMessage` (which is visible to all providers), or as an MLS
+`SemiPrivateMessage` {{!I-D.mahy-mls-semiprivatemessage}} encrypted
+for the members and the hub provider as the sole `external_receiver`.
+(The contents and sender of a `SemiPrivateMessage` would not be visible to
+other providers). The use of `SemiPrivateMessage` allows the Hub to
+accomplish its policy enforcement responsibilities without the other
+providers being aware of the membership of non-local users.
 
 The response body is described below:
 
