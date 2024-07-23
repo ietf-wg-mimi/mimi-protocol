@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-21T00:40:12.811659+00:00",
+  "timestamp": "2024-07-23T00:37:01.966663+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -7290,7 +7290,7 @@
       "id": "PR_kwDOKZ8QO85pgb0g",
       "title": "Add basic abuse reporting mechanism",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/73",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -7299,14 +7299,14 @@
       ],
       "body": "",
       "createdAt": "2024-03-13T13:26:24Z",
-      "updatedAt": "2024-04-10T18:30:47Z",
+      "updatedAt": "2024-07-22T17:01:24Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "rohan/abuse",
       "headRefOid": "5c6223f4ddaa59e636c95e7746bdc059f716211b",
-      "closedAt": null,
+      "closedAt": "2024-07-22T17:01:23Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -7331,6 +7331,13 @@
           "body": "Interim 2024-04-10\r\n* Need to address risk of forgery by reporter\r\n    * Deployed state of the art is \"franking\"\r\n    * MLS signature could help obviate the need for franking\r\n    * Even in metadata-limited case, signature keys are used, but they're not linked to the real identity\r\n        * Might not be able to rely much on signature here; might need franking\r\n        * Or might need to deanonymize a participant in the event of abuse\r\n    * Would be good to protect reporter identity in this process \r\n* Should abuse reports go to the hub?\r\n    * Reporter provider, hub, abuser's provider, other providers?\r\n    * Could also augment a standard thing with out-of-band mechanisms\r\n    * Reporter provider will get it through the submission process\r\n    * Should not provide it to abuser's provider\r\n    * So the question reduces to whether to provide to the hub\r\n    * Might need more review of use cases, maybe a generic \"send report to provider\", irrespective of room topology\r\n* Conclusions:\r\n    * If we have a reporting mechanism, need to address reporter forgery\r\n    * We should define an abuse endpoint for providing inputs to anti-abuse processes\r\n* TODO: @rohanmahy will revise to reflect discussion, bring back to the group\r\n\r\n\r\n\r\n",
           "createdAt": "2024-04-10T16:56:53Z",
           "updatedAt": "2024-04-10T16:56:53Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Replacing with franking based proposal in #83 ",
+          "createdAt": "2024-07-22T17:01:23Z",
+          "updatedAt": "2024-07-22T17:01:23Z"
         }
       ],
       "reviews": [
@@ -7821,6 +7828,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 83,
+      "id": "PR_kwDOKZ8QO852Bhho",
+      "title": "Add abuse reporting mechanism with message franking",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/83",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-07-21T21:30:03Z",
+      "updatedAt": "2024-07-21T21:30:03Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "da9fa250389b16a3bf2ab39a11b54d9a6c6bff9e",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "abuse2",
+      "headRefOid": "0e0e971415d3294c44949ff1331ff7d29d1af181",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
