@@ -22,26 +22,25 @@ integrates the Messaging Layer Security (MLS) protocol to provide end-to-end sec
 assurances, including authentication of protocol participants, confidentiality
 of messages exchanged within a room, and agreement on the state of the room. 
     " name="description">
-<meta content="xml2rfc 3.21.0" name="generator">
+<meta content="xml2rfc 3.22.0" name="generator">
 <meta content="mimi" name="keyword">
 <meta content="interoperable messaging" name="keyword">
 <meta content="chat" name="keyword">
 <meta content="secure messaging" name="keyword">
 <meta content="draft-ietf-mimi-protocol-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.21.0
-    Python 3.11.9
+  xml2rfc 3.22.0
+    Python 3.12.3
     ConfigArgParse 1.7
     google-i18n-address 3.1.0
     intervaltree 3.1.0
-    Jinja2 3.1.2
-    lxml 4.9.3
-    platformdirs 4.2.1
+    Jinja2 3.1.4
+    lxml 4.9.4
+    platformdirs 4.2.2
     pycountry 22.3.5
     PyYAML 6.0.1
-    requests 2.31.0
-    setuptools 68.2.2
-    six 1.16.0
+    requests 2.32.3
+    setuptools 69.5.1
     wcwidth 0.2.13
 -->
 <link href="draft-ietf-mimi-protocol.xml" rel="alternate" type="application/rfc+xml">
@@ -1041,11 +1040,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">MIMI+MLS Protocol</td>
-<td class="right">June 2024</td>
+<td class="right">July 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 12 December 2024</td>
+<td class="center">Expires 24 January 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1058,12 +1057,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-06-10" class="published">10 June 2024</time>
+<time datetime="2024-07-23" class="published">23 July 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-12-12">12 December 2024</time></dd>
+<dd class="expires"><time datetime="2025-01-24">24 January 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1141,7 +1140,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 12 December 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 24 January 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2972,6 +2971,11 @@ struct {
 } RatchetTreeOption;
 
 struct {
+  /* the key and nonce and sender_data_key and        */
+  /* sender_data_nonce to decrypt the sender_data and */
+  /* ciphertext of a PrivateMessage                   */
+  opaque sender_data_key&lt;V&gt;;
+  opaque sender_data_nonce&lt;V&gt;;
   opaque key&lt;V&gt;;
   opaque nonce&lt;V&gt;;
 } DecryptionInfo;
@@ -2988,6 +2992,8 @@ struct {
   MLSMessage message;  /* a PublicMessage or PrivateMessage */
   select (message.wire_format) {
     case mls_private_message:
+      /* share the key (and nonce) of this PrivateMessage */
+      /* handshake message encrypted only for the hub */
       opaque encryptedDecryptInfo&lt;V&gt;;
   }
 } DecryptableMLSMessage;
@@ -3021,10 +3027,18 @@ containing an AppSync proposal adding Bob (<code>mimi://b.example/b/bob</code>),
 Bob's MLS clients.  Alice includes the Welcome message which will be sent for
 Bob, a GroupInfo object for the hub provider, and complete <code>ratchet_tree</code>
 extension.<a href="#section-5.3-8" class="pilcrow">¶</a></p>
-<p id="section-5.3-9">If private handshake messages are conveyed, the decryption key and nonce for
-each Commit and each Proposal is re-encrypted for the hub and sent with the Commit or Proposal using the HPKE <code>Seal&lt;Base&gt;</code> function (see <span><a href="https://rfc-editor.org/rfc/rfc9180#section-6.1" class="relref">Section 6.1</a> of [<a href="#RFC9180" class="cite xref">RFC9180</a>]</span>) using a public key for the Hub using the algorithms in the group's ciphersuite, and where the <code>info</code> parameter is the hash of the MLSMessage object wrapping the private handshake message. The <code>aad</code> field is empty.<a href="#section-5.3-9" class="pilcrow">¶</a></p>
-<p id="section-5.3-10">The response body is described below:<a href="#section-5.3-10" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-5.3-11">
+<p id="section-5.3-9">A handshake message could be sent by the client as an MLS
+<code>PublicMessage</code> (which is visible to all providers) or as an MLS
+<code>PrivateMessage</code> (which is normally visible only to members). When
+a client sends a <code>PrivateMessage</code> it <span class="bcp14">MUST</span> also send a copy of the
+(unique per-message) decryption keys and nonces for that
+<code>PrivateMessage</code>, encrypted for the Hub provider. This allows the
+Hub to accomplish its responsibilities without the other providers
+in the network from being aware of the membership of non-local users.<a href="#section-5.3-9" class="pilcrow">¶</a></p>
+<p id="section-5.3-10">If private handshake messages are conveyed, the decryption information for
+each Commit and each Proposal is re-encrypted for the hub and sent with the Commit or Proposal using the HPKE <code>Seal&lt;Base&gt;</code> function (see <span><a href="https://rfc-editor.org/rfc/rfc9180#section-6.1" class="relref">Section 6.1</a> of [<a href="#RFC9180" class="cite xref">RFC9180</a>]</span>) using a public key for the Hub using the algorithms in the group's ciphersuite, and where the <code>info</code> parameter is the hash of the MLSMessage object wrapping the private handshake message. The <code>aad</code> field is empty.<a href="#section-5.3-10" class="pilcrow">¶</a></p>
+<p id="section-5.3-11">The response body is described below:<a href="#section-5.3-11" class="pilcrow">¶</a></p>
+<div class="lang-tls sourcecode" id="section-5.3-12">
 <pre>
 enum {
   success(0),
@@ -3048,24 +3062,24 @@ struct {
       ProposalRef invalidProposals&lt;V&gt;;
   };
 } UpdateRoomResponse
-</pre><a href="#section-5.3-11" class="pilcrow">¶</a>
+</pre><a href="#section-5.3-12" class="pilcrow">¶</a>
 </div>
-<p id="section-5.3-12">The semantics of the <code>UpdatedResponseCode</code> values are as follows:<a href="#section-5.3-12" class="pilcrow">¶</a></p>
+<p id="section-5.3-13">The semantics of the <code>UpdatedResponseCode</code> values are as follows:<a href="#section-5.3-13" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5.3-13.1">
-            <p id="section-5.3-13.1.1"><code>success</code> indicates the <code>UpdateRequest</code> was accepted and will be distributed.<a href="#section-5.3-13.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-5.3-14.1">
+            <p id="section-5.3-14.1.1"><code>success</code> indicates the <code>UpdateRequest</code> was accepted and will be distributed.<a href="#section-5.3-14.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.3-13.2">
-            <p id="section-5.3-13.2.1"><code>wrongEpoch</code> indicates that the hub provider is using a different epoch. The
-<code>currentEpoch</code> is provided in the response.<a href="#section-5.3-13.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.3-14.2">
+            <p id="section-5.3-14.2.1"><code>wrongEpoch</code> indicates that the hub provider is using a different epoch. The
+<code>currentEpoch</code> is provided in the response.<a href="#section-5.3-14.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.3-13.3">
-            <p id="section-5.3-13.3.1"><code>notAllowed</code> indicates that some type of policy or authorization prevented the
-hub provider from accepting the <code>UpdateRequest</code>.<a href="#section-5.3-13.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.3-14.3">
+            <p id="section-5.3-14.3.1"><code>notAllowed</code> indicates that some type of policy or authorization prevented the
+hub provider from accepting the <code>UpdateRequest</code>.<a href="#section-5.3-14.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.3-13.4">
-            <p id="section-5.3-13.4.1"><code>invalidProposal</code> indicates that at least one proposal is invalid. A list of
-invalidProposals is provided in the response.<a href="#section-5.3-13.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.3-14.4">
+            <p id="section-5.3-14.4.1"><code>invalidProposal</code> indicates that at least one proposal is invalid. A list of
+invalidProposals is provided in the response.<a href="#section-5.3-14.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -3809,6 +3823,7 @@ cost is offset by the simplicity of not having multiple policy enforcement point
     </h2>
 </section>
 </div>
+<div id="sec-combined-references">
 <section id="section-11">
       <h2 id="name-references">
 <a href="#section-11" class="section-number selfRef">11. </a><a href="#name-references" class="section-name selfRef">References</a>
@@ -3880,6 +3895,7 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 </section>
 </div>
 </section>
+</div>
 <div id="acknowledgments">
 <section id="appendix-A">
       <h2 id="name-acknowledgments">
