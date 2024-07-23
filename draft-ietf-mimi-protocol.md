@@ -914,34 +914,9 @@ struct {
 } RatchetTreeOption;
 
 struct {
-  /* the key and nonce to decrypt just the corresponding */
-  /* single PrivateMessage handshake message */
-  opaque key<V>;
-  opaque nonce<V>;
-} KeyAndNonce;
-
-encryptedDecyptionInfo = Seal<Base>(
-  /* public key and hash use algorithm from ciphersuite */
-  hubPublicKey,   /* public key of Hub */
-  "",             /* info = none e*/
-  "",             /* AAD = none */
-  KeyAndNonce     /* key and nonce to decrypt handshake */
-)
-
-struct {
-  MLSMessage message;  /* a PublicMessage or PrivateMessage */
-  select (message.wire_format) {
-    case mls_private_message:
-      /* share the key (and nonce) of this PrivateMessage */
-      /* handshake message encrypted only for the hub */
-      opaque encryptedDecyptionInfo<V>;
-  }
-} HubSharedHandshakeMessage;
-
-struct {
-  /* A Proposal or Commit which is either a PublicMessage; or a */
-  /* PrivateMessage with shared copy encrypted for the hub */
-  HubSharedHandshakeMessage proposalOrCommit;
+  /* A Proposal or Commit which is either a PublicMessage; */
+  /* or a SemiPrivateMessage                               */
+  MLSMessage proposalOrCommit;
   select (proposalOrCommit.content.content_type) {
     case commit:
       /* Both the Welcome and GroupInfo omit the ratchet_tree */
@@ -949,8 +924,9 @@ struct {
       GroupInfo groupInfo;
       RatchetTreeOption ratchetTreeOption;
     case proposal:
-      /* a list of additional (decryptable) proposals */
-      HubSharedHandshakeMessage moreProposals<V>;
+      /* a list of additional proposals, each represented */
+      /* as either PublicMessage or SemiPrivateMessage    */
+      MLSMessage moreProposals<V>;
 } HandshakeBundle;
 
 struct {
@@ -968,13 +944,13 @@ Bob, a GroupInfo object for the hub provider, and complete `ratchet_tree`
 extension.
 
 A handshake message could be sent by the client as an MLS
-`PublicMessage` (which is visible to all providers) or as an MLS
-`PrivateMessage` (which is normally visible only to members). When
-a client sends a `PrivateMessage` it MUST also send n copy of the
-(unique per-message) decryption key and nonce for that
-`PrivateMessage`, encrypted for the Hub provider. This allows the
-Hub to accomplish its responsibilities without the other providers
-in the network from being aware of the membership of non-local users.
+`PublicMessage` (which is visible to all providers), or as an MLS
+`SemiPrivateMessage` {{!I-D.mahy-mls-semiprivatemessage}} encrypted
+for the members and the hub provider as the sole `external_receiver`.
+(The contents and sender of a `SemiPrivateMessage` would not be visible to
+other providers). The use of `SemiPrivateMessage` allows the Hub to
+accomplish its policy enforcement responsibilities without the other
+providers being aware of the membership of non-local users.
 
 The response body is described below:
 
