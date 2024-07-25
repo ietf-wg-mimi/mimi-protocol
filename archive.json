@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-23T00:37:01.966663+00:00",
+  "timestamp": "2024-07-25T00:36:48.056029+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -7719,13 +7719,13 @@
       "labels": [],
       "body": "According to room policy, members could send handshake messages (Commits and Proposals) as PublicMessage or PrivateMessage. When a PrivateMessage the key and nonce used to encrypt the PrivateMessage is HPKE encrypted for the hub and included in the message.\r\nthe HPKE `Seal<Base>` `info` is the hash of the complete MLSMessage that would have been sent.\r\n",
       "createdAt": "2024-06-10T21:05:55Z",
-      "updatedAt": "2024-06-10T21:05:55Z",
+      "updatedAt": "2024-07-23T01:29:24Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "b8960de20eb846cb964462c4d18076b8c4f52924",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "rohan/semiPrivateCommit",
-      "headRefOid": "f8c5cb8d0d4806465e101415c209e1214558e985",
+      "headRefOid": "0ca0868541e5f1eebd9f0e880a9f554c61a47d80",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -7736,7 +7736,7 @@
     {
       "number": 80,
       "id": "PR_kwDOKZ8QO85yWqtB",
-      "title": "WIP: alternate way to have a semi-private handshake",
+      "title": "Semi-private handshake can use an MLS SemiPrivateMessage ",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/80",
       "state": "OPEN",
       "author": "rohanmahy",
@@ -7745,13 +7745,13 @@
       "labels": [],
       "body": "WIP\r\n\r\nAlternate (to #79 ) way to have a semi-private handshake (private, plus shared encrypted with the hub).",
       "createdAt": "2024-06-13T12:00:32Z",
-      "updatedAt": "2024-07-03T16:02:54Z",
+      "updatedAt": "2024-07-23T17:01:46Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "b8960de20eb846cb964462c4d18076b8c4f52924",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "rohan/semiPrivateAlt",
-      "headRefOid": "128327db9368eb491ddbbca34055875a698dbfa8",
+      "headRefOid": "878bdb4d3089e05aed1abf428debde919a66c565",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -7841,7 +7841,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-07-21T21:30:03Z",
-      "updatedAt": "2024-07-21T21:30:03Z",
+      "updatedAt": "2024-07-23T20:55:51Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "da9fa250389b16a3bf2ab39a11b54d9a6c6bff9e",
@@ -7852,8 +7852,63 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "comments": [
+        {
+          "author": "dconnolly",
+          "authorAssociation": "NONE",
+          "body": "@bifurcation @rohanmahy as per IETF 120, some refs to Hecate, more advanced approaches to franking: \r\nhttps://eprint.iacr.org/2021/1686\r\nhttps://www.usenix.org/system/files/sec22-issa.pdf",
+          "createdAt": "2024-07-23T20:52:09Z",
+          "updatedAt": "2024-07-23T20:52:09Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86C05Ol",
+          "commit": {
+            "abbreviatedOid": "0e0e971"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "The idea looks good, though I can't speak to the cryptography/franking specifics. +1 to franking for sure.\r\n\r\nI also have the ongoing (and outstanding) concern about what use cases we're applying to the abuse reporting mechanisms.",
+          "createdAt": "2024-07-23T19:33:04Z",
+          "updatedAt": "2024-07-23T19:39:51Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\n    target: https://about.fb.com/wp-content/uploads/2016/07/messenger-secret-conversations-technical-whitepaper.pdf\r\n```",
+              "createdAt": "2024-07-23T19:33:04Z",
+              "updatedAt": "2024-07-23T19:39:51Z"
+            },
+            {
+              "originalPosition": 235,
+              "body": "What is the intended scope of this reporting mechanism? Sending things to the hub feels improper when trying to report platform-level concerns (\"Alice has a pattern of disruptive behaviour\"), but would be fine when aiming to report messages without a broad pattern of abuse. \r\n\r\nWe may need two (or more) mechanisms to cover the use cases. Each mechanism should describe which use case(s) they cover specifically. ",
+              "createdAt": "2024-07-23T19:38:27Z",
+              "updatedAt": "2024-07-23T19:39:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86C1f9G",
+          "commit": {
+            "abbreviatedOid": "0e0e971"
+          },
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-07-23T20:55:51Z",
+          "updatedAt": "2024-07-23T20:55:51Z",
+          "comments": [
+            {
+              "originalPosition": 235,
+              "body": "From IETF120: this mechanism is specifically to allow the hub to enforce policy at the room/group level. Broad patterns of abuse (\"provider A's terms of service are being violated\") would be handled elsewhere. \r\n\r\nExamples of policy would be \"no cursing\", where the hub can then handle the report as needed.\r\n\r\nClarifying this in the PR is appreciated. ",
+              "createdAt": "2024-07-23T20:55:51Z",
+              "updatedAt": "2024-07-23T20:55:51Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
