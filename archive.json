@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-25T00:36:48.056029+00:00",
+  "timestamp": "2024-07-28T00:40:32.980573+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -222,7 +222,7 @@
       ],
       "body": "> **ISSUE**: Come to consensus on a specific binary encoding for the MIMI\r\n> transport protocol.\r\n\r\nCurrently we use TLS-serialized structs.",
       "createdAt": "2023-11-09T12:17:51Z",
-      "updatedAt": "2024-02-07T12:26:25Z",
+      "updatedAt": "2024-07-26T00:09:31Z",
       "closedAt": null,
       "comments": [
         {
@@ -301,6 +301,20 @@
           "body": "A comment on Protobuf: Some popular implementations do not fully support Protobuf 2, but only the subset of features that is also present in Protobuf 3. Groups being the most popular example. Also Protobuf 2 support is considered deprecated in some implementations, so specifying the use of Protobuf 2 at this point seems weird.\r\n\r\nBoth CBOR and TLS-PL seem to be reasonable options to me.",
           "createdAt": "2024-02-07T12:26:24Z",
           "updatedAt": "2024-02-07T12:26:24Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The WG came to consensus on CBOR for MIMI-content, and I believe we have consensus to continue with TLS encoding for MIMI-protocol. @tgeoghegan ?",
+          "createdAt": "2024-07-25T19:04:01Z",
+          "updatedAt": "2024-07-25T19:04:01Z"
+        },
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'm not sure we've had the transport debate yet as a working group. There's several open questions about whether HTTP, TLS-PL, etc are correct - the current stuff was presented as 'notional'.",
+          "createdAt": "2024-07-26T00:09:30Z",
+          "updatedAt": "2024-07-26T00:09:30Z"
         }
       ]
     },
@@ -327,7 +341,7 @@
       "id": "I_kwDOKZ8QO852WOFo",
       "title": "Notions of consent",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/27",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -336,9 +350,17 @@
       ],
       "body": "Can Alice see Bob's clients? Under what conditions? Other forms of consent?",
       "createdAt": "2023-11-09T12:37:37Z",
-      "updatedAt": "2023-11-09T12:37:37Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-07-25T18:59:04Z",
+      "closedAt": "2024-07-25T18:59:03Z",
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Addressed in #78. Closing.",
+          "createdAt": "2024-07-25T18:59:03Z",
+          "updatedAt": "2024-07-25T18:59:03Z"
+        }
+      ]
     },
     {
       "number": 28,
@@ -372,7 +394,7 @@
       ],
       "body": "Incorporate mahy-group-chat and ralston-policy documents, deduplicate ideas.",
       "createdAt": "2023-11-09T12:42:09Z",
-      "updatedAt": "2023-11-09T12:44:06Z",
+      "updatedAt": "2024-07-25T23:39:57Z",
       "closedAt": null,
       "comments": [
         {
@@ -381,6 +403,34 @@
           "body": "Related questions include how to communicate the policy to servers/users. This could be an IANA registry to contain descriptors for policy as a whole.",
           "createdAt": "2023-11-09T12:44:06Z",
           "updatedAt": "2023-11-09T12:44:06Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "presented at IETF120 on draft-mahy-mimi-room-policy as a strawperson policy concept. \r\n\r\nNoted that ABAC (Attribute-based access control) was not universally understood and it was unclear if what I proposed is role-based or attribute-based. There are not fixed roles, but it could still be described as role-based by some reasonable definition.",
+          "createdAt": "2024-07-25T19:53:22Z",
+          "updatedAt": "2024-07-25T19:53:22Z"
+        },
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "fwiw, at the meeting I was mostly using the [Wikipedia article on ABAC](https://en.wikipedia.org/wiki/Attribute-based_access_control) to compare it to RBAC. Wikipedia is far from the definition authority here, but doesn't make any effort to distinguish RBAC as needing fixed or dynamic roles to qualify, indicating that at least the general population wouldn't make that distinction.\r\n\r\nI think both ABAC and RBAC are probably fine approaches, though we should decide on what the policy actually needs to cover before trying to fit a structure onto it. We may find that as we work through what actually needs enforcing, those permissions do (or don't) require significant structure like dynamic roles.\r\n\r\nor tldr: I think we should write out what we feel needs to be permissible before deciding on a access control approaches.",
+          "createdAt": "2024-07-25T22:35:04Z",
+          "updatedAt": "2024-07-25T22:35:04Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks Travis. Maybe we can try to go over the user cases during one of the upcoming interims?",
+          "createdAt": "2024-07-25T22:48:13Z",
+          "updatedAt": "2024-07-25T22:48:13Z"
+        },
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "that would be great! Let's do it.",
+          "createdAt": "2024-07-25T23:39:55Z",
+          "updatedAt": "2024-07-25T23:39:55Z"
         }
       ]
     },
@@ -548,7 +598,7 @@
       "id": "I_kwDOKZ8QO852WTd9",
       "title": "Fix `ds.send_message`",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/34",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -557,8 +607,8 @@
       ],
       "body": "> **TODO**: This is not a proposal and there is no way for the Hub or follower servers\r\n> to authenticate this event at the moment. We might want to a way to do that\r\n> later.\r\n\r\n(thoughts welcome)",
       "createdAt": "2023-11-09T12:51:02Z",
-      "updatedAt": "2023-11-10T09:32:04Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-25T19:50:01Z",
+      "closedAt": "2024-07-25T19:50:01Z",
       "comments": [
         {
           "author": "kkohbrok",
@@ -566,6 +616,13 @@
           "body": "Some context: Application messages are signed, but the sender data is encrypted to protect the associated metadata. Only clients can decrypt the sender data and thus authenticate the message.",
           "createdAt": "2023-11-10T09:32:04Z",
           "updatedAt": "2023-11-10T09:32:04Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I believe the current submitMessage primitive has appropriate authorization now. Closing. ",
+          "createdAt": "2024-07-25T19:50:01Z",
+          "updatedAt": "2024-07-25T19:50:01Z"
         }
       ]
     },
@@ -574,15 +631,15 @@
       "id": "I_kwDOKZ8QO852WTtP",
       "title": "Do we need `m.room.info`?",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/35",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "see title",
       "createdAt": "2023-11-09T12:51:37Z",
-      "updatedAt": "2023-11-10T09:30:50Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-25T19:48:44Z",
+      "closedAt": "2024-07-25T19:48:44Z",
       "comments": [
         {
           "author": "kkohbrok",
@@ -590,6 +647,13 @@
           "body": "For context: If the room state is included fully (and not just as a hash) in the group state, it can be retrieved it via `ds.fetch_group_info`. `m.room.info` is thus somewhat redundant.",
           "createdAt": "2023-11-10T09:30:49Z",
           "updatedAt": "2023-11-10T09:30:49Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think the original intent of this was that clients would get informed of changes to the room and room policy, which I think is covered under the current architecture. Closing. (Please reopen a more specific issue if I missed something).",
+          "createdAt": "2024-07-25T19:48:44Z",
+          "updatedAt": "2024-07-25T19:48:44Z"
         }
       ]
     },
@@ -598,7 +662,7 @@
       "id": "I_kwDOKZ8QO852WUF-",
       "title": "`Add` authorization",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/36",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -607,9 +671,17 @@
       ],
       "body": "> **TODO**: We will probably want some kind of mechanism here that allows the\r\n> adder to signal that they are authorized (by the added user) to add the added\r\n> user to the room.",
       "createdAt": "2023-11-09T12:52:31Z",
-      "updatedAt": "2023-11-09T12:52:31Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-07-25T19:50:52Z",
+      "closedAt": "2024-07-25T19:50:52Z",
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think we have this currently with the AppSync mechanism. Closing.",
+          "createdAt": "2024-07-25T19:50:52Z",
+          "updatedAt": "2024-07-25T19:50:52Z"
+        }
+      ]
     },
     {
       "number": 37,
