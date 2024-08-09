@@ -1132,9 +1132,9 @@ and cannot later deny to a receiver that it sent them.
 Then the client calculates the `franking_tag`, as the HMAC SHA256 of the
 `application_data` (which includes the FrankingAssertion extension), using the `franking_key`:
 
-```
+~~~
 franking_tag = HMAC_SHA256( franking_key, application_data)
-```
+~~~
 
 The client includes the `franking_tag` in the Additional Authenticated Data
 of the MLS PrivateMessage using the Safe Extension `FrankAAD`. The client
@@ -1150,11 +1150,11 @@ When the Hub receives an acceptable application message with the `FrankAAD`
 AAD extension and a valid sender identity, it calculates a server frank for
 the message as follows:
 
-```
+~~~
 context = senderURI || roomURI || acceptedTimestamp
 serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
 franking_context_hash = SHA256(context)
-```
+~~~
 
 `HUBkey` is a secret symmetric key used on the Hub which the Hub can use to verify its own tags.
 
