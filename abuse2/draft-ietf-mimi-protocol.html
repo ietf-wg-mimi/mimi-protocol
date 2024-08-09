@@ -1040,11 +1040,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">MIMI+MLS Protocol</td>
-<td class="right">July 2024</td>
+<td class="right">August 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 22 January 2025</td>
+<td class="center">Expires 10 February 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1057,12 +1057,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-07-21" class="published">21 July 2024</time>
+<time datetime="2024-08-09" class="published">9 August 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-01-22">22 January 2025</time></dd>
+<dd class="expires"><time datetime="2025-02-10">10 February 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1140,7 +1140,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 22 January 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 10 February 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3180,9 +3180,11 @@ it just means that the sender is claiming it sent the values in the content,
 and cannot later deny to a receiver that it sent them.<a href="#section-5.4.1.1-4" class="pilcrow">¶</a></p>
 <p id="section-5.4.1.1-5">Then the client calculates the <code>franking_tag</code>, as the HMAC SHA256 of the
 <code>application_data</code> (which includes the FrankingAssertion extension), using the <code>franking_key</code>:<a href="#section-5.4.1.1-5" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.1-6"><code>
+<div class="alignLeft art-text artwork" id="section-5.4.1.1-6">
+<pre>
 franking_tag = HMAC_SHA256( franking_key, application_data)
-</code><a href="#section-5.4.1.1-6" class="pilcrow">¶</a></p>
+</pre><a href="#section-5.4.1.1-6" class="pilcrow">¶</a>
+</div>
 <p id="section-5.4.1.1-7">The client includes the <code>franking_tag</code> in the Additional Authenticated Data
 of the MLS PrivateMessage using the Safe Extension <code>FrankAAD</code>. The client
 uses the MIMI submitMessage to send its message, and also asserts a sender
@@ -3200,11 +3202,13 @@ by the server).<a href="#section-5.4.1.1-7" class="pilcrow">¶</a></p>
 <p id="section-5.4.1.2-1">When the Hub receives an acceptable application message with the <code>FrankAAD</code>
 AAD extension and a valid sender identity, it calculates a server frank for
 the message as follows:<a href="#section-5.4.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.2-2"><code>
+<div class="alignLeft art-text artwork" id="section-5.4.1.2-2">
+<pre>
 context = senderURI || roomURI || acceptedTimestamp
 serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
 franking_context_hash = SHA256(context)
-</code><a href="#section-5.4.1.2-2" class="pilcrow">¶</a></p>
+</pre><a href="#section-5.4.1.2-2" class="pilcrow">¶</a>
+</div>
 <p id="section-5.4.1.2-3"><code>HUBkey</code> is a secret symmetric key used on the Hub which the Hub can use to verify its own tags.<a href="#section-5.4.1.2-3" class="pilcrow">¶</a></p>
 <p id="section-5.4.1.2-4">The Hub fans out the encrypted message (which includes the <code>franking_tag</code>),
 the <code>serverFrank</code>, the <code>acceptedTimestamp</code>, the room URI, and the
