@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 22 January 2025                The Matrix.org Foundation C.I.C.
+Expires: 10 February 2025               The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 22 January 2025                The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                            21 July 2024
+                                                           9 August 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 January 2025.
+   This Internet-Draft will expire on 10 February 2025.
 
 Copyright Notice
 
@@ -1223,9 +1223,9 @@ ServerC->ClientC*: [[ Commit ]]
    FrankAAD AAD extension and a valid sender identity, it calculates a
    server frank for the message as follows:
 
-   context = senderURI || roomURI || acceptedTimestamp serverFrank =
-   HMAC_SHA256(HUBkey, franking_tag || context ) franking_context_hash =
-   SHA256(context)
+   context = senderURI || roomURI || acceptedTimestamp
+   serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
+   franking_context_hash = SHA256(context)
 
    HUBkey is a secret symmetric key used on the Hub which the Hub can
    use to verify its own tags.
