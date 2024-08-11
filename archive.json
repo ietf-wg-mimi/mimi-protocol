@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-08T00:37:26.115247+00:00",
+  "timestamp": "2024-08-11T00:41:15.607208+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -7913,13 +7913,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-07-21T21:30:03Z",
-      "updatedAt": "2024-07-23T20:55:51Z",
+      "updatedAt": "2024-08-09T22:44:11Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "da9fa250389b16a3bf2ab39a11b54d9a6c6bff9e",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "abuse2",
-      "headRefOid": "0e0e971415d3294c44949ff1331ff7d29d1af181",
+      "headRefOid": "527ef30cf66cb4d812ec0e1fbd4e8cb21ca076ec",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
