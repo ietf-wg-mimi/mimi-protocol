@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 8 January 2025                 The Matrix.org Foundation C.I.C.
+Expires: 14 February 2025               The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 8 January 2025                 The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                             7 July 2024
+                                                          13 August 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 January 2025.
+   This Internet-Draft will expire on 14 February 2025.
 
 Copyright Notice
 
@@ -1021,18 +1021,25 @@ ServerC->ClientC*: [[ Commit ]]
    } RatchetTreeOption;
 
    struct {
+     /* A Proposal or Commit which is either a PublicMessage; */
+     /* or a SemiPrivateMessage                               */
+     MLSMessage proposalOrCommit;
+     select (proposalOrCommit.content.content_type) {
+       case commit:
+         /* Both the Welcome and GroupInfo omit the ratchet_tree */
+         optional<Welcome> welcome;
+         GroupInfo groupInfo;
+         RatchetTreeOption ratchetTreeOption;
+       case proposal:
+         /* a list of additional proposals, each represented */
+         /* as either PublicMessage or SemiPrivateMessage    */
+         MLSMessage moreProposals<V>;
+   } HandshakeBundle;
+
+   struct {
      select (room.protocol) {
        case mls10:
-         PublicMessage proposalOrCommit;
-         select (proposalOrCommit.content.content_type) {
-           case commit:
-             /* Both the Welcome and GroupInfo omit the ratchet_tree */
-             optional<Welcome> welcome;
-             GroupInfo groupInfo;
-             RatchetTreeOption ratchetTreeOption;
-           case proposal:
-             PublicMessage moreProposals<V>; /* a list of additional proposals */
-         };
+         HandshakeBundle bundle;
      };
    } UpdateRequest;
 
@@ -1042,6 +1049,15 @@ ServerC->ClientC*: [[ Commit ]]
    MLS clients.  Alice includes the Welcome message which will be sent
    for Bob, a GroupInfo object for the hub provider, and complete
    ratchet_tree extension.
+
+   A handshake message could be sent by the client as an MLS
+   PublicMessage (which is visible to all providers), or as an MLS
+   SemiPrivateMessage [I-D.mahy-mls-semiprivatemessage] encrypted for
+   the members and the hub provider as the sole external_receiver.  (The
+   contents and sender of a SemiPrivateMessage would not be visible to
+   other providers).  The use of SemiPrivateMessage allows the Hub to
+   accomplish its policy enforcement responsibilities without the other
+   providers being aware of the membership of non-local users.
 
    The response body is described below:
 
@@ -1742,6 +1758,13 @@ ServerC->ClientC*: [[ Commit ]]
               mls-extensions-04, 24 April 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mls-
               extensions-04>.
+
+   [I-D.mahy-mls-semiprivatemessage]
+              Mahy, R., "Semi-Private Messages in the Messaging Layer
+              Security (MLS) Protocol", Work in Progress, Internet-
+              Draft, draft-mahy-mls-semiprivatemessage-02, 1 August
+              2024, <https://datatracker.ietf.org/doc/html/draft-mahy-
+              mls-semiprivatemessage-02>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
