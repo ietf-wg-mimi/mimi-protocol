@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-13T00:38:23.148762+00:00",
+  "timestamp": "2024-08-15T00:36:06.552459+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1151,6 +1151,22 @@
           "updatedAt": "2024-05-08T17:55:53Z"
         }
       ]
+    },
+    {
+      "number": 84,
+      "id": "I_kwDOKZ8QO86S3mOm",
+      "title": "Add description of flows with pseudonyms (opt-in privacy enhancement)",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/84",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Per discussion at IETF 120, the baseline privacy will be that handshake messages are sent with SemiPrivateMessage, to provide a balance of privacy and functionality (follower server don't see the roster, but the hub can still assist with policy decisions). The use of pseudonyms needs to be explained in an end-to-end flow as their use are an important opt-in privacy option for MIMI.",
+      "createdAt": "2024-08-13T19:18:20Z",
+      "updatedAt": "2024-08-13T19:18:20Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -7784,25 +7800,33 @@
       "id": "PR_kwDOKZ8QO85yBtWO",
       "title": "Semi-private handshake messages in Update Room",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/79",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "According to room policy, members could send handshake messages (Commits and Proposals) as PublicMessage or PrivateMessage. When a PrivateMessage the key and nonce used to encrypt the PrivateMessage is HPKE encrypted for the hub and included in the message.\r\nthe HPKE `Seal<Base>` `info` is the hash of the complete MLSMessage that would have been sent.\r\n",
       "createdAt": "2024-06-10T21:05:55Z",
-      "updatedAt": "2024-07-23T01:29:24Z",
+      "updatedAt": "2024-08-13T19:18:43Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "b8960de20eb846cb964462c4d18076b8c4f52924",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "rohan/semiPrivateCommit",
       "headRefOid": "0ca0868541e5f1eebd9f0e880a9f554c61a47d80",
-      "closedAt": null,
+      "closedAt": "2024-08-13T19:18:42Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "replaced by PR #80 ",
+          "createdAt": "2024-08-13T19:18:42Z",
+          "updatedAt": "2024-08-13T19:18:42Z"
+        }
+      ],
       "reviews": []
     },
     {
@@ -7810,25 +7834,35 @@
       "id": "PR_kwDOKZ8QO85yWqtB",
       "title": "Semi-private handshake can use an MLS SemiPrivateMessage ",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/80",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "WIP\r\n\r\nAlternate (to #79 ) way to have a semi-private handshake (private, plus shared encrypted with the hub).",
       "createdAt": "2024-06-13T12:00:32Z",
-      "updatedAt": "2024-07-23T17:01:46Z",
+      "updatedAt": "2024-08-13T19:14:30Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "b8960de20eb846cb964462c4d18076b8c4f52924",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "rohan/semiPrivateAlt",
       "headRefOid": "878bdb4d3089e05aed1abf428debde919a66c565",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "closedAt": "2024-08-13T19:14:29Z",
+      "mergedAt": "2024-08-13T19:14:29Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "4644c776e12a647792932b6344a91d54599a3e31"
+      },
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Per the discussion at IETF120 and the subsequent consensus call, the group will move forward with implementation of SemiPrivateMessage as a baseline mechanism and pseudonyms as an opt-in feature (which should require little or no new mechanism for the hub and other members/participants).\r\n\r\nThis PR replaces #79 ",
+          "createdAt": "2024-08-13T19:14:25Z",
+          "updatedAt": "2024-08-13T19:14:25Z"
+        }
+      ],
       "reviews": []
     },
     {
@@ -7913,7 +7947,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-07-21T21:30:03Z",
-      "updatedAt": "2024-08-09T22:44:11Z",
+      "updatedAt": "2024-08-13T19:36:07Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "da9fa250389b16a3bf2ab39a11b54d9a6c6bff9e",
@@ -7931,6 +7965,13 @@
           "body": "@bifurcation @rohanmahy as per IETF 120, some refs to Hecate, more advanced approaches to franking: \r\nhttps://eprint.iacr.org/2021/1686\r\nhttps://www.usenix.org/system/files/sec22-issa.pdf",
           "createdAt": "2024-07-23T20:52:09Z",
           "updatedAt": "2024-07-23T20:52:09Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Dierdre mentioned using Hecate during IETF 120. After looking at the spec, I realized that it requires a number of extra round trips between the client and the hub (possibly through a separate local provider), which would be a non-starter for MIMI high-volume applications.",
+          "createdAt": "2024-08-13T19:36:06Z",
+          "updatedAt": "2024-08-13T19:36:06Z"
         }
       ],
       "reviews": [
