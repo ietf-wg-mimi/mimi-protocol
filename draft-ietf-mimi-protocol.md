@@ -1137,7 +1137,6 @@ of the MIMI content using the integer key TBD1.
                           a3ab433aa5baa8e5e465f08a7e8e3b57',
   / SenderURI      / 2: "mimi://b.example/u/alice",
   / RoomURI        / 3: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
-  / EncryptedTime  / 4: 1721421755553
 }
 ~~~
 
