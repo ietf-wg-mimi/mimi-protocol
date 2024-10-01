@@ -1122,7 +1122,9 @@ significant changes as discussed in the final paragraph of this section.
 #### Client creation and sending
 
 When ready to send an application message with the MIMI content format,
-the sender generates a new random 256-bit `franking_key`.
+the sender generates a new cryptographically random 256-bit `franking_key`.
+An example mechanism to generate the `franking_key` safely is discussed in
+{{example-franking-alg}}.
 
 Next the sender attaches to the message the `franking_key` and any other
 fields the sender wishes to commit that are not otherwise represented in the
@@ -1140,7 +1142,7 @@ of the MIMI content using the integer key TBD1.
 }
 ~~~
 
-Note that this "commitment" does not vouch for the validity of these values,
+Note that this assertion does not vouch for the validity of these values,
 it just means that the sender is claiming it sent the values in the content,
 and cannot later deny to a receiver that it sent them.
 
@@ -1266,7 +1268,7 @@ struct {
 providers storing the `KeyPackageRef` of claimed KeyPackages.
 
 A client which receives a `success` to either an `UpdateRoomResponse` or a
-`SubmitMessageResponse` can view this a commitment from the hub provider that
+`SubmitMessageResponse` can view this as a commitment from the hub provider that
 the message will eventually be distributed to the group. The hub is not
 expected to forward the client's own message to the client or its provider.
 However, the client and its provider need to be prepared to receive the
@@ -1825,6 +1827,23 @@ their identities to the hub server using the MLS PublicMessage signed object
 format, together with the identity credentials presented in MLS.  This design
 means that the hub is trusted to correctly enforce the room's policy, but this
 cost is offset by the simplicity of not having multiple policy enforcement points.
+
+## Franking
+
+TBD.
+
+### Example algorithm for generating franking keys {#example-franking-alg}
+
+To ensure a strong source of entropy for the `franking_key` included in each
+message, the client can export a secret from the MLS key schedule, for
+example with the label `franking_base_secret` and calculate the
+`franking_key` as the HMAC of a locally generated nonce and the
+`franking_base_secret`.
+
+~~~
+franking_key = HMAC_SHA256( franking_base_secret, nonce )
+~~~
+
 
 # IANA Considerations
 
