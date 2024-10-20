@@ -51,6 +51,14 @@ author:
     email: ietf@raphaelrobert.com
 
 normative:
+  I-D.kohbrok-mls-associated-parties:
+    title: MLS Associated parties
+    author:
+      name: Konrad Kohbrok
+      org: Phoenix R&D
+      email: konrad.kohbrok@datashrine.de
+    date: 2024
+
 
 informative:
   SecretConversations:
@@ -1163,6 +1171,12 @@ by the server).
 
 #### Hub processing
 
+The Hub relies on a per-epoch secret shared among the members of the group
+and itself to obfuscate the message metadata (the `context`) the Hub uses
+while franking. It derives the `franking_context_secret` from the
+`ap_exporter_secret` in the Associated Party Key Schedule
+{{I-D.kohbrok-mls-associated-parties}}.
+
 When the Hub receives an acceptable application message with the `FrankAAD`
 AAD extension and a valid sender identity, it calculates a server frank for
 the message as follows:
@@ -1170,7 +1184,7 @@ the message as follows:
 ~~~
 context = senderURI || roomURI || acceptedTimestamp
 serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
-franking_context_hash = SHA256(context)
+franking_context_hash = SHA256(franking_context_secret || context)
 ~~~
 
 `HUBkey` is a secret symmetric key used on the Hub which the Hub can use to verify its own tags.
@@ -1186,10 +1200,12 @@ follower providers.
 When a client receives and decrypts an otherwise valid application message
 from a hub provider, the client looks for the existence of a frank
 (consisting of the `franking_tag` in the AAD, the `serverFrank` and the
-`franking_context_hash`. If so it verifies the construction of the
-`franking_tag` from the content of the message, and the construction of
-the `franking_context_hash` from the sender URI, room ID, and
-`acceptedTimestamp`.
+`franking_context_hash`. If so, it derives the `franking_context_secret`
+from the `ap_exporter_secret` in the Associated Party Key Schedule
+{{I-D.kohbrok-mls-associated-parties}}; then it verifies the construction of
+the `franking_tag` from the content of the message, and the construction of
+the `franking_context_hash` from the sender URI, room ID,
+`acceptedTimestamp`, and `franking_context_secret`.
 
 The receiving client receives a sender identifier in three different locations. The receiver verifies that they are all the same:
 
