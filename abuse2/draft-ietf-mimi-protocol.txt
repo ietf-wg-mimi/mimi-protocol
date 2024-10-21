@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 23 April 2025                  The Matrix.org Foundation C.I.C.
+Expires: 24 April 2025                  The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 23 April 2025                  The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                         20 October 2024
+                                                         21 October 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 April 2025.
+   This Internet-Draft will expire on 24 April 2025.
 
 Copyright Notice
 
@@ -1240,8 +1240,9 @@ ServerC->ClientC*: [[ Commit ]]
 
    The Hub relies on a per-epoch secret shared among the members of the
    group and itself to obfuscate the message metadata (the context) the
-   Hub uses while franking.  It derives the franking_context_secret from
-   the ap_exporter_secret in the Associated Party Key Schedule
+   Hub uses while franking.  It derives the franking_context_secret
+   (with the label "franking_context") from the ap_exporter_secret in
+   the Associated Party Key Schedule
    [I-D.kohbrok-mls-associated-parties].
 
    When the Hub receives an acceptable application message with the
