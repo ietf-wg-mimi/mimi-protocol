@@ -898,23 +898,11 @@ MUST prevent any of those clients from sending Commit messages in that group;
 and MUST prevent it from sending any proposals except for `Remove` and
 `SelfRemove` {{!I-D.ietf-mls-extensions}} proposals for its users in that group.
 
-The update request body is described below:
+The update request body is described below, using the
+`RatchetTreeOption` and `PartialGroupInfo` structs defined in
+{{!I-D.mahy-mls-ratchet-tree-options}}:
 
 ~~~ tls
-enum {
-  reserved(0),
-  full(1),
-  (255)
-} RatchetTreeRepresentation;
-
-struct {
-  RatchetTreeRepresentation representation;
-  select (representation) {
-    case full:
-      Node ratchet_tree<V>;
-  };
-} RatchetTreeOption;
-
 struct {
   /* A Proposal or Commit which is either a PublicMessage; */
   /* or a SemiPrivateMessage                               */
@@ -923,13 +911,30 @@ struct {
     case commit:
       /* Both the Welcome and GroupInfo omit the ratchet_tree */
       optional<Welcome> welcome;
-      GroupInfo groupInfo;
+      GroupInfoOption groupInfoOption;
       RatchetTreeOption ratchetTreeOption;
     case proposal:
       /* a list of additional proposals, each represented */
       /* as either PublicMessage or SemiPrivateMessage    */
       MLSMessage moreProposals<V>;
 } HandshakeBundle;
+
+enum {
+  reserved(0),
+  full(1),
+  partial(2),
+  (255)
+} GroupInfoRepresentation;
+
+struct {
+   GroupInfoRepresentation representation;
+   select (representation) {
+     case full:
+       GroupInfo groupInfo;
+     case partial:
+       PartialGroupInfo partialGroupInfo;
+   }
+} GroupInfoOption;
 
 struct {
   select (room.protocol) {
@@ -938,6 +943,13 @@ struct {
   };
 } UpdateRequest;
 ~~~
+ The semantics of `GroupInfoRepresentation` are as follows:
+
+ - `full` means that the entire GroupInfo will be included.
+ - `partial` means that a `PartialGroupInfo ` struct will be shared and
+ that the Distribution Service is expected to reconstruct the GroupInfo
+ as described in {{!I-D.mahy-mls-ratchet-tree-options}}.
+
 
 For example, in the first use case described in the Protocol Overview, Alice creates a Commit
 containing an AppSync proposal adding Bob (`mimi://b.example/b/bob`), and Add proposals for all
@@ -1068,8 +1080,9 @@ message out as presenting an ordered list of MLS-protected events to the next
 
 An MLS Welcome message is sent to the providers and local users associated with
 the `KeyPackageRef` values in the `secrets` array of the Welcome. In the case
-of a Welcome message, a `RatchetTreeOption` is also included in the
-FanoutMessage.
+of a Welcome message, a `RatchetTreeOption`
+(see Section 3 of {{!I-D.mahy-mls-ratchet-tree-options}}) is also included
+in the FanoutMessage.
 
 The hub provider also fans out any messages which originate from itself (ex: MLS
 External Proposals).
