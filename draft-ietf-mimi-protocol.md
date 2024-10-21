@@ -1177,6 +1177,29 @@ while franking. It derives the `franking_context_secret` (with the label
 "franking_context") from the `ap_exporter_secret` in the Associated Party
 Key Schedule {{I-D.kohbrok-mls-associated-parties}}.
 
+~~~ aasvg
+         ...
+          |
+          |
+          V
+    ap_epoch_secret
+          |
+          |
+          +--------------------> DeriveSecret(., "ap_exporter")
+          |                      = ap_exporter_secret
+          |                              *|*
+          |                              *|*
+          V                              *V*
+    DeriveSecret(., "init")     *DeriveSecret(., "franking_context")*
+          |                     *= franking_context_secret*
+          |
+          |
+          V
+    init_secret_[n]
+~~~
+{: title="The Extended Associated Party Key Schedule" #extended-ap-key-schedule }
+
+
 When the Hub receives an acceptable application message with the `FrankAAD`
 AAD extension and a valid sender identity, it calculates a server frank for
 the message as follows:
