@@ -51,8 +51,54 @@ author:
     email: ietf@raphaelrobert.com
 
 normative:
+  I-D.kohbrok-mls-associated-parties:
+    title: MLS Associated parties
+    author:
+      name: Konrad Kohbrok
+      org: Phoenix R&D
+      email: konrad.kohbrok@datashrine.de
+    date: 2024
+
 
 informative:
+  SecretConversations:
+    target: https://about.fb.com/wp-content/uploads/2016/07/messenger-secret-conversations-technical-whitepaper.pdf
+    title: "Messenger Secret Conversations: Technical Whitepaper, Version 2.0"
+    date: 2017-05-18
+    author:
+        org: Facebook
+  Grubbs2017:
+    target: https://eprint.iacr.org/2017/664.pdf
+    title: Message Franking via Committing Authenticated Encryption
+    date: 2017
+    author:
+      -
+        name: Paul Grubbs
+        org: Cornell Tech
+      -
+        name: Jiahui Lu
+        org: Shanghai Jiao Tong University
+      -
+        name: Thomas Ristenpart
+        org: Cornell Tech
+  InvisibleSalamanders:
+    target: https://link.springer.com/content/pdf/10.1007/978-3-319-96884-1_6.pdf
+    title: "Fast Message Franking: From Invisible Salamanders to Encryptment"
+    date: 2018
+    author:
+      -
+        name: Yevgeniy Dodis
+        org: New York University
+      -
+        name: Paul Grubbs
+        org: Cornell Tech
+      -
+        name: Thomas Ristenpart
+        org: Cornell Tech
+      -
+        name: Joanne Woodage
+        org: Royal Holloway, University of London
+
 
 --- abstract
 
@@ -712,7 +758,9 @@ GET /.well-known/mimi-protocol-directory
   "updateConsent":
      "https://mimi.example.com/v1/updateConsent/{requesterUser}",
   "identifierQuery":
-     "https://mimi.example.com/v1/identifierQuery/{domain}"
+     "https://mimi.example.com/v1/identifierQuery/{domain}",
+  "reportAbuse":
+     "https://mimi.example.com/v1/reportAbuse/{roomId}"
 }
 ~~~
 
@@ -1021,14 +1069,21 @@ struct {
     case mls10:
       /* PrivateMessage containing an application message */
       MLSMessage appMessage;
+      IdentifierURI sendingUri;
   };
 } SubmitMessageRequest;
 ~~~
 
-If the protocol is MLS 1.0, the request body is an MLSMessage with a WireFormat
-of PrivateMessage (an application message).
+If the protocol is MLS 1.0, the request body (`appMessage`) is an MLSMessage
+with a WireFormat of PrivateMessage, and a `content_type` of `application`.
+The `sendingUri` is a valid URI of the sender and is an active participant
+in the room.
 
-The response merely indicates if the message was accepted by the hub provider.
+The response indicates if the message was accepted by the hub provider. If a
+`frankingTag` was included in the `FrankAAD` extension in the PrivateMessage
+Additional Authenticated Data (AAD) in the request, the server attempts to
+frank the message and includes the `serverFrank` in a successful response
+(see the next subsection).
 
 ~~~ tls
 enum {
@@ -1048,6 +1103,7 @@ struct {
           /* the hub acceptance time
              (in milliseconds from the UNIX epoch) */
           uint64 acceptedTimestamp;
+          optional uint8[32] serverFrank;
         case epochTooOld:
           /* current MLS epoch for the MLS group */
           uint64 currentEpoch;
@@ -1068,6 +1124,146 @@ for the group. The `currentEpoch` is provided in the response.
 > **ISSUE:** Do we want to offer a distinction between regular application
 messages and ephemeral applications messages (for example "is typing"
 notifications), which do not need to be queued at the target provider.
+
+### Message Franking
+
+Franking is the placing of a cryptographic "stamp" on a message. In the
+MIMI context, the Hub is able to mark that it received a message without
+learning the message content. A receiver that decrypts the message can use
+a valid frank to prove it was received by the Hub and that the content was
+sent by a specific sender. Outsiders (including follower providers) never
+learn the content of the message, nor the sender.
+
+Franking was popularized by Facebook and described in their whitepaper
+{{SecretConversations}} about their end-to-end encryption system. This
+franking mechanism is largely motivated by that solution with two
+significant changes as discussed in the final paragraph of this section.
+
+#### Client creation and sending
+
+When ready to send an application message with the MIMI content format,
+the sender generates a new cryptographically random 256-bit `franking_key`.
+An example mechanism to generate the `franking_key` safely is discussed in
+{{example-franking-alg}}.
+
+Next the sender attaches to the message the `franking_key` and any other
+fields the sender wishes to commit that are not otherwise represented in the
+content. For a MIMI content object, the sender creates a CBOR "FrankingAssertion" map containing the `franking_key`, sender URI, and room
+URI. It adds this FrankingAssertion to the extensions map at the top level
+of the MIMI content using the integer key TBD1.
+
+~~~ cbor-diag
+/ FrankingAssertion map /
+{
+  / FrankingKey    / 1: h'9c8af7674941aa95f8df37bd36ea89f2
+                          a3ab433aa5baa8e5e465f08a7e8e3b57',
+  / SenderURI      / 2: "mimi://b.example/u/alice",
+  / RoomURI        / 3: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+}
+~~~
+
+Note that this assertion does not vouch for the validity of these values,
+it just means that the sender is claiming it sent the values in the content,
+and cannot later deny to a receiver that it sent them.
+
+Then the client calculates the `franking_tag`, as the HMAC SHA256 of the
+`application_data` (which includes the FrankingAssertion extension), using the `franking_key`:
+
+~~~
+franking_tag = HMAC_SHA256( franking_key, application_data)
+~~~
+
+The client includes the `franking_tag` in the Additional Authenticated Data
+of the MLS PrivateMessage using the Safe Extension `FrankAAD`. The client
+uses the MIMI submitMessage to send its message, and also asserts a sender
+identity to the Hub, which could be a valid pseudonym, and needs to match
+the sender URI value embedded in the message. If the message is accepted,
+the response includes the accepted timestamp and the serverFrank (generated
+by the server).
+
+#### Hub processing
+
+The Hub relies on a per-epoch secret shared among the members of the group
+and itself to obfuscate the message metadata (the `context`) the Hub uses
+while franking. It derives the `franking_context_secret` (with the label
+"franking_context") from the `ap_exporter_secret` in the Associated Party
+Key Schedule {{I-D.kohbrok-mls-associated-parties}}.
+
+~~~ aasvg
+         ...
+          |
+          |
+          V
+    ap_epoch_secret
+          |
+          |
+          +--------------------> DeriveSecret(., "ap_exporter")
+          |                      = ap_exporter_secret
+          |                               |
+          |                               |
+          V                               V
+    DeriveSecret(., "init")      DeriveSecret(., "franking_context")
+          |                      = franking_context_secret
+          |
+          |
+          V
+    init_secret_[n]
+~~~
+{: title="The Extended Associated Party Key Schedule" #extended-ap-key-schedule }
+
+
+When the Hub receives an acceptable application message with the `FrankAAD`
+AAD extension and a valid sender identity, it calculates a server frank for
+the message as follows:
+
+~~~
+context = senderURI || roomURI || acceptedTimestamp
+serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
+franking_context_hash = SHA256(franking_context_secret || context)
+~~~
+
+`HUBkey` is a secret symmetric key used on the Hub which the Hub can use to verify its own tags.
+
+The Hub fans out the encrypted message (which includes the `franking_tag`),
+the `serverFrank`, the `acceptedTimestamp`, the room URI, and the
+`franking_context_hash`. Note that the `senderURI` is not included in the
+application message, so the sender can remain anonymous with respect to
+follower providers.
+
+#### Receiver verification of frank
+
+When a client receives and decrypts an otherwise valid application message
+from a hub provider, the client looks for the existence of a frank
+(consisting of the `franking_tag` in the AAD, the `serverFrank` and the
+`franking_context_hash`. If so, it derives the `franking_context_secret`
+from the `ap_exporter_secret` in the Associated Party Key Schedule
+{{I-D.kohbrok-mls-associated-parties}}; then it verifies the construction of
+the `franking_tag` from the content of the message, and the construction of
+the `franking_context_hash` from the sender URI, room ID,
+`acceptedTimestamp`, and `franking_context_secret`.
+
+The receiving client receives a sender identifier in three different locations. The receiver verifies that they are all the same:
+
+- the sender's identity in its credential in its MLS LeafNode
+- the sender's identity asserted in the FrankingAssertion map inside the MIMI Content
+- the (hidden) sender's identity in the context used to create the `serverFrank`. The client hashes the concatenation of the sender's identity, the room ID, and the acceptedTimestamp. If this hash matches the context_validation hash, then the identity used by the server was correct.
+
+The receiver needs to store the frank with the decoded message so it can be
+used later.
+
+#### Comparison with the Facebook franking scheme
+
+Unlike in the Facebook franking scheme {{SecretConversations}}, the sender
+"commits to" its `franking_tag` as Additional Authenticated Data (AAD) inside the end-to-end encrypted message, and the hub only sends a hash of
+its context. This first change insures that the client cannot come up with
+another `franking_key` and message that has the same `franking_tag`
+{{Grubbs2017}}{{InvisibleSalamanders}}. According to {{Grubbs2017}},
+"... [Facebook's] franking scheme does not bind [the franking tag] to [the
+ciphertext] by including [the franking tag] in the associated data during
+encryption".
+The second change allows receivers to validate the sender URI in the hub's
+context, without revealing the sender URI to follower providers.
+
 
 ## Fanout Messages and Room Events
 
@@ -1096,6 +1292,12 @@ POST /notify/{roomId}
 
 ~~~ tls
 struct {
+  uint8[32] franking_tag;
+  uint8[32] serverFrank;
+  uint8[32] franking_context_hash;
+} Frank;
+
+struct {
   /* the hub acceptance time (in milliseconds from the UNIX epoch) */
   uint64 timestamp;
   select (protocol) {
@@ -1105,8 +1307,10 @@ struct {
          or a Welcome message.                               */
       MLSMessage message;
       select (message.wire_format) {
+        case application:
+           optional Frank frank;
         case welcome:
-          RatchetTreeOption ratchetTreeOption;
+           RatchetTreeOption ratchetTreeOption;
       };
   };
 } FanoutMessage;
@@ -1116,7 +1320,7 @@ struct {
 providers storing the `KeyPackageRef` of claimed KeyPackages.
 
 A client which receives a `success` to either an `UpdateRoomResponse` or a
-`SubmitMessageResponse` can view this a commitment from the hub provider that
+`SubmitMessageResponse` can view this as a commitment from the hub provider that
 the message will eventually be distributed to the group. The hub is not
 expected to forward the client's own message to the client or its provider.
 However, the client and its provider need to be prepared to receive the
@@ -1504,6 +1708,52 @@ struct {
 > {{?I-D.mahy-mimi-identity}}. Any specific conventions which are needed
 > should be merged into this document.
 
+## Report abuse
+
+Abuse reports are only sent to the hub provider. They are sent as an HTTP
+POST request.
+
+~~~
+POST /reportAbuse/{roomId}
+~~~
+
+The `reportingUser` optionally contains the identity of the user sending the
+`abuseReport`, while the `allegedAbuserUri` contains the URI of the alleged
+sender of abusive messages. The `reasonCode` is reserved to identify the type of
+abuse, and the `note` is a UTF8 human-readable string, which can be empty.
+
+> **TODO**: Find a standard taxonomy of reason codes to reference for
+> the `AbuseType`. The IANA Messaging Abuse Report Format parameters are
+> insufficient.
+
+Finally, abuse reports can optionally contain a handful of allegedly
+`AbusiveMessage`s, each of which contains an allegedly abusive message, its franks, and its timestamp.
+
+~~~ tls
+struct {
+  /* the MIMI Content message containing */
+  /* alleged abusive content */
+  opaque mimi_content<V>;
+  Frank frank;
+  uint64 acceptedTimestamp;
+} AbusiveMessage;
+
+enum {
+  reserved(0),
+  (255)
+} AbuseType;
+
+struct {
+  IdentifierUri reportingUser;
+  IdentifierUri allegedAbuserUri;
+  AbuseType reasonCode;
+  opaque note<V>;
+  AbusiveMessage messages<V>;
+} AbuseReport;
+~~~
+
+There is no response body. The response code only indicates if the abuse report was accepted, not if any specific automated or human action was taken.
+
 # Relation between MIMI state and cryptographic state
 
 ## Room state
@@ -1643,6 +1893,23 @@ their identities to the hub server using the MLS PublicMessage signed object
 format, together with the identity credentials presented in MLS.  This design
 means that the hub is trusted to correctly enforce the room's policy, but this
 cost is offset by the simplicity of not having multiple policy enforcement points.
+
+## Franking
+
+TBD.
+
+### Example algorithm for generating franking keys {#example-franking-alg}
+
+To ensure a strong source of entropy for the `franking_key` included in each
+message, the client can export a secret from the MLS key schedule, for
+example with the label `franking_base_secret` and calculate the
+`franking_key` as the HMAC of a locally generated nonce and the
+`franking_base_secret`.
+
+~~~
+franking_key = HMAC_SHA256( franking_base_secret, nonce )
+~~~
+
 
 # IANA Considerations
 
