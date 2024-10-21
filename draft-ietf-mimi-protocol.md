@@ -62,7 +62,7 @@ normative:
 
 informative:
   SecretConversations:
-    target: https://about.fb.com/wp-content/uploads/2016/07/messenger-secret-conversations-technical-whitepaper.pdf)
+    target: https://about.fb.com/wp-content/uploads/2016/07/messenger-secret-conversations-technical-whitepaper.pdf
     title: "Messenger Secret Conversations: Technical Whitepaper, Version 2.0"
     date: 2017-05-18
     author:
