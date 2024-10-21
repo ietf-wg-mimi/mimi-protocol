@@ -1963,9 +1963,9 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
               Extensions", Work in Progress, Internet-Draft, draft-ietf-
-              mls-extensions-04, 24 April 2024,
+              mls-extensions-05, 21 October 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mls-
-              extensions-04>.
+              extensions-05>.
 
    [I-D.kohbrok-mls-associated-parties]
               Kohbrok, K., "MLS Associated parties", 2024.
@@ -2046,7 +2046,7 @@ ServerC->ClientC*: [[ Commit ]]
               Facebook, "Messenger Secret Conversations: Technical
               Whitepaper, Version 2.0", 18 May 2017,
               <https://about.fb.com/wp-content/uploads/2016/07/
-              messenger-secret-conversations-technical-whitepaper.pdf)>.
+              messenger-secret-conversations-technical-whitepaper.pdf>.
 
 Acknowledgments
 
