@@ -2955,23 +2955,11 @@ receiving any additional application messages in the corresponding MLS group;
 <span class="bcp14">MUST</span> prevent any of those clients from sending Commit messages in that group;
 and <span class="bcp14">MUST</span> prevent it from sending any proposals except for <code>Remove</code> and
 <code>SelfRemove</code> <span>[<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span> proposals for its users in that group.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
-<p id="section-5.3-6">The update request body is described below:<a href="#section-5.3-6" class="pilcrow">¶</a></p>
+<p id="section-5.3-6">The update request body is described below, using the
+<code>RatchetTreeOption</code> and <code>PartialGroupInfo</code> structs defined in
+<span>[<a href="#I-D.mahy-mls-ratchet-tree-options" class="cite xref">I-D.mahy-mls-ratchet-tree-options</a>]</span>:<a href="#section-5.3-6" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.3-7">
 <pre>
-enum {
-  reserved(0),
-  full(1),
-  (255)
-} RatchetTreeRepresentation;
-
-struct {
-  RatchetTreeRepresentation representation;
-  select (representation) {
-    case full:
-      Node ratchet_tree&lt;V&gt;;
-  };
-} RatchetTreeOption;
-
 struct {
   /* A Proposal or Commit which is either a PublicMessage; */
   /* or a SemiPrivateMessage                               */
@@ -2980,13 +2968,30 @@ struct {
     case commit:
       /* Both the Welcome and GroupInfo omit the ratchet_tree */
       optional&lt;Welcome&gt; welcome;
-      GroupInfo groupInfo;
+      GroupInfoOption groupInfoOption;
       RatchetTreeOption ratchetTreeOption;
     case proposal:
       /* a list of additional proposals, each represented */
       /* as either PublicMessage or SemiPrivateMessage    */
       MLSMessage moreProposals&lt;V&gt;;
 } HandshakeBundle;
+
+enum {
+  reserved(0),
+  full(1),
+  partial(2),
+  (255)
+} GroupInfoRepresentation;
+
+struct {
+   GroupInfoRepresentation representation;
+   select (representation) {
+     case full:
+       GroupInfo groupInfo;
+     case partial:
+       PartialGroupInfo partialGroupInfo;
+   }
+} GroupInfoOption;
 
 struct {
   select (room.protocol) {
@@ -2996,21 +3001,32 @@ struct {
 } UpdateRequest;
 </pre><a href="#section-5.3-7" class="pilcrow">¶</a>
 </div>
-<p id="section-5.3-8">For example, in the first use case described in the Protocol Overview, Alice creates a Commit
+<p id="section-5.3-8">The semantics of <code>GroupInfoRepresentation</code> are as follows:<a href="#section-5.3-8" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.3-9.1">
+            <p id="section-5.3-9.1.1"><code>full</code> means that the entire GroupInfo will be included.<a href="#section-5.3-9.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.3-9.2">
+            <p id="section-5.3-9.2.1"><code>partial</code> means that a <code>PartialGroupInfo </code> struct will be shared and
+ that the Distribution Service is expected to reconstruct the GroupInfo
+ as described in <span>[<a href="#I-D.mahy-mls-ratchet-tree-options" class="cite xref">I-D.mahy-mls-ratchet-tree-options</a>]</span>.<a href="#section-5.3-9.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.3-10">For example, in the first use case described in the Protocol Overview, Alice creates a Commit
 containing an AppSync proposal adding Bob (<code>mimi://b.example/b/bob</code>), and Add proposals for all
 Bob's MLS clients.  Alice includes the Welcome message which will be sent for
 Bob, a GroupInfo object for the hub provider, and complete <code>ratchet_tree</code>
-extension.<a href="#section-5.3-8" class="pilcrow">¶</a></p>
-<p id="section-5.3-9">A handshake message could be sent by the client as an MLS
+extension.<a href="#section-5.3-10" class="pilcrow">¶</a></p>
+<p id="section-5.3-11">A handshake message could be sent by the client as an MLS
 <code>PublicMessage</code> (which is visible to all providers), or as an MLS
 <code>SemiPrivateMessage</code> <span>[<a href="#I-D.mahy-mls-semiprivatemessage" class="cite xref">I-D.mahy-mls-semiprivatemessage</a>]</span> encrypted
 for the members and the hub provider as the sole <code>external_receiver</code>.
 (The contents and sender of a <code>SemiPrivateMessage</code> would not be visible to
 other providers). The use of <code>SemiPrivateMessage</code> allows the Hub to
 accomplish its policy enforcement responsibilities without the other
-providers being aware of the membership of non-local users.<a href="#section-5.3-9" class="pilcrow">¶</a></p>
-<p id="section-5.3-10">The response body is described below:<a href="#section-5.3-10" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-5.3-11">
+providers being aware of the membership of non-local users.<a href="#section-5.3-11" class="pilcrow">¶</a></p>
+<p id="section-5.3-12">The response body is described below:<a href="#section-5.3-12" class="pilcrow">¶</a></p>
+<div class="lang-tls sourcecode" id="section-5.3-13">
 <pre>
 enum {
   success(0),
@@ -3034,24 +3050,24 @@ struct {
       ProposalRef invalidProposals&lt;V&gt;;
   };
 } UpdateRoomResponse
-</pre><a href="#section-5.3-11" class="pilcrow">¶</a>
+</pre><a href="#section-5.3-13" class="pilcrow">¶</a>
 </div>
-<p id="section-5.3-12">The semantics of the <code>UpdatedResponseCode</code> values are as follows:<a href="#section-5.3-12" class="pilcrow">¶</a></p>
+<p id="section-5.3-14">The semantics of the <code>UpdatedResponseCode</code> values are as follows:<a href="#section-5.3-14" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5.3-13.1">
-            <p id="section-5.3-13.1.1"><code>success</code> indicates the <code>UpdateRequest</code> was accepted and will be distributed.<a href="#section-5.3-13.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-5.3-15.1">
+            <p id="section-5.3-15.1.1"><code>success</code> indicates the <code>UpdateRequest</code> was accepted and will be distributed.<a href="#section-5.3-15.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.3-13.2">
-            <p id="section-5.3-13.2.1"><code>wrongEpoch</code> indicates that the hub provider is using a different epoch. The
-<code>currentEpoch</code> is provided in the response.<a href="#section-5.3-13.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.3-15.2">
+            <p id="section-5.3-15.2.1"><code>wrongEpoch</code> indicates that the hub provider is using a different epoch. The
+<code>currentEpoch</code> is provided in the response.<a href="#section-5.3-15.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.3-13.3">
-            <p id="section-5.3-13.3.1"><code>notAllowed</code> indicates that some type of policy or authorization prevented the
-hub provider from accepting the <code>UpdateRequest</code>.<a href="#section-5.3-13.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.3-15.3">
+            <p id="section-5.3-15.3.1"><code>notAllowed</code> indicates that some type of policy or authorization prevented the
+hub provider from accepting the <code>UpdateRequest</code>.<a href="#section-5.3-15.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.3-13.4">
-            <p id="section-5.3-13.4.1"><code>invalidProposal</code> indicates that at least one proposal is invalid. A list of
-invalidProposals is provided in the response.<a href="#section-5.3-13.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.3-15.4">
+            <p id="section-5.3-15.4.1"><code>invalidProposal</code> indicates that at least one proposal is invalid. A list of
+invalidProposals is provided in the response.<a href="#section-5.3-15.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -3148,8 +3164,9 @@ message out as presenting an ordered list of MLS-protected events to the next
 "hop" toward the receiving client.<a href="#section-5.5-1" class="pilcrow">¶</a></p>
 <p id="section-5.5-2">An MLS Welcome message is sent to the providers and local users associated with
 the <code>KeyPackageRef</code> values in the <code>secrets</code> array of the Welcome. In the case
-of a Welcome message, a <code>RatchetTreeOption</code> is also included in the
-FanoutMessage.<a href="#section-5.5-2" class="pilcrow">¶</a></p>
+of a Welcome message, a <code>RatchetTreeOption</code>
+(see Section 3 of <span>[<a href="#I-D.mahy-mls-ratchet-tree-options" class="cite xref">I-D.mahy-mls-ratchet-tree-options</a>]</span>) is also included
+in the FanoutMessage.<a href="#section-5.5-2" class="pilcrow">¶</a></p>
 <p id="section-5.5-3">The hub provider also fans out any messages which originate from itself (ex: MLS
 External Proposals).<a href="#section-5.5-3" class="pilcrow">¶</a></p>
 <p id="section-5.5-4">The hub can include multiple concatenated <code>FanoutMessage</code> objects relevant to
@@ -3775,6 +3792,10 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <dt id="I-D.ietf-mls-extensions">[I-D.ietf-mls-extensions]</dt>
         <dd>
 <span class="refAuthor">Robert, R.</span>, <span class="refTitle">"The Messaging Layer Security (MLS) Extensions"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mls-extensions-05</span>, <time datetime="2024-10-21" class="refDate">21 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-05">https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-05</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.mahy-mls-ratchet-tree-options">[I-D.mahy-mls-ratchet-tree-options]</dt>
+        <dd>
+<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Ways to convey the Ratchet Tree in Messaging Layer Security"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-ratchet-tree-options-01</span>, <time datetime="2024-10-20" class="refDate">20 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-ratchet-tree-options-01">https://datatracker.ietf.org/doc/html/draft-mahy-mls-ratchet-tree-options-01</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.mahy-mls-semiprivatemessage">[I-D.mahy-mls-semiprivatemessage]</dt>
         <dd>
