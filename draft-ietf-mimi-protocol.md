@@ -1173,9 +1173,9 @@ by the server).
 
 The Hub relies on a per-epoch secret shared among the members of the group
 and itself to obfuscate the message metadata (the `context`) the Hub uses
-while franking. It derives the `franking_context_secret` from the
-`ap_exporter_secret` in the Associated Party Key Schedule
-{{I-D.kohbrok-mls-associated-parties}}.
+while franking. It derives the `franking_context_secret` (with the label
+"franking_context") from the `ap_exporter_secret` in the Associated Party
+Key Schedule {{I-D.kohbrok-mls-associated-parties}}.
 
 When the Hub receives an acceptable application message with the `FrankAAD`
 AAD extension and a valid sender identity, it calculates a server frank for
