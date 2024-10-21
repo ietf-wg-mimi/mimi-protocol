@@ -1239,6 +1239,11 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4">
                 <p id="section-toc.1-1.5.2.4.1"><a href="#section-5.4" class="auto internal xref">5.4</a>.  <a href="#name-submit-a-message" class="internal xref">Submit a Message</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4.2.1">
+                    <p id="section-toc.1-1.5.2.4.2.1.1"><a href="#section-5.4.1" class="auto internal xref">5.4.1</a>.  <a href="#name-message-franking" class="internal xref">Message Franking</a></p>
+</li>
+                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.5">
                 <p id="section-toc.1-1.5.2.5.1"><a href="#section-5.5" class="auto internal xref">5.5</a>.  <a href="#name-fanout-messages-and-room-ev" class="internal xref">Fanout Messages and Room Events</a></p>
@@ -1251,6 +1256,9 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.8">
                 <p id="section-toc.1-1.5.2.8.1"><a href="#section-5.8" class="auto internal xref">5.8</a>.  <a href="#name-find-internal-address" class="internal xref">Find internal address</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.9">
+                <p id="section-toc.1-1.5.2.9.1"><a href="#section-5.9" class="auto internal xref">5.9</a>.  <a href="#name-report-abuse" class="internal xref">Report abuse</a></p>
 </li>
             </ul>
 </li>
@@ -1276,6 +1284,16 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-franking" class="internal xref">Franking</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1.2.1">
+                    <p id="section-toc.1-1.8.2.1.2.1.1"><a href="#section-8.1.1" class="auto internal xref">8.1.1</a>.  <a href="#name-example-algorithm-for-gener" class="internal xref">Example algorithm for generating franking keys</a></p>
+</li>
+                </ul>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
@@ -2747,7 +2765,9 @@ GET /.well-known/mimi-protocol-directory
   "updateConsent":
      "https://mimi.example.com/v1/updateConsent/{requesterUser}",
   "identifierQuery":
-     "https://mimi.example.com/v1/identifierQuery/{domain}"
+     "https://mimi.example.com/v1/identifierQuery/{domain}",
+  "reportAbuse":
+     "https://mimi.example.com/v1/reportAbuse/{roomId}"
 }
 </pre><a href="#section-5.1-4" class="pilcrow">¶</a>
 </div>
@@ -3093,13 +3113,20 @@ struct {
     case mls10:
       /* PrivateMessage containing an application message */
       MLSMessage appMessage;
+      IdentifierURI sendingUri;
   };
 } SubmitMessageRequest;
 </pre><a href="#section-5.4-4" class="pilcrow">¶</a>
 </div>
-<p id="section-5.4-5">If the protocol is MLS 1.0, the request body is an MLSMessage with a WireFormat
-of PrivateMessage (an application message).<a href="#section-5.4-5" class="pilcrow">¶</a></p>
-<p id="section-5.4-6">The response merely indicates if the message was accepted by the hub provider.<a href="#section-5.4-6" class="pilcrow">¶</a></p>
+<p id="section-5.4-5">If the protocol is MLS 1.0, the request body (<code>appMessage</code>) is an MLSMessage
+with a WireFormat of PrivateMessage, and a <code>content_type</code> of <code>application</code>.
+The <code>sendingUri</code> is a valid URI of the sender and is an active participant
+in the room.<a href="#section-5.4-5" class="pilcrow">¶</a></p>
+<p id="section-5.4-6">The response indicates if the message was accepted by the hub provider. If a
+<code>frankingTag</code> was included in the <code>FrankAAD</code> extension in the PrivateMessage
+Additional Authenticated Data (AAD) in the request, the server attempts to
+frank the message and includes the <code>serverFrank</code> in a successful response
+(see the next subsection).<a href="#section-5.4-6" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.4-7">
 <pre>
 enum {
@@ -3119,6 +3146,7 @@ struct {
           /* the hub acceptance time
              (in milliseconds from the UNIX epoch) */
           uint64 acceptedTimestamp;
+          optional uint8[32] serverFrank;
         case epochTooOld:
           /* current MLS epoch for the MLS group */
           uint64 currentEpoch;
@@ -3149,6 +3177,180 @@ messages and ephemeral applications messages (for example "is typing"
 notifications), which do not need to be queued at the target provider.<a href="#section-5.4-10.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
+<div id="message-franking">
+<section id="section-5.4.1">
+          <h4 id="name-message-franking">
+<a href="#section-5.4.1" class="section-number selfRef">5.4.1. </a><a href="#name-message-franking" class="section-name selfRef">Message Franking</a>
+          </h4>
+<p id="section-5.4.1-1">Franking is the placing of a cryptographic "stamp" on a message. In the
+MIMI context, the Hub is able to mark that it received a message without
+learning the message content. A receiver that decrypts the message can use
+a valid frank to prove it was received by the Hub and that the content was
+sent by a specific sender. Outsiders (including follower providers) never
+learn the content of the message, nor the sender.<a href="#section-5.4.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.1-2">Franking was popularized by Facebook and described in their whitepaper
+<span>[<a href="#SecretConversations" class="cite xref">SecretConversations</a>]</span> about their end-to-end encryption system. This
+franking mechanism is largely motivated by that solution with two
+significant changes as discussed in the final paragraph of this section.<a href="#section-5.4.1-2" class="pilcrow">¶</a></p>
+<div id="client-creation-and-sending">
+<section id="section-5.4.1.1">
+            <h5 id="name-client-creation-and-sending">
+<a href="#section-5.4.1.1" class="section-number selfRef">5.4.1.1. </a><a href="#name-client-creation-and-sending" class="section-name selfRef">Client creation and sending</a>
+            </h5>
+<p id="section-5.4.1.1-1">When ready to send an application message with the MIMI content format,
+the sender generates a new cryptographically random 256-bit <code>franking_key</code>.
+An example mechanism to generate the <code>franking_key</code> safely is discussed in
+<a href="#example-franking-alg" class="auto internal xref">Section 8.1.1</a>.<a href="#section-5.4.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.1-2">Next the sender attaches to the message the <code>franking_key</code> and any other
+fields the sender wishes to commit that are not otherwise represented in the
+content. For a MIMI content object, the sender creates a CBOR "FrankingAssertion" map containing the <code>franking_key</code>, sender URI, and room
+URI. It adds this FrankingAssertion to the extensions map at the top level
+of the MIMI content using the integer key TBD1.<a href="#section-5.4.1.1-2" class="pilcrow">¶</a></p>
+<div class="lang-cbor-diag sourcecode" id="section-5.4.1.1-3">
+<pre>
+/ FrankingAssertion map /
+{
+  / FrankingKey    / 1: h'9c8af7674941aa95f8df37bd36ea89f2
+                          a3ab433aa5baa8e5e465f08a7e8e3b57',
+  / SenderURI      / 2: "mimi://b.example/u/alice",
+  / RoomURI        / 3: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+}
+</pre><a href="#section-5.4.1.1-3" class="pilcrow">¶</a>
+</div>
+<p id="section-5.4.1.1-4">Note that this assertion does not vouch for the validity of these values,
+it just means that the sender is claiming it sent the values in the content,
+and cannot later deny to a receiver that it sent them.<a href="#section-5.4.1.1-4" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.1-5">Then the client calculates the <code>franking_tag</code>, as the HMAC SHA256 of the
+<code>application_data</code> (which includes the FrankingAssertion extension), using the <code>franking_key</code>:<a href="#section-5.4.1.1-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.4.1.1-6">
+<pre>
+franking_tag = HMAC_SHA256( franking_key, application_data)
+</pre><a href="#section-5.4.1.1-6" class="pilcrow">¶</a>
+</div>
+<p id="section-5.4.1.1-7">The client includes the <code>franking_tag</code> in the Additional Authenticated Data
+of the MLS PrivateMessage using the Safe Extension <code>FrankAAD</code>. The client
+uses the MIMI submitMessage to send its message, and also asserts a sender
+identity to the Hub, which could be a valid pseudonym, and needs to match
+the sender URI value embedded in the message. If the message is accepted,
+the response includes the accepted timestamp and the serverFrank (generated
+by the server).<a href="#section-5.4.1.1-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="hub-processing">
+<section id="section-5.4.1.2">
+            <h5 id="name-hub-processing">
+<a href="#section-5.4.1.2" class="section-number selfRef">5.4.1.2. </a><a href="#name-hub-processing" class="section-name selfRef">Hub processing</a>
+            </h5>
+<p id="section-5.4.1.2-1">The Hub relies on a per-epoch secret shared among the members of the group
+and itself to obfuscate the message metadata (the <code>context</code>) the Hub uses
+while franking. It derives the <code>franking_context_secret</code> (with the label
+"franking_context") from the <code>ap_exporter_secret</code> in the Associated Party
+Key Schedule <span>[<a href="#I-D.kohbrok-mls-associated-parties" class="cite xref">I-D.kohbrok-mls-associated-parties</a>]</span>.<a href="#section-5.4.1.2-1" class="pilcrow">¶</a></p>
+<span id="name-the-extended-associated-par"></span><div id="extended-ap-key-schedule">
+<figure id="figure-10">
+              <div id="section-5.4.1.2-2.1">
+                <div class="alignLeft art-svg artwork" id="section-5.4.1.2-2.1.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="336" width="520" viewBox="0 0 520 336" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                    <path d="M 56,32 L 56,80" fill="none" stroke="black"></path>
+                    <path d="M 56,112 L 56,208" fill="none" stroke="black"></path>
+                    <path d="M 56,240 L 56,288" fill="none" stroke="black"></path>
+                    <path d="M 312,176 L 312,208" fill="none" stroke="black"></path>
+                    <path d="M 56,144 L 224,144" fill="none" stroke="black"></path>
+                    <polygon class="arrowhead" points="320,208 308,202.4 308,213.6" fill="black" transform="rotate(90,312,208)"></polygon>
+                    <polygon class="arrowhead" points="232,144 220,138.4 220,149.6" fill="black" transform="rotate(0,224,144)"></polygon>
+                    <polygon class="arrowhead" points="64,288 52,282.4 52,293.6" fill="black" transform="rotate(90,56,288)"></polygon>
+                    <polygon class="arrowhead" points="64,208 52,202.4 52,213.6" fill="black" transform="rotate(90,56,208)"></polygon>
+                    <polygon class="arrowhead" points="64,80 52,74.4 52,85.6" fill="black" transform="rotate(90,56,80)"></polygon>
+                    <g class="text">
+                      <text x="48" y="36">.</text>
+                      <text x="64" y="36">.</text>
+                      <text x="64" y="100">ap_epoch_secret</text>
+                      <text x="296" y="148">DeriveSecret(.,</text>
+                      <text x="420" y="148">"ap_exporter")</text>
+                      <text x="240" y="164">=</text>
+                      <text x="324" y="164">ap_exporter_secret</text>
+                      <text x="64" y="228">DeriveSecret(.,</text>
+                      <text x="160" y="228">"init")</text>
+                      <text x="296" y="228">DeriveSecret(.,</text>
+                      <text x="440" y="228">"franking_context")</text>
+                      <text x="240" y="244">=</text>
+                      <text x="344" y="244">franking_context_secret</text>
+                      <text x="64" y="308">init_secret_[n]</text>
+                    </g>
+                  </svg><a href="#section-5.4.1.2-2.1.1" class="pilcrow">¶</a>
+</div>
+</div>
+<figcaption><a href="#figure-10" class="selfRef">Figure 10</a>:
+<a href="#name-the-extended-associated-par" class="selfRef">The Extended Associated Party Key Schedule</a>
+              </figcaption></figure>
+</div>
+<p id="section-5.4.1.2-3">When the Hub receives an acceptable application message with the <code>FrankAAD</code>
+AAD extension and a valid sender identity, it calculates a server frank for
+the message as follows:<a href="#section-5.4.1.2-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.4.1.2-4">
+<pre>
+context = senderURI || roomURI || acceptedTimestamp
+serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
+franking_context_hash = SHA256(franking_context_secret || context)
+</pre><a href="#section-5.4.1.2-4" class="pilcrow">¶</a>
+</div>
+<p id="section-5.4.1.2-5"><code>HUBkey</code> is a secret symmetric key used on the Hub which the Hub can use to verify its own tags.<a href="#section-5.4.1.2-5" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.2-6">The Hub fans out the encrypted message (which includes the <code>franking_tag</code>),
+the <code>serverFrank</code>, the <code>acceptedTimestamp</code>, the room URI, and the
+<code>franking_context_hash</code>. Note that the <code>senderURI</code> is not included in the
+application message, so the sender can remain anonymous with respect to
+follower providers.<a href="#section-5.4.1.2-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="receiver-verification-of-frank">
+<section id="section-5.4.1.3">
+            <h5 id="name-receiver-verification-of-fr">
+<a href="#section-5.4.1.3" class="section-number selfRef">5.4.1.3. </a><a href="#name-receiver-verification-of-fr" class="section-name selfRef">Receiver verification of frank</a>
+            </h5>
+<p id="section-5.4.1.3-1">When a client receives and decrypts an otherwise valid application message
+from a hub provider, the client looks for the existence of a frank
+(consisting of the <code>franking_tag</code> in the AAD, the <code>serverFrank</code> and the
+<code>franking_context_hash</code>. If so, it derives the <code>franking_context_secret</code>
+from the <code>ap_exporter_secret</code> in the Associated Party Key Schedule
+<span>[<a href="#I-D.kohbrok-mls-associated-parties" class="cite xref">I-D.kohbrok-mls-associated-parties</a>]</span>; then it verifies the construction of
+the <code>franking_tag</code> from the content of the message, and the construction of
+the <code>franking_context_hash</code> from the sender URI, room ID,
+<code>acceptedTimestamp</code>, and <code>franking_context_secret</code>.<a href="#section-5.4.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.3-2">The receiving client receives a sender identifier in three different locations. The receiver verifies that they are all the same:<a href="#section-5.4.1.3-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.4.1.3-3.1">
+                <p id="section-5.4.1.3-3.1.1">the sender's identity in its credential in its MLS LeafNode<a href="#section-5.4.1.3-3.1.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-5.4.1.3-3.2">
+                <p id="section-5.4.1.3-3.2.1">the sender's identity asserted in the FrankingAssertion map inside the MIMI Content<a href="#section-5.4.1.3-3.2.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-5.4.1.3-3.3">
+                <p id="section-5.4.1.3-3.3.1">the (hidden) sender's identity in the context used to create the <code>serverFrank</code>. The client hashes the concatenation of the sender's identity, the room ID, and the acceptedTimestamp. If this hash matches the context_validation hash, then the identity used by the server was correct.<a href="#section-5.4.1.3-3.3.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+<p id="section-5.4.1.3-4">The receiver needs to store the frank with the decoded message so it can be
+used later.<a href="#section-5.4.1.3-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="comparison-with-the-facebook-franking-scheme">
+<section id="section-5.4.1.4">
+            <h5 id="name-comparison-with-the-faceboo">
+<a href="#section-5.4.1.4" class="section-number selfRef">5.4.1.4. </a><a href="#name-comparison-with-the-faceboo" class="section-name selfRef">Comparison with the Facebook franking scheme</a>
+            </h5>
+<p id="section-5.4.1.4-1">Unlike in the Facebook franking scheme <span>[<a href="#SecretConversations" class="cite xref">SecretConversations</a>]</span>, the sender
+"commits to" its <code>franking_tag</code> as Additional Authenticated Data (AAD) inside the end-to-end encrypted message, and the hub only sends a hash of
+its context. This first change insures that the client cannot come up with
+another <code>franking_key</code> and message that has the same <code>franking_tag</code>
+              <span>[<a href="#Grubbs2017" class="cite xref">Grubbs2017</a>]</span><span>[<a href="#InvisibleSalamanders" class="cite xref">InvisibleSalamanders</a>]</span>. According to <span>[<a href="#Grubbs2017" class="cite xref">Grubbs2017</a>]</span>,
+"... [Facebook's] franking scheme does not bind [the franking tag] to [the
+ciphertext] by including [the franking tag] in the associated data during
+encryption".
+The second change allows receivers to validate the sender URI in the hub's
+context, without revealing the sender URI to follower providers.<a href="#section-5.4.1.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
 </section>
 </div>
 <div id="fanout-messages-and-room-events">
@@ -3179,6 +3381,12 @@ POST /notify/{roomId}
 <div class="lang-tls sourcecode" id="section-5.5-6">
 <pre>
 struct {
+  uint8[32] franking_tag;
+  uint8[32] serverFrank;
+  uint8[32] franking_context_hash;
+} Frank;
+
+struct {
   /* the hub acceptance time (in milliseconds from the UNIX epoch) */
   uint64 timestamp;
   select (protocol) {
@@ -3188,8 +3396,10 @@ struct {
          or a Welcome message.                               */
       MLSMessage message;
       select (message.wire_format) {
+        case application:
+           optional Frank frank;
         case welcome:
-          RatchetTreeOption ratchetTreeOption;
+           RatchetTreeOption ratchetTreeOption;
       };
   };
 } FanoutMessage;
@@ -3202,7 +3412,7 @@ providers storing the <code>KeyPackageRef</code> of claimed KeyPackages.<a href=
 </li>
         </ul>
 <p id="section-5.5-8">A client which receives a <code>success</code> to either an <code>UpdateRoomResponse</code> or a
-<code>SubmitMessageResponse</code> can view this a commitment from the hub provider that
+<code>SubmitMessageResponse</code> can view this as a commitment from the hub provider that
 the message will eventually be distributed to the group. The hub is not
 expected to forward the client's own message to the client or its provider.
 However, the client and its provider need to be prepared to receive the
@@ -3604,6 +3814,58 @@ should be merged into this document.<a href="#section-5.8-10.1.1" class="pilcrow
         </ul>
 </section>
 </div>
+<div id="report-abuse">
+<section id="section-5.9">
+        <h3 id="name-report-abuse">
+<a href="#section-5.9" class="section-number selfRef">5.9. </a><a href="#name-report-abuse" class="section-name selfRef">Report abuse</a>
+        </h3>
+<p id="section-5.9-1">Abuse reports are only sent to the hub provider. They are sent as an HTTP
+POST request.<a href="#section-5.9-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.9-2">
+<pre>
+POST /reportAbuse/{roomId}
+</pre><a href="#section-5.9-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.9-3">The <code>reportingUser</code> optionally contains the identity of the user sending the
+<code>abuseReport</code>, while the <code>allegedAbuserUri</code> contains the URI of the alleged
+sender of abusive messages. The <code>reasonCode</code> is reserved to identify the type of
+abuse, and the <code>note</code> is a UTF8 human-readable string, which can be empty.<a href="#section-5.9-3" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5.9-4.1">
+            <p id="section-5.9-4.1.1"><strong>TODO</strong>: Find a standard taxonomy of reason codes to reference for
+the <code>AbuseType</code>. The IANA Messaging Abuse Report Format parameters are
+insufficient.<a href="#section-5.9-4.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.9-5">Finally, abuse reports can optionally contain a handful of allegedly
+<code>AbusiveMessage</code>s, each of which contains an allegedly abusive message, its franks, and its timestamp.<a href="#section-5.9-5" class="pilcrow">¶</a></p>
+<div class="lang-tls sourcecode" id="section-5.9-6">
+<pre>
+struct {
+  /* the MIMI Content message containing */
+  /* alleged abusive content */
+  opaque mimi_content&lt;V&gt;;
+  Frank frank;
+  uint64 acceptedTimestamp;
+} AbusiveMessage;
+
+enum {
+  reserved(0),
+  (255)
+} AbuseType;
+
+struct {
+  IdentifierUri reportingUser;
+  IdentifierUri allegedAbuserUri;
+  AbuseType reasonCode;
+  opaque note&lt;V&gt;;
+  AbusiveMessage messages&lt;V&gt;;
+} AbuseReport;
+</pre><a href="#section-5.9-6" class="pilcrow">¶</a>
+</div>
+<p id="section-5.9-7">There is no response body. The response code only indicates if the abuse report was accepted, not if any specific automated or human action was taken.<a href="#section-5.9-7" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="relation-between-mimi-state-and-cryptographic-state">
@@ -3761,6 +4023,31 @@ their identities to the hub server using the MLS PublicMessage signed object
 format, together with the identity credentials presented in MLS.  This design
 means that the hub is trusted to correctly enforce the room's policy, but this
 cost is offset by the simplicity of not having multiple policy enforcement points.<a href="#section-8-4" class="pilcrow">¶</a></p>
+<div id="franking">
+<section id="section-8.1">
+        <h3 id="name-franking">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-franking" class="section-name selfRef">Franking</a>
+        </h3>
+<p id="section-8.1-1">TBD.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<div id="example-franking-alg">
+<section id="section-8.1.1">
+          <h4 id="name-example-algorithm-for-gener">
+<a href="#section-8.1.1" class="section-number selfRef">8.1.1. </a><a href="#name-example-algorithm-for-gener" class="section-name selfRef">Example algorithm for generating franking keys</a>
+          </h4>
+<p id="section-8.1.1-1">To ensure a strong source of entropy for the <code>franking_key</code> included in each
+message, the client can export a secret from the MLS key schedule, for
+example with the label <code>franking_base_secret</code> and calculate the
+<code>franking_key</code> as the HMAC of a locally generated nonce and the
+<code>franking_base_secret</code>.<a href="#section-8.1.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-8.1.1-2">
+<pre>
+franking_key = HMAC_SHA256( franking_base_secret, nonce )
+</pre><a href="#section-8.1.1-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+</section>
+</div>
 </section>
 </div>
 <div id="iana-considerations">
@@ -3792,6 +4079,10 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <dt id="I-D.ietf-mls-extensions">[I-D.ietf-mls-extensions]</dt>
         <dd>
 <span class="refAuthor">Robert, R.</span>, <span class="refTitle">"The Messaging Layer Security (MLS) Extensions"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mls-extensions-05</span>, <time datetime="2024-10-21" class="refDate">21 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-05">https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-05</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.kohbrok-mls-associated-parties">[I-D.kohbrok-mls-associated-parties]</dt>
+        <dd>
+<span class="refAuthor">Kohbrok, K.</span>, <span class="refTitle">"MLS Associated parties"</span>, <time datetime="2024" class="refDate">2024</time>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.mahy-mls-ratchet-tree-options">[I-D.mahy-mls-ratchet-tree-options]</dt>
         <dd>
@@ -3842,13 +4133,25 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
+<dt id="Grubbs2017">[Grubbs2017]</dt>
+        <dd>
+<span class="refAuthor">Grubbs, P.</span>, <span class="refAuthor">Lu, J.</span>, and <span class="refAuthor">T. Ristenpart</span>, <span class="refTitle">"Message Franking via Committing Authenticated Encryption"</span>, <time datetime="2017" class="refDate">2017</time>, <span>&lt;<a href="https://eprint.iacr.org/2017/664.pdf">https://eprint.iacr.org/2017/664.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="I-D.mahy-mimi-identity">[I-D.mahy-mimi-identity]</dt>
         <dd>
 <span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"More Instant Messaging Interoperability (MIMI) Identity Concepts"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mimi-identity-02</span>, <time datetime="2023-07-10" class="refDate">10 July 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mimi-identity-02">https://datatracker.ietf.org/doc/html/draft-mahy-mimi-identity-02</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="InvisibleSalamanders">[InvisibleSalamanders]</dt>
+        <dd>
+<span class="refAuthor">Dodis, Y.</span>, <span class="refAuthor">Grubbs, P.</span>, <span class="refAuthor">Ristenpart, T.</span>, and <span class="refAuthor">J. Woodage</span>, <span class="refTitle">"Fast Message Franking: From Invisible Salamanders to Encryptment"</span>, <time datetime="2018" class="refDate">2018</time>, <span>&lt;<a href="https://link.springer.com/content/pdf/10.1007/978-3-319-96884-1_6.pdf">https://link.springer.com/content/pdf/10.1007/978-3-319-96884-1_6.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC8555">[RFC8555]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Barnes, R.</span>, <span class="refAuthor">Hoffman-Andrews, J.</span>, <span class="refAuthor">McCarney, D.</span>, and <span class="refAuthor">J. Kasten</span>, <span class="refTitle">"Automatic Certificate Management Environment (ACME)"</span>, <span class="seriesInfo">RFC 8555</span>, <span class="seriesInfo">DOI 10.17487/RFC8555</span>, <time datetime="2019-03" class="refDate">March 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8555">https://www.rfc-editor.org/rfc/rfc8555</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="SecretConversations">[SecretConversations]</dt>
+      <dd>
+<span class="refAuthor">Facebook</span>, <span class="refTitle">"Messenger Secret Conversations: Technical Whitepaper, Version 2.0"</span>, <time datetime="2017-05-18" class="refDate">18 May 2017</time>, <span>&lt;<a href="https://about.fb.com/wp-content/uploads/2016/07/messenger-secret-conversations-technical-whitepaper.pdf">https://about.fb.com/wp-content/uploads/2016/07/messenger-secret-conversations-technical-whitepaper.pdf</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
