@@ -1245,6 +1245,27 @@ ServerC->ClientC*: [[ Commit ]]
    the Associated Party Key Schedule
    [I-D.kohbrok-mls-associated-parties].
 
+            ...
+             |
+             |
+             V
+       ap_epoch_secret
+             |
+             |
+             +--------------------> DeriveSecret(., "ap_exporter")
+             |                      = ap_exporter_secret
+             |                               |
+             |                               |
+             V                               V
+       DeriveSecret(., "init")      DeriveSecret(., "franking_context")
+             |                      = franking_context_secret
+             |
+             |
+             V
+       init_secret_[n]
+
+           Figure 10: The Extended Associated Party Key Schedule
+
    When the Hub receives an acceptable application message with the
    FrankAAD AAD extension and a valid sender identity, it calculates a
    server frank for the message as follows:

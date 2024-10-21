@@ -3230,22 +3230,60 @@ and itself to obfuscate the message metadata (the <code>context</code>) the Hub 
 while franking. It derives the <code>franking_context_secret</code> (with the label
 "franking_context") from the <code>ap_exporter_secret</code> in the Associated Party
 Key Schedule <span>[<a href="#I-D.kohbrok-mls-associated-parties" class="cite xref">I-D.kohbrok-mls-associated-parties</a>]</span>.<a href="#section-5.4.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.2-2">When the Hub receives an acceptable application message with the <code>FrankAAD</code>
+<span id="name-the-extended-associated-par"></span><div id="extended-ap-key-schedule">
+<figure id="figure-10">
+              <div id="section-5.4.1.2-2.1">
+                <div class="alignLeft art-svg artwork" id="section-5.4.1.2-2.1.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="336" width="520" viewBox="0 0 520 336" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                    <path d="M 56,32 L 56,80" fill="none" stroke="black"></path>
+                    <path d="M 56,112 L 56,208" fill="none" stroke="black"></path>
+                    <path d="M 56,240 L 56,288" fill="none" stroke="black"></path>
+                    <path d="M 312,176 L 312,208" fill="none" stroke="black"></path>
+                    <path d="M 56,144 L 224,144" fill="none" stroke="black"></path>
+                    <polygon class="arrowhead" points="320,208 308,202.4 308,213.6" fill="black" transform="rotate(90,312,208)"></polygon>
+                    <polygon class="arrowhead" points="232,144 220,138.4 220,149.6" fill="black" transform="rotate(0,224,144)"></polygon>
+                    <polygon class="arrowhead" points="64,288 52,282.4 52,293.6" fill="black" transform="rotate(90,56,288)"></polygon>
+                    <polygon class="arrowhead" points="64,208 52,202.4 52,213.6" fill="black" transform="rotate(90,56,208)"></polygon>
+                    <polygon class="arrowhead" points="64,80 52,74.4 52,85.6" fill="black" transform="rotate(90,56,80)"></polygon>
+                    <g class="text">
+                      <text x="48" y="36">.</text>
+                      <text x="64" y="36">.</text>
+                      <text x="64" y="100">ap_epoch_secret</text>
+                      <text x="296" y="148">DeriveSecret(.,</text>
+                      <text x="420" y="148">"ap_exporter")</text>
+                      <text x="240" y="164">=</text>
+                      <text x="324" y="164">ap_exporter_secret</text>
+                      <text x="64" y="228">DeriveSecret(.,</text>
+                      <text x="160" y="228">"init")</text>
+                      <text x="296" y="228">DeriveSecret(.,</text>
+                      <text x="440" y="228">"franking_context")</text>
+                      <text x="240" y="244">=</text>
+                      <text x="344" y="244">franking_context_secret</text>
+                      <text x="64" y="308">init_secret_[n]</text>
+                    </g>
+                  </svg><a href="#section-5.4.1.2-2.1.1" class="pilcrow">¶</a>
+</div>
+</div>
+<figcaption><a href="#figure-10" class="selfRef">Figure 10</a>:
+<a href="#name-the-extended-associated-par" class="selfRef">The Extended Associated Party Key Schedule</a>
+              </figcaption></figure>
+</div>
+<p id="section-5.4.1.2-3">When the Hub receives an acceptable application message with the <code>FrankAAD</code>
 AAD extension and a valid sender identity, it calculates a server frank for
-the message as follows:<a href="#section-5.4.1.2-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.4.1.2-3">
+the message as follows:<a href="#section-5.4.1.2-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.4.1.2-4">
 <pre>
 context = senderURI || roomURI || acceptedTimestamp
 serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
 franking_context_hash = SHA256(franking_context_secret || context)
-</pre><a href="#section-5.4.1.2-3" class="pilcrow">¶</a>
+</pre><a href="#section-5.4.1.2-4" class="pilcrow">¶</a>
 </div>
-<p id="section-5.4.1.2-4"><code>HUBkey</code> is a secret symmetric key used on the Hub which the Hub can use to verify its own tags.<a href="#section-5.4.1.2-4" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.2-5">The Hub fans out the encrypted message (which includes the <code>franking_tag</code>),
+<p id="section-5.4.1.2-5"><code>HUBkey</code> is a secret symmetric key used on the Hub which the Hub can use to verify its own tags.<a href="#section-5.4.1.2-5" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.2-6">The Hub fans out the encrypted message (which includes the <code>franking_tag</code>),
 the <code>serverFrank</code>, the <code>acceptedTimestamp</code>, the room URI, and the
 <code>franking_context_hash</code>. Note that the <code>senderURI</code> is not included in the
 application message, so the sender can remain anonymous with respect to
-follower providers.<a href="#section-5.4.1.2-5" class="pilcrow">¶</a></p>
+follower providers.<a href="#section-5.4.1.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="receiver-verification-of-frank">
