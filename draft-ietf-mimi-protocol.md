@@ -1184,6 +1184,7 @@ struct {
       CipherSuite cipher_suite;
       SignaturePublicKey requestingSignatureKey;
       Credential requestingCredential;
+      HPKEPublicKey groupInfoPublicKey;
       optional opaque joiningCode<V>;
   };
 } GroupInfoRequestTBS;
@@ -1195,6 +1196,7 @@ struct {
       CipherSuite cipher_suite;
       SignaturePublicKey requestingSignatureKey;
       Credential requestingCredential;
+      HPKEPublicKey groupInfoPublicKey;
       opaque joiningCode<V>;
       /* SignWithLabel(., "GroupInfoRequestTBS", GroupInfoRequestTBS) */
       opaque signature<V>;
@@ -1203,7 +1205,8 @@ struct {
 ~~~
 
 If successful, the response body contains the GroupInfo and a way
-to get the ratchet_tree.
+to get the ratchet_tree, both encrypted with the `groupInfoPublcKey`
+passed in the request.
 
 ~~~ tls
 enum {
@@ -1215,6 +1218,19 @@ enum {
 } GroupInfoCode;
 
 struct {
+  GroupInfo groupInfo;   /* without embedded ratchet_tree */
+  RatchetTreeOption ratchetTreeOption;
+} GroupInfoRatchetTreeTBE;
+
+GroupInfoRatchetTreeTBE group_info_ratchet_tree_tbe;
+
+encrypted_groupinfo_and_tree = EncryptWithLabel(
+  groupInfoPublicKey,
+  "GroupInfo and ratchet_tree encryption",
+  room_id,                         /* context */
+  group_info_ratchet_tree_tbe)
+
+struct {
   Protocol version;
   GroupInfoCode status;
   select (protocol) {
@@ -1222,8 +1238,7 @@ struct {
       CipherSuite cipher_suite;
       opaque room_id<V>;
       ExternalSender hub_sender;
-      GroupInfo groupInfo;   /* without embedded ratchet_tree */
-      RatchetTreeOption ratchetTreeOption;
+      opaque encrypted_groupinfo_and_tree<V>;
   };
 } GroupInfoResponseTBS;
 
@@ -1235,8 +1250,7 @@ struct {
       CipherSuite cipher_suite;
       opaque room_id<V>;
       ExternalSender hub_sender;
-      GroupInfo groupInfo;   /* without embedded ratchet_tree */
-      RatchetTreeOption ratchetTreeOption;
+      opaque encrypted_groupinfo_and_tree<V>;
       /* SignWithLabel(., "GroupInfoResponseTBS", GroupInfoResponseTBS) */
       opaque signature<V>;
   };
