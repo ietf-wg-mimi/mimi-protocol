@@ -1187,11 +1187,11 @@ Key Schedule {{I-D.kohbrok-mls-associated-parties}}.
           |
           +--------------------> DeriveSecret(., "ap_exporter")
           |                      = ap_exporter_secret
-          |                              *|*
-          |                              *|*
-          V                              *V*
-    DeriveSecret(., "init")     *DeriveSecret(., "franking_context")*
-          |                     *= franking_context_secret*
+          |                               |
+          |                               |
+          V                               V
+    DeriveSecret(., "init")      DeriveSecret(., "franking_context")
+          |                      = franking_context_secret
           |
           |
           V
