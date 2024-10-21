@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 14 February 2025               The Matrix.org Foundation C.I.C.
+Expires: 24 April 2025                  The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 14 February 2025               The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                          13 August 2024
+                                                         21 October 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 February 2025.
+   This Internet-Draft will expire on 24 April 2025.
 
 Copyright Notice
 
@@ -1292,6 +1292,7 @@ ServerC->ClientC*: [[ Commit ]]
          CipherSuite cipher_suite;
          SignaturePublicKey requestingSignatureKey;
          Credential requestingCredential;
+         HPKEPublicKey groupInfoPublicKey;
          optional opaque joiningCode<V>;
      };
    } GroupInfoRequestTBS;
@@ -1303,6 +1304,7 @@ ServerC->ClientC*: [[ Commit ]]
          CipherSuite cipher_suite;
          SignaturePublicKey requestingSignatureKey;
          Credential requestingCredential;
+         HPKEPublicKey groupInfoPublicKey;
          opaque joiningCode<V>;
          /* SignWithLabel(., "GroupInfoRequestTBS", GroupInfoRequestTBS) */
          opaque signature<V>;
@@ -1310,7 +1312,8 @@ ServerC->ClientC*: [[ Commit ]]
    } GroupInfoRequest;
 
    If successful, the response body contains the GroupInfo and a way to
-   get the ratchet_tree.
+   get the ratchet_tree, both encrypted with the groupInfoPublcKey
+   passed in the request.
 
    enum {
      reserved(0),
@@ -1321,6 +1324,19 @@ ServerC->ClientC*: [[ Commit ]]
    } GroupInfoCode;
 
    struct {
+     GroupInfo groupInfo;   /* without embedded ratchet_tree */
+     RatchetTreeOption ratchetTreeOption;
+   } GroupInfoRatchetTreeTBE;
+
+   GroupInfoRatchetTreeTBE group_info_ratchet_tree_tbe;
+
+   encrypted_groupinfo_and_tree = EncryptWithLabel(
+     groupInfoPublicKey,
+     "GroupInfo and ratchet_tree encryption",
+     room_id,                         /* context */
+     group_info_ratchet_tree_tbe)
+
+   struct {
      Protocol version;
      GroupInfoCode status;
      select (protocol) {
@@ -1328,8 +1344,7 @@ ServerC->ClientC*: [[ Commit ]]
          CipherSuite cipher_suite;
          opaque room_id<V>;
          ExternalSender hub_sender;
-         GroupInfo groupInfo;   /* without embedded ratchet_tree */
-         RatchetTreeOption ratchetTreeOption;
+         opaque encrypted_groupinfo_and_tree<V>;
      };
    } GroupInfoResponseTBS;
 
@@ -1341,8 +1356,7 @@ ServerC->ClientC*: [[ Commit ]]
          CipherSuite cipher_suite;
          opaque room_id<V>;
          ExternalSender hub_sender;
-         GroupInfo groupInfo;   /* without embedded ratchet_tree */
-         RatchetTreeOption ratchetTreeOption;
+         opaque encrypted_groupinfo_and_tree<V>;
          /* SignWithLabel(., "GroupInfoResponseTBS", GroupInfoResponseTBS) */
          opaque signature<V>;
      };
@@ -1755,16 +1769,16 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
               Extensions", Work in Progress, Internet-Draft, draft-ietf-
-              mls-extensions-04, 24 April 2024,
+              mls-extensions-05, 21 October 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mls-
-              extensions-04>.
+              extensions-05>.
 
    [I-D.mahy-mls-semiprivatemessage]
               Mahy, R., "Semi-Private Messages in the Messaging Layer
               Security (MLS) Protocol", Work in Progress, Internet-
-              Draft, draft-mahy-mls-semiprivatemessage-02, 1 August
+              Draft, draft-mahy-mls-semiprivatemessage-04, 20 October
               2024, <https://datatracker.ietf.org/doc/html/draft-mahy-
-              mls-semiprivatemessage-02>.
+              mls-semiprivatemessage-04>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,

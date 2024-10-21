@@ -22,25 +22,25 @@ integrates the Messaging Layer Security (MLS) protocol to provide end-to-end sec
 assurances, including authentication of protocol participants, confidentiality
 of messages exchanged within a room, and agreement on the state of the room. 
     " name="description">
-<meta content="xml2rfc 3.22.0" name="generator">
+<meta content="xml2rfc 3.23.2" name="generator">
 <meta content="mimi" name="keyword">
 <meta content="interoperable messaging" name="keyword">
 <meta content="chat" name="keyword">
 <meta content="secure messaging" name="keyword">
 <meta content="draft-ietf-mimi-protocol-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.22.0
-    Python 3.12.3
+  xml2rfc 3.23.2
+    Python 3.12.7
     ConfigArgParse 1.7
-    google-i18n-address 3.1.0
+    google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.4
     lxml 4.9.4
-    platformdirs 4.2.2
+    platformdirs 4.3.6
     pycountry 22.3.5
     PyYAML 6.0.1
     requests 2.32.3
-    setuptools 69.5.1
+    setuptools 70.3.0
     wcwidth 0.2.13
 -->
 <link href="draft-ietf-mimi-protocol.xml" rel="alternate" type="application/rfc+xml">
@@ -1040,11 +1040,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">MIMI+MLS Protocol</td>
-<td class="right">August 2024</td>
+<td class="right">October 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 14 February 2025</td>
+<td class="center">Expires 24 April 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1057,12 +1057,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-08-13" class="published">13 August 2024</time>
+<time datetime="2024-10-21" class="published">21 October 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-02-14">14 February 2025</time></dd>
+<dd class="expires"><time datetime="2025-04-24">24 April 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1140,7 +1140,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 14 February 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 24 April 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3266,6 +3266,7 @@ struct {
       CipherSuite cipher_suite;
       SignaturePublicKey requestingSignatureKey;
       Credential requestingCredential;
+      HPKEPublicKey groupInfoPublicKey;
       optional opaque joiningCode&lt;V&gt;;
   };
 } GroupInfoRequestTBS;
@@ -3277,6 +3278,7 @@ struct {
       CipherSuite cipher_suite;
       SignaturePublicKey requestingSignatureKey;
       Credential requestingCredential;
+      HPKEPublicKey groupInfoPublicKey;
       opaque joiningCode&lt;V&gt;;
       /* SignWithLabel(., "GroupInfoRequestTBS", GroupInfoRequestTBS) */
       opaque signature&lt;V&gt;;
@@ -3285,7 +3287,8 @@ struct {
 </pre><a href="#section-5.6-6" class="pilcrow">¶</a>
 </div>
 <p id="section-5.6-7">If successful, the response body contains the GroupInfo and a way
-to get the ratchet_tree.<a href="#section-5.6-7" class="pilcrow">¶</a></p>
+to get the ratchet_tree, both encrypted with the <code>groupInfoPublcKey</code>
+passed in the request.<a href="#section-5.6-7" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.6-8">
 <pre>
 enum {
@@ -3297,6 +3300,19 @@ enum {
 } GroupInfoCode;
 
 struct {
+  GroupInfo groupInfo;   /* without embedded ratchet_tree */
+  RatchetTreeOption ratchetTreeOption;
+} GroupInfoRatchetTreeTBE;
+
+GroupInfoRatchetTreeTBE group_info_ratchet_tree_tbe;
+
+encrypted_groupinfo_and_tree = EncryptWithLabel(
+  groupInfoPublicKey,
+  "GroupInfo and ratchet_tree encryption",
+  room_id,                         /* context */
+  group_info_ratchet_tree_tbe)
+
+struct {
   Protocol version;
   GroupInfoCode status;
   select (protocol) {
@@ -3304,8 +3320,7 @@ struct {
       CipherSuite cipher_suite;
       opaque room_id&lt;V&gt;;
       ExternalSender hub_sender;
-      GroupInfo groupInfo;   /* without embedded ratchet_tree */
-      RatchetTreeOption ratchetTreeOption;
+      opaque encrypted_groupinfo_and_tree&lt;V&gt;;
   };
 } GroupInfoResponseTBS;
 
@@ -3317,8 +3332,7 @@ struct {
       CipherSuite cipher_suite;
       opaque room_id&lt;V&gt;;
       ExternalSender hub_sender;
-      GroupInfo groupInfo;   /* without embedded ratchet_tree */
-      RatchetTreeOption ratchetTreeOption;
+      opaque encrypted_groupinfo_and_tree&lt;V&gt;;
       /* SignWithLabel(., "GroupInfoResponseTBS", GroupInfoResponseTBS) */
       opaque signature&lt;V&gt;;
   };
@@ -3760,11 +3774,11 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <dd class="break"></dd>
 <dt id="I-D.ietf-mls-extensions">[I-D.ietf-mls-extensions]</dt>
         <dd>
-<span class="refAuthor">Robert, R.</span>, <span class="refTitle">"The Messaging Layer Security (MLS) Extensions"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mls-extensions-04</span>, <time datetime="2024-04-24" class="refDate">24 April 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-04">https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-04</a>&gt;</span>. </dd>
+<span class="refAuthor">Robert, R.</span>, <span class="refTitle">"The Messaging Layer Security (MLS) Extensions"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mls-extensions-05</span>, <time datetime="2024-10-21" class="refDate">21 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-05">https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-05</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.mahy-mls-semiprivatemessage">[I-D.mahy-mls-semiprivatemessage]</dt>
         <dd>
-<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Semi-Private Messages in the Messaging Layer Security (MLS) Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-semiprivatemessage-02</span>, <time datetime="2024-08-01" class="refDate">1 August 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-02">https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-02</a>&gt;</span>. </dd>
+<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Semi-Private Messages in the Messaging Layer Security (MLS) Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-semiprivatemessage-04</span>, <time datetime="2024-10-20" class="refDate">20 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-04">https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-04</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
