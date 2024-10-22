@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-20T00:46:47.818759+00:00",
+  "timestamp": "2024-10-22T00:42:54.687370+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -204,9 +204,17 @@
       "labels": [],
       "body": "Where we assume the external attachment blob (\"media\") is stored on a follower server, another server/the hub needs a way to fetch that media on behalf of its local clients.\r\n\r\nWe do not want to support clients requesting the media directly.\r\n\r\nTODO: Discuss authentication/right to download.",
       "createdAt": "2023-11-09T09:37:53Z",
-      "updatedAt": "2023-11-09T09:37:53Z",
+      "updatedAt": "2024-10-21T02:34:10Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "An option articulated in #75",
+          "createdAt": "2024-10-21T02:34:09Z",
+          "updatedAt": "2024-10-21T02:34:09Z"
+        }
+      ]
     },
     {
       "number": 25,
@@ -448,7 +456,7 @@
       "labels": [],
       "body": "Which events are sent to who, and how? Specifically DS Welcome events.",
       "createdAt": "2023-11-09T12:44:45Z",
-      "updatedAt": "2023-11-09T12:47:10Z",
+      "updatedAt": "2024-10-21T02:34:42Z",
       "closedAt": null,
       "comments": [
         {
@@ -457,6 +465,13 @@
           "body": "> **TODO**: Especially when adding new clients, we will want to forward a\r\n> `ds.commit` event selectively, as existing group members will only be\r\n> interested in the actual commit, whereas new group members only need the\r\n> Welcome.",
           "createdAt": "2023-11-09T12:47:10Z",
           "updatedAt": "2023-11-09T12:47:10Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think this is now pretty clear. I propose we close this one. ",
+          "createdAt": "2024-10-21T02:34:41Z",
+          "updatedAt": "2024-10-21T02:34:41Z"
         }
       ]
     },
@@ -1243,7 +1258,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2023-10-27T22:37:55Z",
-      "updatedAt": "2023-10-30T18:20:56Z",
+      "updatedAt": "2024-10-21T02:37:10Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "f0422982ac7e16a31ff320843b6af8f082278e46",
@@ -1573,7 +1588,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2023-10-29T16:25:57Z",
-      "updatedAt": "2023-11-06T11:31:45Z",
+      "updatedAt": "2024-10-21T02:37:20Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "d7858010d4cda7f568abbae3fc59e53cc4db6f1f",
@@ -1813,7 +1828,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2023-10-30T16:40:36Z",
-      "updatedAt": "2023-10-31T06:10:11Z",
+      "updatedAt": "2024-10-21T02:37:11Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "f0422982ac7e16a31ff320843b6af8f082278e46",
@@ -2380,7 +2395,7 @@
       "labels": [],
       "body": "Re-creating this PR, because it got lost due to weird merge ordering.",
       "createdAt": "2023-11-03T14:00:56Z",
-      "updatedAt": "2023-11-03T14:01:03Z",
+      "updatedAt": "2024-10-21T02:37:13Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "966cd0bd15b7a128de24efb8e0a9383123e39f7a",
@@ -2408,7 +2423,7 @@
       "labels": [],
       "body": "This PR changes the Alice Bob flow in #3 to the current state of the document.\r\n\r\nIt changes from an Add based flow to the invite-based flow we discussed in the last interim. This is just to simplify things for the IETF 118 meeting.",
       "createdAt": "2023-11-03T15:13:18Z",
-      "updatedAt": "2023-11-06T15:02:49Z",
+      "updatedAt": "2024-10-21T02:37:27Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "d7858010d4cda7f568abbae3fc59e53cc4db6f1f",
@@ -2557,7 +2572,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2023-11-06T06:31:34Z",
-      "updatedAt": "2023-11-06T06:32:15Z",
+      "updatedAt": "2024-10-21T02:37:19Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "c20afb858a2e72342e12facb3322bff732f8d2d2",
@@ -2629,7 +2644,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2023-11-06T10:56:41Z",
-      "updatedAt": "2023-11-06T15:10:38Z",
+      "updatedAt": "2024-10-21T02:37:22Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "d7858010d4cda7f568abbae3fc59e53cc4db6f1f",
@@ -2673,7 +2688,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2023-11-06T14:49:00Z",
-      "updatedAt": "2023-11-06T15:03:07Z",
+      "updatedAt": "2024-10-21T02:37:23Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "8ab7addb6d4b6ed4b67737225e1418200a195203",
@@ -2717,7 +2732,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2023-11-06T15:03:55Z",
-      "updatedAt": "2023-11-06T15:11:29Z",
+      "updatedAt": "2024-10-21T02:37:26Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "46f4a959473dc32dba7a90dca218f914c67b3422",
@@ -2761,7 +2776,7 @@
       ],
       "body": "globally replace `m.room.` with `room.` in event names.",
       "createdAt": "2023-11-06T15:09:57Z",
-      "updatedAt": "2024-02-09T22:08:21Z",
+      "updatedAt": "2024-10-21T02:37:28Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "cf29470de209e35fbdb7db010a572fe59adaec54",
@@ -3043,7 +3058,7 @@
       "labels": [],
       "body": "Closes #37.\r\n\r\nWe already have an Add and an Invite flow, which I think solves this TODO.",
       "createdAt": "2023-11-13T13:04:41Z",
-      "updatedAt": "2023-11-14T07:21:14Z",
+      "updatedAt": "2024-10-21T02:37:29Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "4142c96d80511a35880c2c536031928072dbc20d",
@@ -3085,7 +3100,7 @@
       "labels": [],
       "body": "Consolidates paragraphs.  Expands on functionality.  Rephrases the E2E security section to list assurances and remove citations.",
       "createdAt": "2024-01-29T20:59:26Z",
-      "updatedAt": "2024-01-31T00:51:39Z",
+      "updatedAt": "2024-10-21T02:37:34Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "af62be86e01834c228d8bfc068fb383c0cdd20b2",
@@ -3147,7 +3162,7 @@
       "labels": [],
       "body": "The Known Gaps section might need some updating depending on what we do with the rest of the document.",
       "createdAt": "2024-01-29T21:10:19Z",
-      "updatedAt": "2024-02-06T22:43:29Z",
+      "updatedAt": "2024-10-21T02:37:39Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "af62be86e01834c228d8bfc068fb383c0cdd20b2",
@@ -3590,7 +3605,7 @@
       "labels": [],
       "body": "* Add reference to MLS for terminology.\r\n* Remove issues.  Everything in this document is open to change.",
       "createdAt": "2024-01-29T21:19:01Z",
-      "updatedAt": "2024-01-30T22:19:48Z",
+      "updatedAt": "2024-10-21T02:37:33Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "af62be86e01834c228d8bfc068fb383c0cdd20b2",
@@ -3658,7 +3673,7 @@
       "labels": [],
       "body": "* Add clearer description of layering model\r\n* Add more detailed protocol flow",
       "createdAt": "2024-01-29T21:21:41Z",
-      "updatedAt": "2024-01-31T16:49:07Z",
+      "updatedAt": "2024-10-21T02:37:37Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "b775606f779086dfb27b93a7bc1dad600ce4a8c1",
@@ -3784,7 +3799,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-01-29T21:31:42Z",
-      "updatedAt": "2024-02-02T20:54:36Z",
+      "updatedAt": "2024-10-21T02:37:35Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "af62be86e01834c228d8bfc068fb383c0cdd20b2",
@@ -3972,7 +3987,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-02-06T22:36:43Z",
-      "updatedAt": "2024-02-09T22:28:04Z",
+      "updatedAt": "2024-10-21T02:38:34Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "0186460b95b5977bd0b850948a4010b93e62cdd6",
@@ -4172,7 +4187,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-02-06T23:50:23Z",
-      "updatedAt": "2024-02-09T19:33:15Z",
+      "updatedAt": "2024-10-21T02:37:40Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "0186460b95b5977bd0b850948a4010b93e62cdd6",
@@ -4569,7 +4584,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-02-06T23:55:00Z",
-      "updatedAt": "2024-02-09T22:18:48Z",
+      "updatedAt": "2024-10-21T02:37:42Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "0186460b95b5977bd0b850948a4010b93e62cdd6",
@@ -4671,7 +4686,7 @@
       "labels": [],
       "body": "As requested by Travis, this is a replacement for PR #48 which has cleaner diffs (via individual commits).",
       "createdAt": "2024-02-09T19:24:51Z",
-      "updatedAt": "2024-02-20T14:23:08Z",
+      "updatedAt": "2024-10-21T02:38:33Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "36ad4767944db62e4b270460f06f2e6dfd98adef",
@@ -6333,7 +6348,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-02-28T23:04:10Z",
-      "updatedAt": "2024-02-29T02:26:49Z",
+      "updatedAt": "2024-10-21T02:38:32Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "d72db4b7a23c05d02048dfbbd50d97843a153d9a",
@@ -6375,7 +6390,7 @@
       "labels": [],
       "body": "- add accepted timestamp to `UpdateRoomResponse` and `SubmitMessageResponse` and adjust related structs\r\n- add missing error codes and semantics to submit primitive",
       "createdAt": "2024-02-28T23:11:29Z",
-      "updatedAt": "2024-02-29T06:41:41Z",
+      "updatedAt": "2024-10-21T02:38:31Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "d72db4b7a23c05d02048dfbbd50d97843a153d9a",
@@ -6425,7 +6440,7 @@
       "labels": [],
       "body": "- Add basic description of new MIMI URI scheme under example actors\r\n- Adjust Bob and Alice flow messages to use the URI\r\n\r\nAddresses issue #53 ",
       "createdAt": "2024-02-29T00:20:03Z",
-      "updatedAt": "2024-02-29T16:20:06Z",
+      "updatedAt": "2024-10-21T02:38:22Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "d72db4b7a23c05d02048dfbbd50d97843a153d9a",
@@ -6535,7 +6550,7 @@
       "labels": [],
       "body": "- Add a flow for Cathy's adding a new client ClientC3 to the Alice, Bob, Cathy flow. \r\n- Add GroupInfo fetching mechanism",
       "createdAt": "2024-02-29T07:55:54Z",
-      "updatedAt": "2024-03-02T23:55:12Z",
+      "updatedAt": "2024-10-21T02:38:19Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5e1cd5892cd61f3392df4041c80921e54d3bcf48",
@@ -6655,7 +6670,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-03-01T22:13:40Z",
-      "updatedAt": "2024-03-03T06:47:37Z",
+      "updatedAt": "2024-10-21T02:38:15Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5e1cd5892cd61f3392df4041c80921e54d3bcf48",
@@ -6769,7 +6784,7 @@
       "labels": [],
       "body": "alternate to PR #51 ",
       "createdAt": "2024-03-01T22:55:47Z",
-      "updatedAt": "2024-03-02T23:56:16Z",
+      "updatedAt": "2024-10-21T02:38:16Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5e1cd5892cd61f3392df4041c80921e54d3bcf48",
@@ -6818,7 +6833,7 @@
       "labels": [],
       "body": "add all authors/contributors as CODEOWNERS",
       "createdAt": "2024-03-01T23:02:49Z",
-      "updatedAt": "2024-03-02T16:39:46Z",
+      "updatedAt": "2024-10-21T02:38:18Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5e1cd5892cd61f3392df4041c80921e54d3bcf48",
@@ -6860,7 +6875,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-03-01T23:37:48Z",
-      "updatedAt": "2024-03-02T16:40:06Z",
+      "updatedAt": "2024-10-21T02:38:16Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "7e1719f65858e08594367a221f7c7cb49b1d5c83",
@@ -6902,7 +6917,7 @@
       "labels": [],
       "body": "Send responses as soon as feasible in \"Alice Adds Bob\" flow\r\n\r\nFor Bob Adds Cathy flow \r\n- make ASCII art fit in 72 characters (only done so far for Bob Adds Cathy flow)\r\n- show fanout to multiple servers and clients closer/tighter in time \r\n\r\nShow fanouts to Clients of final commits for Bob leaves room flow\r\n",
       "createdAt": "2024-03-02T00:26:22Z",
-      "updatedAt": "2024-03-04T16:56:45Z",
+      "updatedAt": "2024-10-21T02:38:09Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "7e1719f65858e08594367a221f7c7cb49b1d5c83",
@@ -6944,7 +6959,7 @@
       "labels": [],
       "body": "* Remove `editor` role from Barnes\r\n* Put authors in alphabetical order by last name",
       "createdAt": "2024-03-04T15:35:41Z",
-      "updatedAt": "2024-03-04T16:04:49Z",
+      "updatedAt": "2024-10-21T02:38:13Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "615b710af6d5cface7856b885a132e3ca5cbe8c2",
@@ -6999,7 +7014,7 @@
       "labels": [],
       "body": "Add missing status semantics for:\r\n- KeyMaterialClientCode\r\n- GroupInfoCode\r\n",
       "createdAt": "2024-03-04T17:17:42Z",
-      "updatedAt": "2024-03-04T17:30:15Z",
+      "updatedAt": "2024-10-21T02:38:08Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "cfe2d6d8ce148bf11af9a214e5dc765dc0b7507d",
@@ -7085,7 +7100,7 @@
       ],
       "body": "",
       "createdAt": "2024-03-13T02:11:04Z",
-      "updatedAt": "2024-04-29T15:49:08Z",
+      "updatedAt": "2024-10-21T02:38:06Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
@@ -7387,7 +7402,7 @@
       ],
       "body": "",
       "createdAt": "2024-03-13T13:26:24Z",
-      "updatedAt": "2024-07-22T17:01:24Z",
+      "updatedAt": "2024-10-21T02:38:07Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
@@ -7779,7 +7794,7 @@
       "labels": [],
       "body": "This replaces PR #72 \r\n\r\nIt was created merely to deal with merge conflicts created when migrating the repo. Otherwise it has identical content to #72 \r\n",
       "createdAt": "2024-04-15T18:43:37Z",
-      "updatedAt": "2024-04-29T15:48:35Z",
+      "updatedAt": "2024-10-21T02:36:51Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "eddb965307c64078e744573c39d5dffbc5f50bf4",
@@ -7807,7 +7822,7 @@
       "labels": [],
       "body": "According to room policy, members could send handshake messages (Commits and Proposals) as PublicMessage or PrivateMessage. When a PrivateMessage the key and nonce used to encrypt the PrivateMessage is HPKE encrypted for the hub and included in the message.\r\nthe HPKE `Seal<Base>` `info` is the hash of the complete MLSMessage that would have been sent.\r\n",
       "createdAt": "2024-06-10T21:05:55Z",
-      "updatedAt": "2024-08-13T19:18:43Z",
+      "updatedAt": "2024-10-21T02:36:47Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "b8960de20eb846cb964462c4d18076b8c4f52924",
@@ -7841,7 +7856,7 @@
       "labels": [],
       "body": "WIP\r\n\r\nAlternate (to #79 ) way to have a semi-private handshake (private, plus shared encrypted with the hub).",
       "createdAt": "2024-06-13T12:00:32Z",
-      "updatedAt": "2024-08-13T19:14:30Z",
+      "updatedAt": "2024-10-21T02:36:46Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "b8960de20eb846cb964462c4d18076b8c4f52924",
@@ -7877,7 +7892,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-07-03T15:17:21Z",
-      "updatedAt": "2024-07-03T15:17:46Z",
+      "updatedAt": "2024-10-21T02:36:50Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "b8960de20eb846cb964462c4d18076b8c4f52924",
@@ -7905,7 +7920,7 @@
       "labels": [],
       "body": "Rohan and I separately published [draft-barnes-mls-appsync](https://datatracker.ietf.org/doc/draft-barnes-mls-appsync/), which is currently just a copy/paste of the content from this document.  No technical changes, just moving things around.",
       "createdAt": "2024-07-07T18:15:21Z",
-      "updatedAt": "2024-07-07T20:21:14Z",
+      "updatedAt": "2024-10-21T02:37:59Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "ac27aa788b6277fbe0001347bbcd2ef35660a16c",
@@ -7940,28 +7955,30 @@
       "id": "PR_kwDOKZ8QO852Bhho",
       "title": "Add abuse reporting mechanism with message franking",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/83",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-07-21T21:30:03Z",
-      "updatedAt": "2024-08-13T19:36:07Z",
+      "updatedAt": "2024-10-21T20:16:44Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "da9fa250389b16a3bf2ab39a11b54d9a6c6bff9e",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "abuse2",
-      "headRefOid": "527ef30cf66cb4d812ec0e1fbd4e8cb21ca076ec",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "817e964c5810b21c23d01ef78fda0494883ba36b",
+      "closedAt": "2024-10-21T20:16:44Z",
+      "mergedAt": "2024-10-21T20:16:44Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "33614cdb50ccd6aea0524b5da874fdd70674a681"
+      },
       "comments": [
         {
           "author": "dconnolly",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "@bifurcation @rohanmahy as per IETF 120, some refs to Hecate, more advanced approaches to franking: \r\nhttps://eprint.iacr.org/2021/1686\r\nhttps://www.usenix.org/system/files/sec22-issa.pdf",
           "createdAt": "2024-07-23T20:52:09Z",
           "updatedAt": "2024-07-23T20:52:09Z"
@@ -7972,6 +7989,13 @@
           "body": "Dierdre mentioned using Hecate during IETF 120. After looking at the spec, I realized that it requires a number of extra round trips between the client and the hub (possibly through a separate local provider), which would be a non-starter for MIMI high-volume applications.",
           "createdAt": "2024-08-13T19:36:06Z",
           "updatedAt": "2024-08-13T19:36:06Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I just merged a change which makes the franking_context safe from metadata inspection by follower providers. It uses a secret derived using the \"Associated Parties key schedule\" documented in draft-kohbrok-mls-associated-parties. I think this closes the last open issue with the franking mechanism.",
+          "createdAt": "2024-10-20T22:43:54Z",
+          "updatedAt": "2024-10-20T22:43:54Z"
         }
       ],
       "reviews": [
@@ -8020,6 +8044,325 @@
               "updatedAt": "2024-07-23T20:55:51Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86N6LQy",
+          "commit": {
+            "abbreviatedOid": "cf5eb2b"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-21T03:34:10Z",
+          "updatedAt": "2024-10-21T03:34:11Z",
+          "comments": [
+            {
+              "originalPosition": 47,
+              "body": "How is this done, exactly? `draft-kohbrok-mls-associated-parties` has no mention of `franking_context_secret` or non-explicit derivations in its key schedule",
+              "createdAt": "2024-10-21T03:34:10Z",
+              "updatedAt": "2024-10-21T03:34:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86N6bjm",
+          "commit": {
+            "abbreviatedOid": "cf5eb2b"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-21T04:37:28Z",
+          "updatedAt": "2024-10-21T04:37:28Z",
+          "comments": [
+            {
+              "originalPosition": 47,
+              "body": "In Figure 1 of Associated Parties, the ap_exporter_secret is derived from the ap_epoch_secret for the Hub. `franking_context_secret` is derived from `ap_exporter_secret` using the label \"franking_context\" (just added the label). See lines 1174 to 1178 for the discussion of the derivation.",
+              "createdAt": "2024-10-21T04:37:28Z",
+              "updatedAt": "2024-10-21T04:37:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86N_JO6",
+          "commit": {
+            "abbreviatedOid": "9925e43"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-21T13:36:25Z",
+          "updatedAt": "2024-10-21T13:36:25Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86OAWFv",
+          "commit": {
+            "abbreviatedOid": "cf5eb2b"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-21T15:19:50Z",
+          "updatedAt": "2024-10-21T15:19:50Z",
+          "comments": [
+            {
+              "originalPosition": 47,
+              "body": "OK; I may submit a PR to this one just to clarify the derivation even more; I wonder if Associated Parties can/should provide explicit guidance on how to do this sort of thing 'in general'",
+              "createdAt": "2024-10-21T15:19:50Z",
+              "updatedAt": "2024-10-21T15:19:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86OCml6",
+          "commit": {
+            "abbreviatedOid": "cf5eb2b"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-21T18:39:13Z",
+          "updatedAt": "2024-10-21T18:39:14Z",
+          "comments": [
+            {
+              "originalPosition": 47,
+              "body": "Done here: https://github.com/ietf-wg-mimi/mimi-protocol/pull/87",
+              "createdAt": "2024-10-21T18:39:13Z",
+              "updatedAt": "2024-10-21T18:39:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86ODM1i",
+          "commit": {
+            "abbreviatedOid": "817e964"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-21T20:04:31Z",
+          "updatedAt": "2024-10-21T20:08:06Z",
+          "comments": [
+            {
+              "originalPosition": 84,
+              "body": "```suggestion\r\nstruct {\r\n  MLSMessage commit;\r\n  optional<Welcome> welcome;\r\n  GroupInfo group_info;\r\n  RatchetTreeOption ratchet_tree_option;\r\n} CommitBundle;\r\n\r\nstruct {\r\n  MLSMessage proposals<V>;\r\n  optional<CommitBundle> commit_bundle;\r\n} HandshakeBundle;\r\n```",
+              "createdAt": "2024-10-21T20:04:31Z",
+              "updatedAt": "2024-10-21T20:08:06Z"
+            },
+            {
+              "originalPosition": 123,
+              "body": "```suggestion\r\n      IdentifierURI sending_uri;\r\n```\r\n\r\nNit: The style in TLS syntax is to use `snake_case` for these identifiers.",
+              "createdAt": "2024-10-21T20:05:58Z",
+              "updatedAt": "2024-10-21T20:08:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86ODRaJ",
+          "commit": {
+            "abbreviatedOid": "3dfd222"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-21T20:15:26Z",
+          "updatedAt": "2024-10-21T20:15:26Z",
+          "comments": [
+            {
+              "originalPosition": 123,
+              "body": "I'll do a massive case realignment PR either before or after WGLC",
+              "createdAt": "2024-10-21T20:15:26Z",
+              "updatedAt": "2024-10-21T20:15:26Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 85,
+      "id": "PR_kwDOKZ8QO85_QKBz",
+      "title": "Support more efficient ways to upload ratchet_tree and GroupInfo",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/85",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-10-21T03:08:34Z",
+      "updatedAt": "2024-10-21T20:11:41Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "4644c776e12a647792932b6344a91d54599a3e31",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "update-without-ratchettree",
+      "headRefOid": "95befe1fa451cd704aafd980cd20d3f8f3cc3c19",
+      "closedAt": "2024-10-21T20:11:41Z",
+      "mergedAt": "2024-10-21T20:11:41Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "5d11d9bac9c336cd609f4cd577b279f65bb77865"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86N7TGE",
+          "commit": {
+            "abbreviatedOid": "95befe1"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Looks good. We can discuss details in the context of mahy-mls-ratchet-tree-options.",
+          "createdAt": "2024-10-21T07:13:57Z",
+          "updatedAt": "2024-10-21T07:13:57Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86ODPk-",
+          "commit": {
+            "abbreviatedOid": "95befe1"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-21T20:11:02Z",
+          "updatedAt": "2024-10-21T20:11:02Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 86,
+      "id": "PR_kwDOKZ8QO85_QRnH",
+      "title": "Encrypt GroupInfo and ratchet_tree in repsonse to /groupInfo endpoint",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/86",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "\u2026 for better metadata privacy",
+      "createdAt": "2024-10-21T03:31:39Z",
+      "updatedAt": "2024-10-21T19:59:29Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "4644c776e12a647792932b6344a91d54599a3e31",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "encrypted-groupinfo",
+      "headRefOid": "2aab12989dbf8c7add41025550aa9fad2825cf86",
+      "closedAt": "2024-10-21T19:59:29Z",
+      "mergedAt": "2024-10-21T19:59:29Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "ade20e2035ca2d247ee9e770ad3f28a565d9c3b0"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86N7RfO",
+          "commit": {
+            "abbreviatedOid": "2aab129"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-21T07:10:50Z",
+          "updatedAt": "2024-10-21T07:10:50Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86ODJPh",
+          "commit": {
+            "abbreviatedOid": "2aab129"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-21T19:57:38Z",
+          "updatedAt": "2024-10-21T19:59:07Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "I'm OK letting this go for now, but:\r\n\r\nAt this point, you could just send a KeyPackage and have the response be a Welcome with either a Welcome extension or a PrivateMessage.\r\n\r\nAlternatively, you could just use OHAI.",
+              "createdAt": "2024-10-21T19:57:38Z",
+              "updatedAt": "2024-10-21T19:59:24Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 87,
+      "id": "PR_kwDOKZ8QO85_XJZO",
+      "title": "Diagram the extended Associated Parties Key Schedule to derive franking_context_secret",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/87",
+      "state": "MERGED",
+      "author": "dconnolly",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "@rohan-wire @kkohbrok ",
+      "createdAt": "2024-10-21T18:36:12Z",
+      "updatedAt": "2024-10-21T20:07:33Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "abuse2",
+      "baseRefOid": "9925e431ec7fbb7986742a4f4a62751738e20d21",
+      "headRepository": "dconnolly/mimi-protocol",
+      "headRefName": "abuse2",
+      "headRefOid": "50a53c8559e580e9717ebcc50c31bcb19955b222",
+      "closedAt": "2024-10-21T20:07:33Z",
+      "mergedAt": "2024-10-21T20:07:33Z",
+      "mergedBy": "bifurcation",
+      "mergeCommit": {
+        "oid": "817e964c5810b21c23d01ef78fda0494883ba36b"
+      },
+      "comments": [
+        {
+          "author": "dconnolly",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@rohanmahy I think the workflow run needs to be approved and then this can be merged into the message franking branch `abuse2`",
+          "createdAt": "2024-10-21T19:59:33Z",
+          "updatedAt": "2024-10-21T19:59:33Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86OC0rk",
+          "commit": {
+            "abbreviatedOid": "50a53c8"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-21T19:11:55Z",
+          "updatedAt": "2024-10-21T19:11:55Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86ODOAA",
+          "commit": {
+            "abbreviatedOid": "50a53c8"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-21T20:07:24Z",
+          "updatedAt": "2024-10-21T20:07:24Z",
+          "comments": []
         }
       ]
     }
