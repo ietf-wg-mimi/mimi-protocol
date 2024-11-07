@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-05T00:41:44.242858+00:00",
+  "timestamp": "2024-11-07T00:41:51.008800+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1182,6 +1182,30 @@
       "updatedAt": "2024-08-13T19:18:20Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 88,
+      "id": "I_kwDOKZ8QO86dKPNY",
+      "title": "Add signature of reporter and messageId to AbuseReport",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/88",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-11-05T23:29:31Z",
+      "updatedAt": "2024-11-06T20:48:35Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "turt2live",
+          "authorAssociation": "COLLABORATOR",
+          "body": "rationale? ",
+          "createdAt": "2024-11-06T20:48:34Z",
+          "updatedAt": "2024-11-06T20:48:34Z"
+        }
+      ]
     }
   ],
   "pulls": [
