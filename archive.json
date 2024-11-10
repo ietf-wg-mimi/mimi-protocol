@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-07T00:41:51.008800+00:00",
+  "timestamp": "2024-11-10T00:44:50.225417+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -159,7 +159,7 @@
       ],
       "body": "Room name, etc",
       "createdAt": "2023-11-09T08:05:59Z",
-      "updatedAt": "2023-11-12T13:32:40Z",
+      "updatedAt": "2024-11-07T08:29:34Z",
       "closedAt": null,
       "comments": [
         {
@@ -189,6 +189,13 @@
           "body": "I think we should first have a discussion about what information goes into room policy and room state. \r\n\r\nwe also need to enumerate what information we are talking about and decide if it needs to be inspected by the hub, and if it needs to be inspected by other providers.",
           "createdAt": "2023-11-12T13:32:40Z",
           "updatedAt": "2023-11-12T13:32:40Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Discussed new room metadata state (which could be encrypted only for members) in draft-mahy-mimi-room-policy. This appears to be separate from mimi-protocol, but will be tracked here for now.",
+          "createdAt": "2024-11-07T08:29:32Z",
+          "updatedAt": "2024-11-07T08:29:32Z"
         }
       ]
     },
@@ -375,7 +382,7 @@
       "id": "I_kwDOKZ8QO852WPWq",
       "title": "Request key packages based on user ID? (or send many DSRequests)",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/28",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -384,9 +391,17 @@
       ],
       "body": "> **TODO**: For now, the event fetches key packages based on client identifiers,\r\n> not user identifiers. This is because KeyPackage fetching is part of MIMI DS,\r\n> which doesn't know what a user is. We could, however, send multiple MIMI DS\r\n> requests in a single MIMI protocol request.",
       "createdAt": "2023-11-09T12:40:49Z",
-      "updatedAt": "2023-11-09T12:40:49Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-11-07T08:35:28Z",
+      "closedAt": "2024-11-07T08:35:28Z",
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This is actually no longer the case. the current document fetches based on user. Closing.",
+          "createdAt": "2024-11-07T08:35:28Z",
+          "updatedAt": "2024-11-07T08:35:28Z"
+        }
+      ]
     },
     {
       "number": 29,
@@ -447,7 +462,7 @@
       "id": "I_kwDOKZ8QO852WQ7n",
       "title": "Clarify fanout throughout",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/30",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -456,8 +471,8 @@
       "labels": [],
       "body": "Which events are sent to who, and how? Specifically DS Welcome events.",
       "createdAt": "2023-11-09T12:44:45Z",
-      "updatedAt": "2024-10-21T02:34:42Z",
-      "closedAt": null,
+      "updatedAt": "2024-11-07T09:04:43Z",
+      "closedAt": "2024-11-07T09:04:43Z",
       "comments": [
         {
           "author": "turt2live",
@@ -480,7 +495,7 @@
       "id": "I_kwDOKZ8QO852WSKb",
       "title": "Security properties of GroupInfo",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/31",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -489,8 +504,8 @@
       ],
       "body": "> **TODO**: in the MLS case, what security properties are needed to protect a\r\n> GroupInfo object in the MIMI context are still under discussion. It is\r\n> possible that the requester only needs to prove possession of their private\r\n> key. The GroupInfo in another context might be sufficiently sensitive that it\r\n> should be encrypted from the end client to the hub provider (unreadable by the\r\n> local provider).",
       "createdAt": "2023-11-09T12:47:50Z",
-      "updatedAt": "2023-11-10T09:33:56Z",
-      "closedAt": null,
+      "updatedAt": "2024-11-07T09:04:22Z",
+      "closedAt": "2024-11-07T09:04:22Z",
       "comments": [
         {
           "author": "kkohbrok",
@@ -498,6 +513,13 @@
           "body": "The same security should probably apply to an `m.room.info` event proposed in #23.",
           "createdAt": "2023-11-10T09:33:56Z",
           "updatedAt": "2023-11-10T09:33:56Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "GroupInfo is now protected from the external joiner's provider during fetch in #86 . It can be protected from the committer's provider in #85 . Closing. ",
+          "createdAt": "2024-11-07T09:04:22Z",
+          "updatedAt": "2024-11-07T09:04:22Z"
         }
       ]
     },
@@ -506,7 +528,7 @@
       "id": "I_kwDOKZ8QO852WSr7",
       "title": "Event sender changes",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/32",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -515,9 +537,17 @@
       ],
       "body": "> **TODO**: Consider splitting `sender` into an object of `{type, identifier}`.\r\n\r\n> **TODO**: The `sender` field might be a bit redundant now that signaling is\r\n> largely handled through MLS proposals.",
       "createdAt": "2023-11-09T12:49:07Z",
-      "updatedAt": "2023-11-09T12:49:07Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-11-07T09:01:41Z",
+      "closedAt": "2024-11-07T09:01:41Z",
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This is no longer relevant in the current formulation. Closing. ",
+          "createdAt": "2024-11-07T09:01:41Z",
+          "updatedAt": "2024-11-07T09:01:41Z"
+        }
+      ]
     },
     {
       "number": 33,
@@ -1195,7 +1225,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-11-05T23:29:31Z",
-      "updatedAt": "2024-11-06T20:48:35Z",
+      "updatedAt": "2024-11-07T08:18:49Z",
       "closedAt": null,
       "comments": [
         {
@@ -1204,6 +1234,37 @@
           "body": "rationale? ",
           "createdAt": "2024-11-06T20:48:34Z",
           "updatedAt": "2024-11-06T20:48:34Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In the current version, a malicious group member (Malek) could send an abuse report impersonating another member (Alice). If used repeatedly, Alice might be banned for sending frivolous abuse reports, or Malek might \"out\" the sender of a specific message, but attribute that action to Alice instead of himself.",
+          "createdAt": "2024-11-07T08:18:48Z",
+          "updatedAt": "2024-11-07T08:18:48Z"
+        }
+      ]
+    },
+    {
+      "number": 89,
+      "id": "I_kwDOKZ8QO86dXqDT",
+      "title": "malicious follower can \"maul\" server frank",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/89",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "A follower provider that doesn't wish messages to be reportable as abusive could maliciously modify (\"maul\") the server frank. Without a signature by the hub, this would be undetectable by the follower client.\r\n\r\nSimilarly, the follower could modify the hub accepted timestamp. The follower client would reject the message because the franking context did not match, but would be unable to tell if the context was wrong because of a malicious or buggy sender, hub, or follower.\r\n\r\nThe hub could sign the frank (server frank, franking tag, franking context hash) and timestamp instead of protecting the server frank with an HMAC (and the timestamp with nothing).",
+      "createdAt": "2024-11-07T08:13:25Z",
+      "updatedAt": "2024-11-07T23:46:01Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Konrad recommended using another key from associated parties to prove integrity of the server frank",
+          "createdAt": "2024-11-07T23:45:59Z",
+          "updatedAt": "2024-11-07T23:45:59Z"
         }
       ]
     }
