@@ -39,7 +39,7 @@ author:
     email: konrad.kohbrok@datashrine.de
  -
     fullname: Rohan Mahy
-    organization: Unaffiliated
+    organization: Rohan Mahy Consulting Services
     email: rohan.ietf@gmail.com
  -
     fullname: Travis Ralston
@@ -51,14 +51,6 @@ author:
     email: ietf@raphaelrobert.com
 
 normative:
-  I-D.kohbrok-mls-associated-parties:
-    title: MLS Associated parties
-    author:
-      name: Konrad Kohbrok
-      org: Phoenix R&D
-      email: konrad.kohbrok@datashrine.de
-    date: 2024
-
 
 informative:
   SecretConversations:
@@ -1103,7 +1095,11 @@ struct {
           /* the hub acceptance time
              (in milliseconds from the UNIX epoch) */
           uint64 acceptedTimestamp;
-          optional uint8[32] serverFrank;
+          optional struct {
+            uint8[32] serverFrank;
+            uint8[32] franking_context_hash;
+            uint8[32] frank_integrity_check;
+          };
         case epochTooOld:
           /* current MLS epoch for the MLS group */
           uint64 currentEpoch;
@@ -1142,13 +1138,13 @@ significant changes as discussed in the final paragraph of this section.
 #### Client creation and sending
 
 When ready to send an application message with the MIMI content format,
-the sender generates a new cryptographically random 256-bit `franking_key`.
-An example mechanism to generate the `franking_key` safely is discussed in
+the sender generates a new cryptographically random 256-bit `franking_secret`.
+An example mechanism to generate the `franking_secret` safely is discussed in
 {{example-franking-alg}}.
 
-Next the sender attaches to the message the `franking_key` and any other
+Next the sender attaches to the message the `franking_secret` and any other
 fields the sender wishes to commit that are not otherwise represented in the
-content. For a MIMI content object, the sender creates a CBOR "FrankingAssertion" map containing the `franking_key`, sender URI, and room
+content. For a MIMI content object, the sender creates a CBOR "FrankingAssertion" map containing the `franking_secret`, sender URI, and room
 URI. It adds this FrankingAssertion to the extensions map at the top level
 of the MIMI content using the integer key TBD1.
 
@@ -1167,10 +1163,10 @@ it just means that the sender is claiming it sent the values in the content,
 and cannot later deny to a receiver that it sent them.
 
 Then the client calculates the `franking_tag`, as the HMAC SHA256 of the
-`application_data` (which includes the FrankingAssertion extension), using the `franking_key`:
+`application_data` (which includes the FrankingAssertion extension), using the `franking_secret`:
 
 ~~~
-franking_tag = HMAC_SHA256( franking_key, application_data)
+franking_tag = HMAC_SHA256( franking_secret, application_data)
 ~~~
 
 The client includes the `franking_tag` in the Additional Authenticated Data
@@ -1185,9 +1181,11 @@ by the server).
 
 The Hub relies on a per-epoch secret shared among the members of the group
 and itself to obfuscate the message metadata (the `context`) the Hub uses
-while franking. It derives the `franking_context_secret` (with the label
-"franking_context") from the `ap_exporter_secret` in the Associated Party
-Key Schedule {{I-D.kohbrok-mls-associated-parties}}.
+while franking, and another to provide message integrity over information
+added by the Hub. It derives both the `franking_context_secret` (with the
+label "franking_context") and the `franking_integrity_secret` (with the
+label "franking_integrity") from the `ap_exporter_secret` in the Associated
+Party Key Schedule {{!I-D.kohbrok-mls-associated-parties}}.
 
 ~~~ aasvg
          ...
@@ -1198,19 +1196,22 @@ Key Schedule {{I-D.kohbrok-mls-associated-parties}}.
           |
           |
           +--------------------> DeriveSecret(., "ap_exporter")
-          |                      = ap_exporter_secret
-          |                               |
-          |                               |
-          V                               V
-    DeriveSecret(., "init")      DeriveSecret(., "franking_context")
-          |                      = franking_context_secret
-          |
+          |                               = ap_exporter_secret
+          |                                  |       |
+          |                                  |       |
+          V                                  |       |
+    DeriveSecret(., "init")                  |       |
+          |                                  V       |
+          |     DeriveSecret(., "franking_context")  |
+          |              = franking_context_secret   |
+          |                                          V
+          |          DeriveSecret(., "franking_integrity")
+          |                   = franking_integrity_secret
           |
           V
     init_secret_[n]
 ~~~
 {: title="The Extended Associated Party Key Schedule" #extended-ap-key-schedule }
-
 
 When the Hub receives an acceptable application message with the `FrankAAD`
 AAD extension and a valid sender identity, it calculates a server frank for
@@ -1220,49 +1221,83 @@ the message as follows:
 context = senderURI || roomURI || acceptedTimestamp
 serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
 franking_context_hash = SHA256(franking_context_secret || context)
+frank_integrity_check = HMAC_SHA256(franking_integrity_secret,
+  serverFrank || acceptedTimestamp|| franking_context_hash)
 ~~~
 
 `HUBkey` is a secret symmetric key used on the Hub which the Hub can use to verify its own tags.
 
+The `frank_integrity_check` is used by receivers to verify that the other
+values added by the Hub (the `serverFrank`, `acceptedTimestamp`, and the
+`franking_context_hash`) were not modified by a follower provider.
+The specific construction used is discussed in the Security Considerations
+in {{franking}}.
+
 The Hub fans out the encrypted message (which includes the `franking_tag`),
-the `serverFrank`, the `acceptedTimestamp`, the room URI, and the
-`franking_context_hash`. Note that the `senderURI` is not included in the
-application message, so the sender can remain anonymous with respect to
-follower providers.
+the `serverFrank`, the `acceptedTimestamp`, the room URI, the
+`franking_context_hash`, and the `frank_integrity_check`. Note that the
+`senderURI` is not included in the application message, so the sender can
+remain anonymous with respect to follower providers.
 
 #### Receiver verification of frank
 
 When a client receives and decrypts an otherwise valid application message
 from a hub provider, the client looks for the existence of a frank
-(consisting of the `franking_tag` in the AAD, the `serverFrank` and the
-`franking_context_hash`. If so, it derives the `franking_context_secret`
+(consisting of the `franking_tag` in the AAD, the `serverFrank`, the
+`franking_context_hash`, and the `frank_integrity_check`). If so, it
+derives the `franking_context_secret` and the `franking_integrity_secret`
 from the `ap_exporter_secret` in the Associated Party Key Schedule
-{{I-D.kohbrok-mls-associated-parties}}; then it verifies the construction of
-the `franking_tag` from the content of the message, and the construction of
-the `franking_context_hash` from the sender URI, room ID,
-`acceptedTimestamp`, and `franking_context_secret`.
+{{I-D.kohbrok-mls-associated-parties}}.
 
-The receiving client receives a sender identifier in three different locations. The receiver verifies that they are all the same:
+Next it verifies the integrity of the the `serverFrank`,
+`acceptedTimestamp`, and the `franking_context_hash` by calculating its
+own `frank_integrity_check` from these values with the
+`franking_integrity_secret` and comparing it to the provided `frank_integrity_check`.
 
-- the sender's identity in its credential in its MLS LeafNode
-- the sender's identity asserted in the FrankingAssertion map inside the MIMI Content
-- the (hidden) sender's identity in the context used to create the `serverFrank`. The client hashes the concatenation of the sender's identity, the room ID, and the acceptedTimestamp. If this hash matches the context_validation hash, then the identity used by the server was correct.
+Then it verifies the `franking_context_hash` from the `senderURI` from the
+decrypted message, the `roomURI`,the `acceptedTimestamp`, and the
+`franking_context_secret`.
 
-The receiver needs to store the frank with the decoded message so it can be
-used later.
+Finally it verifies the construction of the `franking_tag` from the content
+of the message (including the embedded `franking_secret`),
+that the sender's identity in its credential in its MLS LeafNode matches
+the sender's identity asserted in the FrankingAssertion map inside the MIMI
+Content, and that the RoomURI inside the MIMI Content matches the room ID in
+the received message.
+
+The receiver needs to store the frank and context with the decoded message
+so it can be used later.
 
 #### Comparison with the Facebook franking scheme
 
-Unlike in the Facebook franking scheme {{SecretConversations}}, the sender
-"commits to" its `franking_tag` as Additional Authenticated Data (AAD) inside the end-to-end encrypted message, and the hub only sends a hash of
-its context. This first change insures that the client cannot come up with
-another `franking_key` and message that has the same `franking_tag`
-{{Grubbs2017}}{{InvisibleSalamanders}}. According to {{Grubbs2017}},
+Unlike in the Facebook franking scheme {{SecretConversations}}, the MIMI
+use case involves traffic which can transit multiple federated providers,
+any of which may be compromised or malicious. The MIMI franking scheme
+described here differs in the following ways.
+
+The sender
+includes its `franking_tag` as Additional Authenticated Data (AAD) inside the end-to-end encrypted message. This insures that the `franking_tag` is not tampered with by the sender's provider.
+According to {{Grubbs2017}},
 "... [Facebook's] franking scheme does not bind [the franking tag] to [the
 ciphertext] by including [the franking tag] in the associated data during
 encryption".
+
+In MLS, the Hub cannot view the sender identity in an application message,
+so the sender sends its identity to the Hub. The hub never sends the
+identity of the sender to receivers, since this would be observed by
+follower providers. However, the receiver needs to verify that the sender
+identity provided by the sender's provider to the Hub matches the identity
+the receiver sees after it decrypts the message. Using a key shared between
+members and the Hub (the `franking_context_secret`) the Hub sends an HMAC
+of its context (sender identity, room id, and timestamp) with this key.
 The second change allows receivers to validate the sender URI in the hub's
 context, without revealing the sender URI to follower providers.
+
+Finally, to prevent a follower provider from "mauling" the serverFrank, or
+breaking the context comparison (by modifying the `franking_context_hash` or
+`acceptedTimestamp`), the Hub includes the `frank_integrity_check`. Each
+receiver uses this to verify that the timestamp and franking parameters
+added by the Hub were not modified.
 
 
 ## Fanout Messages and Room Events
@@ -1292,9 +1327,9 @@ POST /notify/{roomId}
 
 ~~~ tls
 struct {
-  uint8[32] franking_tag;
   uint8[32] serverFrank;
   uint8[32] franking_context_hash;
+  uint8[32] frank_integrity_check;
 } Frank;
 
 struct {
@@ -1898,16 +1933,19 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 
 TBD.
 
+**TODO**: Present the franking mechanism to CFRG for review.
+
+
 ### Example algorithm for generating franking keys {#example-franking-alg}
 
-To ensure a strong source of entropy for the `franking_key` included in each
+To ensure a strong source of entropy for the `franking_secret` included in each
 message, the client can export a secret from the MLS key schedule, for
 example with the label `franking_base_secret` and calculate the
-`franking_key` as the HMAC of a locally generated nonce and the
+`franking_secret` as the HMAC of a locally generated nonce and the
 `franking_base_secret`.
 
 ~~~
-franking_key = HMAC_SHA256( franking_base_secret, nonce )
+franking_secret = HMAC_SHA256( franking_base_secret, nonce )
 ~~~
 
 
@@ -1919,4 +1957,5 @@ franking_key = HMAC_SHA256( franking_base_secret, nonce )
 # Acknowledgments
 {:numbered="false"}
 
-> **TODO**:
+Thanks to Paul Grubs, Jon Millican, and Julia Len for their reviews of the
+franking mechanism and suggested changes.
