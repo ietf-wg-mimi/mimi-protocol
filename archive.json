@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-10T00:44:50.225417+00:00",
+  "timestamp": "2024-11-12T00:41:21.410020+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1256,7 +1256,7 @@
       "labels": [],
       "body": "A follower provider that doesn't wish messages to be reportable as abusive could maliciously modify (\"maul\") the server frank. Without a signature by the hub, this would be undetectable by the follower client.\r\n\r\nSimilarly, the follower could modify the hub accepted timestamp. The follower client would reject the message because the franking context did not match, but would be unable to tell if the context was wrong because of a malicious or buggy sender, hub, or follower.\r\n\r\nThe hub could sign the frank (server frank, franking tag, franking context hash) and timestamp instead of protecting the server frank with an HMAC (and the timestamp with nothing).",
       "createdAt": "2024-11-07T08:13:25Z",
-      "updatedAt": "2024-11-07T23:46:01Z",
+      "updatedAt": "2024-11-11T17:40:25Z",
       "closedAt": null,
       "comments": [
         {
@@ -1265,6 +1265,13 @@
           "body": "Konrad recommended using another key from associated parties to prove integrity of the server frank",
           "createdAt": "2024-11-07T23:45:59Z",
           "updatedAt": "2024-11-07T23:45:59Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Added an integrity check inspired by Konrad's suggestion in #90 ",
+          "createdAt": "2024-11-11T17:40:23Z",
+          "updatedAt": "2024-11-11T17:40:23Z"
         }
       ]
     }
@@ -8450,6 +8457,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 90,
+      "id": "PR_kwDOKZ8QO86BifZI",
+      "title": "Update Franking scheme to include integrity from follower mauling",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/90",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "As discussed at IETF 121 meeting last week, issue #89 means that a malicious follower could destroy a frank and the receiver would never find out until they presented an invalid frank when reporting abuse.\r\n\r\nThis PR adds a second associated parties exported key for a general purpose integrity check over all the hub-provided values in a fanout message.",
+      "createdAt": "2024-11-11T17:37:13Z",
+      "updatedAt": "2024-11-11T17:37:13Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "33614cdb50ccd6aea0524b5da874fdd70674a681",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "frank-integrity",
+      "headRefOid": "28db3038f82701f02ab02734e799fda1a13f3f29",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
