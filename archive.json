@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-17T00:48:37.580265+00:00",
+  "timestamp": "2024-11-19T00:44:51.498980+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1274,6 +1274,22 @@
           "updatedAt": "2024-11-11T17:40:23Z"
         }
       ]
+    },
+    {
+      "number": 91,
+      "id": "I_kwDOKZ8QO86e6VMx",
+      "title": "Move FrankingAssertion map to mimi-content",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/91",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The FrankingAssertion map in Section 5.4.1.1 Client creation and sending should be defined in draft-ietf-mimi-content",
+      "createdAt": "2024-11-17T16:30:03Z",
+      "updatedAt": "2024-11-17T16:30:03Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
