@@ -22,20 +22,20 @@ integrates the Messaging Layer Security (MLS) protocol to provide end-to-end sec
 assurances, including authentication of protocol participants, confidentiality
 of messages exchanged within a room, and agreement on the state of the room. 
     " name="description">
-<meta content="xml2rfc 3.23.2" name="generator">
+<meta content="xml2rfc 3.24.0" name="generator">
 <meta content="mimi" name="keyword">
 <meta content="interoperable messaging" name="keyword">
 <meta content="chat" name="keyword">
 <meta content="secure messaging" name="keyword">
 <meta content="draft-ietf-mimi-protocol-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.23.2
+  xml2rfc 3.24.0
     Python 3.12.7
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.4
-    lxml 4.9.4
+    lxml 5.3.0
     platformdirs 4.3.6
     pycountry 22.3.5
     PyYAML 6.0.1
@@ -177,31 +177,6 @@ of messages exchanged within a room, and agreement on the state of the room.
 }
 
 @font-face {
-  font-family: 'Cabin Condensed';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-vietnamese.woff2') format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
-}
-@font-face {
-  font-family: 'Cabin Condensed';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Cabin Condensed';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
   font-family: 'Oxygen Mono';
   font-style: normal;
   font-weight: 400;
@@ -218,6 +193,77 @@ of messages exchanged within a room, and agreement on the state of the room.
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   color-scheme: light dark;
   --background-color: #fff;
@@ -230,6 +276,7 @@ of messages exchanged within a room, and agreement on the state of the room.
   --pilcrow-strong: #bbb;
   --small-font-size: 14.5px;
   --font-mono: 'Oxygen Mono', monospace;
+  --font-title: "Sofia Sans Semi Condensed", sans-serif;
   scrollbar-color: #bbb #eee;
 }
 body {
@@ -247,9 +294,15 @@ body {
 }
 
 /* headings */
+section {
+  clear: both;
+}
+.section-number {
+  padding-right: 0.5em;
+}
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Cabin Condensed", sans-serif;
-  font-weight: 600;
+  font-family: var(--font-title);
+  font-weight: 680;
   margin: 0.8em 0 0.3em;
   font-size-adjust: 0.5;
   color: var(--title-color);
@@ -278,6 +331,7 @@ h4, h5, h6 {
 /* general structure */
 .author {
   padding-bottom: 0.3em;
+  vertical-align: top;
 }
 #abstract+p {
   font-size: 18px;
@@ -355,25 +409,26 @@ svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
 ol, ul {
   padding: 0;
   margin: 0 0 0.5em 2em;
-}
-:is(ol, ul) :is(ol, ul) {
-  margin-left: 1em;
+  & :is(ol, ul) {
+    margin-left: 1em;
+  }
 }
 li {
   margin: 0 0 0.25em 0;
 }
-.ulCompact li {
-  margin: 0;
-}
 ul.empty, .ulEmpty {
   list-style-type: none;
-}
-ul.empty li, .ulEmpty li {
-  margin-top: 0.5em;
+  & li {
+    margin-top: 0.5em;
+  }
 }
 :is(ul, ol).compact, .ulCompact, .olCompact {
-  line-height: 1;
   margin: 0 0 0 2em;
+  & li {
+    margin: 0;
+    & :first-child { margin-top: 0; }
+    & :last-child { margin-bottom: 0; }
+  }
 }
 
 /* definition lists */
@@ -381,38 +436,39 @@ dl {
   clear: left;
   --indent: 3ch;
   /* --indent: attr(indent ch); not supported in any browser, but we can dream */
-}
-dl.olPercent {
-  --indent: 5ch;
+  &.olPercent {
+    --indent: 5ch;
+    & > dt {
+      min-width: calc(var(--indent) - 2ch);
+    }
+  }
+  &.olPercent > dt {
+    float: none;
+  }
+
+  dl > dd > & {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+  }
 }
 dl > dt {
   float: left;
   margin-right: 2ch;
   min-width: 8ch;
 }
-dl.dlNewline > dt {
-  float: none;
-}
 dl > dd {
   margin-bottom: .8em;
   margin-left: var(--indent) !important; /* stupid element overrides */
   min-height: 2ex;
 }
-dl.olPercent > dt {
-  min-width: calc(var(--indent) - 2ch);
-}
 :is(dl.compact, .dlCompact) > dd {
   margin-bottom: 0;
-}
-:is(dl.compact, .dlCompact) > dd > :is(:first-child, .break:first-child + *) {
-  margin-top: 0;
-}
-:is(dl.compact, .dlCompact) > dd > :is(:last-child) {
-  margin-bottom: 0;
-}
-dl > dd > dl {
-  margin-top: 0.5em;
-  margin-bottom: 0;
+  & > :is(:first-child, .break:first-child + *) {
+    margin-top: 0;
+  }
+  & > :is(:last-child) {
+    margin-bottom: 0;
+  }
 }
 :is(dd, span).break {
   display: none;
@@ -476,6 +532,7 @@ figcaption, caption {
   font-style: italic;
   margin: 0.5em 1.5em;
   text-align: left;
+  caption-side: bottom;
 }
 @media screen {
   /* Auto-collapse boilerplate. */
@@ -530,6 +587,7 @@ cite {
 
 /* tables */
 table {
+  width: auto;
   max-width: 100%;
   margin: 0 0 1em;
   border-collapse: collapse;
@@ -544,6 +602,16 @@ table.center {
 table.left {
   margin-right: auto;
 }
+table .text-left {
+  text-align: left;
+}
+table .text-center {
+  text-align: center;
+}
+table .text-right {
+  text-align: right;
+}
+
 thead, tbody {
   border: 1px solid var(--line-color);
 }
@@ -574,9 +642,11 @@ a.pilcrow {
   margin-left: 3px;
   opacity: 0.2;
   user-select: none;
+  &[href] {
+    color: var(--pilcrow-weak);
+    &:hover { text-decoration: none; }
+  }
 }
-a.pilcrow[href] { color: var(--pilcrow-weak); }
-a.pilcrow[href]:hover { text-decoration: none; }
 @media not print {
   :hover > a.pilcrow {
     opacity: 1;
@@ -616,26 +686,28 @@ sub, sup {
   font-size: var(--small-font-size);
   line-height: 18px;
   --identifier-width: 15ch;
-}
-#identifiers dt {
-  width: var(--identifier-width);
-  min-width: var(--identifier-width);
-  clear: left;
-  float: left;
-  text-align: right;
-  margin-right: 1ch;
-}
-#identifiers dd {
-  margin: 0;
-  margin-left: calc(1em + var(--identifier-width)) !important;
-  min-width: 5em;
-}
-#identifiers .authors .author {
-  display: inline-block;
-  margin-right: 1.5em;
-}
-#identifiers .authors .org {
-  font-style: italic;
+  & dt {
+    width: var(--identifier-width);
+    min-width: var(--identifier-width);
+    clear: left;
+    float: left;
+    text-align: right;
+    margin-right: 1ch;
+  }
+  & dd {
+    margin: 0;
+    margin-left: calc(1em + var(--identifier-width)) !important;
+    min-width: 5em;
+  }
+  & .authors {
+    & .author {
+      display: inline-block;
+      margin-right: 1.5em;
+    }
+    & .org {
+      font-style: italic;
+    }
+  }
 }
 
 /* The prepared/rendered info at the very bottom of the page */
@@ -646,9 +718,6 @@ sub, sup {
   margin-top: 2em;
 }
 .docInfo .prepared {
-  float: left;
-}
-.docInfo .prepared {
   float: right;
 }
 
@@ -656,47 +725,48 @@ sub, sup {
 #toc {
   padding: 0.75em 0 2em 0;
   margin-bottom: 1em;
-}
-#toc nav ul {
-  margin: 0 0.5em 0 0;
-  padding: 0;
-  list-style: none;
-}
-#toc nav li {
-  line-height: 1.3em;
-  margin: 2px 0;
-  padding-left: 1.2em;
-  text-indent: -1.2em;
-}
-#toc a.xref {
-  white-space: normal;
-}
-/* references */
-.references dt {
-  text-align: right;
-  font-weight: bold;
-  min-width: 10ch;
-  margin-right: 1.5ch;
-}
-.references dt:target::before {
-  content: "⇒";
-  width: 15px;
-  margin: 0 10px 0 -25px;
-}
-.references dd {
-  margin-left: 12ch !important;
-  overflow: auto;
+
+  & nav {
+    & ul {
+      margin: 0 0.5em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    & li {
+      line-height: 1.3em;
+      margin: 2px 0;
+      padding-left: 1.2em;
+      text-indent: -1.2em;
+    }
+  }
+  & a.xref {
+    white-space: normal;
+  }
 }
 
-.refInstance {
-  margin-bottom: 1.25em;
+.references {
+  & > dt {
+    text-align: right;
+    font-weight: bold;
+    min-width: 10ch;
+    margin-right: 1.5ch;
+    &:target::before {
+      content: "⇒";
+      margin: 0 10px 0 -25px;
+    }
+  }
+  & > dd {
+    margin-left: 12ch !important;
+    overflow: visible;
+    & .refInstance {
+      margin-bottom: 0.8em;
+    }
+    & .ascii {
+      margin-bottom: 0.25em;
+    }
+  }
 }
 
-.references .ascii {
-  margin-bottom: 0.25em;
-}
-
-/* index */
 #rfc\.index\.index + ul {
   margin-left: 0;
 }
@@ -704,21 +774,33 @@ sub, sup {
 /* authors */
 address.vcard {
   font-style: normal;
-  margin: 1em 0;
+  max-width: 20em;
+  margin: 1em auto 1em 0;
+
+  & .nameRole {
+    font-weight: 700;
+    margin-left: 0;
+  }
+  & .label {
+    margin: 0.5em 0;
+  }
+  & .type {
+    display: none;
+  }
+  & .alternative-contact {
+    margin: 0.5em 0 0.25em 0;
+  }
+  & .non-ascii {
+    margin: 0 0 0 2em;
+  }
+  & div.left {
+    text-align: left;
+  }
+  & div.right {
+    text-align: right;
+  }
 }
-address.vcard .nameRole {
-  font-weight: 700;
-  margin-left: 0;
-}
-address.vcard .label {
-  margin: 0.5em 0;
-}
-address.vcard .type {
-  display: none;
-}
-.alternative-contact {
-  margin: 1.5em 0 1em;
-}
+
 hr.addr {
   border-top: 1px dashed;
   margin: 0;
@@ -740,6 +822,7 @@ hr.addr {
   }
 }
 
+/* Comments */
 .rfcEditorRemove p:first-of-type {
   font-style: italic;
 }
@@ -750,7 +833,31 @@ hr.addr {
 .crefSource {
   font-style: italic;
 }
-/* alternative layout for smaller screens */
+
+@media screen {
+  #toc nav {
+    font-family: var(--font-title);
+    font-weight: 360;
+    & > ul { margin-bottom: 2em; }
+    & ul {
+      margin: 0 0 0 4px;
+      & :is(p, li) {
+        margin: 2px 0;
+      }
+    }
+  }
+  #toc a.toplink {
+    float: right;
+  }
+}
+@media not screen {
+  #toc a.toplink {
+    display: none;
+  }
+}
+
+
+/* TOC layout for smaller screens */
 @media screen and (max-width: 929px) {
   #toc {
     position: fixed;
@@ -761,9 +868,6 @@ hr.addr {
     margin: 0;
     border-bottom: 1px solid #ccc;
     opacity: 0.6;
-  }
-  #toc.active {
-      opacity: 1;
   }
   #toc h2 {
     margin: 0;
@@ -776,17 +880,17 @@ hr.addr {
     background-color: #444;
     color: white;
     cursor: pointer;
-  }
-  #toc h2::before { /* css hamburger */
-    float: right;
-    position: relative;
-    width: 1em;
-    height: 1px;
-    left: -164px;
-    margin: 8px 0 0 0;
-    background: white none repeat scroll 0 0;
-    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
-    content: "";
+    &::before { /* css hamburger */
+      float: right;
+      position: relative;
+      width: 1em;
+      height: 1px;
+      left: -164px;
+      margin: 8px 0 0 0;
+      background: white none repeat scroll 0 0;
+      box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+      content: "";
+    }
   }
   #toc nav {
     display: none;
@@ -797,14 +901,13 @@ hr.addr {
     height: calc(100vh - 48px);
     border-left: 1px solid #ddd;
   }
-  #toc.active nav {
-    display: block;
+  #toc.active {
+    opacity: 1;
+    & nav { display: block; }
   }
   /* Make the collapsed ToC header render white on gray also when it's a link */
   #toc h2 a,
-  #toc h2 a:link,
-  #toc h2 a:focus,
-  #toc h2 a:hover,
+  #toc h2 a:is(:link, :focus, :hover),
   #toc a.toplink,
   #toc a.toplink:hover {
     color: white;
@@ -812,11 +915,11 @@ hr.addr {
     text-decoration: none;
   }
   #toc a.toplink {
-    margin-top: 2px;
+    margin: 2px 0.5em 0;
   }
 }
 
-/* alternative layout for wide screens */
+/* TOC layout for wide screens */
 @media screen and (min-width: 930px) {
   body {
     padding-right: 360px;
@@ -845,20 +948,12 @@ hr.addr {
     overscroll-behavior: contain;
     scrollbar-width: thin;
   }
-  #toc nav > ul  {
-    margin-bottom: 2em;
-  }
-  #toc ul {
-    margin: 0 0 0 4px;
-    font-size: var(--small-font-size);
-  }
-  #toc ul :is(p, li) {
-    margin: 2px 0;
-    line-height: 22px;
-  }
   img { /* future proofing */
     max-width: 100%;
     height: auto;
+  }
+  #toc a.toplink {
+    margin: 8px 0.5em 0;
   }
 }
 
@@ -901,9 +996,6 @@ hr.addr {
   td {
     border-top: 1px solid #ddd;
   }
-  .toplink {
-    display: none;
-  }
 }
 
 @page :first {
@@ -926,82 +1018,6 @@ hr.addr {
   size: A4;
   margin-bottom: 45mm;
   padding-top: 20px;
-}
-
-/* Changes introduced to fix issues found during implementation */
-
-/* Separate body from document info even without intervening H1 */
-section {
-  clear: both;
-}
-
-/* Top align author divs, to avoid names without organization dropping level with org names */
-.author {
-  vertical-align: top;
-}
-
-/* Style section numbers with more space between number and title */
-.section-number {
-  padding-right: 0.5em;
-}
-
-/* Add styling for a link in the ToC that points to the top of the document */
-a.toplink {
-  float: right;
-  margin: 8px 0.5em 0;
-}
-
-/* Provide styling for table cell text alignment */
-table .text-left {
-  text-align: left;
-}
-table .text-center {
-  text-align: center;
-}
-table .text-right {
-  text-align: right;
-}
-
-/* Make the alternative author contact information look less like just another
-   author, and group it closer with the primary author contact information */
-.alternative-contact {
-  margin: 0.5em 0 0.25em 0;
-}
-address .non-ascii {
-  margin: 0 0 0 2em;
-}
-
-/* With it being possible to set tables with alignment
-  left, center, and right, { width: 100%; } does not make sense */
-table {
-  width: auto;
-}
-
-/* Avoid reference text that sits in a block with very wide left margin,
-   because of a long floating dt label.*/
-.references dd {
-  overflow: visible;
-}
-
-/* Control caption placement */
-caption {
-  caption-side: bottom;
-}
-
-/* Limit the width of the author address vcard, so names in right-to-left
-   script don't end up on the other side of the page. */
-
-address.vcard {
-  max-width: 20em;
-  margin-right: auto;
-}
-
-/* For address alignment dependent on LTR or RTL scripts */
-address div.left {
-  text-align: left;
-}
-address div.right {
-  text-align: right;
 }
 
 /* Dark mode. */
@@ -1040,11 +1056,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">MIMI+MLS Protocol</td>
-<td class="right">October 2024</td>
+<td class="right">November 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 24 April 2025</td>
+<td class="center">Expires 25 May 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1057,12 +1073,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-10-21" class="published">21 October 2024</time>
+<time datetime="2024-11-21" class="published">21 November 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-04-24">24 April 2025</time></dd>
+<dd class="expires"><time datetime="2025-05-25">25 May 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1079,7 +1095,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </div>
 <div class="author">
       <div class="author-name">R. Mahy</div>
-<div class="org">Unaffiliated</div>
+<div class="org">Rohan Mahy Consulting Services</div>
 </div>
 <div class="author">
       <div class="author-name">T. Ralston</div>
@@ -1140,7 +1156,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 24 April 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 25 May 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3146,7 +3162,11 @@ struct {
           /* the hub acceptance time
              (in milliseconds from the UNIX epoch) */
           uint64 acceptedTimestamp;
-          optional uint8[32] serverFrank;
+          optional struct {
+            uint8[32] serverFrank;
+            uint8[32] franking_context_hash;
+            uint8[32] frank_integrity_check;
+          };
         case epochTooOld:
           /* current MLS epoch for the MLS group */
           uint64 currentEpoch;
@@ -3198,12 +3218,12 @@ significant changes as discussed in the final paragraph of this section.<a href=
 <a href="#section-5.4.1.1" class="section-number selfRef">5.4.1.1. </a><a href="#name-client-creation-and-sending" class="section-name selfRef">Client creation and sending</a>
             </h5>
 <p id="section-5.4.1.1-1">When ready to send an application message with the MIMI content format,
-the sender generates a new cryptographically random 256-bit <code>franking_key</code>.
-An example mechanism to generate the <code>franking_key</code> safely is discussed in
+the sender generates a new cryptographically random 256-bit <code>franking_secret</code>.
+An example mechanism to generate the <code>franking_secret</code> safely is discussed in
 <a href="#example-franking-alg" class="auto internal xref">Section 8.1.1</a>.<a href="#section-5.4.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.1-2">Next the sender attaches to the message the <code>franking_key</code> and any other
+<p id="section-5.4.1.1-2">Next the sender attaches to the message the <code>franking_secret</code> and any other
 fields the sender wishes to commit that are not otherwise represented in the
-content. For a MIMI content object, the sender creates a CBOR "FrankingAssertion" map containing the <code>franking_key</code>, sender URI, and room
+content. For a MIMI content object, the sender creates a CBOR "FrankingAssertion" map containing the <code>franking_secret</code>, sender URI, and room
 URI. It adds this FrankingAssertion to the extensions map at the top level
 of the MIMI content using the integer key TBD1.<a href="#section-5.4.1.1-2" class="pilcrow">¶</a></p>
 <div class="lang-cbor-diag sourcecode" id="section-5.4.1.1-3">
@@ -3221,10 +3241,10 @@ of the MIMI content using the integer key TBD1.<a href="#section-5.4.1.1-2" clas
 it just means that the sender is claiming it sent the values in the content,
 and cannot later deny to a receiver that it sent them.<a href="#section-5.4.1.1-4" class="pilcrow">¶</a></p>
 <p id="section-5.4.1.1-5">Then the client calculates the <code>franking_tag</code>, as the HMAC SHA256 of the
-<code>application_data</code> (which includes the FrankingAssertion extension), using the <code>franking_key</code>:<a href="#section-5.4.1.1-5" class="pilcrow">¶</a></p>
+<code>application_data</code> (which includes the FrankingAssertion extension), using the <code>franking_secret</code>:<a href="#section-5.4.1.1-5" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.4.1.1-6">
 <pre>
-franking_tag = HMAC_SHA256( franking_key, application_data)
+franking_tag = HMAC_SHA256( franking_secret, application_data)
 </pre><a href="#section-5.4.1.1-6" class="pilcrow">¶</a>
 </div>
 <p id="section-5.4.1.1-7">The client includes the <code>franking_tag</code> in the Additional Authenticated Data
@@ -3243,22 +3263,26 @@ by the server).<a href="#section-5.4.1.1-7" class="pilcrow">¶</a></p>
             </h5>
 <p id="section-5.4.1.2-1">The Hub relies on a per-epoch secret shared among the members of the group
 and itself to obfuscate the message metadata (the <code>context</code>) the Hub uses
-while franking. It derives the <code>franking_context_secret</code> (with the label
-"franking_context") from the <code>ap_exporter_secret</code> in the Associated Party
-Key Schedule <span>[<a href="#I-D.kohbrok-mls-associated-parties" class="cite xref">I-D.kohbrok-mls-associated-parties</a>]</span>.<a href="#section-5.4.1.2-1" class="pilcrow">¶</a></p>
+while franking, and another to provide message integrity over information
+added by the Hub. It derives both the <code>franking_context_secret</code> (with the
+label "franking_context") and the <code>franking_integrity_secret</code> (with the
+label "franking_integrity") from the <code>ap_exporter_secret</code> in the Associated
+Party Key Schedule <span>[<a href="#I-D.kohbrok-mls-associated-parties" class="cite xref">I-D.kohbrok-mls-associated-parties</a>]</span>.<a href="#section-5.4.1.2-1" class="pilcrow">¶</a></p>
 <span id="name-the-extended-associated-par"></span><div id="extended-ap-key-schedule">
 <figure id="figure-10">
               <div id="section-5.4.1.2-2.1">
                 <div class="alignLeft art-svg artwork" id="section-5.4.1.2-2.1.1">
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="336" width="520" viewBox="0 0 520 336" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="400" width="480" viewBox="0 0 480 400" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
                     <path d="M 56,32 L 56,80" fill="none" stroke="black"></path>
                     <path d="M 56,112 L 56,208" fill="none" stroke="black"></path>
-                    <path d="M 56,240 L 56,288" fill="none" stroke="black"></path>
-                    <path d="M 312,176 L 312,208" fill="none" stroke="black"></path>
+                    <path d="M 56,240 L 56,352" fill="none" stroke="black"></path>
+                    <path d="M 336,168 L 336,240" fill="none" stroke="black"></path>
+                    <path d="M 400,176 L 400,288" fill="none" stroke="black"></path>
                     <path d="M 56,144 L 224,144" fill="none" stroke="black"></path>
-                    <polygon class="arrowhead" points="320,208 308,202.4 308,213.6" fill="black" transform="rotate(90,312,208)"></polygon>
+                    <polygon class="arrowhead" points="408,288 396,282.4 396,293.6" fill="black" transform="rotate(90,400,288)"></polygon>
+                    <polygon class="arrowhead" points="344,240 332,234.4 332,245.6" fill="black" transform="rotate(90,336,240)"></polygon>
                     <polygon class="arrowhead" points="232,144 220,138.4 220,149.6" fill="black" transform="rotate(0,224,144)"></polygon>
-                    <polygon class="arrowhead" points="64,288 52,282.4 52,293.6" fill="black" transform="rotate(90,56,288)"></polygon>
+                    <polygon class="arrowhead" points="64,352 52,346.4 52,357.6" fill="black" transform="rotate(90,56,352)"></polygon>
                     <polygon class="arrowhead" points="64,208 52,202.4 52,213.6" fill="black" transform="rotate(90,56,208)"></polygon>
                     <polygon class="arrowhead" points="64,80 52,74.4 52,85.6" fill="black" transform="rotate(90,56,80)"></polygon>
                     <g class="text">
@@ -3267,15 +3291,19 @@ Key Schedule <span>[<a href="#I-D.kohbrok-mls-associated-parties" class="cite xr
                       <text x="64" y="100">ap_epoch_secret</text>
                       <text x="296" y="148">DeriveSecret(.,</text>
                       <text x="420" y="148">"ap_exporter")</text>
-                      <text x="240" y="164">=</text>
-                      <text x="324" y="164">ap_exporter_secret</text>
+                      <text x="312" y="164">=</text>
+                      <text x="396" y="164">ap_exporter_secret</text>
                       <text x="64" y="228">DeriveSecret(.,</text>
                       <text x="160" y="228">"init")</text>
-                      <text x="296" y="228">DeriveSecret(.,</text>
-                      <text x="440" y="228">"franking_context")</text>
-                      <text x="240" y="244">=</text>
-                      <text x="344" y="244">franking_context_secret</text>
-                      <text x="64" y="308">init_secret_[n]</text>
+                      <text x="160" y="260">DeriveSecret(.,</text>
+                      <text x="304" y="260">"franking_context")</text>
+                      <text x="176" y="276">=</text>
+                      <text x="280" y="276">franking_context_secret</text>
+                      <text x="200" y="308">DeriveSecret(.,</text>
+                      <text x="352" y="308">"franking_integrity")</text>
+                      <text x="216" y="324">=</text>
+                      <text x="328" y="324">franking_integrity_secret</text>
+                      <text x="64" y="372">init_secret_[n]</text>
                     </g>
                   </svg><a href="#section-5.4.1.2-2.1.1" class="pilcrow">¶</a>
 </div>
@@ -3292,14 +3320,21 @@ the message as follows:<a href="#section-5.4.1.2-3" class="pilcrow">¶</a></p>
 context = senderURI || roomURI || acceptedTimestamp
 serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
 franking_context_hash = SHA256(franking_context_secret || context)
+frank_integrity_check = HMAC_SHA256(franking_integrity_secret,
+  serverFrank || acceptedTimestamp|| franking_context_hash)
 </pre><a href="#section-5.4.1.2-4" class="pilcrow">¶</a>
 </div>
 <p id="section-5.4.1.2-5"><code>HUBkey</code> is a secret symmetric key used on the Hub which the Hub can use to verify its own tags.<a href="#section-5.4.1.2-5" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.2-6">The Hub fans out the encrypted message (which includes the <code>franking_tag</code>),
-the <code>serverFrank</code>, the <code>acceptedTimestamp</code>, the room URI, and the
-<code>franking_context_hash</code>. Note that the <code>senderURI</code> is not included in the
-application message, so the sender can remain anonymous with respect to
-follower providers.<a href="#section-5.4.1.2-6" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.2-6">The <code>frank_integrity_check</code> is used by receivers to verify that the other
+values added by the Hub (the <code>serverFrank</code>, <code>acceptedTimestamp</code>, and the
+<code>franking_context_hash</code>) were not modified by a follower provider.
+The specific construction used is discussed in the Security Considerations
+in <a href="#franking" class="auto internal xref">Section 8.1</a>.<a href="#section-5.4.1.2-6" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.2-7">The Hub fans out the encrypted message (which includes the <code>franking_tag</code>),
+the <code>serverFrank</code>, the <code>acceptedTimestamp</code>, the room URI, the
+<code>franking_context_hash</code>, and the <code>frank_integrity_check</code>. Note that the
+<code>senderURI</code> is not included in the application message, so the sender can
+remain anonymous with respect to follower providers.<a href="#section-5.4.1.2-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="receiver-verification-of-frank">
@@ -3309,27 +3344,26 @@ follower providers.<a href="#section-5.4.1.2-6" class="pilcrow">¶</a></p>
             </h5>
 <p id="section-5.4.1.3-1">When a client receives and decrypts an otherwise valid application message
 from a hub provider, the client looks for the existence of a frank
-(consisting of the <code>franking_tag</code> in the AAD, the <code>serverFrank</code> and the
-<code>franking_context_hash</code>. If so, it derives the <code>franking_context_secret</code>
+(consisting of the <code>franking_tag</code> in the AAD, the <code>serverFrank</code>, the
+<code>franking_context_hash</code>, and the <code>frank_integrity_check</code>). If so, it
+derives the <code>franking_context_secret</code> and the <code>franking_integrity_secret</code>
 from the <code>ap_exporter_secret</code> in the Associated Party Key Schedule
-<span>[<a href="#I-D.kohbrok-mls-associated-parties" class="cite xref">I-D.kohbrok-mls-associated-parties</a>]</span>; then it verifies the construction of
-the <code>franking_tag</code> from the content of the message, and the construction of
-the <code>franking_context_hash</code> from the sender URI, room ID,
-<code>acceptedTimestamp</code>, and <code>franking_context_secret</code>.<a href="#section-5.4.1.3-1" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.3-2">The receiving client receives a sender identifier in three different locations. The receiver verifies that they are all the same:<a href="#section-5.4.1.3-2" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-5.4.1.3-3.1">
-                <p id="section-5.4.1.3-3.1.1">the sender's identity in its credential in its MLS LeafNode<a href="#section-5.4.1.3-3.1.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-5.4.1.3-3.2">
-                <p id="section-5.4.1.3-3.2.1">the sender's identity asserted in the FrankingAssertion map inside the MIMI Content<a href="#section-5.4.1.3-3.2.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-5.4.1.3-3.3">
-                <p id="section-5.4.1.3-3.3.1">the (hidden) sender's identity in the context used to create the <code>serverFrank</code>. The client hashes the concatenation of the sender's identity, the room ID, and the acceptedTimestamp. If this hash matches the context_validation hash, then the identity used by the server was correct.<a href="#section-5.4.1.3-3.3.1" class="pilcrow">¶</a></p>
-</li>
-            </ul>
-<p id="section-5.4.1.3-4">The receiver needs to store the frank with the decoded message so it can be
-used later.<a href="#section-5.4.1.3-4" class="pilcrow">¶</a></p>
+<span>[<a href="#I-D.kohbrok-mls-associated-parties" class="cite xref">I-D.kohbrok-mls-associated-parties</a>]</span>.<a href="#section-5.4.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.3-2">Next it verifies the integrity of the the <code>serverFrank</code>,
+<code>acceptedTimestamp</code>, and the <code>franking_context_hash</code> by calculating its
+own <code>frank_integrity_check</code> from these values with the
+<code>franking_integrity_secret</code> and comparing it to the provided <code>frank_integrity_check</code>.<a href="#section-5.4.1.3-2" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.3-3">Then it verifies the <code>franking_context_hash</code> from the <code>senderURI</code> from the
+decrypted message, the <code>roomURI</code>,the <code>acceptedTimestamp</code>, and the
+<code>franking_context_secret</code>.<a href="#section-5.4.1.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.3-4">Finally it verifies the construction of the <code>franking_tag</code> from the content
+of the message (including the embedded <code>franking_secret</code>),
+that the sender's identity in its credential in its MLS LeafNode matches
+the sender's identity asserted in the FrankingAssertion map inside the MIMI
+Content, and that the RoomURI inside the MIMI Content matches the room ID in
+the received message.<a href="#section-5.4.1.3-4" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.3-5">The receiver needs to store the frank and context with the decoded message
+so it can be used later.<a href="#section-5.4.1.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="comparison-with-the-facebook-franking-scheme">
@@ -3337,16 +3371,31 @@ used later.<a href="#section-5.4.1.3-4" class="pilcrow">¶</a></p>
             <h5 id="name-comparison-with-the-faceboo">
 <a href="#section-5.4.1.4" class="section-number selfRef">5.4.1.4. </a><a href="#name-comparison-with-the-faceboo" class="section-name selfRef">Comparison with the Facebook franking scheme</a>
             </h5>
-<p id="section-5.4.1.4-1">Unlike in the Facebook franking scheme <span>[<a href="#SecretConversations" class="cite xref">SecretConversations</a>]</span>, the sender
-"commits to" its <code>franking_tag</code> as Additional Authenticated Data (AAD) inside the end-to-end encrypted message, and the hub only sends a hash of
-its context. This first change insures that the client cannot come up with
-another <code>franking_key</code> and message that has the same <code>franking_tag</code>
-              <span>[<a href="#Grubbs2017" class="cite xref">Grubbs2017</a>]</span><span>[<a href="#InvisibleSalamanders" class="cite xref">InvisibleSalamanders</a>]</span>. According to <span>[<a href="#Grubbs2017" class="cite xref">Grubbs2017</a>]</span>,
+<p id="section-5.4.1.4-1">Unlike in the Facebook franking scheme <span>[<a href="#SecretConversations" class="cite xref">SecretConversations</a>]</span>, the MIMI
+use case involves traffic which can transit multiple federated providers,
+any of which may be compromised or malicious. The MIMI franking scheme
+described here differs in the following ways.<a href="#section-5.4.1.4-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.4-2">The sender
+includes its <code>franking_tag</code> as Additional Authenticated Data (AAD) inside the end-to-end encrypted message. This insures that the <code>franking_tag</code> is not tampered with by the sender's provider.
+According to <span>[<a href="#Grubbs2017" class="cite xref">Grubbs2017</a>]</span>,
 "... [Facebook's] franking scheme does not bind [the franking tag] to [the
 ciphertext] by including [the franking tag] in the associated data during
-encryption".
+encryption".<a href="#section-5.4.1.4-2" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.4-3">In MLS, the Hub cannot view the sender identity in an application message,
+so the sender sends its identity to the Hub. The hub never sends the
+identity of the sender to receivers, since this would be observed by
+follower providers. However, the receiver needs to verify that the sender
+identity provided by the sender's provider to the Hub matches the identity
+the receiver sees after it decrypts the message. Using a key shared between
+members and the Hub (the <code>franking_context_secret</code>) the Hub sends an HMAC
+of its context (sender identity, room id, and timestamp) with this key.
 The second change allows receivers to validate the sender URI in the hub's
-context, without revealing the sender URI to follower providers.<a href="#section-5.4.1.4-1" class="pilcrow">¶</a></p>
+context, without revealing the sender URI to follower providers.<a href="#section-5.4.1.4-3" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.4-4">Finally, to prevent a follower provider from "mauling" the serverFrank, or
+breaking the context comparison (by modifying the <code>franking_context_hash</code> or
+<code>acceptedTimestamp</code>), the Hub includes the <code>frank_integrity_check</code>. Each
+receiver uses this to verify that the timestamp and franking parameters
+added by the Hub were not modified.<a href="#section-5.4.1.4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -3381,9 +3430,9 @@ POST /notify/{roomId}
 <div class="lang-tls sourcecode" id="section-5.5-6">
 <pre>
 struct {
-  uint8[32] franking_tag;
   uint8[32] serverFrank;
   uint8[32] franking_context_hash;
+  uint8[32] frank_integrity_check;
 } Frank;
 
 struct {
@@ -4029,19 +4078,20 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-franking" class="section-name selfRef">Franking</a>
         </h3>
 <p id="section-8.1-1">TBD.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-2"><strong>TODO</strong>: Present the franking mechanism to CFRG for review.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
 <div id="example-franking-alg">
 <section id="section-8.1.1">
           <h4 id="name-example-algorithm-for-gener">
 <a href="#section-8.1.1" class="section-number selfRef">8.1.1. </a><a href="#name-example-algorithm-for-gener" class="section-name selfRef">Example algorithm for generating franking keys</a>
           </h4>
-<p id="section-8.1.1-1">To ensure a strong source of entropy for the <code>franking_key</code> included in each
+<p id="section-8.1.1-1">To ensure a strong source of entropy for the <code>franking_secret</code> included in each
 message, the client can export a secret from the MLS key schedule, for
 example with the label <code>franking_base_secret</code> and calculate the
-<code>franking_key</code> as the HMAC of a locally generated nonce and the
+<code>franking_secret</code> as the HMAC of a locally generated nonce and the
 <code>franking_base_secret</code>.<a href="#section-8.1.1-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-8.1.1-2">
 <pre>
-franking_key = HMAC_SHA256( franking_base_secret, nonce )
+franking_secret = HMAC_SHA256( franking_base_secret, nonce )
 </pre><a href="#section-8.1.1-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -4082,7 +4132,7 @@ franking_key = HMAC_SHA256( franking_base_secret, nonce )
 <dd class="break"></dd>
 <dt id="I-D.kohbrok-mls-associated-parties">[I-D.kohbrok-mls-associated-parties]</dt>
         <dd>
-<span class="refAuthor">Kohbrok, K.</span>, <span class="refTitle">"MLS Associated parties"</span>, <time datetime="2024" class="refDate">2024</time>. </dd>
+<span class="refAuthor">Kohbrok, K.</span> and <span class="refAuthor">R. Robert</span>, <span class="refTitle">"MLS Associated parties"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-kohbrok-mls-associated-parties-00</span>, <time datetime="2024-10-21" class="refDate">21 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-kohbrok-mls-associated-parties-00">https://datatracker.ietf.org/doc/html/draft-kohbrok-mls-associated-parties-00</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.mahy-mls-ratchet-tree-options">[I-D.mahy-mls-ratchet-tree-options]</dt>
         <dd>
@@ -4163,11 +4213,8 @@ franking_key = HMAC_SHA256( franking_base_secret, nonce )
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="appendix-A-1.1">
-          <p id="appendix-A-1.1.1"><strong>TODO</strong>:<a href="#appendix-A-1.1.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
+<p id="appendix-A-1">Thanks to Paul Grubs, Jon Millican, and Julia Len for their reviews of the
+franking mechanism and suggested changes.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">
@@ -4201,7 +4248,7 @@ franking_key = HMAC_SHA256( franking_base_secret, nonce )
 </address>
 <address class="vcard">
         <div dir="auto" class="left"><span class="fn nameRole">Rohan Mahy</span></div>
-<div dir="auto" class="left"><span class="org">Unaffiliated</span></div>
+<div dir="auto" class="left"><span class="org">Rohan Mahy Consulting Services</span></div>
 <div class="email">
 <span>Email:</span>
 <a href="mailto:rohan.ietf@gmail.com" class="email">rohan.ietf@gmail.com</a>
