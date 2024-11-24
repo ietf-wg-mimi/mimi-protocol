@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-21T00:44:22.656032+00:00",
+  "timestamp": "2024-11-24T00:49:04.784785+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -8479,24 +8479,26 @@
       "id": "PR_kwDOKZ8QO86BifZI",
       "title": "Update Franking scheme to include integrity from follower mauling",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/90",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "As discussed at IETF 121 meeting last week, issue #89 means that a malicious follower could destroy a frank and the receiver would never find out until they presented an invalid frank when reporting abuse.\r\n\r\nThis PR adds a second associated parties exported key for a general purpose integrity check over all the hub-provided values in a fanout message.",
       "createdAt": "2024-11-11T17:37:13Z",
-      "updatedAt": "2024-11-11T17:37:13Z",
+      "updatedAt": "2024-11-21T17:36:19Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "33614cdb50ccd6aea0524b5da874fdd70674a681",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "frank-integrity",
       "headRefOid": "28db3038f82701f02ab02734e799fda1a13f3f29",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-11-21T17:36:19Z",
+      "mergedAt": "2024-11-21T17:36:19Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "9531ff4c247b990bc2ac53770a5a57124eaa934a"
+      },
       "comments": [],
       "reviews": []
     }
