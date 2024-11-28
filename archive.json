@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-26T00:45:05.630895+00:00",
+  "timestamp": "2024-11-28T00:45:43.971885+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1249,15 +1249,15 @@
       "id": "I_kwDOKZ8QO86dXqDT",
       "title": "malicious follower can \"maul\" server frank",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/89",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "A follower provider that doesn't wish messages to be reportable as abusive could maliciously modify (\"maul\") the server frank. Without a signature by the hub, this would be undetectable by the follower client.\r\n\r\nSimilarly, the follower could modify the hub accepted timestamp. The follower client would reject the message because the franking context did not match, but would be unable to tell if the context was wrong because of a malicious or buggy sender, hub, or follower.\r\n\r\nThe hub could sign the frank (server frank, franking tag, franking context hash) and timestamp instead of protecting the server frank with an HMAC (and the timestamp with nothing).",
       "createdAt": "2024-11-07T08:13:25Z",
-      "updatedAt": "2024-11-11T17:40:25Z",
-      "closedAt": null,
+      "updatedAt": "2024-11-26T17:29:55Z",
+      "closedAt": "2024-11-26T17:29:54Z",
       "comments": [
         {
           "author": "rohanmahy",
@@ -1272,6 +1272,13 @@
           "body": "Added an integrity check inspired by Konrad's suggestion in #90 ",
           "createdAt": "2024-11-11T17:40:23Z",
           "updatedAt": "2024-11-11T17:40:23Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed. Closing.",
+          "createdAt": "2024-11-26T17:29:55Z",
+          "updatedAt": "2024-11-26T17:29:55Z"
         }
       ]
     },
