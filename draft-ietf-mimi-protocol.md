@@ -1450,7 +1450,8 @@ struct {
       Credential requestingCredential;
       HPKEPublicKey groupInfoPublicKey;
       opaque joiningCode<V>;
-      /* SignWithLabel(., "GroupInfoRequestTBS", GroupInfoRequestTBS) */
+      /* SignWithLabel(requestingSignatureKey,          */
+      /*    "GroupInfoRequestTBS", GroupInfoRequestTBS) */
       opaque signature<V>;
   };
 } GroupInfoRequest;
@@ -1503,6 +1504,7 @@ struct {
       opaque room_id<V>;
       ExternalSender hub_sender;
       opaque encrypted_groupinfo_and_tree<V>;
+      /* TODO: add appropriate key for Hub to sign with */
       /* SignWithLabel(., "GroupInfoResponseTBS", GroupInfoResponseTBS) */
       opaque signature<V>;
   };
