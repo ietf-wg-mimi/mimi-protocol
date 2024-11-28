@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 25 May 2025                    The Matrix.org Foundation C.I.C.
+Expires: 1 June 2025                    The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 25 May 2025                    The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                        21 November 2024
+                                                        28 November 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 May 2025.
+   This Internet-Draft will expire on 1 June 2025.
 
 Copyright Notice
 
@@ -1526,7 +1526,8 @@ ServerC->ClientC*: [[ Commit ]]
          Credential requestingCredential;
          HPKEPublicKey groupInfoPublicKey;
          opaque joiningCode<V>;
-         /* SignWithLabel(., "GroupInfoRequestTBS", GroupInfoRequestTBS) */
+         /* SignWithLabel(requestingSignatureKey,          */
+         /*    "GroupInfoRequestTBS", GroupInfoRequestTBS) */
          opaque signature<V>;
      };
    } GroupInfoRequest;
@@ -1577,6 +1578,7 @@ ServerC->ClientC*: [[ Commit ]]
          opaque room_id<V>;
          ExternalSender hub_sender;
          opaque encrypted_groupinfo_and_tree<V>;
+         /* TODO: add appropriate key for Hub to sign with */
          /* SignWithLabel(., "GroupInfoResponseTBS", GroupInfoResponseTBS) */
          opaque signature<V>;
      };
