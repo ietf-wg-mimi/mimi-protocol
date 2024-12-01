@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-28T00:45:43.971885+00:00",
+  "timestamp": "2024-12-01T00:55:56.191304+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -8505,6 +8505,34 @@
       "mergedBy": "rohanmahy",
       "mergeCommit": {
         "oid": "9531ff4c247b990bc2ac53770a5a57124eaa934a"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 92,
+      "id": "PR_kwDOKZ8QO86DggGu",
+      "title": "SignWithLabel was missing signature keys",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/92",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Two instances of SignWithLabel did not specify the signature key to use. Fixed one, and left a TODO in place for the other.",
+      "createdAt": "2024-11-28T20:40:11Z",
+      "updatedAt": "2024-11-28T20:46:43Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "9531ff4c247b990bc2ac53770a5a57124eaa934a",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "rohanmahy-patch-1",
+      "headRefOid": "3ab02b3d5fc9ef4c23b7935ac9ffda570174f28f",
+      "closedAt": "2024-11-28T20:46:43Z",
+      "mergedAt": "2024-11-28T20:46:43Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "ae0ded70689a5249c386d886c8743af73d5d79ad"
       },
       "comments": [],
       "reviews": []
