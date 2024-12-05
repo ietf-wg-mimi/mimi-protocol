@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-03T00:47:40.416278+00:00",
+  "timestamp": "2024-12-05T00:47:13.760011+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -155,11 +155,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "consensus-required"
+        "consensus-required",
+        "WG reviewed"
       ],
       "body": "Room name, etc",
       "createdAt": "2023-11-09T08:05:59Z",
-      "updatedAt": "2024-11-07T08:29:34Z",
+      "updatedAt": "2024-12-04T17:04:50Z",
       "closedAt": null,
       "comments": [
         {
@@ -196,6 +197,13 @@
           "body": "Discussed new room metadata state (which could be encrypted only for members) in draft-mahy-mimi-room-policy. This appears to be separate from mimi-protocol, but will be tracked here for now.",
           "createdAt": "2024-11-07T08:29:32Z",
           "updatedAt": "2024-11-07T08:29:32Z"
+        },
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Rohan says there is a mechanism in room-policy that addresses this. Rohan to follow up on-list to make sure that issue originators are satisfied with that.",
+          "createdAt": "2024-12-04T17:04:42Z",
+          "updatedAt": "2024-12-04T17:04:42Z"
         }
       ]
     },
@@ -208,10 +216,12 @@
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "WG reviewed"
+      ],
       "body": "Where we assume the external attachment blob (\"media\") is stored on a follower server, another server/the hub needs a way to fetch that media on behalf of its local clients.\r\n\r\nWe do not want to support clients requesting the media directly.\r\n\r\nTODO: Discuss authentication/right to download.",
       "createdAt": "2023-11-09T09:37:53Z",
-      "updatedAt": "2024-10-21T02:34:10Z",
+      "updatedAt": "2024-12-04T17:08:27Z",
       "closedAt": null,
       "comments": [
         {
@@ -220,6 +230,13 @@
           "body": "An option articulated in #75",
           "createdAt": "2024-10-21T02:34:09Z",
           "updatedAt": "2024-10-21T02:34:09Z"
+        },
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Making progress here is blocked on writing down a proper threat model, tracked in #93.",
+          "createdAt": "2024-12-04T17:08:26Z",
+          "updatedAt": "2024-12-04T17:08:26Z"
         }
       ]
     },
@@ -233,11 +250,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "consensus-required"
+        "consensus-required",
+        "WG reviewed"
       ],
       "body": "> **ISSUE**: Come to consensus on a specific binary encoding for the MIMI\r\n> transport protocol.\r\n\r\nCurrently we use TLS-serialized structs.",
       "createdAt": "2023-11-09T12:17:51Z",
-      "updatedAt": "2024-07-26T00:09:31Z",
+      "updatedAt": "2024-12-04T17:10:40Z",
       "closedAt": null,
       "comments": [
         {
@@ -330,6 +348,13 @@
           "body": "I'm not sure we've had the transport debate yet as a working group. There's several open questions about whether HTTP, TLS-PL, etc are correct - the current stuff was presented as 'notional'.",
           "createdAt": "2024-07-26T00:09:30Z",
           "updatedAt": "2024-07-26T00:09:30Z"
+        },
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Action here (for @rohanmahy)  is to go to the list to formally establish consensus on (1) TLS encoding for MIMI-protocol and (2) HTTP as a transport.",
+          "createdAt": "2024-12-04T17:10:31Z",
+          "updatedAt": "2024-12-04T17:10:31Z"
         }
       ]
     },
@@ -343,13 +368,22 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "consensus-required"
+        "consensus-required",
+        "WG reviewed"
       ],
       "body": "> **ISSUE**: Come to consensus on a specific set of MIMI transport protocol\r\n> semantics.",
       "createdAt": "2023-11-09T12:21:07Z",
-      "updatedAt": "2023-11-09T12:21:07Z",
+      "updatedAt": "2024-12-04T17:11:59Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Action here is the same as for #25 (https://github.com/ietf-wg-mimi/mimi-protocol/issues/25#issuecomment-2518054125)",
+          "createdAt": "2024-12-04T17:11:57Z",
+          "updatedAt": "2024-12-04T17:11:57Z"
+        }
+      ]
     },
     {
       "number": 27,
@@ -408,17 +442,18 @@
       "id": "I_kwDOKZ8QO852WP3r",
       "title": "Shape of policy",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/29",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "consensus-required"
+        "consensus-required",
+        "WG reviewed"
       ],
       "body": "Incorporate mahy-group-chat and ralston-policy documents, deduplicate ideas.",
       "createdAt": "2023-11-09T12:42:09Z",
-      "updatedAt": "2024-07-25T23:39:57Z",
-      "closedAt": null,
+      "updatedAt": "2024-12-04T17:14:25Z",
+      "closedAt": "2024-12-04T17:14:19Z",
       "comments": [
         {
           "author": "turt2live",
@@ -454,6 +489,13 @@
           "body": "that would be great! Let's do it.",
           "createdAt": "2024-07-25T23:39:55Z",
           "updatedAt": "2024-07-25T23:39:55Z"
+        },
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We now have a room policy document adopted, so there's nothing more to be done in the protocol doc. Closing this issue.",
+          "createdAt": "2024-12-04T17:14:19Z",
+          "updatedAt": "2024-12-04T17:14:19Z"
         }
       ]
     },
@@ -554,17 +596,18 @@
       "id": "I_kwDOKZ8QO852WTGV",
       "title": "Continue fetching key packages directly?",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/33",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "consensus-required"
+        "consensus-required",
+        "WG reviewed"
       ],
       "body": "> **TODO**: For now, we assume that KeyPackages are fetched directly, i.e. not in the\r\n> context of a room and via a Hub. This might change in the future. If it does\r\n> change, this event needs an additional authentication mechanism.",
       "createdAt": "2023-11-09T12:50:08Z",
-      "updatedAt": "2023-11-21T15:32:19Z",
-      "closedAt": null,
+      "updatedAt": "2024-12-04T17:15:19Z",
+      "closedAt": "2024-12-04T17:15:10Z",
       "comments": [
         {
           "author": "turt2live",
@@ -635,6 +678,20 @@
           "body": "You're right, of course. A client could also simply lose its private key material for the published key packages due to an error or failure. This makes it obvious removal needs to be supported.\r\n\r\nHowever, I maintain that the default case should be to non-destructively replenish rather than replace, and for the fetching operation to be considered to be consuming (reducing the available total), which in practice makes this problem *much* less likely to occur.",
           "createdAt": "2023-11-21T15:32:18Z",
           "updatedAt": "2023-11-21T15:32:18Z"
+        },
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Key packages are now delivered via the hub, so this is resolved.",
+          "createdAt": "2024-12-04T17:15:10Z",
+          "updatedAt": "2024-12-04T17:15:10Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Currently KPs are fetched via the Hub so that Welcomes can be delivered correctly.",
+          "createdAt": "2024-12-04T17:15:16Z",
+          "updatedAt": "2024-12-04T17:15:16Z"
         }
       ]
     },
@@ -764,11 +821,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "consensus-required"
+        "consensus-required",
+        "WG reviewed"
       ],
       "body": "> **TODO**: Discuss if this participation state is desirable, and figure out\r\n> details for how it works. It'd likely just be an `m.room.user` state event\r\n> with no MLS interaction, like invites are.\r\n\r\n> **TODO**: If we have an Add event as discussed in a TODO in the \"Invites\"\r\n> section, an \"Add\" would probably be the response to a knock.",
       "createdAt": "2023-11-09T12:54:20Z",
-      "updatedAt": "2023-11-13T18:31:13Z",
+      "updatedAt": "2024-12-04T17:19:46Z",
       "closedAt": null,
       "comments": [
         {
@@ -791,6 +849,13 @@
           "body": "Knocking is intended to be a \"please add me\" stage, yes. It could be argued to be pure signaling without group operations, similar to invites. \r\n\r\nThe requirement to be invited (accepted knock) is largely an artifact from Matrix, where the concept of an \"Add\" doesn't necessarily exist in the signaling flow. For MIMI, an Add is more appropriate (and if worded slightly differently, is an invite in terms of signaling anyways). \r\n\r\nThe question here is mostly whether we need a protocol feature for \"request Add\", or if this could be considered excess bulk.",
           "createdAt": "2023-11-13T18:31:13Z",
           "updatedAt": "2023-11-13T18:31:13Z"
+        },
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Nobody has a clear use case that motivates this feature. @rohanmahy will go to the MIMI list to ask for use cases, and we'll close this if none materialize.",
+          "createdAt": "2024-12-04T17:19:40Z",
+          "updatedAt": "2024-12-04T17:19:40Z"
         }
       ]
     },
@@ -799,15 +864,17 @@
       "id": "I_kwDOKZ8QO854hf7_",
       "title": "XMPP compatibility?",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/40",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "haansn08",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "WG reviewed"
+      ],
       "body": "I feel like it's a missed opportunity by the MIMI WG to essentially ignore the prior art created with the XMPP standard and make no effort to be compatible with the existing XMPP internet standard.\r\n\r\nI'm not sure why an entirely new transport protocol and message format that is not compatible with XMPP is being considered, instead of a XMPP protocol extension for MLS.\r\n\r\nThe advantages of Matrix were eventual consistency and more decentralized rooms, but the protocol proposal makes no mention of those features and the scaling issues Matrix has show that they're probably a bad idea too. Is it really worth breaking compatibility with XMPP just to replace XML with JSON?",
       "createdAt": "2023-12-02T13:48:21Z",
-      "updatedAt": "2024-02-22T20:44:42Z",
-      "closedAt": null,
+      "updatedAt": "2024-12-04T17:24:19Z",
+      "closedAt": "2024-12-04T17:24:18Z",
       "comments": [
         {
           "author": "turt2live",
@@ -906,6 +973,13 @@
           "body": "@mar-v-in \r\nI'm delighted to hear that you have funding to write a XEP for MLS. I'm happy to help, and I would love the MIMI usage of MLS and the XEP to be compatible. Please DM me (IETF Slack, @rohanmahy on Wire, rohan.ietf@gmail.com ).\r\n\r\n> If there was a clear signal from MIMI WG that XMPP is desired to be used, I am certain that several community members would be willing to prioritize developments around that. But as many contributors to XMPP don't have a lot of resources they are willing to waste on this (if there is no intent from the MIMI WG to pick these things up, it would likely be wasted), you are unlikely to see large documents being prepared to promote the use of XMPP in MIMI.\r\n\r\nI think this is a bit of a chicken and egg problem. I think having an idea of how it would work at the bar-napkin or half-page outline level would be useful for the rest of the WG to even understand how it would be possible. ",
           "createdAt": "2024-02-22T20:43:30Z",
           "updatedAt": "2024-02-22T20:44:42Z"
+        },
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This is related to #26, in that we might want to support XMPP core as a transport for MIMI instead of/in addition to HTTPS.\r\n\r\nWe are closing this issue in that we believe nothing is missing to allow interop with XMPP, except for what is tracked in #26. There's no other action to take on this issue.",
+          "createdAt": "2024-12-04T17:24:18Z",
+          "updatedAt": "2024-12-04T17:24:18Z"
         }
       ]
     },
@@ -977,7 +1051,7 @@
       ],
       "body": "Figure out if versioning of endpoints includes different options inside the same framing, or a whole new endpoint, discovered by the directory, or something else.",
       "createdAt": "2024-02-19T19:33:42Z",
-      "updatedAt": "2024-05-11T02:19:44Z",
+      "updatedAt": "2024-12-04T17:27:58Z",
       "closedAt": null,
       "comments": [
         {
@@ -993,6 +1067,13 @@
           "body": "I haven't yet caught up on the discussion at the interim, so apologies if I've missed something here.\r\n\r\nThe protocol may have multiple disparate versions associated with it:\r\n\r\n* The policy profile, and any rules associated with that policy.\r\n* The synchronization approach for participation and membership, if any.\r\n* The actual transport layer/HTTP endpoints.\r\n* Encoding formats at the above levels, potentially.\r\n\r\nAt the transport level there should be some support for versioning which is not bound to the room/group itself. Servers should be able to negotiate with each other the versions of endpoints without affecting the overall room operation (in most cases). Where a room behaviour *requires* a certain operation to take place, that would obviously have impact and need to be taken into consideration. For example, a non-MLS room may require certain transport considerations to exist, though within those considerations versioning can be applied to upgrade/change body encoding and similar.\r\n\r\nPolicy and user/client synchronization may not require explicit versioning in the protocol, though a concept of \"this room is replaced by X\" may need to exist. For example, formalizing what an MLS ReInit looks like in user experience terms, and reflecting that back as protocol capability.",
           "createdAt": "2024-05-11T02:19:43Z",
           "updatedAt": "2024-05-11T02:19:43Z"
+        },
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@rohanmahy  says he can take a stab at solving this.\r\n@raphaelrobert says his team has been looking at this too.\r\n\r\nAt a minimum, this is about explicitly indicating the protocol version in use in-band so that providers can refuse to talk to another provider.\r\n\r\nClients also need to participate here to deal with changes to content format or MLS profile.",
+          "createdAt": "2024-12-04T17:27:57Z",
+          "updatedAt": "2024-12-04T17:27:57Z"
         }
       ]
     },
@@ -1205,28 +1286,40 @@
       "state": "OPEN",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "kkohbrok"
+      ],
+      "labels": [
+        "WG reviewed"
+      ],
       "body": "Per discussion at IETF 120, the baseline privacy will be that handshake messages are sent with SemiPrivateMessage, to provide a balance of privacy and functionality (follower server don't see the roster, but the hub can still assist with policy decisions). The use of pseudonyms needs to be explained in an end-to-end flow as their use are an important opt-in privacy option for MIMI.",
       "createdAt": "2024-08-13T19:18:20Z",
-      "updatedAt": "2024-08-13T19:18:20Z",
+      "updatedAt": "2024-12-04T17:31:10Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Action here is to take PRs on the protocol doc that materialize the MIMIMI pseudonym work that has been discussed at IETF 121 and previous interims. Assigning to @kkohbrok as he is drafting the PR(s).",
+          "createdAt": "2024-12-04T17:30:38Z",
+          "updatedAt": "2024-12-04T17:30:38Z"
+        }
+      ]
     },
     {
       "number": 88,
       "id": "I_kwDOKZ8QO86dKPNY",
       "title": "Add signature of reporter and messageId to AbuseReport",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/88",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-11-05T23:29:31Z",
-      "updatedAt": "2024-11-07T08:18:49Z",
-      "closedAt": null,
+      "updatedAt": "2024-12-04T17:29:10Z",
+      "closedAt": "2024-12-04T17:29:10Z",
       "comments": [
         {
           "author": "turt2live",
@@ -1241,6 +1334,13 @@
           "body": "In the current version, a malicious group member (Malek) could send an abuse report impersonating another member (Alice). If used repeatedly, Alice might be banned for sending frivolous abuse reports, or Malek might \"out\" the sender of a specific message, but attribute that action to Alice instead of himself.",
           "createdAt": "2024-11-07T08:18:48Z",
           "updatedAt": "2024-11-07T08:18:48Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This has been addressed in PR #90. Closing.",
+          "createdAt": "2024-12-04T17:29:10Z",
+          "updatedAt": "2024-12-04T17:29:10Z"
         }
       ]
     },
@@ -1291,12 +1391,48 @@
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "WG reviewed"
+      ],
       "body": "The FrankingAssertion map in Section 5.4.1.1 Client creation and sending should be defined in draft-ietf-mimi-content",
       "createdAt": "2024-11-17T16:30:03Z",
-      "updatedAt": "2024-11-17T16:30:03Z",
+      "updatedAt": "2024-12-04T17:33:37Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Need comment about relationship between the two documents @rohanmahy ",
+          "createdAt": "2024-12-04T17:33:35Z",
+          "updatedAt": "2024-12-04T17:33:35Z"
+        }
+      ]
+    },
+    {
+      "number": 93,
+      "id": "I_kwDOKZ8QO86iBob5",
+      "title": "Need MIMI Threat model",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/93",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "WG reviewed"
+      ],
+      "body": "We need to have a consistent MIMI Threat Model.",
+      "createdAt": "2024-12-04T17:06:02Z",
+      "updatedAt": "2024-12-04T17:08:06Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "tgeoghegan",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Portions of this could end up spread across the arch and protocol documents (in the latter's security considerations).",
+          "createdAt": "2024-12-04T17:07:55Z",
+          "updatedAt": "2024-12-04T17:07:55Z"
+        }
+      ]
     }
   ],
   "pulls": [
