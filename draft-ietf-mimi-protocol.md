@@ -51,6 +51,16 @@ author:
     email: ietf@raphaelrobert.com
 
 normative:
+    OidcCore:
+        target: https://openid.net/specs/openid-connect-core-1_0.html
+        title: "OpenID Connect Core 1.0 incorporating errata set 2"
+        date: 2023-12-15
+        author:
+           - name: Nat Sakimura
+           - name: John Bradley
+           - name: Michael B. Jones
+           - name: Breno de Medeiros
+           - name: Chuck Mortimore
 
 informative:
   SecretConversations:
@@ -1664,7 +1674,11 @@ account so even an exact handle search returns no results. He could still
 send a join link out-of-band to Alice for her to join a room of Zach's
 choosing.
 
-The request body is described as:
+The request body is described as below. Each request can contain multiple
+query elements, which all have to match for the request to match. For
+example matching both the OpenID Connect (OIDC) {{OidcCore}} `given_name` and
+`family_name`, or matching the OIDC `given_name` and the organization (from
+the vCard {{!RFC6350}} ORG property).
 
 ~~~ tls
 enum {
@@ -1687,10 +1701,40 @@ struct {
     case oidcStdClaim:
       opaque claimName<V>;
     case vcardField:
-      opaque fieldName<V>;
+      opaque propertyName<V>;
   };
+} QueryElement;
+
+struct {
+  QueryElement query_elements<V>;
 } IdentifierRequest;
 ~~~
+
+The semantics of the `SearchIdentifierType` values are as follows. `handle`
+means that the entire handle URI matches exactly (for example: `im:alice.smith@a.example`). `nick` means that the nickname or handle
+user part matches exactly (for example: `alice.smith`). The same account or
+human user may have multiple values which all match the `nick` field. `email`
+means the `addr-spec` production from {{!RFC5322}} matches the query string
+exactly, for example (`asmith@a.example`). `phone` means the international
+format of a telephone number with the "+" prefix matches exactly (for example:
+`+12125551212`).
+
+`partialName` means that the query string matches a case-insensitive substring
+of any field which contains the name of a (usually human) user. For example,
+`mat` would match first (given) or middle names Matt, Matthew, Mathias, or
+Mathieu and last (family) names of Mather and Matali. `wholeProfile` means that
+the query string matches a case-insensitive substring of any searchable field in
+a user's profile.
+
+`oidcStdClaim` means that the query string exactly matches the specified
+UserInfo Standard Claim (defined in Section 5.1 of {{OidcCore}}).
+`vcardField` means that the query string exactly matches the specified vCard
+property listed in the vCard Properties IANA registry.
+
+> **TODO**: Add language about case sensitivity for some other identifier types.
+
+As noted above, searches only return results for a user when the fields searched
+are searchable according the user's and provider's search policies.
 
 The response body is described as an `IdentifierResponse`. It can contain
 multiple matches depending on the type of query and the policy of the target
