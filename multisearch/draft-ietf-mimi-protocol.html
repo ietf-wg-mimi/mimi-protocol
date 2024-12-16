@@ -22,14 +22,14 @@ integrates the Messaging Layer Security (MLS) protocol to provide end-to-end sec
 assurances, including authentication of protocol participants, confidentiality
 of messages exchanged within a room, and agreement on the state of the room. 
     " name="description">
-<meta content="xml2rfc 3.24.0" name="generator">
+<meta content="xml2rfc 3.25.0" name="generator">
 <meta content="mimi" name="keyword">
 <meta content="interoperable messaging" name="keyword">
 <meta content="chat" name="keyword">
 <meta content="secure messaging" name="keyword">
 <meta content="draft-ietf-mimi-protocol-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.24.0
+  xml2rfc 3.25.0
     Python 3.12.7
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
@@ -294,6 +294,12 @@ body {
 }
 
 /* headings */
+section {
+  clear: both;
+}
+.section-number {
+  padding-right: 0.5em;
+}
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-title);
   font-weight: 680;
@@ -325,6 +331,7 @@ h4, h5, h6 {
 /* general structure */
 .author {
   padding-bottom: 0.3em;
+  vertical-align: top;
 }
 #abstract+p {
   font-size: 18px;
@@ -402,25 +409,26 @@ svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
 ol, ul {
   padding: 0;
   margin: 0 0 0.5em 2em;
-}
-:is(ol, ul) :is(ol, ul) {
-  margin-left: 1em;
+  & :is(ol, ul) {
+    margin-left: 1em;
+  }
 }
 li {
   margin: 0 0 0.25em 0;
 }
-.ulCompact li {
-  margin: 0;
-}
 ul.empty, .ulEmpty {
   list-style-type: none;
-}
-ul.empty li, .ulEmpty li {
-  margin-top: 0.5em;
+  & li {
+    margin-top: 0.5em;
+  }
 }
 :is(ul, ol).compact, .ulCompact, .olCompact {
-  line-height: 1;
   margin: 0 0 0 2em;
+  & li {
+    margin: 0;
+    & :first-child { margin-top: 0; }
+    & :last-child { margin-bottom: 0; }
+  }
 }
 
 /* definition lists */
@@ -428,38 +436,39 @@ dl {
   clear: left;
   --indent: 3ch;
   /* --indent: attr(indent ch); not supported in any browser, but we can dream */
-}
-dl.olPercent {
-  --indent: 5ch;
+  &.olPercent {
+    --indent: 5ch;
+    & > dt {
+      min-width: calc(var(--indent) - 2ch);
+    }
+  }
+  &.olPercent > dt {
+    float: none;
+  }
+
+  dl > dd > & {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+  }
 }
 dl > dt {
   float: left;
   margin-right: 2ch;
   min-width: 8ch;
 }
-dl.dlNewline > dt {
-  float: none;
-}
 dl > dd {
   margin-bottom: .8em;
   margin-left: var(--indent) !important; /* stupid element overrides */
   min-height: 2ex;
 }
-dl.olPercent > dt {
-  min-width: calc(var(--indent) - 2ch);
-}
 :is(dl.compact, .dlCompact) > dd {
   margin-bottom: 0;
-}
-:is(dl.compact, .dlCompact) > dd > :is(:first-child, .break:first-child + *) {
-  margin-top: 0;
-}
-:is(dl.compact, .dlCompact) > dd > :is(:last-child) {
-  margin-bottom: 0;
-}
-dl > dd > dl {
-  margin-top: 0.5em;
-  margin-bottom: 0;
+  & > :is(:first-child, .break:first-child + *) {
+    margin-top: 0;
+  }
+  & > :is(:last-child) {
+    margin-bottom: 0;
+  }
 }
 :is(dd, span).break {
   display: none;
@@ -523,6 +532,7 @@ figcaption, caption {
   font-style: italic;
   margin: 0.5em 1.5em;
   text-align: left;
+  caption-side: bottom;
 }
 @media screen {
   /* Auto-collapse boilerplate. */
@@ -540,7 +550,11 @@ figcaption, caption {
   }
   pre, svg {
     display: inline-block;
-    overflow-x: auto;
+    /* In the horizontal direction, sometimes people make over-sized figures.
+       Scrollbars for those is therefore necessary: auto adds them as necessary..
+       In the vertical direction, the line-height can combine with the font
+       asender/descender height to produce scrollbars: hidden avoids that. */
+    overflow: auto hidden;
   }
   pre {
     max-width: 100%;
@@ -577,6 +591,7 @@ cite {
 
 /* tables */
 table {
+  width: auto;
   max-width: 100%;
   margin: 0 0 1em;
   border-collapse: collapse;
@@ -591,6 +606,16 @@ table.center {
 table.left {
   margin-right: auto;
 }
+table .text-left {
+  text-align: left;
+}
+table .text-center {
+  text-align: center;
+}
+table .text-right {
+  text-align: right;
+}
+
 thead, tbody {
   border: 1px solid var(--line-color);
 }
@@ -621,9 +646,11 @@ a.pilcrow {
   margin-left: 3px;
   opacity: 0.2;
   user-select: none;
+  &[href] {
+    color: var(--pilcrow-weak);
+    &:hover { text-decoration: none; }
+  }
 }
-a.pilcrow[href] { color: var(--pilcrow-weak); }
-a.pilcrow[href]:hover { text-decoration: none; }
 @media not print {
   :hover > a.pilcrow {
     opacity: 1;
@@ -663,26 +690,28 @@ sub, sup {
   font-size: var(--small-font-size);
   line-height: 18px;
   --identifier-width: 15ch;
-}
-#identifiers dt {
-  width: var(--identifier-width);
-  min-width: var(--identifier-width);
-  clear: left;
-  float: left;
-  text-align: right;
-  margin-right: 1ch;
-}
-#identifiers dd {
-  margin: 0;
-  margin-left: calc(1em + var(--identifier-width)) !important;
-  min-width: 5em;
-}
-#identifiers .authors .author {
-  display: inline-block;
-  margin-right: 1.5em;
-}
-#identifiers .authors .org {
-  font-style: italic;
+  & dt {
+    width: var(--identifier-width);
+    min-width: var(--identifier-width);
+    clear: left;
+    float: left;
+    text-align: right;
+    margin-right: 1ch;
+  }
+  & dd {
+    margin: 0;
+    margin-left: calc(1em + var(--identifier-width)) !important;
+    min-width: 5em;
+  }
+  & .authors {
+    & .author {
+      display: inline-block;
+      margin-right: 1.5em;
+    }
+    & .org {
+      font-style: italic;
+    }
+  }
 }
 
 /* The prepared/rendered info at the very bottom of the page */
@@ -693,9 +722,6 @@ sub, sup {
   margin-top: 2em;
 }
 .docInfo .prepared {
-  float: left;
-}
-.docInfo .prepared {
   float: right;
 }
 
@@ -703,53 +729,48 @@ sub, sup {
 #toc {
   padding: 0.75em 0 2em 0;
   margin-bottom: 1em;
-}
-@media screen {
-  #toc nav {
-    font-family: var(--font-title);
-    font-weight: 360;
+
+  & nav {
+    & ul {
+      margin: 0 0.5em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    & li {
+      line-height: 1.3em;
+      margin: 2px 0;
+      padding-left: 1.2em;
+      text-indent: -1.2em;
+    }
+  }
+  & a.xref {
+    white-space: normal;
   }
 }
-#toc nav ul {
-  margin: 0 0.5em 0 0;
-  padding: 0;
-  list-style: none;
-}
-#toc nav li {
-  line-height: 1.3em;
-  margin: 2px 0;
-  padding-left: 1.2em;
-  text-indent: -1.2em;
-}
-#toc a.xref {
-  white-space: normal;
-}
-/* references */
-.references dt {
-  text-align: right;
-  font-weight: bold;
-  min-width: 10ch;
-  margin-right: 1.5ch;
-}
-.references dt:target::before {
-  content: "⇒";
-  width: 15px;
-  margin: 0 10px 0 -25px;
-}
-.references dd {
-  margin-left: 12ch !important;
-  overflow: auto;
+
+.references {
+  & > dt {
+    text-align: right;
+    font-weight: bold;
+    min-width: 10ch;
+    margin-right: 1.5ch;
+    &:target::before {
+      content: "⇒";
+      margin: 0 10px 0 -25px;
+    }
+  }
+  & > dd {
+    margin-left: 12ch !important;
+    overflow: visible;
+    & .refInstance {
+      margin-bottom: 0.8em;
+    }
+    & .ascii {
+      margin-bottom: 0.25em;
+    }
+  }
 }
 
-.refInstance {
-  margin-bottom: 1.25em;
-}
-
-.references .ascii {
-  margin-bottom: 0.25em;
-}
-
-/* index */
 #rfc\.index\.index + ul {
   margin-left: 0;
 }
@@ -757,21 +778,33 @@ sub, sup {
 /* authors */
 address.vcard {
   font-style: normal;
-  margin: 1em 0;
+  max-width: 20em;
+  margin: 1em auto 1em 0;
+
+  & .nameRole {
+    font-weight: 700;
+    margin-left: 0;
+  }
+  & .label {
+    margin: 0.5em 0;
+  }
+  & .type {
+    display: none;
+  }
+  & .alternative-contact {
+    margin: 0.5em 0 0.25em 0;
+  }
+  & .non-ascii {
+    margin: 0 0 0 2em;
+  }
+  & div.left {
+    text-align: left;
+  }
+  & div.right {
+    text-align: right;
+  }
 }
-address.vcard .nameRole {
-  font-weight: 700;
-  margin-left: 0;
-}
-address.vcard .label {
-  margin: 0.5em 0;
-}
-address.vcard .type {
-  display: none;
-}
-.alternative-contact {
-  margin: 1.5em 0 1em;
-}
+
 hr.addr {
   border-top: 1px dashed;
   margin: 0;
@@ -793,6 +826,7 @@ hr.addr {
   }
 }
 
+/* Comments */
 .rfcEditorRemove p:first-of-type {
   font-style: italic;
 }
@@ -803,7 +837,31 @@ hr.addr {
 .crefSource {
   font-style: italic;
 }
-/* alternative layout for smaller screens */
+
+@media screen {
+  #toc nav {
+    font-family: var(--font-title);
+    font-weight: 360;
+    & > ul { margin-bottom: 2em; }
+    & ul {
+      margin: 0 0 0 4px;
+      & :is(p, li) {
+        margin: 2px 0;
+      }
+    }
+  }
+  #toc a.toplink {
+    float: right;
+  }
+}
+@media not screen {
+  #toc a.toplink {
+    display: none;
+  }
+}
+
+
+/* TOC layout for smaller screens */
 @media screen and (max-width: 929px) {
   #toc {
     position: fixed;
@@ -814,9 +872,6 @@ hr.addr {
     margin: 0;
     border-bottom: 1px solid #ccc;
     opacity: 0.6;
-  }
-  #toc.active {
-      opacity: 1;
   }
   #toc h2 {
     margin: 0;
@@ -829,17 +884,17 @@ hr.addr {
     background-color: #444;
     color: white;
     cursor: pointer;
-  }
-  #toc h2::before { /* css hamburger */
-    float: right;
-    position: relative;
-    width: 1em;
-    height: 1px;
-    left: -164px;
-    margin: 8px 0 0 0;
-    background: white none repeat scroll 0 0;
-    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
-    content: "";
+    &::before { /* css hamburger */
+      float: right;
+      position: relative;
+      width: 1em;
+      height: 1px;
+      left: -164px;
+      margin: 8px 0 0 0;
+      background: white none repeat scroll 0 0;
+      box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+      content: "";
+    }
   }
   #toc nav {
     display: none;
@@ -850,14 +905,13 @@ hr.addr {
     height: calc(100vh - 48px);
     border-left: 1px solid #ddd;
   }
-  #toc.active nav {
-    display: block;
+  #toc.active {
+    opacity: 1;
+    & nav { display: block; }
   }
   /* Make the collapsed ToC header render white on gray also when it's a link */
   #toc h2 a,
-  #toc h2 a:link,
-  #toc h2 a:focus,
-  #toc h2 a:hover,
+  #toc h2 a:is(:link, :focus, :hover),
   #toc a.toplink,
   #toc a.toplink:hover {
     color: white;
@@ -865,11 +919,11 @@ hr.addr {
     text-decoration: none;
   }
   #toc a.toplink {
-    margin-top: 2px;
+    margin: 2px 0.5em 0;
   }
 }
 
-/* alternative layout for wide screens */
+/* TOC layout for wide screens */
 @media screen and (min-width: 930px) {
   body {
     padding-right: 360px;
@@ -898,20 +952,12 @@ hr.addr {
     overscroll-behavior: contain;
     scrollbar-width: thin;
   }
-  #toc nav > ul  {
-    margin-bottom: 2em;
-  }
-  #toc ul {
-    margin: 0 0 0 4px;
-    font-size: var(--small-font-size);
-  }
-  #toc ul :is(p, li) {
-    margin: 2px 0;
-    line-height: 22px;
-  }
   img { /* future proofing */
     max-width: 100%;
     height: auto;
+  }
+  #toc a.toplink {
+    margin: 8px 0.5em 0;
   }
 }
 
@@ -954,9 +1000,6 @@ hr.addr {
   td {
     border-top: 1px solid #ddd;
   }
-  .toplink {
-    display: none;
-  }
 }
 
 @page :first {
@@ -979,82 +1022,6 @@ hr.addr {
   size: A4;
   margin-bottom: 45mm;
   padding-top: 20px;
-}
-
-/* Changes introduced to fix issues found during implementation */
-
-/* Separate body from document info even without intervening H1 */
-section {
-  clear: both;
-}
-
-/* Top align author divs, to avoid names without organization dropping level with org names */
-.author {
-  vertical-align: top;
-}
-
-/* Style section numbers with more space between number and title */
-.section-number {
-  padding-right: 0.5em;
-}
-
-/* Add styling for a link in the ToC that points to the top of the document */
-a.toplink {
-  float: right;
-  margin: 8px 0.5em 0;
-}
-
-/* Provide styling for table cell text alignment */
-table .text-left {
-  text-align: left;
-}
-table .text-center {
-  text-align: center;
-}
-table .text-right {
-  text-align: right;
-}
-
-/* Make the alternative author contact information look less like just another
-   author, and group it closer with the primary author contact information */
-.alternative-contact {
-  margin: 0.5em 0 0.25em 0;
-}
-address .non-ascii {
-  margin: 0 0 0 2em;
-}
-
-/* With it being possible to set tables with alignment
-  left, center, and right, { width: 100%; } does not make sense */
-table {
-  width: auto;
-}
-
-/* Avoid reference text that sits in a block with very wide left margin,
-   because of a long floating dt label.*/
-.references dd {
-  overflow: visible;
-}
-
-/* Control caption placement */
-caption {
-  caption-side: bottom;
-}
-
-/* Limit the width of the author address vcard, so names in right-to-left
-   script don't end up on the other side of the page. */
-
-address.vcard {
-  max-width: 20em;
-  margin-right: auto;
-}
-
-/* For address alignment dependent on LTR or RTL scripts */
-address div.left {
-  text-align: left;
-}
-address div.right {
-  text-align: right;
 }
 
 /* Dark mode. */
@@ -1093,11 +1060,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">MIMI+MLS Protocol</td>
-<td class="right">November 2024</td>
+<td class="right">December 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 15 May 2025</td>
+<td class="center">Expires 19 June 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1110,12 +1077,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-11-11" class="published">11 November 2024</time>
+<time datetime="2024-12-16" class="published">16 December 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-05-15">15 May 2025</time></dd>
+<dd class="expires"><time datetime="2025-06-19">19 June 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1193,7 +1160,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 15 May 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 19 June 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3593,7 +3560,8 @@ struct {
       Credential requestingCredential;
       HPKEPublicKey groupInfoPublicKey;
       opaque joiningCode&lt;V&gt;;
-      /* SignWithLabel(., "GroupInfoRequestTBS", GroupInfoRequestTBS) */
+      /* SignWithLabel(requestingSignatureKey,          */
+      /*    "GroupInfoRequestTBS", GroupInfoRequestTBS) */
       opaque signature&lt;V&gt;;
   };
 } GroupInfoRequest;
@@ -3646,6 +3614,7 @@ struct {
       opaque room_id&lt;V&gt;;
       ExternalSender hub_sender;
       opaque encrypted_groupinfo_and_tree&lt;V&gt;;
+      /* TODO: add appropriate key for Hub to sign with */
       /* SignWithLabel(., "GroupInfoResponseTBS", GroupInfoResponseTBS) */
       opaque signature&lt;V&gt;;
   };
@@ -3815,7 +3784,11 @@ request. Zach does not wish to be queryable at all. He has configured his
 account so even an exact handle search returns no results. He could still
 send a join link out-of-band to Alice for her to join a room of Zach's
 choosing.<a href="#section-5.8-4" class="pilcrow">¶</a></p>
-<p id="section-5.8-5">The request body is described as:<a href="#section-5.8-5" class="pilcrow">¶</a></p>
+<p id="section-5.8-5">The request body is described as below. Each request can contain multiple
+query elements, which all have to match for the request to match. For
+example matching both the OpenID Connect (OIDC) <span>[<a href="#OidcCore" class="cite xref">OidcCore</a>]</span> <code>given_name</code> and
+<code>family_name</code>, or matching the OIDC <code>given_name</code> and the organization (from
+the vCard <span>[<a href="#RFC6350" class="cite xref">RFC6350</a>]</span> ORG property).<a href="#section-5.8-5" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.8-6">
 <pre>
 enum {
@@ -3838,15 +3811,44 @@ struct {
     case oidcStdClaim:
       opaque claimName&lt;V&gt;;
     case vcardField:
-      opaque fieldName&lt;V&gt;;
+      opaque propertyName&lt;V&gt;;
   };
+} QueryElement;
+
+struct {
+  QueryElement query_elements&lt;V&gt;;
 } IdentifierRequest;
 </pre><a href="#section-5.8-6" class="pilcrow">¶</a>
 </div>
-<p id="section-5.8-7">The response body is described as an <code>IdentifierResponse</code>. It can contain
+<p id="section-5.8-7">The semantics of the <code>SearchIdentifierType</code> values are as follows. <code>handle</code>
+means that the entire handle URI matches exactly (for example: <code>im:alice.smith@a.example</code>). <code>nick</code> means that the nickname or handle
+user part matches exactly (for example: <code>alice.smith</code>). The same account or
+human user may have multiple values which all match the <code>nick</code> field. <code>email</code>
+means the <code>addr-spec</code> production from <span>[<a href="#RFC5322" class="cite xref">RFC5322</a>]</span> matches the query string
+exactly, for example (<code>asmith@a.example</code>). <code>phone</code> means the international
+format of a telephone number with the "+" prefix matches exactly (for example:
+<code>+12125551212</code>).<a href="#section-5.8-7" class="pilcrow">¶</a></p>
+<p id="section-5.8-8"><code>partialName</code> means that the query string matches a case-insensitive substring
+of any field which contains the name of a (usually human) user. For example,
+<code>mat</code> would match first (given) or middle names Matt, Matthew, Mathias, or
+Mathieu and last (family) names of Mather and Matali. <code>wholeProfile</code> means that
+the query string matches a case-insensitive substring of any searchable field in
+a user's profile.<a href="#section-5.8-8" class="pilcrow">¶</a></p>
+<p id="section-5.8-9"><code>oidcStdClaim</code> means that the query string exactly matches the specified
+UserInfo Standard Claim (defined in Section 5.1 of <span>[<a href="#OidcCore" class="cite xref">OidcCore</a>]</span>).
+<code>vcardField</code> means that the query string exactly matches the specified vCard
+property listed in the vCard Properties IANA registry.<a href="#section-5.8-9" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5.8-10.1">
+            <p id="section-5.8-10.1.1"><strong>TODO</strong>: Add language about case sensitivity for some other identifier types.<a href="#section-5.8-10.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.8-11">As noted above, searches only return results for a user when the fields searched
+are searchable according the user's and provider's search policies.<a href="#section-5.8-11" class="pilcrow">¶</a></p>
+<p id="section-5.8-12">The response body is described as an <code>IdentifierResponse</code>. It can contain
 multiple matches depending on the type of query and the policy of the target
-provider.<a href="#section-5.8-7" class="pilcrow">¶</a></p>
-<p id="section-5.8-8">The response contains a code indicating the status of the query. <code>success</code>
+provider.<a href="#section-5.8-12" class="pilcrow">¶</a></p>
+<p id="section-5.8-13">The response contains a code indicating the status of the query. <code>success</code>
 means that at least one result matched the query. <code>notFound</code> means that
 while the request was acceptable, no results matched the query.
 <code>ambiguous</code> means that a field (ex: handle) or combination of fields
@@ -3854,8 +3856,8 @@ while the request was acceptable, no results matched the query.
 any responses. <code>forbidden</code> means that use of this endpoint is not allowed
 by the provider or that an unspecified field or combination of fields is
 not allowed in an identifier query. <code>unsupportedField</code> means that the
-provider does not support queries on one of the fields queried.<a href="#section-5.8-8" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-5.8-9">
+provider does not support queries on one of the fields queried.<a href="#section-5.8-13" class="pilcrow">¶</a></p>
+<div class="lang-tls sourcecode" id="section-5.8-14">
 <pre>
 enum {
   success(0),
@@ -3889,13 +3891,13 @@ struct {
   IdentifierUri uri&lt;V&gt;;
   UserProfile foundProfiles&lt;V&gt;;
 } IdentifierResponse;
-</pre><a href="#section-5.8-9" class="pilcrow">¶</a>
+</pre><a href="#section-5.8-14" class="pilcrow">¶</a>
 </div>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-5.8-10.1">
-            <p id="section-5.8-10.1.1"><strong>TODO</strong>: The format of specific identifiers is discussed in
+<li class="normal ulEmpty" id="section-5.8-15.1">
+            <p id="section-5.8-15.1.1"><strong>TODO</strong>: The format of specific identifiers is discussed in
 <span>[<a href="#I-D.mahy-mimi-identity" class="cite xref">I-D.mahy-mimi-identity</a>]</span>. Any specific conventions which are needed
-should be merged into this document.<a href="#section-5.8-10.1.1" class="pilcrow">¶</a></p>
+should be merged into this document.<a href="#section-5.8-15.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -4161,7 +4163,7 @@ franking_secret = HMAC_SHA256( franking_base_secret, nonce )
 <dd class="break"></dd>
 <dt id="I-D.barnes-mls-appsync">[I-D.barnes-mls-appsync]</dt>
         <dd>
-<span class="refAuthor">Barnes, R.</span> and <span class="refAuthor">R. Mahy</span>, <span class="refTitle">"Using Messaging Layer Security to Synchronize Application State"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-barnes-mls-appsync-00</span>, <time datetime="2024-07-07" class="refDate">7 July 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-barnes-mls-appsync-00">https://datatracker.ietf.org/doc/html/draft-barnes-mls-appsync-00</a>&gt;</span>. </dd>
+<span class="refAuthor">Joël</span>, <span class="refAuthor">Barnes, R.</span>, <span class="refAuthor">Mahy, R.</span>, and <span class="refAuthor">M. Mularczyk</span>, <span class="refTitle">"A Safe Application Interface to Messaging Layer Security"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-barnes-mls-appsync-01</span>, <time datetime="2024-12-12" class="refDate">12 December 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-barnes-mls-appsync-01">https://datatracker.ietf.org/doc/html/draft-barnes-mls-appsync-01</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-mls-extensions">[I-D.ietf-mls-extensions]</dt>
         <dd>
@@ -4179,6 +4181,10 @@ franking_secret = HMAC_SHA256( franking_base_secret, nonce )
         <dd>
 <span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Semi-Private Messages in the Messaging Layer Security (MLS) Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-semiprivatemessage-04</span>, <time datetime="2024-10-20" class="refDate">20 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-04">https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-04</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="OidcCore">[OidcCore]</dt>
+        <dd>
+<span class="refAuthor">Sakimura, N.</span>, <span class="refAuthor">Bradley, J.</span>, <span class="refAuthor">Jones, M. B.</span>, <span class="refAuthor">Medeiros, B. de.</span>, and <span class="refAuthor">C. Mortimore</span>, <span class="refTitle">"OpenID Connect Core 1.0 incorporating errata set 2"</span>, <time datetime="2023-12-15" class="refDate">15 December 2023</time>, <span>&lt;<a href="https://openid.net/specs/openid-connect-core-1_0.html">https://openid.net/specs/openid-connect-core-1_0.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
@@ -4187,9 +4193,17 @@ franking_secret = HMAC_SHA256( franking_base_secret, nonce )
         <dd>
 <span class="refAuthor">Berners-Lee, T.</span>, <span class="refAuthor">Fielding, R.</span>, and <span class="refAuthor">L. Masinter</span>, <span class="refTitle">"Uniform Resource Identifier (URI): Generic Syntax"</span>, <span class="seriesInfo">STD 66</span>, <span class="seriesInfo">RFC 3986</span>, <span class="seriesInfo">DOI 10.17487/RFC3986</span>, <time datetime="2005-01" class="refDate">January 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3986">https://www.rfc-editor.org/rfc/rfc3986</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC5322">[RFC5322]</dt>
+        <dd>
+<span class="refAuthor">Resnick, P., Ed.</span>, <span class="refTitle">"Internet Message Format"</span>, <span class="seriesInfo">RFC 5322</span>, <span class="seriesInfo">DOI 10.17487/RFC5322</span>, <time datetime="2008-10" class="refDate">October 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5322">https://www.rfc-editor.org/rfc/rfc5322</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC6125">[RFC6125]</dt>
         <dd>
 <span class="refAuthor">Saint-Andre, P.</span> and <span class="refAuthor">J. Hodges</span>, <span class="refTitle">"Representation and Verification of Domain-Based Application Service Identity within Internet Public Key Infrastructure Using X.509 (PKIX) Certificates in the Context of Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 6125</span>, <span class="seriesInfo">DOI 10.17487/RFC6125</span>, <time datetime="2011-03" class="refDate">March 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6125">https://www.rfc-editor.org/rfc/rfc6125</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6350">[RFC6350]</dt>
+        <dd>
+<span class="refAuthor">Perreault, S.</span>, <span class="refTitle">"vCard Format Specification"</span>, <span class="seriesInfo">RFC 6350</span>, <span class="seriesInfo">DOI 10.17487/RFC6350</span>, <time datetime="2011-08" class="refDate">August 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6350">https://www.rfc-editor.org/rfc/rfc6350</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC7231">[RFC7231]</dt>
         <dd>
