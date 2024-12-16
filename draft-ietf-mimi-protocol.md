@@ -1097,8 +1097,7 @@ struct {
           uint64 acceptedTimestamp;
           optional struct {
             uint8[32] serverFrank;
-            uint8[32] franking_context_hash;
-            uint8[32] frank_integrity_check;
+            uint8[32] franking_integrity_check;
           };
         case epochTooOld:
           /* current MLS epoch for the MLS group */
@@ -1180,12 +1179,11 @@ by the server).
 #### Hub processing
 
 The Hub relies on a per-epoch secret shared among the members of the group
-and itself to obfuscate the message metadata (the `context`) the Hub uses
-while franking, and another to provide message integrity over information
-added by the Hub. It derives both the `franking_context_secret` (with the
-label "franking_context") and the `franking_integrity_secret` (with the
-label "franking_integrity") from the `ap_exporter_secret` in the Associated
-Party Key Schedule {{!I-D.kohbrok-mls-associated-parties}}.
+and itself to provider integrity over the message metadata the Hub uses
+(serverURI, roomURI) and adds (acceptedTimestamp, serverFrank) while franking.
+It derives the `franking_integrity_secret`, using the label
+"franking_integrity", from the `ap_exporter_secret` in the Associated Party Key
+Schedule {{!I-D.kohbrok-mls-associated-parties}}.
 
 ~~~ aasvg
          ...
@@ -1197,14 +1195,14 @@ Party Key Schedule {{!I-D.kohbrok-mls-associated-parties}}.
           |
           +--------------------> DeriveSecret(., "ap_exporter")
           |                               = ap_exporter_secret
-          |                                  |       |
-          |                                  |       |
-          V                                  |       |
-    DeriveSecret(., "init")                  |       |
-          |                                  V       |
-          |     DeriveSecret(., "franking_context")  |
-          |              = franking_context_secret   |
-          |                                          V
+          |                                     |
+          |                                     |
+          V                                     |
+    DeriveSecret(., "init")                     |
+          |                                     |
+          |                                     |
+          |                                     |
+          |                                     V
           |          DeriveSecret(., "franking_integrity")
           |                   = franking_integrity_secret
           |
@@ -1220,43 +1218,38 @@ the message as follows:
 ~~~
 context = senderURI || roomURI || acceptedTimestamp
 serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
-franking_context_hash = SHA256(franking_context_secret || context)
-frank_integrity_check = HMAC_SHA256(franking_integrity_secret,
-  serverFrank || acceptedTimestamp|| franking_context_hash)
+franking_integrity_check = HMAC_SHA256(franking_integrity_secret,
+  serverFrank || context)
 ~~~
 
 `HUBkey` is a secret symmetric key used on the Hub which the Hub can use to verify its own tags.
 
-The `frank_integrity_check` is used by receivers to verify that the other
-values added by the Hub (the `serverFrank`, `acceptedTimestamp`, and the
-`franking_context_hash`) were not modified by a follower provider.
+The `franking_integrity_check` is used by receivers to verify that the
+values added by the Hub (the `serverFrank`, and `acceptedTimestamp`) were not
+modified by a follower provider, and that the `senderURI` and `roomURI` match
+those provided by the sending client.
 The specific construction used is discussed in the Security Considerations
 in {{franking}}.
 
 The Hub fans out the encrypted message (which includes the `franking_tag`),
-the `serverFrank`, the `acceptedTimestamp`, the room URI, the
-`franking_context_hash`, and the `frank_integrity_check`. Note that the
-`senderURI` is not included in the application message, so the sender can
-remain anonymous with respect to follower providers.
+the `serverFrank`, the `acceptedTimestamp`, the room URI, and the
+`franking_integrity_check`. Note that the `senderURI` is encrypted in the
+application message, so the sender can remain anonymous with respect to follower
+providers.
 
 #### Receiver verification of frank
 
 When a client receives and decrypts an otherwise valid application message
 from a hub provider, the client looks for the existence of a frank
-(consisting of the `franking_tag` in the AAD, the `serverFrank`, the
-`franking_context_hash`, and the `frank_integrity_check`). If so, it
-derives the `franking_context_secret` and the `franking_integrity_secret`
-from the `ap_exporter_secret` in the Associated Party Key Schedule
-{{I-D.kohbrok-mls-associated-parties}}.
+(consisting of the `franking_tag` in the AAD, the `serverFrank` and the
+`franking_integrity_check`). If those fields are available, the client derives the
+`franking_integrity_secret` from the `ap_exporter_secret` in the Associated
+Party Key Schedule {{I-D.kohbrok-mls-associated-parties}}.
 
-Next it verifies the integrity of the the `serverFrank`,
-`acceptedTimestamp`, and the `franking_context_hash` by calculating its
-own `frank_integrity_check` from these values with the
-`franking_integrity_secret` and comparing it to the provided `frank_integrity_check`.
-
-Then it verifies the `franking_context_hash` from the `senderURI` from the
-decrypted message, the `roomURI`,the `acceptedTimestamp`, and the
-`franking_context_secret`.
+Next it verifies the integrity of the `serverFrank`, `acceptedTimestamp`,
+`senderURI`, and `roomURI` by calculating its own `franking_integrity_check`
+from these values with the `franking_integrity_secret` and comparing it to the
+provided `franking_integrity_check`.
 
 Finally it verifies the construction of the `franking_tag` from the content
 of the message (including the embedded `franking_secret`),
@@ -1288,16 +1281,14 @@ identity of the sender to receivers, since this would be observed by
 follower providers. However, the receiver needs to verify that the sender
 identity provided by the sender's provider to the Hub matches the identity
 the receiver sees after it decrypts the message. Using a key shared between
-members and the Hub (the `franking_context_secret`) the Hub sends an HMAC
-of its context (sender identity, room id, and timestamp) with this key.
-The second change allows receivers to validate the sender URI in the hub's
-context, without revealing the sender URI to follower providers.
-
-Finally, to prevent a follower provider from "mauling" the serverFrank, or
-breaking the context comparison (by modifying the `franking_context_hash` or
-`acceptedTimestamp`), the Hub includes the `frank_integrity_check`. Each
-receiver uses this to verify that the timestamp and franking parameters
-added by the Hub were not modified.
+members and the Hub (the `franking_integrity_secret`) the Hub sends an HMAC
+of its context (sender identity, room id, and timestamp) and the serverFrank
+with this key. The second change provides two functions. Itallows receivers to
+validate the sender URI in the hub's context, without revealing the sender URI
+to follower providers. It also prevents a follower provider from "mauling" the
+serverFrank, or breaking the context comparison (by modifying the
+`acceptedTimestamp`). Each receiver uses this to verify that the timestamp and
+franking parameters added by the Hub were not modified.
 
 
 ## Fanout Messages and Room Events
@@ -1328,8 +1319,7 @@ POST /notify/{roomId}
 ~~~ tls
 struct {
   uint8[32] serverFrank;
-  uint8[32] franking_context_hash;
-  uint8[32] frank_integrity_check;
+  uint8[32] franking_integrity_check;
 } Frank;
 
 struct {
