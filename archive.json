@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-15T00:52:03.533513+00:00",
+  "timestamp": "2024-12-17T00:46:57.400230+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1382,7 +1382,7 @@
       ],
       "body": "The FrankingAssertion map in Section 5.4.1.1 Client creation and sending should be defined in draft-ietf-mimi-content",
       "createdAt": "2024-11-17T16:30:03Z",
-      "updatedAt": "2024-12-04T17:33:37Z",
+      "updatedAt": "2024-12-16T20:06:57Z",
       "closedAt": null,
       "comments": [
         {
@@ -1391,6 +1391,13 @@
           "body": "Need comment about relationship between the two documents @rohanmahy ",
           "createdAt": "2024-12-04T17:33:35Z",
           "updatedAt": "2024-12-04T17:33:35Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "With the [proposed change](https://github.com/ietf-wg-mimi/draft-ietf-mimi-content/pull/36) of message ID format in MIMI content, there will be a per-message salt inside the message we can use instead of the franking_secret.\r\n\r\nThe sender_URI and room_URI can be added as extensions in mimi-protocol using the MIMI content extensions registry defined in [mimi-content PR#35](https://github.com/ietf-wg-mimi/draft-ietf-mimi-content/pull/35).",
+          "createdAt": "2024-12-16T20:06:54Z",
+          "updatedAt": "2024-12-16T20:06:54Z"
         }
       ]
     },
@@ -1419,6 +1426,22 @@
           "updatedAt": "2024-12-04T17:07:55Z"
         }
       ]
+    },
+    {
+      "number": 95,
+      "id": "I_kwDOKZ8QO86jg4It",
+      "title": "Try to simplify franking context and integrity",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/95",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Figure out if the context and the integrity verification can be combined, making the franking algorithm simpler.\r\n\r\nRemove the franking_context_hash and franking_context_secret\r\n\r\n```\r\ncontext = senderURI || roomURI || acceptedTimestamp\r\nserverFrank = HMAC_SHA256(HUBkey, franking_tag || context )\r\nfrank_integrity_check = HMAC_SHA256(franking_integrity_secret,\r\n  serverFrank || context)\r\n```\r\n\r\n",
+      "createdAt": "2024-12-16T20:11:09Z",
+      "updatedAt": "2024-12-16T20:11:09Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -8199,7 +8222,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-07-21T21:30:03Z",
-      "updatedAt": "2024-10-21T20:16:44Z",
+      "updatedAt": "2024-12-16T17:23:06Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "da9fa250389b16a3bf2ab39a11b54d9a6c6bff9e",
@@ -8435,7 +8458,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-10-21T03:08:34Z",
-      "updatedAt": "2024-10-21T20:11:41Z",
+      "updatedAt": "2024-12-16T17:23:11Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "4644c776e12a647792932b6344a91d54599a3e31",
@@ -8490,7 +8513,7 @@
       "labels": [],
       "body": "\u2026 for better metadata privacy",
       "createdAt": "2024-10-21T03:31:39Z",
-      "updatedAt": "2024-10-21T19:59:29Z",
+      "updatedAt": "2024-12-16T17:23:07Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "4644c776e12a647792932b6344a91d54599a3e31",
@@ -8615,7 +8638,7 @@
       "labels": [],
       "body": "As discussed at IETF 121 meeting last week, issue #89 means that a malicious follower could destroy a frank and the receiver would never find out until they presented an invalid frank when reporting abuse.\r\n\r\nThis PR adds a second associated parties exported key for a general purpose integrity check over all the hub-provided values in a fanout message.",
       "createdAt": "2024-11-11T17:37:13Z",
-      "updatedAt": "2024-11-21T17:36:19Z",
+      "updatedAt": "2024-12-16T17:23:03Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "33614cdb50ccd6aea0524b5da874fdd70674a681",
@@ -8643,7 +8666,7 @@
       "labels": [],
       "body": "Two instances of SignWithLabel did not specify the signature key to use. Fixed one, and left a TODO in place for the other.",
       "createdAt": "2024-11-28T20:40:11Z",
-      "updatedAt": "2024-11-28T20:46:43Z",
+      "updatedAt": "2024-12-16T17:22:57Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "9531ff4c247b990bc2ac53770a5a57124eaa934a",
@@ -8656,6 +8679,58 @@
       "mergeCommit": {
         "oid": "ae0ded70689a5249c386d886c8743af73d5d79ad"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 94,
+      "id": "PR_kwDOKZ8QO86FZ2DX",
+      "title": "Allow searches for mulitple fields",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/94",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- Allow searches for multiple fields (with AND semantics)\r\n- Clarify the semantics of SearchIdentifierType enum\r\n",
+      "createdAt": "2024-12-16T19:47:37Z",
+      "updatedAt": "2024-12-16T19:47:37Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "ae0ded70689a5249c386d886c8743af73d5d79ad",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "multisearch",
+      "headRefOid": "0401abfdb873166d1a5e5684fb5c9741f1883697",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 96,
+      "id": "PR_kwDOKZ8QO86FaS87",
+      "title": "Make franking_integrity_hash cover context; deprecate franking_context_hash ",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/96",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "combine functionality of franking_integrity_hash and franking_context_hash into a single franking_integrity_hash",
+      "createdAt": "2024-12-16T20:57:50Z",
+      "updatedAt": "2024-12-16T20:57:50Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "ae0ded70689a5249c386d886c8743af73d5d79ad",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "simplify-franking",
+      "headRefOid": "9197c3c324ee76c6fddd9e2bfb367d1de06926fd",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
