@@ -22,23 +22,23 @@ integrates the Messaging Layer Security (MLS) protocol to provide end-to-end sec
 assurances, including authentication of protocol participants, confidentiality
 of messages exchanged within a room, and agreement on the state of the room. 
     " name="description">
-<meta content="xml2rfc 3.24.0" name="generator">
+<meta content="xml2rfc 3.25.0" name="generator">
 <meta content="mimi" name="keyword">
 <meta content="interoperable messaging" name="keyword">
 <meta content="chat" name="keyword">
 <meta content="secure messaging" name="keyword">
 <meta content="draft-ietf-mimi-protocol-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.24.0
-    Python 3.12.7
+  xml2rfc 3.25.0
+    Python 3.12.8
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.4
     lxml 5.3.0
     platformdirs 4.3.6
-    pycountry 22.3.5
-    PyYAML 6.0.1
+    pycountry 24.6.1
+    PyYAML 6.0.2
     requests 2.32.3
     setuptools 70.3.0
     wcwidth 0.2.13
@@ -550,7 +550,11 @@ figcaption, caption {
   }
   pre, svg {
     display: inline-block;
-    overflow-x: auto;
+    /* In the horizontal direction, sometimes people make over-sized figures.
+       Scrollbars for those is therefore necessary: auto adds them as necessary..
+       In the vertical direction, the line-height can combine with the font
+       asender/descender height to produce scrollbars: hidden avoids that. */
+    overflow: auto hidden;
   }
   pre {
     max-width: 100%;
@@ -1056,11 +1060,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">MIMI+MLS Protocol</td>
-<td class="right">November 2024</td>
+<td class="right">December 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 1 June 2025</td>
+<td class="center">Expires 21 June 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1073,12 +1077,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-11-28" class="published">28 November 2024</time>
+<time datetime="2024-12-18" class="published">18 December 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-06-01">1 June 2025</time></dd>
+<dd class="expires"><time datetime="2025-06-21">21 June 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1156,7 +1160,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 1 June 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 21 June 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3164,8 +3168,7 @@ struct {
           uint64 acceptedTimestamp;
           optional struct {
             uint8[32] serverFrank;
-            uint8[32] franking_context_hash;
-            uint8[32] frank_integrity_check;
+            uint8[32] franking_integrity_check;
           };
         case epochTooOld:
           /* current MLS epoch for the MLS group */
@@ -3262,12 +3265,11 @@ by the server).<a href="#section-5.4.1.1-7" class="pilcrow">¶</a></p>
 <a href="#section-5.4.1.2" class="section-number selfRef">5.4.1.2. </a><a href="#name-hub-processing" class="section-name selfRef">Hub processing</a>
             </h5>
 <p id="section-5.4.1.2-1">The Hub relies on a per-epoch secret shared among the members of the group
-and itself to obfuscate the message metadata (the <code>context</code>) the Hub uses
-while franking, and another to provide message integrity over information
-added by the Hub. It derives both the <code>franking_context_secret</code> (with the
-label "franking_context") and the <code>franking_integrity_secret</code> (with the
-label "franking_integrity") from the <code>ap_exporter_secret</code> in the Associated
-Party Key Schedule <span>[<a href="#I-D.kohbrok-mls-associated-parties" class="cite xref">I-D.kohbrok-mls-associated-parties</a>]</span>.<a href="#section-5.4.1.2-1" class="pilcrow">¶</a></p>
+and itself to provider integrity over the message metadata the Hub uses
+(serverURI, roomURI) and adds (acceptedTimestamp, serverFrank) while franking.
+It derives the <code>franking_integrity_secret</code>, using the label
+"franking_integrity", from the <code>ap_exporter_secret</code> in the Associated Party Key
+Schedule <span>[<a href="#I-D.kohbrok-mls-associated-parties" class="cite xref">I-D.kohbrok-mls-associated-parties</a>]</span>.<a href="#section-5.4.1.2-1" class="pilcrow">¶</a></p>
 <span id="name-the-extended-associated-par"></span><div id="extended-ap-key-schedule">
 <figure id="figure-10">
               <div id="section-5.4.1.2-2.1">
@@ -3276,11 +3278,9 @@ Party Key Schedule <span>[<a href="#I-D.kohbrok-mls-associated-parties" class="c
                     <path d="M 56,32 L 56,80" fill="none" stroke="black"></path>
                     <path d="M 56,112 L 56,208" fill="none" stroke="black"></path>
                     <path d="M 56,240 L 56,352" fill="none" stroke="black"></path>
-                    <path d="M 336,168 L 336,240" fill="none" stroke="black"></path>
-                    <path d="M 400,176 L 400,288" fill="none" stroke="black"></path>
+                    <path d="M 360,176 L 360,288" fill="none" stroke="black"></path>
                     <path d="M 56,144 L 224,144" fill="none" stroke="black"></path>
-                    <polygon class="arrowhead" points="408,288 396,282.4 396,293.6" fill="black" transform="rotate(90,400,288)"></polygon>
-                    <polygon class="arrowhead" points="344,240 332,234.4 332,245.6" fill="black" transform="rotate(90,336,240)"></polygon>
+                    <polygon class="arrowhead" points="368,288 356,282.4 356,293.6" fill="black" transform="rotate(90,360,288)"></polygon>
                     <polygon class="arrowhead" points="232,144 220,138.4 220,149.6" fill="black" transform="rotate(0,224,144)"></polygon>
                     <polygon class="arrowhead" points="64,352 52,346.4 52,357.6" fill="black" transform="rotate(90,56,352)"></polygon>
                     <polygon class="arrowhead" points="64,208 52,202.4 52,213.6" fill="black" transform="rotate(90,56,208)"></polygon>
@@ -3295,10 +3295,6 @@ Party Key Schedule <span>[<a href="#I-D.kohbrok-mls-associated-parties" class="c
                       <text x="396" y="164">ap_exporter_secret</text>
                       <text x="64" y="228">DeriveSecret(.,</text>
                       <text x="160" y="228">"init")</text>
-                      <text x="160" y="260">DeriveSecret(.,</text>
-                      <text x="304" y="260">"franking_context")</text>
-                      <text x="176" y="276">=</text>
-                      <text x="280" y="276">franking_context_secret</text>
                       <text x="200" y="308">DeriveSecret(.,</text>
                       <text x="352" y="308">"franking_integrity")</text>
                       <text x="216" y="324">=</text>
@@ -3319,22 +3315,22 @@ the message as follows:<a href="#section-5.4.1.2-3" class="pilcrow">¶</a></p>
 <pre>
 context = senderURI || roomURI || acceptedTimestamp
 serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
-franking_context_hash = SHA256(franking_context_secret || context)
-frank_integrity_check = HMAC_SHA256(franking_integrity_secret,
-  serverFrank || acceptedTimestamp|| franking_context_hash)
+franking_integrity_check = HMAC_SHA256(franking_integrity_secret,
+  serverFrank || context)
 </pre><a href="#section-5.4.1.2-4" class="pilcrow">¶</a>
 </div>
 <p id="section-5.4.1.2-5"><code>HUBkey</code> is a secret symmetric key used on the Hub which the Hub can use to verify its own tags.<a href="#section-5.4.1.2-5" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.2-6">The <code>frank_integrity_check</code> is used by receivers to verify that the other
-values added by the Hub (the <code>serverFrank</code>, <code>acceptedTimestamp</code>, and the
-<code>franking_context_hash</code>) were not modified by a follower provider.
+<p id="section-5.4.1.2-6">The <code>franking_integrity_check</code> is used by receivers to verify that the
+values added by the Hub (the <code>serverFrank</code>, and <code>acceptedTimestamp</code>) were not
+modified by a follower provider, and that the <code>senderURI</code> and <code>roomURI</code> match
+those provided by the sending client.
 The specific construction used is discussed in the Security Considerations
 in <a href="#franking" class="auto internal xref">Section 8.1</a>.<a href="#section-5.4.1.2-6" class="pilcrow">¶</a></p>
 <p id="section-5.4.1.2-7">The Hub fans out the encrypted message (which includes the <code>franking_tag</code>),
-the <code>serverFrank</code>, the <code>acceptedTimestamp</code>, the room URI, the
-<code>franking_context_hash</code>, and the <code>frank_integrity_check</code>. Note that the
-<code>senderURI</code> is not included in the application message, so the sender can
-remain anonymous with respect to follower providers.<a href="#section-5.4.1.2-7" class="pilcrow">¶</a></p>
+the <code>serverFrank</code>, the <code>acceptedTimestamp</code>, the room URI, and the
+<code>franking_integrity_check</code>. Note that the <code>senderURI</code> is encrypted in the
+application message, so the sender can remain anonymous with respect to follower
+providers.<a href="#section-5.4.1.2-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="receiver-verification-of-frank">
@@ -3344,26 +3340,22 @@ remain anonymous with respect to follower providers.<a href="#section-5.4.1.2-7"
             </h5>
 <p id="section-5.4.1.3-1">When a client receives and decrypts an otherwise valid application message
 from a hub provider, the client looks for the existence of a frank
-(consisting of the <code>franking_tag</code> in the AAD, the <code>serverFrank</code>, the
-<code>franking_context_hash</code>, and the <code>frank_integrity_check</code>). If so, it
-derives the <code>franking_context_secret</code> and the <code>franking_integrity_secret</code>
-from the <code>ap_exporter_secret</code> in the Associated Party Key Schedule
-<span>[<a href="#I-D.kohbrok-mls-associated-parties" class="cite xref">I-D.kohbrok-mls-associated-parties</a>]</span>.<a href="#section-5.4.1.3-1" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.3-2">Next it verifies the integrity of the the <code>serverFrank</code>,
-<code>acceptedTimestamp</code>, and the <code>franking_context_hash</code> by calculating its
-own <code>frank_integrity_check</code> from these values with the
-<code>franking_integrity_secret</code> and comparing it to the provided <code>frank_integrity_check</code>.<a href="#section-5.4.1.3-2" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.3-3">Then it verifies the <code>franking_context_hash</code> from the <code>senderURI</code> from the
-decrypted message, the <code>roomURI</code>,the <code>acceptedTimestamp</code>, and the
-<code>franking_context_secret</code>.<a href="#section-5.4.1.3-3" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.3-4">Finally it verifies the construction of the <code>franking_tag</code> from the content
+(consisting of the <code>franking_tag</code> in the AAD, the <code>serverFrank</code> and the
+<code>franking_integrity_check</code>). If those fields are available, the client derives the
+<code>franking_integrity_secret</code> from the <code>ap_exporter_secret</code> in the Associated
+Party Key Schedule <span>[<a href="#I-D.kohbrok-mls-associated-parties" class="cite xref">I-D.kohbrok-mls-associated-parties</a>]</span>.<a href="#section-5.4.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.3-2">Next it verifies the integrity of the <code>serverFrank</code>, <code>acceptedTimestamp</code>,
+<code>senderURI</code>, and <code>roomURI</code> by calculating its own <code>franking_integrity_check</code>
+from these values with the <code>franking_integrity_secret</code> and comparing it to the
+provided <code>franking_integrity_check</code>.<a href="#section-5.4.1.3-2" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.3-3">Finally it verifies the construction of the <code>franking_tag</code> from the content
 of the message (including the embedded <code>franking_secret</code>),
 that the sender's identity in its credential in its MLS LeafNode matches
 the sender's identity asserted in the FrankingAssertion map inside the MIMI
 Content, and that the RoomURI inside the MIMI Content matches the room ID in
-the received message.<a href="#section-5.4.1.3-4" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.3-5">The receiver needs to store the frank and context with the decoded message
-so it can be used later.<a href="#section-5.4.1.3-5" class="pilcrow">¶</a></p>
+the received message.<a href="#section-5.4.1.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.3-4">The receiver needs to store the frank and context with the decoded message
+so it can be used later.<a href="#section-5.4.1.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="comparison-with-the-facebook-franking-scheme">
@@ -3387,15 +3379,14 @@ identity of the sender to receivers, since this would be observed by
 follower providers. However, the receiver needs to verify that the sender
 identity provided by the sender's provider to the Hub matches the identity
 the receiver sees after it decrypts the message. Using a key shared between
-members and the Hub (the <code>franking_context_secret</code>) the Hub sends an HMAC
-of its context (sender identity, room id, and timestamp) with this key.
-The second change allows receivers to validate the sender URI in the hub's
-context, without revealing the sender URI to follower providers.<a href="#section-5.4.1.4-3" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.4-4">Finally, to prevent a follower provider from "mauling" the serverFrank, or
-breaking the context comparison (by modifying the <code>franking_context_hash</code> or
-<code>acceptedTimestamp</code>), the Hub includes the <code>frank_integrity_check</code>. Each
-receiver uses this to verify that the timestamp and franking parameters
-added by the Hub were not modified.<a href="#section-5.4.1.4-4" class="pilcrow">¶</a></p>
+members and the Hub (the <code>franking_integrity_secret</code>) the Hub sends an HMAC
+of its context (sender identity, room id, and timestamp) and the serverFrank
+with this key. The second change provides two functions. Itallows receivers to
+validate the sender URI in the hub's context, without revealing the sender URI
+to follower providers. It also prevents a follower provider from "mauling" the
+serverFrank, or breaking the context comparison (by modifying the
+<code>acceptedTimestamp</code>). Each receiver uses this to verify that the timestamp and
+franking parameters added by the Hub were not modified.<a href="#section-5.4.1.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -3431,8 +3422,7 @@ POST /notify/{roomId}
 <pre>
 struct {
   uint8[32] serverFrank;
-  uint8[32] franking_context_hash;
-  uint8[32] frank_integrity_check;
+  uint8[32] franking_integrity_check;
 } Frank;
 
 struct {
@@ -4126,7 +4116,7 @@ franking_secret = HMAC_SHA256( franking_base_secret, nonce )
 <dd class="break"></dd>
 <dt id="I-D.barnes-mls-appsync">[I-D.barnes-mls-appsync]</dt>
         <dd>
-<span class="refAuthor">Barnes, R.</span> and <span class="refAuthor">R. Mahy</span>, <span class="refTitle">"Using Messaging Layer Security to Synchronize Application State"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-barnes-mls-appsync-00</span>, <time datetime="2024-07-07" class="refDate">7 July 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-barnes-mls-appsync-00">https://datatracker.ietf.org/doc/html/draft-barnes-mls-appsync-00</a>&gt;</span>. </dd>
+<span class="refAuthor">Joël</span>, <span class="refAuthor">Barnes, R.</span>, <span class="refAuthor">Mahy, R.</span>, and <span class="refAuthor">M. Mularczyk</span>, <span class="refTitle">"A Safe Application Interface to Messaging Layer Security"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-barnes-mls-appsync-01</span>, <time datetime="2024-12-12" class="refDate">12 December 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-barnes-mls-appsync-01">https://datatracker.ietf.org/doc/html/draft-barnes-mls-appsync-01</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-mls-extensions">[I-D.ietf-mls-extensions]</dt>
         <dd>
