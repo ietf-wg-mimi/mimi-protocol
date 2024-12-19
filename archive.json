@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-17T00:46:57.400230+00:00",
+  "timestamp": "2024-12-19T00:45:07.973763+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -826,7 +826,7 @@
       ],
       "body": "> **TODO**: Discuss if this participation state is desirable, and figure out\r\n> details for how it works. It'd likely just be an `m.room.user` state event\r\n> with no MLS interaction, like invites are.\r\n\r\n> **TODO**: If we have an Add event as discussed in a TODO in the \"Invites\"\r\n> section, an \"Add\" would probably be the response to a knock.",
       "createdAt": "2023-11-09T12:54:20Z",
-      "updatedAt": "2024-12-04T17:19:46Z",
+      "updatedAt": "2024-12-18T17:49:38Z",
       "closedAt": null,
       "comments": [
         {
@@ -856,6 +856,20 @@
           "body": "Nobody has a clear use case that motivates this feature. @rohanmahy will go to the MIMI list to ask for use cases, and we'll close this if none materialize.",
           "createdAt": "2024-12-04T17:19:40Z",
           "updatedAt": "2024-12-04T17:19:40Z"
+        },
+        {
+          "author": "timokoesters",
+          "authorAssociation": "NONE",
+          "body": "I have never used knocks myself, but I think the idea is to protect against spam waves. By attaching a custom message to the knock, they can explain their motivation for joining the room.\r\n\r\nA similar problem is attaching a custom message when sending a friend request or starting a new DM with someone. I don't know how this would work in practice though, because e2ee is not initialized at that time.",
+          "createdAt": "2024-12-17T15:53:50Z",
+          "updatedAt": "2024-12-17T15:53:50Z"
+        },
+        {
+          "author": "raphaelrobert",
+          "authorAssociation": "COLLABORATOR",
+          "body": "If I understand this correctly, this is a feature Signal has. Users can generate an invite link to a group, but new participants still have to be allowed individually. If that's what it is, this is actually a very useful feature for communities or in business messaging.",
+          "createdAt": "2024-12-18T17:49:37Z",
+          "updatedAt": "2024-12-18T17:49:37Z"
         }
       ]
     },
@@ -8685,16 +8699,16 @@
     {
       "number": 94,
       "id": "PR_kwDOKZ8QO86FZ2DX",
-      "title": "Allow searches for mulitple fields",
+      "title": "Allow searches for multiple fields",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/94",
       "state": "OPEN",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "- Allow searches for multiple fields (with AND semantics)\r\n- Clarify the semantics of SearchIdentifierType enum\r\n",
+      "body": "- Allow searches for multiple fields (with AND semantics)\r\n- Clarify the semantics of SearchIdentifierType enum\r\n\r\nPartially addresses Issue #91 \r\n",
       "createdAt": "2024-12-16T19:47:37Z",
-      "updatedAt": "2024-12-16T19:47:37Z",
+      "updatedAt": "2024-12-18T20:02:51Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "ae0ded70689a5249c386d886c8743af73d5d79ad",
@@ -8706,32 +8720,115 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86VxXc1",
+          "commit": {
+            "abbreviatedOid": "0401abf"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-12-18T19:54:39Z",
+          "updatedAt": "2024-12-18T19:59:11Z",
+          "comments": [
+            {
+              "originalPosition": 35,
+              "body": "Nit: I would put this `select` above the `searchValue`, since the colloquial order is `(key, value)`.",
+              "createdAt": "2024-12-18T19:54:39Z",
+              "updatedAt": "2024-12-18T19:59:11Z"
+            },
+            {
+              "originalPosition": 40,
+              "body": "What is the semantic of having multiple query elements?  Are you asking for a profile that matches all of them?  Any of them?",
+              "createdAt": "2024-12-18T19:57:13Z",
+              "updatedAt": "2024-12-18T19:59:11Z"
+            },
+            {
+              "originalPosition": 58,
+              "body": "Case-insensitivity us normally never a good idea, but here I think you might not be loose enough.  For example, if the query contains `Mathtew`, is the responding provider allowed to spell-check that to `Matthew`?  I would probably be inclined to be very loose about the request semantics, and instead have the response provide the attributes that the responding provider thought matched, so that then the requesting provider / user can decide if the match is valid.",
+              "createdAt": "2024-12-18T19:59:04Z",
+              "updatedAt": "2024-12-18T19:59:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86VxafY",
+          "commit": {
+            "abbreviatedOid": "0401abf"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-12-18T20:02:15Z",
+          "updatedAt": "2024-12-18T20:02:16Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "All of them. there was text somewhere but I can restate here",
+              "createdAt": "2024-12-18T20:02:16Z",
+              "updatedAt": "2024-12-18T20:02:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86VxavJ",
+          "commit": {
+            "abbreviatedOid": "0401abf"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-12-18T20:02:51Z",
+          "updatedAt": "2024-12-18T20:02:51Z",
+          "comments": [
+            {
+              "originalPosition": 58,
+              "body": "fair enough ",
+              "createdAt": "2024-12-18T20:02:51Z",
+              "updatedAt": "2024-12-18T20:02:51Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 96,
       "id": "PR_kwDOKZ8QO86FaS87",
       "title": "Make franking_integrity_hash cover context; deprecate franking_context_hash ",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/96",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "combine functionality of franking_integrity_hash and franking_context_hash into a single franking_integrity_hash",
       "createdAt": "2024-12-16T20:57:50Z",
-      "updatedAt": "2024-12-16T20:57:50Z",
+      "updatedAt": "2024-12-18T19:28:03Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "ae0ded70689a5249c386d886c8743af73d5d79ad",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "simplify-franking",
       "headRefOid": "9197c3c324ee76c6fddd9e2bfb367d1de06926fd",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "closedAt": "2024-12-18T19:28:03Z",
+      "mergedAt": "2024-12-18T19:28:03Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "21d96b25b36edbc7dae5d55f4e2704819aa1a77d"
+      },
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Relates to Issue #95 ",
+          "createdAt": "2024-12-17T01:50:34Z",
+          "updatedAt": "2024-12-17T01:50:34Z"
+        }
+      ],
       "reviews": []
     }
   ]
