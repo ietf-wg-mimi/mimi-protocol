@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 19 June 2025                   The Matrix.org Foundation C.I.C.
+Expires: 23 June 2025                   The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 19 June 2025                   The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                        16 December 2024
+                                                        20 December 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 June 2025.
+   This Internet-Draft will expire on 23 June 2025.
 
 Copyright Notice
 
@@ -1742,8 +1742,8 @@ ServerC->ClientC*: [[ Commit ]]
 
    The request body is described as below.  Each request can contain
    multiple query elements, which all have to match for the request to
-   match.  For example matching both the OpenID Connect (OIDC)
-   [OidcCore] given_name and family_name, or matching the OIDC
+   match (AND semantics).  For example matching both the OpenID Connect
+   (OIDC) [OidcCore] given_name and family_name, or matching the OIDC
    given_name and the organization (from the vCard [RFC6350] ORG
    property).
 
@@ -1762,13 +1762,13 @@ ServerC->ClientC*: [[ Commit ]]
 
    struct {
      SearchIdentifierType searchType;
-     opaque searchValue<V>;  /* a UTF8 string */
      select(type) {
        case oidcStdClaim:
          opaque claimName<V>;
        case vcardField:
          opaque propertyName<V>;
      };
+     opaque searchValue<V>;  /* a UTF8 string */
    } QueryElement;
 
    struct {
@@ -1789,17 +1789,14 @@ ServerC->ClientC*: [[ Commit ]]
    substring of any field which contains the name of a (usually human)
    user.  For example, mat would match first (given) or middle names
    Matt, Matthew, Mathias, or Mathieu and last (family) names of Mather
-   and Matali. wholeProfile means that the query string matches a case-
-   insensitive substring of any searchable field in a user's profile.
+   and Matali. wholeProfile means that the query string matches a
+   substring of any searchable field in a user's profile.
 
    oidcStdClaim means that the query string exactly matches the
    specified UserInfo Standard Claim (defined in Section 5.1 of
    [OidcCore]). vcardField means that the query string exactly matches
    the specified vCard property listed in the vCard Properties IANA
    registry.
-
-      *TODO*: Add language about case sensitivity for some other
-      identifier types.
 
    As noted above, searches only return results for a user when the
    fields searched are searchable according the user's and provider's
