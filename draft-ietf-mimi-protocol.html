@@ -3587,7 +3587,7 @@ struct {
       CipherSuite cipher_suite;
       opaque room_id&lt;V&gt;;
       ExternalSender hub_sender;
-      opaque encrypted_groupinfo_and_tree&lt;V&gt;;
+      HPKECiphertext encrypted_groupinfo_and_tree&lt;V&gt;;
   };
 } GroupInfoResponseTBS;
 
