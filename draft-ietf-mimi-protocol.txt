@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 21 June 2025                   The Matrix.org Foundation C.I.C.
+Expires: 23 June 2025                   The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 21 June 2025                   The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                        18 December 2024
+                                                        20 December 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 June 2025.
+   This Internet-Draft will expire on 23 June 2025.
 
 Copyright Notice
 
@@ -1732,7 +1732,12 @@ ServerC->ClientC*: [[ Commit ]]
    results.  He could still send a join link out-of-band to Alice for
    her to join a room of Zach's choosing.
 
-   The request body is described as:
+   The request body is described as below.  Each request can contain
+   multiple query elements, which all have to match for the request to
+   match (AND semantics).  For example matching both the OpenID Connect
+   (OIDC) [OidcCore] given_name and family_name, or matching the OIDC
+   given_name and the organization (from the vCard [RFC6350] ORG
+   property).
 
    enum {
      reserved(0),
@@ -1749,14 +1754,45 @@ ServerC->ClientC*: [[ Commit ]]
 
    struct {
      SearchIdentifierType searchType;
-     opaque searchValue<V>;  /* a UTF8 string */
      select(type) {
        case oidcStdClaim:
          opaque claimName<V>;
        case vcardField:
-         opaque fieldName<V>;
+         opaque propertyName<V>;
      };
+     opaque searchValue<V>;  /* a UTF8 string */
+   } QueryElement;
+
+   struct {
+     QueryElement query_elements<V>;
    } IdentifierRequest;
+
+   The semantics of the SearchIdentifierType values are as follows.
+   handle means that the entire handle URI matches exactly (for example:
+   im:alice.smith@a.example). nick means that the nickname or handle
+   user part matches exactly (for example: alice.smith).  The same
+   account or human user may have multiple values which all match the
+   nick field. email means the addr-spec production from [RFC5322]
+   matches the query string exactly, for example (asmith@a.example).
+   phone means the international format of a telephone number with the
+   "+" prefix matches exactly (for example: +12125551212).
+
+   partialName means that the query string matches a case-insensitive
+   substring of any field which contains the name of a (usually human)
+   user.  For example, mat would match first (given) or middle names
+   Matt, Matthew, Mathias, or Mathieu and last (family) names of Mather
+   and Matali. wholeProfile means that the query string matches a
+   substring of any searchable field in a user's profile.
+
+   oidcStdClaim means that the query string exactly matches the
+   specified UserInfo Standard Claim (defined in Section 5.1 of
+   [OidcCore]). vcardField means that the query string exactly matches
+   the specified vCard property listed in the vCard Properties IANA
+   registry.
+
+   As noted above, searches only return results for a user when the
+   fields searched are searchable according the user's and provider's
+   search policies.
 
    The response body is described as an IdentifierResponse.  It can
    contain multiple matches depending on the type of query and the
@@ -2070,6 +2106,11 @@ ServerC->ClientC*: [[ Commit ]]
               2024, <https://datatracker.ietf.org/doc/html/draft-mahy-
               mls-semiprivatemessage-04>.
 
+   [OidcCore] Sakimura, N., Bradley, J., Jones, M. B., Medeiros, B. de.,
+              and C. Mortimore, "OpenID Connect Core 1.0 incorporating
+              errata set 2", 15 December 2023,
+              <https://openid.net/specs/openid-connect-core-1_0.html>.
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
@@ -2080,12 +2121,20 @@ ServerC->ClientC*: [[ Commit ]]
               RFC 3986, DOI 10.17487/RFC3986, January 2005,
               <https://www.rfc-editor.org/rfc/rfc3986>.
 
+   [RFC5322]  Resnick, P., Ed., "Internet Message Format", RFC 5322,
+              DOI 10.17487/RFC5322, October 2008,
+              <https://www.rfc-editor.org/rfc/rfc5322>.
+
    [RFC6125]  Saint-Andre, P. and J. Hodges, "Representation and
               Verification of Domain-Based Application Service Identity
               within Internet Public Key Infrastructure Using X.509
               (PKIX) Certificates in the Context of Transport Layer
               Security (TLS)", RFC 6125, DOI 10.17487/RFC6125, March
               2011, <https://www.rfc-editor.org/rfc/rfc6125>.
+
+   [RFC6350]  Perreault, S., "vCard Format Specification", RFC 6350,
+              DOI 10.17487/RFC6350, August 2011,
+              <https://www.rfc-editor.org/rfc/rfc6350>.
 
    [RFC7231]  Fielding, R., Ed. and J. Reschke, Ed., "Hypertext Transfer
               Protocol (HTTP/1.1): Semantics and Content", RFC 7231,
