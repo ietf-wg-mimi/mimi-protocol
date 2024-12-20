@@ -1491,7 +1491,7 @@ struct {
       CipherSuite cipher_suite;
       opaque room_id<V>;
       ExternalSender hub_sender;
-      opaque encrypted_groupinfo_and_tree<V>;
+      HPKECiphertext encrypted_groupinfo_and_tree<V>;
   };
 } GroupInfoResponseTBS;
 
