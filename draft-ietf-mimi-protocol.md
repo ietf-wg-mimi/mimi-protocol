@@ -1675,10 +1675,10 @@ send a join link out-of-band to Alice for her to join a room of Zach's
 choosing.
 
 The request body is described as below. Each request can contain multiple
-query elements, which all have to match for the request to match. For
-example matching both the OpenID Connect (OIDC) {{OidcCore}} `given_name` and
-`family_name`, or matching the OIDC `given_name` and the organization (from
-the vCard {{!RFC6350}} ORG property).
+query elements, which all have to match for the request to match (AND
+semantics). For example matching both the OpenID Connect (OIDC) {{OidcCore}}
+`given_name` and `family_name`, or matching the OIDC `given_name` and the
+organization (from the vCard {{!RFC6350}} ORG property).
 
 ~~~ tls
 enum {
