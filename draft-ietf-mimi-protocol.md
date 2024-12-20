@@ -1723,15 +1723,13 @@ format of a telephone number with the "+" prefix matches exactly (for example:
 of any field which contains the name of a (usually human) user. For example,
 `mat` would match first (given) or middle names Matt, Matthew, Mathias, or
 Mathieu and last (family) names of Mather and Matali. `wholeProfile` means that
-the query string matches a case-insensitive substring of any searchable field in
+the query string matches a substring of any searchable field in
 a user's profile.
 
 `oidcStdClaim` means that the query string exactly matches the specified
 UserInfo Standard Claim (defined in Section 5.1 of {{OidcCore}}).
 `vcardField` means that the query string exactly matches the specified vCard
 property listed in the vCard Properties IANA registry.
-
-> **TODO**: Add language about case sensitivity for some other identifier types.
 
 As noted above, searches only return results for a user when the fields searched
 are searchable according the user's and provider's search policies.
