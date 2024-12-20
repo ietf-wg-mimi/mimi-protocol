@@ -1696,13 +1696,13 @@ enum {
 
 struct {
   SearchIdentifierType searchType;
-  opaque searchValue<V>;  /* a UTF8 string */
   select(type) {
     case oidcStdClaim:
       opaque claimName<V>;
     case vcardField:
       opaque propertyName<V>;
   };
+  opaque searchValue<V>;  /* a UTF8 string */
 } QueryElement;
 
 struct {
