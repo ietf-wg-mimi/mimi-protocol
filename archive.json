@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-19T00:45:07.973763+00:00",
+  "timestamp": "2024-12-22T00:47:14.259949+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -8701,24 +8701,26 @@
       "id": "PR_kwDOKZ8QO86FZ2DX",
       "title": "Allow searches for multiple fields",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/94",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "- Allow searches for multiple fields (with AND semantics)\r\n- Clarify the semantics of SearchIdentifierType enum\r\n\r\nPartially addresses Issue #91 \r\n",
       "createdAt": "2024-12-16T19:47:37Z",
-      "updatedAt": "2024-12-18T20:02:51Z",
+      "updatedAt": "2024-12-20T22:35:06Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "ae0ded70689a5249c386d886c8743af73d5d79ad",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "multisearch",
-      "headRefOid": "0401abfdb873166d1a5e5684fb5c9741f1883697",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "fc669e5285a2e32ceca5119b538952307b02e813",
+      "closedAt": "2024-12-20T22:34:47Z",
+      "mergedAt": "2024-12-20T22:34:47Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "be0f6b9b57b23b19f3eb27c5425b792e6838f298"
+      },
       "comments": [],
       "reviews": [
         {
@@ -8807,7 +8809,7 @@
       "labels": [],
       "body": "combine functionality of franking_integrity_hash and franking_context_hash into a single franking_integrity_hash",
       "createdAt": "2024-12-16T20:57:50Z",
-      "updatedAt": "2024-12-18T19:28:03Z",
+      "updatedAt": "2024-12-20T22:16:09Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "ae0ded70689a5249c386d886c8743af73d5d79ad",
@@ -8829,6 +8831,90 @@
           "updatedAt": "2024-12-17T01:50:34Z"
         }
       ],
+      "reviews": []
+    },
+    {
+      "number": 97,
+      "id": "PR_kwDOKZ8QO86F9iWW",
+      "title": "Fix type of encrypted_groupinfo_and_tree",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/97",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "was `opaque`, should have been `HPKECiphertext`.",
+      "createdAt": "2024-12-20T23:17:12Z",
+      "updatedAt": "2024-12-20T23:17:22Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "be0f6b9b57b23b19f3eb27c5425b792e6838f298",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "hpkeciphertext",
+      "headRefOid": "ec55300ba8f01c33b87d2a8d109e58196c26b189",
+      "closedAt": "2024-12-20T23:17:22Z",
+      "mergedAt": "2024-12-20T23:17:22Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "41df7674220d7fb6711185e581e5d85d1924b968"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 98,
+      "id": "PR_kwDOKZ8QO86F9kVK",
+      "title": "Update CODEOWNERS",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/98",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "remove Raphael until we have a valid email address associated with his github account.",
+      "createdAt": "2024-12-20T23:26:57Z",
+      "updatedAt": "2024-12-20T23:27:06Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "41df7674220d7fb6711185e581e5d85d1924b968",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "codeowners1",
+      "headRefOid": "2b4f8a9590942b49930428350293c24e3e3d9201",
+      "closedAt": "2024-12-20T23:27:06Z",
+      "mergedAt": "2024-12-20T23:27:06Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "a7bb90ec1a03e9d1386f12d2a36729bd21c75ff5"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 99,
+      "id": "PR_kwDOKZ8QO86F_r4v",
+      "title": "Add Raphael's correct git email",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/99",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-12-21T17:10:01Z",
+      "updatedAt": "2024-12-21T17:10:15Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "a7bb90ec1a03e9d1386f12d2a36729bd21c75ff5",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "add-raphael-git",
+      "headRefOid": "118fc960968508b32314db8da227cc397be4239a",
+      "closedAt": "2024-12-21T17:10:15Z",
+      "mergedAt": "2024-12-21T17:10:15Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "11cd0b3395bc73d593959a1ccdcf77a86dc4dd34"
+      },
+      "comments": [],
       "reviews": []
     }
   ]
