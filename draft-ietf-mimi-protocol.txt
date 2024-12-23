@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 24 June 2025                   The Matrix.org Foundation C.I.C.
+Expires: 26 June 2025                   The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 24 June 2025                   The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                        21 December 2024
+                                                        23 December 2024
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 June 2025.
+   This Internet-Draft will expire on 26 June 2025.
 
 Copyright Notice
 
@@ -119,7 +119,6 @@ Table of Contents
    7.  Consent
    8.  Security Considerations
      8.1.  Franking
-       8.1.1.  Example algorithm for generating franking keys
    9.  IANA Considerations
    10. References
      10.1.  Normative References
@@ -1139,7 +1138,8 @@ ServerC->ClientC*: [[ Commit ]]
    If the protocol is MLS 1.0, the request body (appMessage) is an
    MLSMessage with a WireFormat of PrivateMessage, and a content_type of
    application.  The sendingUri is a valid URI of the sender and is an
-   active participant in the room.
+   active participant in the room (a user URI in the participant list of
+   the room).
 
    The response indicates if the message was accepted by the hub
    provider.  If a frankingTag was included in the FrankAAD extension in
@@ -1212,25 +1212,23 @@ ServerC->ClientC*: [[ Commit ]]
 
 5.4.1.1.  Client creation and sending
 
-   When ready to send an application message with the MIMI content
-   format, the sender generates a new cryptographically random 256-bit
-   franking_secret.  An example mechanism to generate the
-   franking_secret safely is discussed in Section 8.1.1.
+   When generating an application message with the MIMI content format
+   [I-D.ietf-mimi-content], the sender generates a per-message
+   cryptographically random 256-bit salt.  (An example mechanism to
+   safely generate the salt is discussed in Section 8.2 of
+   [I-D.ietf-mimi-content].)
 
-   Next the sender attaches to the message the franking_secret and any
-   other fields the sender wishes to commit that are not otherwise
-   represented in the content.  For a MIMI content object, the sender
-   creates a CBOR "FrankingAssertion" map containing the
-   franking_secret, sender URI, and room URI.  It adds this
+   Next the sender attaches to the message any fields the sender wishes
+   to commit that are not otherwise represented in the content.  For a
+   MIMI content object, the sender creates a CBOR "FrankingAssertion"
+   map containing the room URI and the sender's user URI.  It adds this
    FrankingAssertion to the extensions map at the top level of the MIMI
    content using the integer key TBD1.
 
    / FrankingAssertion map /
    {
-     / FrankingKey    / 1: h'9c8af7674941aa95f8df37bd36ea89f2
-                             a3ab433aa5baa8e5e465f08a7e8e3b57',
-     / SenderURI      / 2: "mimi://b.example/u/alice",
-     / RoomURI        / 3: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+     / RoomURI        / 1: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+     / SenderUserURI  / 2: "mimi://b.example/u/alice"
    }
 
    Note that this assertion does not vouch for the validity of these
@@ -1240,9 +1238,9 @@ ServerC->ClientC*: [[ Commit ]]
 
    Then the client calculates the franking_tag, as the HMAC SHA256 of
    the application_data (which includes the FrankingAssertion
-   extension), using the franking_secret:
+   extension), using the salt in the MIMI content format:
 
-   franking_tag = HMAC_SHA256( franking_secret, application_data)
+   franking_tag = HMAC_SHA256( salt, application_data)
 
    The client includes the franking_tag in the Additional Authenticated
    Data of the MLS PrivateMessage using the Safe Extension FrankAAD.
@@ -1329,9 +1327,9 @@ ServerC->ClientC*: [[ Commit ]]
    franking_integrity_check.
 
    Finally it verifies the construction of the franking_tag from the
-   content of the message (including the embedded franking_secret), that
-   the sender's identity in its credential in its MLS LeafNode matches
-   the sender's identity asserted in the FrankingAssertion map inside
+   content of the message (including the embedded salt), that the
+   sender's identity in its credential in its MLS LeafNode matches the
+   sender's user identity asserted in the FrankingAssertion map inside
    the MIMI Content, and that the RoomURI inside the MIMI Content
    matches the room ID in the received message.
 
@@ -2015,6 +2013,8 @@ ServerC->ClientC*: [[ Commit ]]
 
 8.  Security Considerations
 
+      *TODO*: Add MIMI threat model, and great expand this section.
+
    The MIMI protocol incorporates several layers of security.
 
    Individual protocol actions are protected against network attackers
@@ -2046,19 +2046,12 @@ ServerC->ClientC*: [[ Commit ]]
 
    TBD.
 
-   *TODO*: Present the franking mechanism to CFRG for review.
-
-8.1.1.  Example algorithm for generating franking keys
-
-   To ensure a strong source of entropy for the franking_secret included
-   in each message, the client can export a secret from the MLS key
-   schedule, for example with the label franking_base_secret and
-   calculate the franking_secret as the HMAC of a locally generated
-   nonce and the franking_base_secret.
-
-   franking_secret = HMAC_SHA256( franking_base_secret, nonce )
+      *TODO*: Present the franking mechanism to CFRG for review.
 
 9.  IANA Considerations
+
+      *TODO*: Add registration of MIMI content format extension, and a
+      SafeAAD component.
 
 10.  References
 
@@ -2077,6 +2070,13 @@ ServerC->ClientC*: [[ Commit ]]
               in Progress, Internet-Draft, draft-barnes-mls-appsync-01,
               12 December 2024, <https://datatracker.ietf.org/doc/html/
               draft-barnes-mls-appsync-01>.
+
+   [I-D.ietf-mimi-content]
+              Mahy, R., "More Instant Messaging Interoperability (MIMI)
+              message content", Work in Progress, Internet-Draft, draft-
+              ietf-mimi-content-05, 20 December 2024,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-mimi-
+              content-05>.
 
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)

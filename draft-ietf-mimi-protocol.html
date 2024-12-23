@@ -1064,7 +1064,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 24 June 2025</td>
+<td class="center">Expires 26 June 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1077,12 +1077,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-12-21" class="published">21 December 2024</time>
+<time datetime="2024-12-23" class="published">23 December 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-06-24">24 June 2025</time></dd>
+<dd class="expires"><time datetime="2025-06-26">26 June 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1160,7 +1160,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 24 June 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 26 June 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1307,11 +1307,6 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
                 <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-franking" class="internal xref">Franking</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1.2.1">
-                    <p id="section-toc.1-1.8.2.1.2.1.1"><a href="#section-8.1.1" class="auto internal xref">8.1.1</a>.  <a href="#name-example-algorithm-for-gener" class="internal xref">Example algorithm for generating franking keys</a></p>
-</li>
-                </ul>
 </li>
             </ul>
 </li>
@@ -3141,7 +3136,7 @@ struct {
 <p id="section-5.4-5">If the protocol is MLS 1.0, the request body (<code>appMessage</code>) is an MLSMessage
 with a WireFormat of PrivateMessage, and a <code>content_type</code> of <code>application</code>.
 The <code>sendingUri</code> is a valid URI of the sender and is an active participant
-in the room.<a href="#section-5.4-5" class="pilcrow">¶</a></p>
+in the room (a user URI in the participant list of the room).<a href="#section-5.4-5" class="pilcrow">¶</a></p>
 <p id="section-5.4-6">The response indicates if the message was accepted by the hub provider. If a
 <code>frankingTag</code> was included in the <code>FrankAAD</code> extension in the PrivateMessage
 Additional Authenticated Data (AAD) in the request, the server attempts to
@@ -3220,23 +3215,21 @@ significant changes as discussed in the final paragraph of this section.<a href=
             <h5 id="name-client-creation-and-sending">
 <a href="#section-5.4.1.1" class="section-number selfRef">5.4.1.1. </a><a href="#name-client-creation-and-sending" class="section-name selfRef">Client creation and sending</a>
             </h5>
-<p id="section-5.4.1.1-1">When ready to send an application message with the MIMI content format,
-the sender generates a new cryptographically random 256-bit <code>franking_secret</code>.
-An example mechanism to generate the <code>franking_secret</code> safely is discussed in
-<a href="#example-franking-alg" class="auto internal xref">Section 8.1.1</a>.<a href="#section-5.4.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.1-2">Next the sender attaches to the message the <code>franking_secret</code> and any other
-fields the sender wishes to commit that are not otherwise represented in the
-content. For a MIMI content object, the sender creates a CBOR "FrankingAssertion" map containing the <code>franking_secret</code>, sender URI, and room
-URI. It adds this FrankingAssertion to the extensions map at the top level
-of the MIMI content using the integer key TBD1.<a href="#section-5.4.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.1-1">When generating an application message with the MIMI content format
+<span>[<a href="#I-D.ietf-mimi-content" class="cite xref">I-D.ietf-mimi-content</a>]</span>, the sender generates a per-message cryptographically
+random 256-bit salt. (An example mechanism to safely generate the salt is
+discussed in Section 8.2 of <span>[<a href="#I-D.ietf-mimi-content" class="cite xref">I-D.ietf-mimi-content</a>]</span>.)<a href="#section-5.4.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.1-2">Next the sender attaches to the message any fields the sender wishes to commit
+that are not otherwise represented in the content. For a MIMI content object,
+the sender creates a CBOR "FrankingAssertion" map containing the room URI and
+the sender's user URI. It adds this FrankingAssertion to the extensions map at
+the top level of the MIMI content using the integer key TBD1.<a href="#section-5.4.1.1-2" class="pilcrow">¶</a></p>
 <div class="lang-cbor-diag sourcecode" id="section-5.4.1.1-3">
 <pre>
 / FrankingAssertion map /
 {
-  / FrankingKey    / 1: h'9c8af7674941aa95f8df37bd36ea89f2
-                          a3ab433aa5baa8e5e465f08a7e8e3b57',
-  / SenderURI      / 2: "mimi://b.example/u/alice",
-  / RoomURI        / 3: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+  / RoomURI        / 1: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+  / SenderUserURI  / 2: "mimi://b.example/u/alice"
 }
 </pre><a href="#section-5.4.1.1-3" class="pilcrow">¶</a>
 </div>
@@ -3244,10 +3237,11 @@ of the MIMI content using the integer key TBD1.<a href="#section-5.4.1.1-2" clas
 it just means that the sender is claiming it sent the values in the content,
 and cannot later deny to a receiver that it sent them.<a href="#section-5.4.1.1-4" class="pilcrow">¶</a></p>
 <p id="section-5.4.1.1-5">Then the client calculates the <code>franking_tag</code>, as the HMAC SHA256 of the
-<code>application_data</code> (which includes the FrankingAssertion extension), using the <code>franking_secret</code>:<a href="#section-5.4.1.1-5" class="pilcrow">¶</a></p>
+<code>application_data</code> (which includes the FrankingAssertion extension), using the
+<code>salt</code> in the MIMI content format:<a href="#section-5.4.1.1-5" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.4.1.1-6">
 <pre>
-franking_tag = HMAC_SHA256( franking_secret, application_data)
+franking_tag = HMAC_SHA256( salt, application_data)
 </pre><a href="#section-5.4.1.1-6" class="pilcrow">¶</a>
 </div>
 <p id="section-5.4.1.1-7">The client includes the <code>franking_tag</code> in the Additional Authenticated Data
@@ -3349,9 +3343,9 @@ Party Key Schedule <span>[<a href="#I-D.kohbrok-mls-associated-parties" class="c
 from these values with the <code>franking_integrity_secret</code> and comparing it to the
 provided <code>franking_integrity_check</code>.<a href="#section-5.4.1.3-2" class="pilcrow">¶</a></p>
 <p id="section-5.4.1.3-3">Finally it verifies the construction of the <code>franking_tag</code> from the content
-of the message (including the embedded <code>franking_secret</code>),
+of the message (including the embedded <code>salt</code>),
 that the sender's identity in its credential in its MLS LeafNode matches
-the sender's identity asserted in the FrankingAssertion map inside the MIMI
+the sender's user identity asserted in the FrankingAssertion map inside the MIMI
 Content, and that the RoomURI inside the MIMI Content matches the room ID in
 the received message.<a href="#section-5.4.1.3-3" class="pilcrow">¶</a></p>
 <p id="section-5.4.1.3-4">The receiver needs to store the frank and context with the decoded message
@@ -4073,49 +4067,41 @@ room.<a href="#section-7-9" class="pilcrow">¶</a></p>
       <h2 id="name-security-considerations">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-8-1">The MIMI protocol incorporates several layers of security.<a href="#section-8-1" class="pilcrow">¶</a></p>
-<p id="section-8-2">Individual protocol actions are protected against network attackers with
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-8-1.1">
+          <p id="section-8-1.1.1"><strong>TODO</strong>: Add MIMI threat model, and great expand this section.<a href="#section-8-1.1.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-8-2">The MIMI protocol incorporates several layers of security.<a href="#section-8-2" class="pilcrow">¶</a></p>
+<p id="section-8-3">Individual protocol actions are protected against network attackers with
 mutually-authenticated TLS, where the TLS certificates authenticate the
-identities that the protocol actors assert at the application layer.<a href="#section-8-2" class="pilcrow">¶</a></p>
-<p id="section-8-3">Messages and room state changes are protected end-to-end using MLS.  The
+identities that the protocol actors assert at the application layer.<a href="#section-8-3" class="pilcrow">¶</a></p>
+<p id="section-8-4">Messages and room state changes are protected end-to-end using MLS.  The
 protection is "end-to-end" in the sense that messages sent within the group are
 confidentiality-protected against all servers involved in the delivery of those
 messages, and in the sense that the authenticity of room state changes is
 verified by the end clients involved in the room.  The usage of MLS ensures that
 the servers facilitating the exchange cannot read messages in the room or
 falsify room state changes, even though they can read the room state change
-messages.<a href="#section-8-3" class="pilcrow">¶</a></p>
-<p id="section-8-4">Each room has an authorization policy that dictates which protocol actors can
+messages.<a href="#section-8-4" class="pilcrow">¶</a></p>
+<p id="section-8-5">Each room has an authorization policy that dictates which protocol actors can
 perform which actions in the room.  This policy is enforced by the hub server
 for the room.  The actors for whom the policy is being evaluated authenticate
 their identities to the hub server using the MLS PublicMessage signed object
 format, together with the identity credentials presented in MLS.  This design
 means that the hub is trusted to correctly enforce the room's policy, but this
-cost is offset by the simplicity of not having multiple policy enforcement points.<a href="#section-8-4" class="pilcrow">¶</a></p>
+cost is offset by the simplicity of not having multiple policy enforcement points.<a href="#section-8-5" class="pilcrow">¶</a></p>
 <div id="franking">
 <section id="section-8.1">
         <h3 id="name-franking">
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-franking" class="section-name selfRef">Franking</a>
         </h3>
 <p id="section-8.1-1">TBD.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
-<p id="section-8.1-2"><strong>TODO</strong>: Present the franking mechanism to CFRG for review.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
-<div id="example-franking-alg">
-<section id="section-8.1.1">
-          <h4 id="name-example-algorithm-for-gener">
-<a href="#section-8.1.1" class="section-number selfRef">8.1.1. </a><a href="#name-example-algorithm-for-gener" class="section-name selfRef">Example algorithm for generating franking keys</a>
-          </h4>
-<p id="section-8.1.1-1">To ensure a strong source of entropy for the <code>franking_secret</code> included in each
-message, the client can export a secret from the MLS key schedule, for
-example with the label <code>franking_base_secret</code> and calculate the
-<code>franking_secret</code> as the HMAC of a locally generated nonce and the
-<code>franking_base_secret</code>.<a href="#section-8.1.1-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-8.1.1-2">
-<pre>
-franking_secret = HMAC_SHA256( franking_base_secret, nonce )
-</pre><a href="#section-8.1.1-2" class="pilcrow">¶</a>
-</div>
-</section>
-</div>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-8.1-2.1">
+            <p id="section-8.1-2.1.1"><strong>TODO</strong>: Present the franking mechanism to CFRG for review.<a href="#section-8.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 </section>
 </div>
 </section>
@@ -4124,7 +4110,13 @@ franking_secret = HMAC_SHA256( franking_base_secret, nonce )
 <section id="section-9">
       <h2 id="name-iana-considerations">
 <a href="#section-9" class="section-number selfRef">9. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
-    </h2>
+      </h2>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-9-1.1">
+          <p id="section-9-1.1.1"><strong>TODO</strong>: Add registration of MIMI content format extension, and a SafeAAD
+component.<a href="#section-9-1.1.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
 </section>
 </div>
 <div id="sec-combined-references">
@@ -4145,6 +4137,10 @@ franking_secret = HMAC_SHA256( franking_base_secret, nonce )
 <dt id="I-D.barnes-mls-appsync">[I-D.barnes-mls-appsync]</dt>
         <dd>
 <span class="refAuthor">Joël</span>, <span class="refAuthor">Barnes, R.</span>, <span class="refAuthor">Mahy, R.</span>, and <span class="refAuthor">M. Mularczyk</span>, <span class="refTitle">"A Safe Application Interface to Messaging Layer Security"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-barnes-mls-appsync-01</span>, <time datetime="2024-12-12" class="refDate">12 December 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-barnes-mls-appsync-01">https://datatracker.ietf.org/doc/html/draft-barnes-mls-appsync-01</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-mimi-content">[I-D.ietf-mimi-content]</dt>
+        <dd>
+<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"More Instant Messaging Interoperability (MIMI) message content"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mimi-content-05</span>, <time datetime="2024-12-20" class="refDate">20 December 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-05">https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-05</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-mls-extensions">[I-D.ietf-mls-extensions]</dt>
         <dd>
