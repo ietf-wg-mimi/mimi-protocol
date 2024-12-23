@@ -1261,9 +1261,9 @@ from these values with the `franking_integrity_secret` and comparing it to the
 provided `franking_integrity_check`.
 
 Finally it verifies the construction of the `franking_tag` from the content
-of the message (including the embedded `franking_secret`),
+of the message (including the embedded `salt`),
 that the sender's identity in its credential in its MLS LeafNode matches
-the sender's identity asserted in the FrankingAssertion map inside the MIMI
+the sender's user identity asserted in the FrankingAssertion map inside the MIMI
 Content, and that the RoomURI inside the MIMI Content matches the room ID in
 the received message.
 
