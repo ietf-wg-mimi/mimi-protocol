@@ -3343,9 +3343,9 @@ Party Key Schedule <span>[<a href="#I-D.kohbrok-mls-associated-parties" class="c
 from these values with the <code>franking_integrity_secret</code> and comparing it to the
 provided <code>franking_integrity_check</code>.<a href="#section-5.4.1.3-2" class="pilcrow">¶</a></p>
 <p id="section-5.4.1.3-3">Finally it verifies the construction of the <code>franking_tag</code> from the content
-of the message (including the embedded <code>franking_secret</code>),
+of the message (including the embedded <code>salt</code>),
 that the sender's identity in its credential in its MLS LeafNode matches
-the sender's identity asserted in the FrankingAssertion map inside the MIMI
+the sender's user identity asserted in the FrankingAssertion map inside the MIMI
 Content, and that the RoomURI inside the MIMI Content matches the room ID in
 the received message.<a href="#section-5.4.1.3-3" class="pilcrow">¶</a></p>
 <p id="section-5.4.1.3-4">The receiver needs to store the frank and context with the decoded message
