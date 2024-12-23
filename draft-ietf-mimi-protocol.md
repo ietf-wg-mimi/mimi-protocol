@@ -1079,7 +1079,7 @@ struct {
 If the protocol is MLS 1.0, the request body (`appMessage`) is an MLSMessage
 with a WireFormat of PrivateMessage, and a `content_type` of `application`.
 The `sendingUri` is a valid URI of the sender and is an active participant
-in the room.
+in the room (a user URI in the participant list of the room).
 
 The response indicates if the message was accepted by the hub provider. If a
 `frankingTag` was included in the `FrankAAD` extension in the PrivateMessage
@@ -1146,24 +1146,22 @@ significant changes as discussed in the final paragraph of this section.
 
 #### Client creation and sending
 
-When ready to send an application message with the MIMI content format,
-the sender generates a new cryptographically random 256-bit `franking_secret`.
-An example mechanism to generate the `franking_secret` safely is discussed in
-{{example-franking-alg}}.
+When generating an application message with the MIMI content format
+{{!I-D.ietf-mimi-content}}, the sender generates a per-message cryptographically
+random 256-bit salt. (An example mechanism to safely generate the salt is
+discussed in Section 8.2 of {{!I-D.ietf-mimi-content}}.)
 
-Next the sender attaches to the message the `franking_secret` and any other
-fields the sender wishes to commit that are not otherwise represented in the
-content. For a MIMI content object, the sender creates a CBOR "FrankingAssertion" map containing the `franking_secret`, sender URI, and room
-URI. It adds this FrankingAssertion to the extensions map at the top level
-of the MIMI content using the integer key TBD1.
+Next the sender attaches to the message any fields the sender wishes to commit
+that are not otherwise represented in the content. For a MIMI content object,
+the sender creates a CBOR "FrankingAssertion" map containing the room URI and
+the sender's user URI. It adds this FrankingAssertion to the extensions map at
+the top level of the MIMI content using the integer key TBD1.
 
 ~~~ cbor-diag
 / FrankingAssertion map /
 {
-  / FrankingKey    / 1: h'9c8af7674941aa95f8df37bd36ea89f2
-                          a3ab433aa5baa8e5e465f08a7e8e3b57',
-  / SenderURI      / 2: "mimi://b.example/u/alice",
-  / RoomURI        / 3: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+  / RoomURI        / 1: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+  / SenderUserURI  / 2: "mimi://b.example/u/alice"
 }
 ~~~
 
@@ -1172,10 +1170,11 @@ it just means that the sender is claiming it sent the values in the content,
 and cannot later deny to a receiver that it sent them.
 
 Then the client calculates the `franking_tag`, as the HMAC SHA256 of the
-`application_data` (which includes the FrankingAssertion extension), using the `franking_secret`:
+`application_data` (which includes the FrankingAssertion extension), using the
+`salt` in the MIMI content format:
 
 ~~~
-franking_tag = HMAC_SHA256( franking_secret, application_data)
+franking_tag = HMAC_SHA256( salt, application_data)
 ~~~
 
 The client includes the `franking_tag` in the Additional Authenticated Data
@@ -1262,9 +1261,9 @@ from these values with the `franking_integrity_secret` and comparing it to the
 provided `franking_integrity_check`.
 
 Finally it verifies the construction of the `franking_tag` from the content
-of the message (including the embedded `franking_secret`),
+of the message (including the embedded `salt`),
 that the sender's identity in its credential in its MLS LeafNode matches
-the sender's identity asserted in the FrankingAssertion map inside the MIMI
+the sender's user identity asserted in the FrankingAssertion map inside the MIMI
 Content, and that the RoomURI inside the MIMI Content matches the room ID in
 the received message.
 
@@ -1940,6 +1939,8 @@ room.
 
 # Security Considerations
 
+>**TODO**: Add MIMI threat model, and great expand this section.
+
 The MIMI protocol incorporates several layers of security.
 
 Individual protocol actions are protected against network attackers with
@@ -1967,24 +1968,13 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 
 TBD.
 
-**TODO**: Present the franking mechanism to CFRG for review.
-
-
-### Example algorithm for generating franking keys {#example-franking-alg}
-
-To ensure a strong source of entropy for the `franking_secret` included in each
-message, the client can export a secret from the MLS key schedule, for
-example with the label `franking_base_secret` and calculate the
-`franking_secret` as the HMAC of a locally generated nonce and the
-`franking_base_secret`.
-
-~~~
-franking_secret = HMAC_SHA256( franking_base_secret, nonce )
-~~~
+>**TODO**: Present the franking mechanism to CFRG for review.
 
 
 # IANA Considerations
 
+>**TODO**: Add registration of MIMI content format extension, and a SafeAAD
+component.
 
 --- back
 
