@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-22T00:47:14.259949+00:00",
+  "timestamp": "2024-12-24T00:42:50.365495+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -8913,6 +8913,34 @@
       "mergedBy": "rohanmahy",
       "mergeCommit": {
         "oid": "11cd0b3395bc73d593959a1ccdcf77a86dc4dd34"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 100,
+      "id": "PR_kwDOKZ8QO86GDFaA",
+      "title": "Make franking section consistent with mimi-content per-message salt",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/100",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-12-23T07:20:44Z",
+      "updatedAt": "2024-12-23T07:30:14Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "11cd0b3395bc73d593959a1ccdcf77a86dc4dd34",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "franking-salt",
+      "headRefOid": "8426cd8f76794e35267968c3a8e75ae1f24bca5c",
+      "closedAt": "2024-12-23T07:30:14Z",
+      "mergedAt": "2024-12-23T07:30:14Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "291f60313025445b7c32434a81f7681de7adab36"
       },
       "comments": [],
       "reviews": []
