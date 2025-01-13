@@ -1907,7 +1907,7 @@ TODO: This section assumes that MIMI will have a mechanism that establishes a
 connection (for lack of a better term) between two users. The content of this
 section heavily depends on what connection establishment will look like, so for
 now the section only contains a sketch of the functionality around connection
-keys. 
+keys.
 
 Upon user creation, each user samples a random `connection_key`. That key is
 required by any other user that wants to add the user to an MMR via the add
