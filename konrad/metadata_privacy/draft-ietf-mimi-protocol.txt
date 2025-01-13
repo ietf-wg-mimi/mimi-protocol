@@ -5,16 +5,16 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 1 June 2025                    The Matrix.org Foundation C.I.C.
+Expires: 17 July 2025                   The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
-                                          Rohan Mahy Consulting Services
+                                                            Unaffiliated
                                                               T. Ralston
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                        28 November 2024
+                                                         13 January 2025
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,11 +66,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 June 2025.
+   This Internet-Draft will expire on 17 July 2025.
 
 Copyright Notice
 
-   Copyright (c) 2024 IETF Trust and the persons identified as the
+   Copyright (c) 2025 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -111,19 +111,25 @@ Table of Contents
      5.7.  Convey explicit consent
      5.8.  Find internal address
      5.9.  Report abuse
-   6.  Relation between MIMI state and cryptographic state
-     6.1.  Room state
-     6.2.  Cryptographic room representation
-     6.3.  Proposal-commit paradigm
-     6.4.  Authenticating proposals
-   7.  Consent
-   8.  Security Considerations
-     8.1.  Franking
-       8.1.1.  Example algorithm for generating franking keys
-   9.  IANA Considerations
-   10. References
-     10.1.  Normative References
-     10.2.  Informative References
+   6.  Minimal metadata rooms
+     6.1.  Credential encryption
+     6.2.  Identity link keys
+     6.3.  Identity link wrapper key
+     6.4.  Connection keys
+       6.4.1.  Pseudonymous KeyPackages
+   7.  Relation between MIMI state and cryptographic state
+     7.1.  Room state
+     7.2.  Cryptographic room representation
+     7.3.  Proposal-commit paradigm
+     7.4.  Authenticating proposals
+   8.  Consent
+   9.  Security Considerations
+     9.1.  Franking
+       9.1.1.  Example algorithm for generating franking keys
+   10. IANA Considerations
+   11. References
+     11.1.  Normative References
+     11.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -349,7 +355,7 @@ Table of Contents
    ServerB to Bob's clients.
 
       *NOTE:* In the protocol, it is necessary to have consent (see
-      Section 7) and access control on these operations.  We have elided
+      Section 8) and access control on these operations.  We have elided
       that step here in the interest of simplicity.
 
    ClientA1       ServerA         ServerB         ClientB*
@@ -1164,11 +1170,7 @@ ServerC->ClientC*: [[ Commit ]]
              /* the hub acceptance time
                 (in milliseconds from the UNIX epoch) */
              uint64 acceptedTimestamp;
-             optional struct {
-               uint8[32] serverFrank;
-               uint8[32] franking_context_hash;
-               uint8[32] frank_integrity_check;
-             };
+             optional uint8[32] serverFrank;
            case epochTooOld:
              /* current MLS epoch for the MLS group */
              uint64 currentEpoch;
@@ -1215,16 +1217,16 @@ ServerC->ClientC*: [[ Commit ]]
 
    When ready to send an application message with the MIMI content
    format, the sender generates a new cryptographically random 256-bit
-   franking_secret.  An example mechanism to generate the
-   franking_secret safely is discussed in Section 8.1.1.
+   franking_key.  An example mechanism to generate the franking_key
+   safely is discussed in Section 9.1.1.
 
-   Next the sender attaches to the message the franking_secret and any
+   Next the sender attaches to the message the franking_key and any
    other fields the sender wishes to commit that are not otherwise
    represented in the content.  For a MIMI content object, the sender
-   creates a CBOR "FrankingAssertion" map containing the
-   franking_secret, sender URI, and room URI.  It adds this
-   FrankingAssertion to the extensions map at the top level of the MIMI
-   content using the integer key TBD1.
+   creates a CBOR "FrankingAssertion" map containing the franking_key,
+   sender URI, and room URI.  It adds this FrankingAssertion to the
+   extensions map at the top level of the MIMI content using the integer
+   key TBD1.
 
    / FrankingAssertion map /
    {
@@ -1241,9 +1243,9 @@ ServerC->ClientC*: [[ Commit ]]
 
    Then the client calculates the franking_tag, as the HMAC SHA256 of
    the application_data (which includes the FrankingAssertion
-   extension), using the franking_secret:
+   extension), using the franking_key:
 
-   franking_tag = HMAC_SHA256( franking_secret, application_data)
+   franking_tag = HMAC_SHA256( franking_key, application_data)
 
    The client includes the franking_tag in the Additional Authenticated
    Data of the MLS PrivateMessage using the Safe Extension FrankAAD.
@@ -1257,11 +1259,9 @@ ServerC->ClientC*: [[ Commit ]]
 
    The Hub relies on a per-epoch secret shared among the members of the
    group and itself to obfuscate the message metadata (the context) the
-   Hub uses while franking, and another to provide message integrity
-   over information added by the Hub. It derives both the
-   franking_context_secret (with the label "franking_context") and the
-   franking_integrity_secret (with the label "franking_integrity") from
-   the ap_exporter_secret in the Associated Party Key Schedule
+   Hub uses while franking.  It derives the franking_context_secret
+   (with the label "franking_context") from the ap_exporter_secret in
+   the Associated Party Key Schedule
    [I-D.kohbrok-mls-associated-parties].
 
             ...
@@ -1272,17 +1272,13 @@ ServerC->ClientC*: [[ Commit ]]
              |
              |
              +--------------------> DeriveSecret(., "ap_exporter")
-             |                               = ap_exporter_secret
-             |                                  |       |
-             |                                  |       |
-             V                                  |       |
-       DeriveSecret(., "init")                  |       |
-             |                                  V       |
-             |     DeriveSecret(., "franking_context")  |
-             |              = franking_context_secret   |
-             |                                          V
-             |          DeriveSecret(., "franking_integrity")
-             |                   = franking_integrity_secret
+             |                      = ap_exporter_secret
+             |                               |
+             |                               |
+             V                               V
+       DeriveSecret(., "init")      DeriveSecret(., "franking_context")
+             |                      = franking_context_secret
+             |
              |
              V
        init_secret_[n]
@@ -1296,85 +1292,58 @@ ServerC->ClientC*: [[ Commit ]]
    context = senderURI || roomURI || acceptedTimestamp
    serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
    franking_context_hash = SHA256(franking_context_secret || context)
-   frank_integrity_check = HMAC_SHA256(franking_integrity_secret,
-     serverFrank || acceptedTimestamp|| franking_context_hash)
 
    HUBkey is a secret symmetric key used on the Hub which the Hub can
    use to verify its own tags.
 
-   The frank_integrity_check is used by receivers to verify that the
-   other values added by the Hub (the serverFrank, acceptedTimestamp,
-   and the franking_context_hash) were not modified by a follower
-   provider.  The specific construction used is discussed in the
-   Security Considerations in Section 8.1.
-
    The Hub fans out the encrypted message (which includes the
    franking_tag), the serverFrank, the acceptedTimestamp, the room URI,
-   the franking_context_hash, and the frank_integrity_check.  Note that
-   the senderURI is not included in the application message, so the
-   sender can remain anonymous with respect to follower providers.
+   and the franking_context_hash.  Note that the senderURI is not
+   included in the application message, so the sender can remain
+   anonymous with respect to follower providers.
 
 5.4.1.3.  Receiver verification of frank
 
    When a client receives and decrypts an otherwise valid application
    message from a hub provider, the client looks for the existence of a
-   frank (consisting of the franking_tag in the AAD, the serverFrank,
-   the franking_context_hash, and the frank_integrity_check).  If so, it
-   derives the franking_context_secret and the franking_integrity_secret
-   from the ap_exporter_secret in the Associated Party Key Schedule
-   [I-D.kohbrok-mls-associated-parties].
+   frank (consisting of the franking_tag in the AAD, the serverFrank and
+   the franking_context_hash.  If so, it derives the
+   franking_context_secret from the ap_exporter_secret in the Associated
+   Party Key Schedule [I-D.kohbrok-mls-associated-parties]; then it
+   verifies the construction of the franking_tag from the content of the
+   message, and the construction of the franking_context_hash from the
+   sender URI, room ID, acceptedTimestamp, and franking_context_secret.
 
-   Next it verifies the integrity of the the serverFrank,
-   acceptedTimestamp, and the franking_context_hash by calculating its
-   own frank_integrity_check from these values with the
-   franking_integrity_secret and comparing it to the provided
-   frank_integrity_check.
+   The receiving client receives a sender identifier in three different
+   locations.  The receiver verifies that they are all the same:
 
-   Then it verifies the franking_context_hash from the senderURI from
-   the decrypted message, the roomURI,the acceptedTimestamp, and the
-   franking_context_secret.
+   *  the sender's identity in its credential in its MLS LeafNode
 
-   Finally it verifies the construction of the franking_tag from the
-   content of the message (including the embedded franking_secret), that
-   the sender's identity in its credential in its MLS LeafNode matches
-   the sender's identity asserted in the FrankingAssertion map inside
-   the MIMI Content, and that the RoomURI inside the MIMI Content
-   matches the room ID in the received message.
+   *  the sender's identity asserted in the FrankingAssertion map inside
+      the MIMI Content
 
-   The receiver needs to store the frank and context with the decoded
-   message so it can be used later.
+   *  the (hidden) sender's identity in the context used to create the
+      serverFrank.  The client hashes the concatenation of the sender's
+      identity, the room ID, and the acceptedTimestamp.  If this hash
+      matches the context_validation hash, then the identity used by the
+      server was correct.
+
+   The receiver needs to store the frank with the decoded message so it
+   can be used later.
 
 5.4.1.4.  Comparison with the Facebook franking scheme
 
    Unlike in the Facebook franking scheme [SecretConversations], the
-   MIMI use case involves traffic which can transit multiple federated
-   providers, any of which may be compromised or malicious.  The MIMI
-   franking scheme described here differs in the following ways.
-
-   The sender includes its franking_tag as Additional Authenticated Data
-   (AAD) inside the end-to-end encrypted message.  This insures that the
-   franking_tag is not tampered with by the sender's provider.
-   According to [Grubbs2017], "... [Facebook's] franking scheme does not
-   bind [the franking tag] to [the ciphertext] by including [the
-   franking tag] in the associated data during encryption".
-
-   In MLS, the Hub cannot view the sender identity in an application
-   message, so the sender sends its identity to the Hub. The hub never
-   sends the identity of the sender to receivers, since this would be
-   observed by follower providers.  However, the receiver needs to
-   verify that the sender identity provided by the sender's provider to
-   the Hub matches the identity the receiver sees after it decrypts the
-   message.  Using a key shared between members and the Hub (the
-   franking_context_secret) the Hub sends an HMAC of its context (sender
-   identity, room id, and timestamp) with this key.  The second change
-   allows receivers to validate the sender URI in the hub's context,
-   without revealing the sender URI to follower providers.
-
-   Finally, to prevent a follower provider from "mauling" the
-   serverFrank, or breaking the context comparison (by modifying the
-   franking_context_hash or acceptedTimestamp), the Hub includes the
-   frank_integrity_check.  Each receiver uses this to verify that the
-   timestamp and franking parameters added by the Hub were not modified.
+   sender "commits to" its franking_tag as Additional Authenticated Data
+   (AAD) inside the end-to-end encrypted message, and the hub only sends
+   a hash of its context.  This first change insures that the client
+   cannot come up with another franking_key and message that has the
+   same franking_tag [Grubbs2017][InvisibleSalamanders].  According to
+   [Grubbs2017], "... [Facebook's] franking scheme does not bind [the
+   franking tag] to [the ciphertext] by including [the franking tag] in
+   the associated data during encryption".  The second change allows
+   receivers to validate the sender URI in the hub's context, without
+   revealing the sender URI to follower providers.
 
 5.5.  Fanout Messages and Room Events
 
@@ -1401,9 +1370,9 @@ ServerC->ClientC*: [[ Commit ]]
    POST /notify/{roomId}
 
    struct {
+     uint8[32] franking_tag;
      uint8[32] serverFrank;
      uint8[32] franking_context_hash;
-     uint8[32] frank_integrity_check;
    } Frank;
 
    struct {
@@ -1526,8 +1495,7 @@ ServerC->ClientC*: [[ Commit ]]
          Credential requestingCredential;
          HPKEPublicKey groupInfoPublicKey;
          opaque joiningCode<V>;
-         /* SignWithLabel(requestingSignatureKey,          */
-         /*    "GroupInfoRequestTBS", GroupInfoRequestTBS) */
+         /* SignWithLabel(., "GroupInfoRequestTBS", GroupInfoRequestTBS) */
          opaque signature<V>;
      };
    } GroupInfoRequest;
@@ -1578,7 +1546,6 @@ ServerC->ClientC*: [[ Commit ]]
          opaque room_id<V>;
          ExternalSender hub_sender;
          opaque encrypted_groupinfo_and_tree<V>;
-         /* TODO: add appropriate key for Hub to sign with */
          /* SignWithLabel(., "GroupInfoResponseTBS", GroupInfoResponseTBS) */
          opaque signature<V>;
      };
@@ -1608,7 +1575,7 @@ ServerC->ClientC*: [[ Commit ]]
 
 5.7.  Convey explicit consent
 
-   As discussed in Section 7, there are many ways that a provider could
+   As discussed in Section 8, there are many ways that a provider could
    implicitly determine consent.  This section describes a mechanism by
    which providers can explicitly request consent from a user of another
    provider, cancel such a request, convey that consent was granted, or
@@ -1864,9 +1831,194 @@ ServerC->ClientC*: [[ Commit ]]
    abuse report was accepted, not if any specific automated or human
    action was taken.
 
-6.  Relation between MIMI state and cryptographic state
+6.  Minimal metadata rooms
 
-6.1.  Room state
+   The room state is visible to the hub and with it the room's
+   participant list, giving the hub access to a significant amount of
+   user metadata.
+
+   To limit the amount of metadata the hub has access to, rooms can be
+   created as _minimal metadata rooms_ (MMR).  In an MMR the participant
+   list and the credentials in the room's underlying MLS group consist
+   only of pseudonyms.  The real identifiers are stored alongside the
+   pseudonyms encrypted under a key known only to room participants, but
+   not the hub.
+
+   MMRs requires some additional key management, which leads to
+   restrictions in how the MMR can be joined and which users each
+   participant can add to the room.
+
+6.1.  Credential encryption
+
+   Identifiers of participants and their clients occur in two locations
+   in a room's state: the participant list and the credentials of the
+   room's underlying MLS group.  In an MMR, the real identifiers of
+   clients and users are replaced by pseudonyms in the shape of random
+   UUIDs qualified with the domain of the user's provider.
+
+   In MMRs, all leaves of the underlying group MUST contain
+   PseudonymousCredentials.
+
+   struct {
+     IdentifierUri client_pseudonym;
+     IdentifierUri user_pseudonym;
+     opaque signature_public_key;
+     opaque identity_link_ciphertext<V>;
+   } PseudonymousCredential
+
+   *  user_pseudonym: The pseudonym of the client's user in this group
+
+   *  client_pseudonym: The pseudonym of the client identified by this
+      credential
+
+   *  signature_public_key: The signature public key used to
+      authenticate MLS messages
+
+   *  identity_link_ciphertext: A ciphertext containing a credential
+      with the clients real identifier
+
+   In each room, the user_pseudonym of a client MUST be the same across
+   all clients of a user and it MUST be the same as the user's entry in
+   the participant list.
+
+   struct {
+     IdentifierUri client_pseudonym;
+     IdentifierUri user_pseudonym;
+     opaque signature_public_key;
+   } PseudonymousCredentialTBS
+
+   struct {
+     /* SignWithLabel(., "PseudonymousCredentialTBS",
+       PseudonymousCredentialTBS) */
+     opaque pseudonymous_credential_signature<V>;
+     Credential client_credential;
+   } IdentityLinkTBE
+
+   The identity_link_ciphertext is created by encrypting the
+   IdentityLinkTBE, which contains the client's real credential, as well
+   as a signature over the PseudonymousCredentialTBS using the client
+   credential's signature key.
+
+   The identity_link_key used for encryption is unique per pseudonymous
+   credential.  It is derived from the client's connection_key.
+
+   identity_link_key = ExpandWithLabel(connection_key,
+     "IdentityLinkKey", PseudonymousCredentialTBS, KDF.Nh)
+
+   See Section 6.4 for more details on connection_keys.
+
+   Pseudonyms are specific to each room and client since the
+   identity_link_key is unique per pseudonymous credential and
+   pseudonymous credentials are meant to be used only once (i.e. in one
+   room).  Re-use of pseudonymous credential can occur if KeyPackages
+   are re-used.  See Section 6.4.1.
+
+6.2.  Identity link keys
+
+   To allow all participants of a room's underlying group to link each
+   pseudonym with a real identity, all identity link keys must be
+   available to all participants, including new joiners.  To that end,
+   and to ensure agreement among group members, the identity_link_keys
+   are stored encrypted in the IdentityLinkKeysExtension.  The MLS group
+   underpinning an MMR MUST contain an IdentityLinkKeysExtension.
+
+   struct {
+     opaque ciphertext<V>;
+   } EncryptedIdentityLinkKey
+
+   struct {
+     optional<EncryptedIdentityLinkKey> identity_link_key_ciphertexts<V>;
+   } IdentityLinkKeysExtension
+
+   The identity_link_key_ciphertexts vector has as many entries as the
+   MLS group has leaves and it contains the encrypted identity_link_key
+   of each group member at the leaf index of that member.
+
+   The individual identity_link_keys of the participants are encrypted
+   using the group's identity_link_wrapper_key (see Section 6.3).
+
+   When members are removed from the group, the corresponding entries in
+   the IdentityLinkKeysExtension MUST be removed as well.
+
+   When members are added to the group via a room state update (see
+   Section 5.3), the sender MUST use the SafeAAD mechanism described in
+   [I-D.ietf-mls-extensions] to include an AddAAD.
+
+   struct {
+     EncryptedIdentityLinkKey identity_link_key_ciphertextexts<V>;
+   } AddAAD
+
+   Each identity_link_key_ciphertext corresponds to an added group
+   member.  The order of ciphertexts in the identity_link_ciphertexts
+   MUST be the same as that of the Add proposals in the commit adding
+   the new members.
+
+6.3.  Identity link wrapper key
+
+   TODO: The concept of an identity link wrapper key will be replaced by
+   the TreeWrap protocol, which is currently still work in progress.
+
+   The identity link wrapper key protects the identity_link_keys of a
+   group while they are stored on the server.  The
+   identity_link_wrapper_key is sampled randomly when the group is
+   created.  It is static throughout the lifetime of the group.
+
+   When participants are added to an MMR via the add flow, the Welcome
+   message MUST include an IdentityLinkWrapperKeyExtension which
+   contains the group's identity_link_wrapper_key.
+
+   struct {
+     opaque identity_link_wrapper_key<V>;
+   } IdentityLinkWrapperKeyExtension
+
+   TODO: External joiners must also learn the identity link wrapper key,
+   e.g. as part of a join link.  This creates difficulties if we want to
+   rotate the identity_link_wrapper_key in the future (or indeed if we
+   use TreeWrap, which will also rotate keys.)
+
+6.4.  Connection keys
+
+   TODO: This section assumes that MIMI will have a mechanism that
+   establishes a connection (for lack of a better term) between two
+   users.  The content of this section heavily depends on what
+   connection establishment will look like, so for now the section only
+   contains a sketch of the functionality around connection keys.
+
+   Upon user creation, each user samples a random connection_key.  That
+   key is required by any other user that wants to add the user to an
+   MMR via the add flow.
+
+   During connection establishment, users MUST exchange connection keys
+   in a mutually authenticated way and in such a way that only the two
+   users learn the key.
+
+   When a user wants to add another user to an MMR, it fetches
+   KeyPackages with PseudonymousCredentials that share a user pseudonym
+   (see Section 6.4.1).  The adder then derives the identity_link_key
+   for all KeyPackages and re-encrypts those keys under the MMR's
+   identity_link_wrapper_key.  When adding the user to the MMR, it
+   includes the AddAAD as described in Section 6.2.
+
+   Users can rotate their connection key by sampling a new key and
+   sending the new key to all users with which they are connected.
+
+6.4.1.  Pseudonymous KeyPackages
+
+   If a user wants to support MMRs it needs to upload KeyPackages with
+   PseudonymousCredentials for all of its clients.
+
+   As all of a user's clients in an MMR MUST share the same
+   user_pseudonym, a user's clients MUST ensure that other users can
+   obtain sets of KeyPackages with consistent user_pseudonyms.
+
+   Note that a user's user_pseudonyms are only unique per group as long
+   as adding users don't re-use KeyPackages.  KeyPackage re-use (e.g. in
+   case a user's supply of KeyPackages is exhausted) will lead to
+   duplicate use of user_pseudonyms.
+
+7.  Relation between MIMI state and cryptographic state
+
+7.1.  Room state
 
    The state of a room consists of its room ID, its base policy, its
    participant list (including the role and participation state of each
@@ -1888,13 +2040,13 @@ ServerC->ClientC*: [[ Commit ]]
    proposal implementing the event was not yet committed by a client.
    Note that this only applies to events changing the room state.
 
-6.2.  Cryptographic room representation
+7.2.  Cryptographic room representation
 
    Each room is represented cryptographically by an MLS group.  The Hub
    that manages the room also manages the list of group members, i.e.
    the list of clients belonging to users currently in the room.
 
-6.3.  Proposal-commit paradigm
+7.3.  Proposal-commit paradigm
 
    The MLS protocol follows a proposal-commit paradigm.  Any party
    involved in a room (follower server, Hub or clients) can send
@@ -1910,7 +2062,7 @@ ServerC->ClientC*: [[ Commit ]]
    the group state also includes a copy of the room state at the time of
    the most recent commit, it is also covered by the agreement.
 
-6.4.  Authenticating proposals
+7.4.  Authenticating proposals
 
    MLS requires that MLS proposals from the Hub and from follower
    servers (external senders in MLS terminology) be authenticated using
@@ -1926,7 +2078,7 @@ ServerC->ClientC*: [[ Commit ]]
    Changes to the external_senders extension only take effect when the
    MLS proposal containing the event is committed by a MIMI commit.
 
-7.  Consent
+8.  Consent
 
    Most instant messaging systems have some notion of how a user
    consents to be added to a room, and how they manipulate this consent.
@@ -1985,7 +2137,7 @@ ServerC->ClientC*: [[ Commit ]]
    same time as sending the consent request, Alice grants consent to Bob
    to add her to any room.
 
-8.  Security Considerations
+9.  Security Considerations
 
    The MIMI protocol incorporates several layers of security.
 
@@ -2014,27 +2166,25 @@ ServerC->ClientC*: [[ Commit ]]
    this cost is offset by the simplicity of not having multiple policy
    enforcement points.
 
-8.1.  Franking
+9.1.  Franking
 
    TBD.
 
-   *TODO*: Present the franking mechanism to CFRG for review.
+9.1.1.  Example algorithm for generating franking keys
 
-8.1.1.  Example algorithm for generating franking keys
-
-   To ensure a strong source of entropy for the franking_secret included
-   in each message, the client can export a secret from the MLS key
+   To ensure a strong source of entropy for the franking_key included in
+   each message, the client can export a secret from the MLS key
    schedule, for example with the label franking_base_secret and
-   calculate the franking_secret as the HMAC of a locally generated
-   nonce and the franking_base_secret.
+   calculate the franking_key as the HMAC of a locally generated nonce
+   and the franking_base_secret.
 
-   franking_secret = HMAC_SHA256( franking_base_secret, nonce )
+   franking_key = HMAC_SHA256( franking_base_secret, nonce )
 
-9.  IANA Considerations
+10.  IANA Considerations
 
-10.  References
+11.  References
 
-10.1.  Normative References
+11.1.  Normative References
 
    [I-D.barnes-mimi-arch]
               Barnes, R., "An Architecture for More Instant Messaging
@@ -2044,11 +2194,11 @@ ServerC->ClientC*: [[ Commit ]]
               arch-03>.
 
    [I-D.barnes-mls-appsync]
-              Barnes, R. and R. Mahy, "Using Messaging Layer Security to
-              Synchronize Application State", Work in Progress,
-              Internet-Draft, draft-barnes-mls-appsync-00, 7 July 2024,
-              <https://datatracker.ietf.org/doc/html/draft-barnes-mls-
-              appsync-00>.
+              Joël, Barnes, R., Mahy, R., and M. Mularczyk, "A Safe
+              Application Interface to Messaging Layer Security", Work
+              in Progress, Internet-Draft, draft-barnes-mls-appsync-01,
+              12 December 2024, <https://datatracker.ietf.org/doc/html/
+              draft-barnes-mls-appsync-01>.
 
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
@@ -2058,11 +2208,7 @@ ServerC->ClientC*: [[ Commit ]]
               extensions-05>.
 
    [I-D.kohbrok-mls-associated-parties]
-              Kohbrok, K. and R. Robert, "MLS Associated parties", Work
-              in Progress, Internet-Draft, draft-kohbrok-mls-associated-
-              parties-00, 21 October 2024,
-              <https://datatracker.ietf.org/doc/html/draft-kohbrok-mls-
-              associated-parties-00>.
+              Kohbrok, K., "MLS Associated parties", 2024.
 
    [I-D.mahy-mls-ratchet-tree-options]
               Mahy, R., "Ways to convey the Ratchet Tree in Messaging
@@ -2118,7 +2264,7 @@ ServerC->ClientC*: [[ Commit ]]
               Security (MLS) Protocol", RFC 9420, DOI 10.17487/RFC9420,
               July 2023, <https://www.rfc-editor.org/rfc/rfc9420>.
 
-10.2.  Informative References
+11.2.  Informative References
 
    [Grubbs2017]
               Grubbs, P., Lu, J., and T. Ristenpart, "Message Franking
@@ -2151,8 +2297,7 @@ ServerC->ClientC*: [[ Commit ]]
 
 Acknowledgments
 
-   Thanks to Paul Grubs, Jon Millican, and Julia Len for their reviews
-   of the franking mechanism and suggested changes.
+      *TODO*:
 
 Authors' Addresses
 
@@ -2172,7 +2317,7 @@ Authors' Addresses
 
 
    Rohan Mahy
-   Rohan Mahy Consulting Services
+   Unaffiliated
    Email: rohan.ietf@gmail.com
 
 
