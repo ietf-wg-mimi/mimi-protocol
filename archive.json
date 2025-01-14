@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-12T00:48:26.850144+00:00",
+  "timestamp": "2025-01-14T00:40:59.043368+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -8942,6 +8942,32 @@
       "mergeCommit": {
         "oid": "291f60313025445b7c32434a81f7681de7adab36"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 101,
+      "id": "PR_kwDOKZ8QO86HfehY",
+      "title": "Add section on minimal metadata rooms",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/101",
+      "state": "OPEN",
+      "author": "kkohbrok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR introduces the notion of pseudonymous credentials for MIMI by introducing a new room type \"Minimal Metadata Rooms\". We could also make that a configuration flag and/or use another name. I'm open to suggestions in that regard. There are still a few TODOs/open questions, though:\r\n\r\n- Encryption of `identity_link_keys`: We intend to solve this via the TreeWrap mechanism we proposed, but we haven't quite finished writing up the spec for that. For now it's a simple static key.\r\n- External joins: There's still a small issue with external joins. In theory, new joiners just need the `identity_link_wrapper_key` to join the group, but if we start rotating that, we run into race conditions. How we solve that depends a bit on the situations in which we need external joins. Maybe we can discuss this in a future interim.\r\n- Connections: For Minimal Metadata Rooms to work, users need to learn the `connection_key` of other users they want to add to a group. Since we probably also want a notion of \"connection\" for other things such as consent, this PR only expresses the requirement for connection key exchange for now.",
+      "createdAt": "2025-01-13T07:35:44Z",
+      "updatedAt": "2025-01-13T08:48:18Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "291f60313025445b7c32434a81f7681de7adab36",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "konrad/metadata_privacy",
+      "headRefOid": "ded2324292e45df2c95790a52c97695f0b66ae20",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
