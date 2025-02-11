@@ -7,9 +7,9 @@
 *~
 .tags
 /*-[0-9][0-9].xml
+/.*.mk
 /.gems/
 /.refcache
-/.targets.mk
 /.venv/
 /.vscode/
 /lib
@@ -17,7 +17,7 @@
 /versioned/
 Gemfile.lock
 archive.json
-draft-ralston-mimi-protocol.xml
+draft-ietf-mimi-protocol.xml
 package-lock.json
 report.xml
 !requirements.txt
