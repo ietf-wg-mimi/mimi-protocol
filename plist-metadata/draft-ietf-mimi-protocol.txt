@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 19 June 2025                   The Matrix.org Foundation C.I.C.
+Expires: 15 August 2025                 The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 19 June 2025                   The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                        16 December 2024
+                                                        11 February 2025
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,11 +66,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 June 2025.
+   This Internet-Draft will expire on 15 August 2025.
 
 Copyright Notice
 
-   Copyright (c) 2024 IETF Trust and the persons identified as the
+   Copyright (c) 2025 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -116,10 +116,11 @@ Table of Contents
      6.2.  Cryptographic room representation
      6.3.  Proposal-commit paradigm
      6.4.  Authenticating proposals
+     6.5.  Participant List
+     6.6.  Room Metadata
    7.  Consent
    8.  Security Considerations
      8.1.  Franking
-       8.1.1.  Example algorithm for generating franking keys
    9.  IANA Considerations
    10. References
      10.1.  Normative References
@@ -175,30 +176,20 @@ Table of Contents
 
    Authorization policy:  In this document, we introduce a notional
       concept of roles for participants, and permissions for roles.
-      Actual messaging systems have more complex and well-specified
-      authorization policies about which clients can take which actions
-      in a room.
+      Concrete authorization policies are defined in
+      [I-D.ietf-mimi-room-policy].
 
-   Advanced join/leave flows:  In this document, all adds / removes /
-      joins / leaves are initiated from within the group, or by a new
-      joiner who already has permission to join, as this aligns well
-      with MLS.  Messaging applications support a variety of other
-      flows, some of which this protocol will need to support.
+   Knock and invite flows:  This document describes how user can be
+      added, or how authorized users can add themselves to a group based
+      on the policy of the room.  It does not include flows where a user
+      can "knock" to be asked to enter a room, nor does it include
+      "invitations", where a user offers information to another user
+      about how to be added to a room.
 
    Identifiers:  Certain entities in the MIMI system need to be
       identified in the protocol.  In this document, we define a
       notional syntax for identifiers, but a more concrete one should be
       defined.
-
-   Abuse reporting:  There is no mechanism in this document for
-      reporting abusive behavior to a messaging provider.
-
-   Identifier resolution:  In some cases, the identifier used to
-      initiate communications with a user might be different from the
-      identifier that should be used internally.  For example, a user-
-      visible handle might need to be mapped to a durable internal
-      identifier.  This document provides no mechanism for such
-      resolution.
 
    Authentication  While MLS provides basic message authentication,
       users should also be able to (cryptographically) tie the identity
@@ -738,13 +729,15 @@ ServerC->ClientC*: [[ Commit ]]
 
    *  The _base policy_ of the room, which does not depend on the
       specific participants in the room.  For example, this includes the
-      room roles and their permissions.
+      room _roles_ and their permissions (defined in
+      [I-D.ietf-mimi-room-policy] and _preauthorization_ policy).
 
    *  The _participant list_: a list of the users who are participants
-      of the room, and each user's role in the room.
+      of the room, and each user's role in the room (defined in
+      Section 6.5).
 
-      *TODO*: We need a more full description of the room, room state
-      syntax.
+   *  Room metadata, such as the room name, description, and image
+      (defined in Section 6.6).
 
    When a client requests key material via the hub, the hub records the
    KeyPackageRef values for the returned KeyPackages, and the identity
@@ -754,19 +747,20 @@ ServerC->ClientC*: [[ Commit ]]
 4.3.2.  Participant List Changes
 
    The participant list can be changed by adding or removing users, or
-   changing a user's role.  These changes are described without a
-   specific syntax as a list of adds, removes, and role changes:
+   changing a user's role.  These changes are described as a list of
+   adds, removes, and role changes, as described in Section 6.5.
 
-   Add: ["mimi://d.example/u/diana", "admin"],
-        ["mimi://e.example/u/eric", "admin"],
+   Add: ["mimi://d.example/u/diana", role: 4 (admin)],
+        ["mimi://e.example/u/eric", role: 3 (moderator)],
    Remove: ["mimi://b.example/u/bob"],
-   SetRole: [["mimi://c.example/u/cathy", "admin"]]
+   SetRole: [["mimi://c.example/u/cathy", role: 1 (banned)]]
 
                   Figure 9: Changing the state of the room
 
    To put these changes into effect, a client or server encodes them in
-   an AppSync proposal, signs the proposal as a PublicMessage, and
-   submits them to the update endpoint on the hub.
+   an AppDataUpdate [I-D.ietf-mls-extensions] proposal, signs the
+   proposal as a PublicMessage, and submits them to the update endpoint
+   on the hub.
 
 5.  MIMI Endpoints and Framing
 
@@ -1139,7 +1133,8 @@ ServerC->ClientC*: [[ Commit ]]
    If the protocol is MLS 1.0, the request body (appMessage) is an
    MLSMessage with a WireFormat of PrivateMessage, and a content_type of
    application.  The sendingUri is a valid URI of the sender and is an
-   active participant in the room.
+   active participant in the room (a user URI in the participant list of
+   the room).
 
    The response indicates if the message was accepted by the hub
    provider.  If a frankingTag was included in the FrankAAD extension in
@@ -1212,25 +1207,23 @@ ServerC->ClientC*: [[ Commit ]]
 
 5.4.1.1.  Client creation and sending
 
-   When ready to send an application message with the MIMI content
-   format, the sender generates a new cryptographically random 256-bit
-   franking_secret.  An example mechanism to generate the
-   franking_secret safely is discussed in Section 8.1.1.
+   When generating an application message with the MIMI content format
+   [I-D.ietf-mimi-content], the sender generates a per-message
+   cryptographically random 256-bit salt.  (An example mechanism to
+   safely generate the salt is discussed in Section 8.2 of
+   [I-D.ietf-mimi-content].)
 
-   Next the sender attaches to the message the franking_secret and any
-   other fields the sender wishes to commit that are not otherwise
-   represented in the content.  For a MIMI content object, the sender
-   creates a CBOR "FrankingAssertion" map containing the
-   franking_secret, sender URI, and room URI.  It adds this
+   Next the sender attaches to the message any fields the sender wishes
+   to commit that are not otherwise represented in the content.  For a
+   MIMI content object, the sender creates a CBOR "FrankingAssertion"
+   map containing the room URI and the sender's user URI.  It adds this
    FrankingAssertion to the extensions map at the top level of the MIMI
    content using the integer key TBD1.
 
    / FrankingAssertion map /
    {
-     / FrankingKey    / 1: h'9c8af7674941aa95f8df37bd36ea89f2
-                             a3ab433aa5baa8e5e465f08a7e8e3b57',
-     / SenderURI      / 2: "mimi://b.example/u/alice",
-     / RoomURI        / 3: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+     / RoomURI        / 1: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+     / SenderUserURI  / 2: "mimi://b.example/u/alice"
    }
 
    Note that this assertion does not vouch for the validity of these
@@ -1240,9 +1233,9 @@ ServerC->ClientC*: [[ Commit ]]
 
    Then the client calculates the franking_tag, as the HMAC SHA256 of
    the application_data (which includes the FrankingAssertion
-   extension), using the franking_secret:
+   extension), using the salt in the MIMI content format:
 
-   franking_tag = HMAC_SHA256( franking_secret, application_data)
+   franking_tag = HMAC_SHA256( salt, application_data)
 
    The client includes the franking_tag in the Additional Authenticated
    Data of the MLS PrivateMessage using the Safe Extension FrankAAD.
@@ -1329,9 +1322,9 @@ ServerC->ClientC*: [[ Commit ]]
    franking_integrity_check.
 
    Finally it verifies the construction of the franking_tag from the
-   content of the message (including the embedded franking_secret), that
-   the sender's identity in its credential in its MLS LeafNode matches
-   the sender's identity asserted in the FrankingAssertion map inside
+   content of the message (including the embedded salt), that the
+   sender's identity in its credential in its MLS LeafNode matches the
+   sender's user identity asserted in the FrankingAssertion map inside
    the MIMI Content, and that the RoomURI inside the MIMI Content
    matches the room ID in the received message.
 
@@ -1557,7 +1550,7 @@ ServerC->ClientC*: [[ Commit ]]
          CipherSuite cipher_suite;
          opaque room_id<V>;
          ExternalSender hub_sender;
-         opaque encrypted_groupinfo_and_tree<V>;
+         HPKECiphertext encrypted_groupinfo_and_tree<V>;
      };
    } GroupInfoResponseTBS;
 
@@ -1732,7 +1725,12 @@ ServerC->ClientC*: [[ Commit ]]
    results.  He could still send a join link out-of-band to Alice for
    her to join a room of Zach's choosing.
 
-   The request body is described as:
+   The request body is described as below.  Each request can contain
+   multiple query elements, which all have to match for the request to
+   match (AND semantics).  For example matching both the OpenID Connect
+   (OIDC) [OidcCore] given_name and family_name, or matching the OIDC
+   given_name and the organization (from the vCard [RFC6350] ORG
+   property).
 
    enum {
      reserved(0),
@@ -1749,14 +1747,45 @@ ServerC->ClientC*: [[ Commit ]]
 
    struct {
      SearchIdentifierType searchType;
-     opaque searchValue<V>;  /* a UTF8 string */
      select(type) {
        case oidcStdClaim:
          opaque claimName<V>;
        case vcardField:
-         opaque fieldName<V>;
+         opaque propertyName<V>;
      };
+     opaque searchValue<V>;  /* a UTF8 string */
+   } QueryElement;
+
+   struct {
+     QueryElement query_elements<V>;
    } IdentifierRequest;
+
+   The semantics of the SearchIdentifierType values are as follows.
+   handle means that the entire handle URI matches exactly (for example:
+   im:alice.smith@a.example). nick means that the nickname or handle
+   user part matches exactly (for example: alice.smith).  The same
+   account or human user may have multiple values which all match the
+   nick field. email means the addr-spec production from [RFC5322]
+   matches the query string exactly, for example (asmith@a.example).
+   phone means the international format of a telephone number with the
+   "+" prefix matches exactly (for example: +12125551212).
+
+   partialName means that the query string matches a case-insensitive
+   substring of any field which contains the name of a (usually human)
+   user.  For example, mat would match first (given) or middle names
+   Matt, Matthew, Mathias, or Mathieu and last (family) names of Mather
+   and Matali. wholeProfile means that the query string matches a
+   substring of any searchable field in a user's profile.
+
+   oidcStdClaim means that the query string exactly matches the
+   specified UserInfo Standard Claim (defined in Section 5.1 of
+   [OidcCore]). vcardField means that the query string exactly matches
+   the specified vCard property listed in the vCard Properties IANA
+   registry.
+
+   As noted above, searches only return results for a user when the
+   fields searched are searchable according the user's and provider's
+   search policies.
 
    The response body is described as an IdentifierResponse.  It can
    contain multiple matches depending on the type of query and the
@@ -1885,6 +1914,9 @@ ServerC->ClientC*: [[ Commit ]]
    Each room is represented cryptographically by an MLS group.  The Hub
    that manages the room also manages the list of group members, i.e.
    the list of clients belonging to users currently in the room.
+   Application state that is stored in the MLS GroupContext is stored as
+   application components in the app_data_dictionary extension, as
+   described in Section 4.6 of [I-D.ietf-mls-extensions].
 
 6.3.  Proposal-commit paradigm
 
@@ -1917,6 +1949,122 @@ ServerC->ClientC*: [[ Commit ]]
    room, the certificate of that user MUST be removed from the list.
    Changes to the external_senders extension only take effect when the
    MLS proposal containing the event is committed by a MIMI commit.
+
+6.5.  Participant List
+
+   The participant list is a list of "users" in a room.  Within a room,
+   each user is assigned exactly one _role_ (expressed with a role_index
+   and described in [I-D.ietf-mimi-room-policy] at any given time
+   (specifically within any MLS epoch).  In a room that has multiple MLS
+   clients per "user", the identifier for each user in participants.user
+   is the same across all that user's clients in the room.  Note that
+   each user has a single role at any point in time, and therefore all
+   clients of the same user also have the same role.
+
+   The participant list may include inactive participants, which
+   currently do not have any clients in the corresponding MLS group, for
+   example if their clients do not have available KeyPackages or if all
+   of their clients are temporarily "kicked" out of the group.  The
+   participant list can also contain participants that are explicitly
+   banned, by assigning them a suitable role which does not have any
+   capabilities.
+
+   struct {
+     opaque user<V>;
+     uint32 role_index;
+   } UserRolePair;
+
+   struct {
+     UserRolePair participants<V>;
+   } ParticipantListData;
+
+   ParticipantListData is the format of the data field inside the
+   ComponentData struct for the Participant list Metadata component in
+   the app_data_dictionary GroupContext extension.
+
+   struct {
+     uint32 user_index;
+     uint32 role_index;
+   } UserindexRolePair;
+
+   struct {
+     UserindexRolePair changedRoleParticipants<V>
+     uint32 removedIndices<V>;
+     UserRolePair addedParticipants<V>;
+   } ParticipantListUpdate;
+
+   ParticipantListUpdate is the contents of an AppDataUpdate Proposal
+   with the component ID for the participant list.  The index of the
+   participants vector in the current ParticipantListData struct is
+   referenced as the user_index when making changes.  First the
+   changedRoleParticipants list contains UserindexRolePairs with the
+   index of a user who changed roles and their new role.  Next is the
+   removedIndices list which has a list of users to remove completely
+   from the participant list.  Finally there is a list of
+   addedParticipants (which contains a user and role) that is appended
+   to the end of the ParticipantListData.
+
+   Each of these actions (modifying a user's role, removing a user, and
+   adding a user) is authorized separately according to the rules
+   specified in [I-D.ietf-mimi-room-policy].  If all the changes are
+   authorized, the ParticipantListData is modified accordingly.
+
+   A single commit is not valid if it contain any combination of
+   Participant list updates that operate on (add, remove, or change the
+   role of) the same user in the participant list more than once.
+
+6.6.  Room Metadata
+
+   The Room Metadata component contains data about a room which might be
+   displayed as human-readable information for the room, such as the
+   name of the room and a URL pointing to its room image/avatar.
+
+   It can contain a list of room_descriptions, each of which can have a
+   specific language_tag and media_type along with the
+   description_content.  An empty media_type implies text/
+   plain;charset=utf-8.
+
+   RoomMetaData is the format of the data field inside the ComponentData
+   struct for the Room Metadata component in the app_data_dictionary
+   GroupContext extension.
+
+   /* a valid URI (ex: MIMI URI) */
+   struct {
+     opaque uri<V>;
+   } Uri;
+
+   /* a sequence of valid UTF8 without nulls */
+   struct {
+     opaque string<V>;
+   } UTF8String;
+
+   struct {
+     /* an empty media_type is equivalent to text/plain;charset=utf-8 */
+     opaque media_type<V>;
+     opaque language_tag<V>;
+     opaque description_content<V>;
+   } RichDescription;
+
+   struct {
+     Uri room_uri;
+     UTF8String room_name;
+     RichDescription room_descriptions<V>;
+     /* an https URI resolving to an avatar image */
+     Uri room_avatar;
+     UTF8String room_subject;
+     UTF8String room_mood;
+   } RoomMetaData;
+
+   RoomMetaData RoomMetaUpdate;
+
+   RoomMetaUpdate (which has the same format as RoomMetaData) is the
+   format of the update field inside the AppDataUpdate struct in an
+   AppDataUpdate Proposal for the Room Metadata component.  If the
+   contents of the update field are valid and if the proposer is
+   authorized to generate such an update, the value of the update field
+   completely replaces the value of the data field.
+
+   Only a single Room metadata update is valid per commit.
 
 7.  Consent
 
@@ -1979,6 +2127,8 @@ ServerC->ClientC*: [[ Commit ]]
 
 8.  Security Considerations
 
+      *TODO*: Add MIMI threat model, and great expand this section.
+
    The MIMI protocol incorporates several layers of security.
 
    Individual protocol actions are protected against network attackers
@@ -2010,19 +2160,12 @@ ServerC->ClientC*: [[ Commit ]]
 
    TBD.
 
-   *TODO*: Present the franking mechanism to CFRG for review.
-
-8.1.1.  Example algorithm for generating franking keys
-
-   To ensure a strong source of entropy for the franking_secret included
-   in each message, the client can export a secret from the MLS key
-   schedule, for example with the label franking_base_secret and
-   calculate the franking_secret as the HMAC of a locally generated
-   nonce and the franking_base_secret.
-
-   franking_secret = HMAC_SHA256( franking_base_secret, nonce )
+      *TODO*: Present the franking mechanism to CFRG for review.
 
 9.  IANA Considerations
+
+      *TODO*: Add registration of MIMI content format extension, and a
+      SafeAAD component.
 
 10.  References
 
@@ -2041,6 +2184,20 @@ ServerC->ClientC*: [[ Commit ]]
               in Progress, Internet-Draft, draft-barnes-mls-appsync-01,
               12 December 2024, <https://datatracker.ietf.org/doc/html/
               draft-barnes-mls-appsync-01>.
+
+   [I-D.ietf-mimi-content]
+              Mahy, R., "More Instant Messaging Interoperability (MIMI)
+              message content", Work in Progress, Internet-Draft, draft-
+              ietf-mimi-content-05, 20 December 2024,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-mimi-
+              content-05>.
+
+   [I-D.ietf-mimi-room-policy]
+              Mahy, R., "Room Policy for the More Instant Messaging
+              Interoperability (MIMI) Protocol", Work in Progress,
+              Internet-Draft, draft-ietf-mimi-room-policy-00, 15
+              November 2024, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-mimi-room-policy-00>.
 
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
@@ -2070,6 +2227,11 @@ ServerC->ClientC*: [[ Commit ]]
               2024, <https://datatracker.ietf.org/doc/html/draft-mahy-
               mls-semiprivatemessage-04>.
 
+   [OidcCore] Sakimura, N., Bradley, J., Jones, M. B., Medeiros, B. de.,
+              and C. Mortimore, "OpenID Connect Core 1.0 incorporating
+              errata set 2", 15 December 2023,
+              <https://openid.net/specs/openid-connect-core-1_0.html>.
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
@@ -2080,12 +2242,20 @@ ServerC->ClientC*: [[ Commit ]]
               RFC 3986, DOI 10.17487/RFC3986, January 2005,
               <https://www.rfc-editor.org/rfc/rfc3986>.
 
+   [RFC5322]  Resnick, P., Ed., "Internet Message Format", RFC 5322,
+              DOI 10.17487/RFC5322, October 2008,
+              <https://www.rfc-editor.org/rfc/rfc5322>.
+
    [RFC6125]  Saint-Andre, P. and J. Hodges, "Representation and
               Verification of Domain-Based Application Service Identity
               within Internet Public Key Infrastructure Using X.509
               (PKIX) Certificates in the Context of Transport Layer
               Security (TLS)", RFC 6125, DOI 10.17487/RFC6125, March
               2011, <https://www.rfc-editor.org/rfc/rfc6125>.
+
+   [RFC6350]  Perreault, S., "vCard Format Specification", RFC 6350,
+              DOI 10.17487/RFC6350, August 2011,
+              <https://www.rfc-editor.org/rfc/rfc6350>.
 
    [RFC7231]  Fielding, R., Ed. and J. Reschke, Ed., "Hypertext Transfer
               Protocol (HTTP/1.1): Semantics and Content", RFC 7231,
