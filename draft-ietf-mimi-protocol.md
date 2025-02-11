@@ -1879,7 +1879,7 @@ committed by a MIMI commit.
 
 The participant list is a list of "users" in a room. Within a room, each user
 is assigned exactly one *role* (expressed with a `role_index` and described
-in {{!I-D.ietf-room-policy}} at any given time (specifically within any MLS
+in {{!I-D.ietf-mimi-room-policy}} at any given time (specifically within any MLS
 epoch). In a room that has multiple MLS clients per "user", the identifier for
 each user in `participants.user` is the same across all that user's clients in
 the room. Note that each user has a single role at any point in time, and
