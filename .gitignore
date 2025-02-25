@@ -7,6 +7,7 @@
 *~
 .tags
 /*-[0-9][0-9].xml
+/.*.mk
 /.gems/
 /.refcache
 /.targets.mk
@@ -17,6 +18,7 @@
 /versioned/
 Gemfile.lock
 archive.json
+draft-ietf-mimi-protocol.xml
 draft-ralston-mimi-protocol.xml
 package-lock.json
 report.xml
