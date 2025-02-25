@@ -1,11 +1,11 @@
-# MIMI Protocol
+# More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
 
-This is the working area for the individual Internet-Draft, "MIMI Protocol".
+This is the working area for the IETF [MIMI Working Group](https://datatracker.ietf.org/group/mimi/documents/) Internet-Draft, "More Instant Messaging Interoperability (MIMI) using HTTPS and MLS".
 
 * [Editor's Copy](https://ietf-wg-mimi.github.io/mimi-protocol/#go.draft-ietf-mimi-protocol.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-ietf-mimi-protocol)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-ietf-mimi-protocol)
-* [Compare Editor's Copy to Individual Draft](https://ietf-wg-mimi.github.io/mimi-protocol/#go.draft-ietf-mimi-protocol.diff)
+* [Working Group Draft](https://datatracker.ietf.org/doc/html/draft-ietf-mimi-protocol)
+* [Compare Editor's Copy to Working Group Draft](https://ietf-wg-mimi.github.io/mimi-protocol/#go.draft-ietf-mimi-protocol.diff)
 
 
 ## Contributing
