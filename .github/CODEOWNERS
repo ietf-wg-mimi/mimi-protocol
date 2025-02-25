@@ -1,3 +1,3 @@
 # Automatically generated CODEOWNERS
 # Regenerate with `make update-codeowners`
-draft-ralston-mimi-protocol.md travisr@matrix.org rohan.mahy@gmail.com rlb@ipv.sx konrad.kohbrok@datashrine.de matthew@matrix.org git@raphaelrobert.com
+draft-ietf-mimi-protocol.md rlb@ipv.sx matthew@matrix.org konrad.kohbrok@datashrine.de rohan.ietf@gmail.com travisr@matrix.org ietf@raphaelrobert.com
