@@ -1345,6 +1345,12 @@ struct {
            optional Frank frank;
         case welcome:
            RatchetTreeOption ratchetTreeOption;
+        case proposal:
+           /* a list of additional proposals, each represented */
+           /* as either PublicMessage or SemiPrivateMessage    */
+           MLSMessage moreProposals<V>;
+        case commit:
+           struct {};
       };
   };
 } FanoutMessage;
@@ -1364,7 +1370,11 @@ failover in high availability recovery scenarios.
 Clients that are being removed SHOULD receive the corresponding
 Commit message, so they can recognize that they have been removed and clean up
 their internal state. A removed client might not receive a commit if it was
-removed as a malicious or abusive client, or if it obviously deleted.
+removed as a malicious or abusive client, or if it was obviously deleted.
+
+The `moreProposals` list in a `FanoutMessage` MUST be the same as the
+corresponding `moreProposals` list in the `HandshakeBundle` of an
+`UpdateRequest`.
 
 The response to a FanoutMessage contains no body. The HTTP response code
 indicates if the messages in the request were accepted (201 response code), or
