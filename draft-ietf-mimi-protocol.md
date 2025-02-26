@@ -1822,6 +1822,192 @@ struct {
 
 There is no response body. The response code only indicates if the abuse report was accepted, not if any specific automated or human action was taken.
 
+# Minimal metadata rooms
+
+The room state is visible to the hub and with it the room's participant list,
+giving the hub access to a significant amount of user metadata.
+
+To limit the amount of metadata the hub has access to, rooms can be created as
+_minimal metadata rooms_ (MMR). In an MMR the participant list and the
+credentials in the room's underlying MLS group consist only of pseudonyms. The
+real identifiers are stored alongside the pseudonyms encrypted under a key known
+only to room participants, but not the hub.
+
+MMRs requires some additional key management, which leads to restrictions in how
+the MMR can be joined and which users each participant can add to the room.
+
+## Credential encryption
+
+Identifiers of participants and their clients occur in two locations in a room's
+state: the participant list and the credentials of the room's underlying MLS
+group. In an MMR, the real identifiers of clients and users are replaced by
+pseudonyms in the shape of random UUIDs qualified with the domain of the user's
+provider.
+
+In MMRs, all leaves of the underlying group MUST contain PseudonymousCredentials.
+
+~~~ tls
+struct {
+  IdentifierUri client_pseudonym;
+  IdentifierUri user_pseudonym;
+  opaque signature_public_key;
+  opaque identity_link_ciphertext<V>;
+} PseudonymousCredential
+~~~
+
+- `user_pseudonym`: The pseudonym of the client's user in this group
+- `client_pseudonym`: The pseudonym of the client identified by this credential
+- `signature_public_key`: The signature public key used to authenticate MLS
+  messages
+- `identity_link_ciphertext`: A ciphertext containing a credential with the
+  clients real identifier
+
+
+In each room, the `user_pseudonym` of a client MUST be the same across all
+clients of a user and it MUST be the same as the user's entry in the participant
+list.
+
+~~~ tls
+struct {
+  IdentifierUri client_pseudonym;
+  IdentifierUri user_pseudonym;
+  opaque signature_public_key;
+} PseudonymousCredentialTBS
+
+struct {
+  /* SignWithLabel(., "PseudonymousCredentialTBS",
+    PseudonymousCredentialTBS) */
+  opaque pseudonymous_credential_signature<V>;
+  Credential client_credential;
+} IdentityLinkTBE
+~~~
+
+The `identity_link_ciphertext` is created by encrypting the IdentityLinkTBE,
+which contains the client's real credential, as well as a signature over the
+PseudonymousCredentialTBS using the client credential's signature key.
+
+The `identity_link_key` used for encryption is unique per pseudonymous credential.
+It is derived from the client's `connection_key`.
+
+~~~ tls
+identity_link_key = ExpandWithLabel(connection_key,
+  "IdentityLinkKey", PseudonymousCredentialTBS, KDF.Nh)
+~~~
+
+See {{connection-keys}} for more details on `connection_key`s.
+
+Pseudonyms are specific to each room and client since the `identity_link_key` is
+unique per pseudonymous credential and pseudonymous credentials are meant to be
+used only once (i.e. in one room). Re-use of pseudonymous credential can occur
+if KeyPackages are re-used. See {{pseudonymous-keypackages}}.
+
+## Identity link keys
+
+To allow all participants of a room's underlying group to link each pseudonym
+with a real identity, all identity link keys must be available to all
+participants, including new joiners. To that end, and to ensure agreement among
+group members, the `identity_link_keys` are stored encrypted in the
+IdentityLinkKeysExtension. The MLS group underpinning an MMR MUST contain an
+IdentityLinkKeysExtension.
+
+~~~ tls
+struct {
+  opaque ciphertext<V>;
+} EncryptedIdentityLinkKey
+
+struct {
+  optional<EncryptedIdentityLinkKey> identity_link_key_ciphertexts<V>;
+} IdentityLinkKeysExtension
+~~~
+
+The `identity_link_key_ciphertexts` vector has as many entries as the MLS group
+has leaves and it contains the encrypted `identity_link_key` of each group
+member at the leaf index of that member.
+
+The individual `identity_link_keys` of the participants are encrypted using the
+group's `identity_link_wrapper_key` (see {{identity-link-wrapper-key}}).
+
+When members are removed from the group, the corresponding entries in the
+IdentityLinkKeysExtension MUST be removed as well.
+
+When members are added to the group via a room state update (see
+{{update-room-state}}), the sender MUST use the SafeAAD mechanism described in
+{{!I-D.ietf-mls-extensions}} to include an AddAAD.
+
+~~~ tls
+struct {
+  EncryptedIdentityLinkKey identity_link_key_ciphertextexts<V>;
+} AddAAD
+~~~
+
+Each `identity_link_key_ciphertext` corresponds to an added group member. The
+order of ciphertexts in the `identity_link_ciphertexts` MUST be the same as that
+of the Add proposals in the commit adding the new members.
+
+## Identity link wrapper key
+
+TODO: The concept of an identity link wrapper key will be replaced by the
+TreeWrap protocol, which is currently still work in progress.
+
+The identity link wrapper key protects the `identity_link_key`s of a group while
+they are stored on the server. The `identity_link_wrapper_key` is sampled
+randomly when the group is created. It is static throughout the lifetime of the
+group.
+
+When participants are added to an MMR via the add flow, the Welcome message MUST
+include an IdentityLinkWrapperKeyExtension which contains the group's
+`identity_link_wrapper_key`.
+
+~~~ tls
+struct {
+  opaque identity_link_wrapper_key<V>;
+} IdentityLinkWrapperKeyExtension
+~~~
+
+TODO: External joiners must also learn the identity link wrapper key, e.g. as
+part of a join link. This creates difficulties if we want to rotate the
+`identity_link_wrapper_key` in the future (or indeed if we use TreeWrap, which
+will also rotate keys.)
+
+## Connection keys
+
+TODO: This section assumes that MIMI will have a mechanism that establishes a
+connection (for lack of a better term) between two users. The content of this
+section heavily depends on what connection establishment will look like, so for
+now the section only contains a sketch of the functionality around connection
+keys.
+
+Upon user creation, each user samples a random `connection_key`. That key is
+required by any other user that wants to add the user to an MMR via the add
+flow.
+
+During connection establishment, users MUST exchange connection keys in a
+mutually authenticated way and in such a way that only the two users learn the
+key.
+
+When a user wants to add another user to an MMR, it fetches KeyPackages with
+PseudonymousCredentials that share a user pseudonym (see
+{{pseudonymous-keypackages}}). The adder then derives the `identity_link_key`
+for all KeyPackages and re-encrypts those keys under the MMR's
+`identity_link_wrapper_key`. When adding the user to the MMR, it includes the
+AddAAD as described in {{identity-link-keys}}.
+
+Users can rotate their connection key by sampling a new key and sending the new
+key to all users with which they are connected.
+
+### Pseudonymous KeyPackages
+
+If a user wants to support MMRs it needs to upload KeyPackages with
+PseudonymousCredentials for all of its clients.
+
+As all of a user's clients in an MMR MUST share the same `user_pseudonym`, a
+user's clients MUST ensure that other users can obtain sets of KeyPackages with
+consistent `user_pseudonyms`.
+
+Note that a user's `user_pseudonyms` are only unique per group as long as adding
+users don't re-use KeyPackages. KeyPackage re-use (e.g. in case a user's supply
+of KeyPackages is exhausted) will lead to duplicate use of `user_pseudonyms`.
+
 # Relation between MIMI state and cryptographic state
 
 ## Room state
