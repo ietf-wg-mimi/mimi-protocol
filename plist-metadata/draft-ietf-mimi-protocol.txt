@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 15 August 2025                 The Matrix.org Foundation C.I.C.
+Expires: 31 August 2025                 The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 15 August 2025                 The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                        11 February 2025
+                                                        27 February 2025
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 August 2025.
+   This Internet-Draft will expire on 31 August 2025.
 
 Copyright Notice
 
@@ -1405,6 +1405,12 @@ ServerC->ClientC*: [[ Commit ]]
               optional Frank frank;
            case welcome:
               RatchetTreeOption ratchetTreeOption;
+           case proposal:
+              /* a list of additional proposals, each represented */
+              /* as either PublicMessage or SemiPrivateMessage    */
+              MLSMessage moreProposals<V>;
+           case commit:
+              struct {};
          };
      };
    } FanoutMessage;
@@ -1426,7 +1432,11 @@ ServerC->ClientC*: [[ Commit ]]
    Commit message, so they can recognize that they have been removed and
    clean up their internal state.  A removed client might not receive a
    commit if it was removed as a malicious or abusive client, or if it
-   obviously deleted.
+   was obviously deleted.
+
+   The moreProposals list in a FanoutMessage MUST be the same as the
+   corresponding moreProposals list in the HandshakeBundle of an
+   UpdateRequest.
 
    The response to a FanoutMessage contains no body.  The HTTP response
    code indicates if the messages in the request were accepted (201
@@ -2202,9 +2212,9 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
               Extensions", Work in Progress, Internet-Draft, draft-ietf-
-              mls-extensions-05, 21 October 2024,
+              mls-extensions-06, 19 February 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mls-
-              extensions-05>.
+              extensions-06>.
 
    [I-D.kohbrok-mls-associated-parties]
               Kohbrok, K. and R. Robert, "MLS Associated parties", Work
