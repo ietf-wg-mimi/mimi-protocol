@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-30T00:41:13.648055+00:00",
+  "timestamp": "2025-02-27T00:43:58.614781+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -62,6 +62,16 @@
       "name": "WG reviewed",
       "description": "Issue has been reviewed in a MIMI WG meeting",
       "color": "B28596"
+    },
+    {
+      "name": "has-PR",
+      "description": "",
+      "color": "E2A946"
+    },
+    {
+      "name": "ready-for-PR",
+      "description": "",
+      "color": "217D80"
     }
   ],
   "issues": [
@@ -1392,11 +1402,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "WG reviewed"
+        "WG reviewed",
+        "has-PR"
       ],
       "body": "The FrankingAssertion map in Section 5.4.1.1 Client creation and sending should be defined in draft-ietf-mimi-content",
       "createdAt": "2024-11-17T16:30:03Z",
-      "updatedAt": "2024-12-16T20:06:57Z",
+      "updatedAt": "2025-02-25T01:02:32Z",
       "closedAt": null,
       "comments": [
         {
@@ -1412,6 +1423,13 @@
           "body": "With the [proposed change](https://github.com/ietf-wg-mimi/draft-ietf-mimi-content/pull/36) of message ID format in MIMI content, there will be a per-message salt inside the message we can use instead of the franking_secret.\r\n\r\nThe sender_URI and room_URI can be added as extensions in mimi-protocol using the MIMI content extensions registry defined in [mimi-content PR#35](https://github.com/ietf-wg-mimi/draft-ietf-mimi-content/pull/35).",
           "createdAt": "2024-12-16T20:06:54Z",
           "updatedAt": "2024-12-16T20:06:54Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This is now in mimi-content PR46.",
+          "createdAt": "2025-02-25T00:46:06Z",
+          "updatedAt": "2025-02-25T00:46:06Z"
         }
       ]
     },
@@ -1446,14 +1464,40 @@
       "id": "I_kwDOKZ8QO86jg4It",
       "title": "Try to simplify franking context and integrity",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/95",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Figure out if the context and the integrity verification can be combined, making the franking algorithm simpler.\r\n\r\nRemove the franking_context_hash and franking_context_secret\r\n\r\n```\r\ncontext = senderURI || roomURI || acceptedTimestamp\r\nserverFrank = HMAC_SHA256(HUBkey, franking_tag || context )\r\nfrank_integrity_check = HMAC_SHA256(franking_integrity_secret,\r\n  serverFrank || context)\r\n```\r\n\r\n",
       "createdAt": "2024-12-16T20:11:09Z",
-      "updatedAt": "2024-12-16T20:11:09Z",
+      "updatedAt": "2025-02-25T00:48:20Z",
+      "closedAt": "2025-02-25T00:48:19Z",
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'm going to close this, as the #96 is merged.",
+          "createdAt": "2025-02-25T00:48:19Z",
+          "updatedAt": "2025-02-25T00:48:19Z"
+        }
+      ]
+    },
+    {
+      "number": 103,
+      "id": "I_kwDOKZ8QO86pzR17",
+      "title": "Fanout should be able to send a batch of related handshake messages",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/103",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "has-PR"
+      ],
+      "body": "An update can contain multiple proposals, with or without a commit. This is effectively a transaction, since the hub either accepts or rejects them together.\n\nHowever during fanout, individual proposals could arrive substantially delayed. A client who wants to send an application message has to commit pending proposals, but does not know if/when a fanned out handshake is the last accepted pending proposal, or to expect an accepted commit. We should allow fanout to include a batch of related handshake messages.",
+      "createdAt": "2025-02-12T16:35:21Z",
+      "updatedAt": "2025-02-26T04:46:15Z",
       "closedAt": null,
       "comments": []
     }
@@ -8845,7 +8889,7 @@
       "labels": [],
       "body": "was `opaque`, should have been `HPKECiphertext`.",
       "createdAt": "2024-12-20T23:17:12Z",
-      "updatedAt": "2024-12-20T23:17:22Z",
+      "updatedAt": "2025-02-25T05:11:25Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "be0f6b9b57b23b19f3eb27c5425b792e6838f298",
@@ -8873,7 +8917,7 @@
       "labels": [],
       "body": "remove Raphael until we have a valid email address associated with his github account.",
       "createdAt": "2024-12-20T23:26:57Z",
-      "updatedAt": "2024-12-20T23:27:06Z",
+      "updatedAt": "2025-02-25T05:11:06Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "41df7674220d7fb6711185e581e5d85d1924b968",
@@ -8901,7 +8945,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-12-21T17:10:01Z",
-      "updatedAt": "2024-12-21T17:10:15Z",
+      "updatedAt": "2025-02-25T05:11:07Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "a7bb90ec1a03e9d1386f12d2a36729bd21c75ff5",
@@ -8929,7 +8973,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-12-23T07:20:44Z",
-      "updatedAt": "2024-12-23T07:30:14Z",
+      "updatedAt": "2025-02-25T05:10:13Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "11cd0b3395bc73d593959a1ccdcf77a86dc4dd34",
@@ -8957,7 +9001,7 @@
       "labels": [],
       "body": "This PR introduces the notion of pseudonymous credentials for MIMI by introducing a new room type \"Minimal Metadata Rooms\". We could also make that a configuration flag and/or use another name. I'm open to suggestions in that regard. There are still a few TODOs/open questions, though:\r\n\r\n- Encryption of `identity_link_keys`: We intend to solve this via the TreeWrap mechanism we proposed, but we haven't quite finished writing up the spec for that. For now it's a simple static key.\r\n- External joins: There's still a small issue with external joins. In theory, new joiners just need the `identity_link_wrapper_key` to join the group, but if we start rotating that, we run into race conditions. How we solve that depends a bit on the situations in which we need external joins. Maybe we can discuss this in a future interim.\r\n- Connections: For Minimal Metadata Rooms to work, users need to learn the `connection_key` of other users they want to add to a group. Since we probably also want a notion of \"connection\" for other things such as consent, this PR only expresses the requirement for connection key exchange for now.",
       "createdAt": "2025-01-13T07:35:44Z",
-      "updatedAt": "2025-01-13T08:48:18Z",
+      "updatedAt": "2025-02-27T00:21:46Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "291f60313025445b7c32434a81f7681de7adab36",
@@ -8968,8 +9012,312 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "After the MIMI interim, I think I like the idea of accepting this PR up to line 1821 and adding a note that the key exchange is going to be addressed separately. Then we can try a few keying solutions and see how will they fit our requirements (either for credentials only, or also for sensitive data in the GroupContext, like room metadata).",
+          "createdAt": "2025-02-26T20:51:05Z",
+          "updatedAt": "2025-02-26T20:51:05Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86dSC6K",
+          "commit": {
+            "abbreviatedOid": "ded2324"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-25T00:05:46Z",
+          "updatedAt": "2025-02-25T00:05:46Z",
+          "comments": [
+            {
+              "originalPosition": 45,
+              "body": "```suggestion\r\nIn any given room, the `user_pseudonym` of a client MUST be the same across all\r\n```",
+              "createdAt": "2025-02-25T00:05:46Z",
+              "updatedAt": "2025-02-25T00:05:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86dSGzy",
+          "commit": {
+            "abbreviatedOid": "ded2324"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-25T00:11:38Z",
+          "updatedAt": "2025-02-25T00:11:38Z",
+          "comments": [
+            {
+              "originalPosition": 83,
+              "body": "shouldn't this section heading move to before line 1821?",
+              "createdAt": "2025-02-25T00:11:38Z",
+              "updatedAt": "2025-02-25T00:11:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86dSIBf",
+          "commit": {
+            "abbreviatedOid": "ded2324"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-25T00:13:34Z",
+          "updatedAt": "2025-02-25T00:13:34Z",
+          "comments": [
+            {
+              "originalPosition": 103,
+              "body": "what happens with blank leaves. is the `identity_link_key` an empty <V>?",
+              "createdAt": "2025-02-25T00:13:34Z",
+              "updatedAt": "2025-02-25T00:13:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86dSJ0w",
+          "commit": {
+            "abbreviatedOid": "ded2324"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-25T00:20:07Z",
+          "updatedAt": "2025-02-25T00:20:08Z",
+          "comments": [
+            {
+              "originalPosition": 133,
+              "body": "If the key is static, then a former member (even one who was banned) could collude with the hub to decrypt the real identities of members who joined well after the former member left.",
+              "createdAt": "2025-02-25T00:20:08Z",
+              "updatedAt": "2025-02-25T00:20:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86dSMHV",
+          "commit": {
+            "abbreviatedOid": "ded2324"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-25T00:27:24Z",
+          "updatedAt": "2025-02-25T00:27:25Z",
+          "comments": [
+            {
+              "originalPosition": 172,
+              "body": "I didn't really understand this paragraph. \r\n```suggestion\r\nWhen a user wants to add another user to an MMR, it fetches one KeyPackage for each of that user's clients, such that each of the clients keypackages has a PseudonymousCredential that shares a single user pseudonym (see\r\n{{pseudonymous-keypackages}}). The adder then derives the `identity_link_key`\r\nfor all the added client's KeyPackages and re-encrypts those keys under the MMR's\r\n`identity_link_wrapper_key`. When adding the user to the MMR, it includes the\r\nAddAAD as described in {{identity-link-keys}}.\r\n```",
+              "createdAt": "2025-02-25T00:27:25Z",
+              "updatedAt": "2025-02-25T00:27:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86dSMkp",
+          "commit": {
+            "abbreviatedOid": "ded2324"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-25T00:29:17Z",
+          "updatedAt": "2025-02-25T00:29:18Z",
+          "comments": [
+            {
+              "originalPosition": 124,
+              "body": "I'm guessing using an AddAAD is so external joins work? For adds originated by a member, they could use GCE or some similar mechanism to update the identity_link_key_ciphertext directly, right?",
+              "createdAt": "2025-02-25T00:29:17Z",
+              "updatedAt": "2025-02-25T00:29:18Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86dSRws",
+          "commit": {
+            "abbreviatedOid": "ded2324"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Overall, there are really two mechanisms:\r\n\r\nA) to provide a pseudonym, encrypting the real credential from the Hub, and so another member with the real credential can verify the real credential and the pseudonym was signed by the same signature key.\r\n\r\nB) key management for distributing keys, eventually allowing members to decrypt the real credentials.\r\n\r\n----\r\nSome comments and questions:\r\nDoes this work with external joiners or not? That seemed ambiguous.\r\n\r\nIMO there is not enough explanation of why a particular technical choice was selected (ex: AddAAD vs some other mechanism). This should be either motivated in the main text or in the (absent) security considerations.\r\n\r\nIt would be useful to walk the reader through the process to follow roughly the steps a client executes each join method (for example, a member creating a group, a member adding a new user to a group, a user adding themself via external commit, a user processing a welcome, and a member validating a commit).\r\n\r\nIs there anything the MIMI hub or other providers need to do to find KeyPackages with suitable properties?\r\n\r\nThat the key for protecting the individual keys is shared for the whole group lifetime seems unsatisfactory.",
+          "createdAt": "2025-02-25T00:44:43Z",
+          "updatedAt": "2025-02-25T00:44:43Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86dtRLx",
+          "commit": {
+            "abbreviatedOid": "ded2324"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-26T20:47:15Z",
+          "updatedAt": "2025-02-26T20:47:16Z",
+          "comments": [
+            {
+              "originalPosition": 66,
+              "body": "```suggestion\r\nThe `identity_link_ciphertext` is created by encrypting the IdentityLinkTBE.\r\nThe IdentityLinkTBE contains the client's real credential, and a signature over the\r\nPseudonymousCredentialTBS signed with the client credential's `signature_public_key`.\r\n```",
+              "createdAt": "2025-02-26T20:47:15Z",
+              "updatedAt": "2025-02-26T20:47:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86duo6h",
+          "commit": {
+            "abbreviatedOid": "ded2324"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-27T00:21:45Z",
+          "updatedAt": "2025-02-27T00:21:46Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "Is it really necessary to have a client_pseudonym? Couldn't we use a thumbprint of the signature key? Alternatively, one of the possible forms of a MIMI client identifier is to use `mimi://example.com/d/alice-smith/0003`, such that the d is for deice and when there are two more path segments after the \"d\", the first is a \"user\" identifier, and the second is a client discriminator.",
+              "createdAt": "2025-02-27T00:21:46Z",
+              "updatedAt": "2025-02-27T00:21:46Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 102,
+      "id": "PR_kwDOKZ8QO86K3p1w",
+      "title": "Move Participant List and Room Metadata in",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/102",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Move Participant List and Room Metadata over from draft-mahy-mimi-app-components",
+      "createdAt": "2025-02-11T21:58:48Z",
+      "updatedAt": "2025-02-11T22:02:04Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "291f60313025445b7c32434a81f7681de7adab36",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "plist-metadata",
+      "headRefOid": "e99a347864e5a3fc8f805cde9a23a720438586dd",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 104,
+      "id": "PR_kwDOKZ8QO86MZKpC",
+      "title": "fanout HandshakeBundle of multiple proposals as a single atomic fanout message",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/104",
+      "state": "CLOSED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-02-25T04:42:40Z",
+      "updatedAt": "2025-02-25T05:10:02Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "291f60313025445b7c32434a81f7681de7adab36",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "issue-103",
+      "headRefOid": "cde42203b6addb5612a37270fbb1e67e6a613b15",
+      "closedAt": "2025-02-25T05:04:26Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 105,
+      "id": "PR_kwDOKZ8QO86MZOLq",
+      "title": "Fix ci",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/105",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "commit make update-files",
+      "createdAt": "2025-02-25T04:49:58Z",
+      "updatedAt": "2025-02-25T05:10:04Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "291f60313025445b7c32434a81f7681de7adab36",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "fix-ci",
+      "headRefOid": "16ddee4fc4e83dfb610b6cfa5697877c5e747d64",
+      "closedAt": "2025-02-25T04:50:59Z",
+      "mergedAt": "2025-02-25T04:50:59Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "9202a1140e5ba3266c3606c29fc12fe5c3cc3796"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 106,
+      "id": "PR_kwDOKZ8QO86MZWHi",
+      "title": "fanout HandshakeBundle of multiple proposals as a single atomic fanout message",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/106",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Addresses issue #103 ",
+      "createdAt": "2025-02-25T05:07:16Z",
+      "updatedAt": "2025-02-26T17:30:55Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "9202a1140e5ba3266c3606c29fc12fe5c3cc3796",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "issue103",
+      "headRefOid": "bf9bad3e6cd493b6c2dd56b6763c6d8524c81b8c",
+      "closedAt": "2025-02-26T17:30:55Z",
+      "mergedAt": "2025-02-26T17:30:55Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "a0d82da4e1f227a6acd2f25524960ff0ba454ec9"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86dqsWY",
+          "commit": {
+            "abbreviatedOid": "bf9bad3"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-26T17:03:26Z",
+          "updatedAt": "2025-02-26T17:03:26Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
