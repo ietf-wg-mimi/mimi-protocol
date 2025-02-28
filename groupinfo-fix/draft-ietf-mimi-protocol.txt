@@ -1574,7 +1574,7 @@ ServerC->ClientC*: [[ Commit ]]
      opaque room_id<V>;
      GroupInfoCode status;
      select (status) {
-       case (success):
+       case success:
          select (protocol) {
            case mls10:
              CipherSuite cipher_suite;
@@ -1584,6 +1584,7 @@ ServerC->ClientC*: [[ Commit ]]
              /*                GroupInfoResponseTBS) */
              opaque signature<V>;
          };
+     default: struct{};
      };
    } GroupInfoResponse;
 

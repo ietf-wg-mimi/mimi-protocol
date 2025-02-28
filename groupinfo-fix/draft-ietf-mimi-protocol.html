@@ -3599,7 +3599,7 @@ struct {
   opaque room_id&lt;V&gt;;
   GroupInfoCode status;
   select (status) {
-    case (success):
+    case success:
       select (protocol) {
         case mls10:
           CipherSuite cipher_suite;
@@ -3609,6 +3609,7 @@ struct {
           /*                GroupInfoResponseTBS) */
           opaque signature&lt;V&gt;;
       };
+  default: struct{};
   };
 } GroupInfoResponse;
 </pre><a href="#section-5.6-8" class="pilcrow">¶</a>
