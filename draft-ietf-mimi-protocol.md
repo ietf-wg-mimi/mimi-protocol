@@ -1500,7 +1500,7 @@ struct {
     case mls10:
       CipherSuite cipher_suite;
       ExternalSender hub_sender;
-      HPKECiphertext encrypted_groupinfo_and_tree<V>;
+      HPKECiphertext encrypted_groupinfo_and_tree;
   };
 } GroupInfoResponseTBS;
 
@@ -1514,7 +1514,7 @@ struct {
         case mls10:
           CipherSuite cipher_suite;
           ExternalSender hub_sender;
-          HPKECiphertext encrypted_groupinfo_and_tree<V>;
+          HPKECiphertext encrypted_groupinfo_and_tree;
           /* SignWithLabel(hub_sender, "GroupInfoResponseTBS", */
           /*                GroupInfoResponseTBS) */
           opaque signature<V>;
