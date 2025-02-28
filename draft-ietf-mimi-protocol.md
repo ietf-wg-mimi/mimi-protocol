@@ -1494,11 +1494,11 @@ encrypted_groupinfo_and_tree = EncryptWithLabel(
 
 struct {
   Protocol version;
+  opaque room_id<V>;
   GroupInfoCode status;
   select (protocol) {
     case mls10:
       CipherSuite cipher_suite;
-      opaque room_id<V>;
       ExternalSender hub_sender;
       HPKECiphertext encrypted_groupinfo_and_tree<V>;
   };
@@ -1506,16 +1506,19 @@ struct {
 
 struct {
   Protocol version;
+  opaque room_id<V>;
   GroupInfoCode status;
-  select (protocol) {
-    case mls10:
-      CipherSuite cipher_suite;
-      opaque room_id<V>;
-      ExternalSender hub_sender;
-      opaque encrypted_groupinfo_and_tree<V>;
-      /* TODO: add appropriate key for Hub to sign with */
-      /* SignWithLabel(., "GroupInfoResponseTBS", GroupInfoResponseTBS) */
-      opaque signature<V>;
+  select (status) {
+    case (success):
+      select (protocol) {
+        case mls10:
+          CipherSuite cipher_suite;
+          ExternalSender hub_sender;
+          HPKECiphertext encrypted_groupinfo_and_tree<V>;
+          /* SignWithLabel(hub_sender, "GroupInfoResponseTBS", */
+          /*                GroupInfoResponseTBS) */
+          opaque signature<V>;
+      };
   };
 } GroupInfoResponse;
 ~~~
