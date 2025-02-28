@@ -3550,7 +3550,7 @@ struct {
 <p id="section-5.6-7">If successful, the response body contains the GroupInfo and a way
 to get the ratchet_tree, both encrypted with the <code>groupInfoPublcKey</code>
 passed in the request.<a href="#section-5.6-7" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-5.6-8">
+<div class="breakable lang-tls sourcecode" id="section-5.6-8">
 <pre>
 enum {
   reserved(0),
@@ -3575,28 +3575,32 @@ encrypted_groupinfo_and_tree = EncryptWithLabel(
 
 struct {
   Protocol version;
+  opaque room_id&lt;V&gt;;
   GroupInfoCode status;
   select (protocol) {
     case mls10:
       CipherSuite cipher_suite;
-      opaque room_id&lt;V&gt;;
       ExternalSender hub_sender;
-      HPKECiphertext encrypted_groupinfo_and_tree&lt;V&gt;;
+      HPKECiphertext encrypted_groupinfo_and_tree;
   };
 } GroupInfoResponseTBS;
 
 struct {
   Protocol version;
+  opaque room_id&lt;V&gt;;
   GroupInfoCode status;
-  select (protocol) {
-    case mls10:
-      CipherSuite cipher_suite;
-      opaque room_id&lt;V&gt;;
-      ExternalSender hub_sender;
-      opaque encrypted_groupinfo_and_tree&lt;V&gt;;
-      /* TODO: add appropriate key for Hub to sign with */
-      /* SignWithLabel(., "GroupInfoResponseTBS", GroupInfoResponseTBS) */
-      opaque signature&lt;V&gt;;
+  select (status) {
+    case success:
+      select (protocol) {
+        case mls10:
+          CipherSuite cipher_suite;
+          ExternalSender hub_sender;
+          HPKECiphertext encrypted_groupinfo_and_tree;
+          /* SignWithLabel(hub_sender, "GroupInfoResponseTBS", */
+          /*                GroupInfoResponseTBS) */
+          opaque signature&lt;V&gt;;
+      };
+  default: struct{};
   };
 } GroupInfoResponse;
 </pre><a href="#section-5.6-8" class="pilcrow">¶</a>
