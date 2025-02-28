@@ -1509,7 +1509,7 @@ struct {
   opaque room_id<V>;
   GroupInfoCode status;
   select (status) {
-    case (success):
+    case success:
       select (protocol) {
         case mls10:
           CipherSuite cipher_suite;
@@ -1519,6 +1519,7 @@ struct {
           /*                GroupInfoResponseTBS) */
           opaque signature<V>;
       };
+  default: struct{};
   };
 } GroupInfoResponse;
 ~~~
