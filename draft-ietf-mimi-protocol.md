@@ -164,7 +164,7 @@ are defined in {{I-D.ietf-mimi-room-policy}}.
 Knock and invite flows:
 : This document describes how user can be added, or how authorized users can
 add themselves to a group based on the policy of the room. It does not include
-flows where a user can "knock" to be asked to enter a room, nor does it
+flows where a user can "knock" to ask to enter a room, nor does it
 include "invitations", where a user offers information to another user about
 how to be added to a room.
 
