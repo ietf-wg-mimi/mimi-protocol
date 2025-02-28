@@ -152,37 +152,26 @@ of the room (including, for example, the room's participant list).
 
 In this version of the document, we have tried to capture enough concrete
 functionality to enable basic application functionality, while defining enough
-of a protocol framework to indicate how to add other necessary functionality.  The
-following functions are likely to be needed by the complete protocol, but are
-not covered here:
+of a protocol framework to indicate how to add other necessary functionality.
+The following functions are likely to be needed by the complete protocol, but
+are not covered here:
 
 Authorization policy:
 : In this document, we introduce a notional concept of roles for
-participants, and permissions for roles. Actual messaging systems have more
-complex and well-specified authorization policies about which clients can
-take which actions in a room.
+participants, and permissions for roles. Concrete authorization policies
+are defined in {{I-D.ietf-mimi-room-policy}}.
 
-Advanced join/leave flows:
-: In this document, all adds / removes / joins / leaves are initiated from
-within the group, or by a new joiner who already has permission to join,
-as this aligns well with MLS.  Messaging applications
-support a variety of other flows, some of which this protocol will need to
-support.
+Knock and invite flows:
+: This document describes how user can be added, or how authorized users can
+add themselves to a group based on the policy of the room. It does not include
+flows where a user can "knock" to ask to enter a room, nor does it
+include "invitations", where a user offers information to another user about
+how to be added to a room.
 
 Identifiers:
 : Certain entities in the MIMI system need to be identified in the protocol.  In
 this document, we define a notional syntax for identifiers, but a more
 concrete one should be defined.
-
-Abuse reporting:
-: There is no mechanism in this document for reporting abusive behavior to a
-messaging provider.
-
-Identifier resolution:
-: In some cases, the identifier used to initiate communications with a user
-might be different from the identifier that should be used internally.  For
-example, a user-visible handle might need to be mapped to a durable internal
-identifier.  This document provides no mechanism for such resolution.
 
 Authentication
 : While MLS provides basic message authentication, users should also be able
@@ -682,12 +671,13 @@ capable of participating in the corresponding room.
 The hub server for the room stores the state of the room, comprising:
 
 * The *base policy* of the room, which does not depend on the specific
-  participants in the room. For example, this includes the room roles
-  and their permissions.
+  participants in the room. For example, this includes the room *roles*
+  and their permissions (defined in {{!I-D.ietf-mimi-room-policy}} and
+  *preauthorization* policy).
 * The *participant list*: a list of the users who are participants of the
-  room, and each user's role in the room.
-
-> **TODO**: We need a more full description of the room, room state syntax.
+  room, and each user's role in the room (defined in {{participant-list}}).
+* Room metadata, such as the room name, description, and image (defined in
+  {{room-metadata}}).
 
 When a client requests key material via the hub, the hub records the
 KeyPackageRef values for the returned KeyPackages, and the identity of the
@@ -697,20 +687,20 @@ Welcome message to the proper provider.
 ### Participant List Changes
 
 The participant list can be changed by adding or removing users, or changing
-a user's role.  These changes are described without a specific syntax as a
-list of adds, removes, and role changes:
+a user's role.  These changes are described as a list of adds, removes, and
+role changes, as described in {{participant-list}}.
 
 ~~~ ascii-art
-Add: ["mimi://d.example/u/diana", "admin"],
-     ["mimi://e.example/u/eric", "admin"],
+Add: ["mimi://d.example/u/diana", role: 4 (admin)],
+     ["mimi://e.example/u/eric", role: 3 (moderator)],
 Remove: ["mimi://b.example/u/bob"],
-SetRole: [["mimi://c.example/u/cathy", "admin"]]
+SetRole: [["mimi://c.example/u/cathy", role: 1 (banned)]]
 ~~~
 {: #fig-room-state-change title="Changing the state of the room" }
 
-To put these changes into effect, a client or server encodes them in an AppSync
-proposal, signs the proposal as a PublicMessage, and submits them to the
-`update` endpoint on the hub.
+To put these changes into effect, a client or server encodes them in an
+AppDataUpdate {{!I-D.ietf-mls-extensions}} proposal, signs the proposal as a
+PublicMessage, and submits them to the `update` endpoint on the hub.
 
 # MIMI Endpoints and Framing
 
@@ -1859,7 +1849,10 @@ applies to events changing the room state.
 
 Each room is represented cryptographically by an MLS group. The Hub that
 manages the room also manages the list of group members, i.e. the
-list of clients belonging to users currently in the room.
+list of clients belonging to users currently in the room. Application state
+that is stored in the MLS GroupContext is stored as application components
+in the `app_data_dictionary` extension, as described in {{Section 4.6 of
+!I-D.ietf-mls-extensions}}.
 
 ## Proposal-commit paradigm
 
@@ -1891,6 +1884,125 @@ participant belonging to a follower server leaves the room, the certificate of
 that user MUST be removed from the list. Changes to the `external_senders`
 extension only take effect when the MLS proposal containing the event is
 committed by a MIMI commit.
+
+## Participant List
+
+The participant list is a list of "users" in a room. Within a room, each user
+is assigned exactly one *role* (expressed with a `role_index` and described
+in {{!I-D.ietf-mimi-room-policy}} at any given time (specifically within any MLS
+epoch). In a room that has multiple MLS clients per "user", the identifier for
+each user in `participants.user` is the same across all that user's clients in
+the room. Note that each user has a single role at any point in time, and
+therefore all clients of the same user also have the same role.
+
+The participant list may include inactive participants, which currently do not
+have any clients in the corresponding MLS group, for example if their clients
+do not have available KeyPackages or if all of their clients are temporarily
+"kicked" out of the group. The participant list can also contain participants
+that are explicitly banned, by assigning them a suitable role which does not
+have any capabilities.
+
+~~~ tls-presentation
+struct {
+  opaque user<V>;
+  uint32 role_index;
+} UserRolePair;
+
+struct {
+  UserRolePair participants<V>;
+} ParticipantListData;
+~~~
+
+ParticipantListData is the format of the `data` field inside the ComponentData
+struct for the Participant list Metadata component in the `app_data_dictionary`
+GroupContext extension.
+
+~~~ tls-presentation
+struct {
+  uint32 user_index;
+  uint32 role_index;
+} UserindexRolePair;
+
+struct {
+  UserindexRolePair changedRoleParticipants<V>
+  uint32 removedIndices<V>;
+  UserRolePair addedParticipants<V>;
+} ParticipantListUpdate;
+~~~
+
+ParticipantListUpdate is the contents of an AppDataUpdate Proposal with the
+component ID for the participant list. The index of the `participants` vector
+in the current `ParticipantListData` struct is referenced as the `user_index`
+when making changes. First the `changedRoleParticipants` list contains
+`UserindexRolePair`s with the index of a user who changed roles and their new
+role. Next is the `removedIndices` list which has a list of users to remove
+completely from the participant list. Finally there is a list of
+`addedParticipants` (which contains a user and role) that is appended to the
+end of the `ParticipantListData`.
+
+Each of these actions (modifying a user's role, removing a user, and adding a
+user) is authorized separately according to the rules specified in
+{{!I-D.ietf-mimi-room-policy}}. If all the changes are authorized, the
+`ParticipantListData` is modified accordingly.
+
+A single commit is not valid if it contain any combination of Participant list
+updates that operate on (add, remove, or change the role of) the same user in
+the participant list more than once.
+
+## Room Metadata
+
+The Room Metadata component contains data about a room which might be displayed
+as human-readable information for the room, such as the name of the room and a
+URL pointing to its room image/avatar.
+
+It can contain a list of `room_descriptions`, each of which can have a specific
+`language_tag` and `media_type` along with the `description_content`. An empty
+`media_type` implies `text/plain;charset=utf-8`.
+
+RoomMetaData is the format of the `data` field inside the ComponentData struct
+for the Room Metadata component in the `app_data_dictionary` GroupContext
+extension.
+
+~~~ tls-presentation
+/* a valid URI (ex: MIMI URI) */
+struct {
+  opaque uri<V>;
+} Uri;
+
+/* a sequence of valid UTF8 without nulls */
+struct {
+  opaque string<V>;
+} UTF8String;
+
+struct {
+  /* an empty media_type is equivalent to text/plain;charset=utf-8 */
+  opaque media_type<V>;
+  opaque language_tag<V>;
+  opaque description_content<V>;
+} RichDescription;
+
+struct {
+  Uri room_uri;
+  UTF8String room_name;
+  RichDescription room_descriptions<V>;
+  /* an https URI resolving to an avatar image */
+  Uri room_avatar;
+  UTF8String room_subject;
+  UTF8String room_mood;
+} RoomMetaData;
+
+RoomMetaData RoomMetaUpdate;
+~~~
+
+RoomMetaUpdate (which has the same format as RoomMetaData) is the format of the
+`update` field inside the AppDataUpdate struct in an AppDataUpdate Proposal for
+the Room Metadata component.
+If the contents of the `update` field are valid and if the proposer is
+authorized to generate such an update, the value of the `update` field
+completely replaces the value of the `data` field.
+
+Only a single Room metadata update is valid per commit.
+
 
 # Consent
 
