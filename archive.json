@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-27T00:43:58.614781+00:00",
+  "timestamp": "2025-03-02T00:47:40.068285+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -72,6 +72,11 @@
       "name": "ready-for-PR",
       "description": "",
       "color": "217D80"
+    },
+    {
+      "name": "chore",
+      "description": "",
+      "color": "000000"
     }
   ],
   "issues": [
@@ -1055,13 +1060,16 @@
       "state": "OPEN",
       "author": "rohan-wire",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "rohanmahy"
+      ],
       "labels": [
-        "WG reviewed"
+        "WG reviewed",
+        "ready-for-PR"
       ],
       "body": "Figure out if versioning of endpoints includes different options inside the same framing, or a whole new endpoint, discovered by the directory, or something else.",
       "createdAt": "2024-02-19T19:33:42Z",
-      "updatedAt": "2024-12-04T17:27:58Z",
+      "updatedAt": "2025-02-27T03:44:02Z",
       "closedAt": null,
       "comments": [
         {
@@ -1232,11 +1240,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "WG reviewed"
+        "WG reviewed",
+        "chore"
       ],
       "body": "- [ ]  Make ASCII art fit in 72 characters (only done so far for Bob Adds Cathy flow)\r\n- [ ]  Show fanouts to multiple servers and clients closer/tighter in time? \r\n- [ ]  Show fanouts to Clients of final commits (done for Bob leaves room flow)\r\n- [ ]  Consider a consistent order of Servers and Clients\r\n- [ ]  Overall make all ascii art diagrams in the document consistent",
       "createdAt": "2024-03-04T16:50:55Z",
-      "updatedAt": "2024-05-08T17:54:54Z",
+      "updatedAt": "2025-02-28T21:46:25Z",
       "closedAt": null,
       "comments": [
         {
@@ -1397,7 +1406,7 @@
       "id": "I_kwDOKZ8QO86e6VMx",
       "title": "Move FrankingAssertion map to mimi-content",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/91",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1407,8 +1416,8 @@
       ],
       "body": "The FrankingAssertion map in Section 5.4.1.1 Client creation and sending should be defined in draft-ietf-mimi-content",
       "createdAt": "2024-11-17T16:30:03Z",
-      "updatedAt": "2025-02-25T01:02:32Z",
-      "closedAt": null,
+      "updatedAt": "2025-02-28T21:44:06Z",
+      "closedAt": "2025-02-28T21:44:06Z",
       "comments": [
         {
           "author": "rohanmahy",
@@ -1443,11 +1452,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "WG reviewed"
+        "WG reviewed",
+        "ready-for-PR"
       ],
       "body": "We need to have a consistent MIMI Threat Model.",
       "createdAt": "2024-12-04T17:06:02Z",
-      "updatedAt": "2024-12-04T17:08:06Z",
+      "updatedAt": "2025-02-27T03:44:19Z",
       "closedAt": null,
       "comments": [
         {
@@ -1488,7 +1498,7 @@
       "id": "I_kwDOKZ8QO86pzR17",
       "title": "Fanout should be able to send a batch of related handshake messages",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/103",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1497,9 +1507,17 @@
       ],
       "body": "An update can contain multiple proposals, with or without a commit. This is effectively a transaction, since the hub either accepts or rejects them together.\n\nHowever during fanout, individual proposals could arrive substantially delayed. A client who wants to send an application message has to commit pending proposals, but does not know if/when a fanned out handshake is the last accepted pending proposal, or to expect an accepted commit. We should allow fanout to include a batch of related handshake messages.",
       "createdAt": "2025-02-12T16:35:21Z",
-      "updatedAt": "2025-02-26T04:46:15Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-02-27T01:35:13Z",
+      "closedAt": "2025-02-27T01:35:12Z",
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Addressed in #106 ",
+          "createdAt": "2025-02-27T01:35:12Z",
+          "updatedAt": "2025-02-27T01:35:12Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -9001,7 +9019,7 @@
       "labels": [],
       "body": "This PR introduces the notion of pseudonymous credentials for MIMI by introducing a new room type \"Minimal Metadata Rooms\". We could also make that a configuration flag and/or use another name. I'm open to suggestions in that regard. There are still a few TODOs/open questions, though:\r\n\r\n- Encryption of `identity_link_keys`: We intend to solve this via the TreeWrap mechanism we proposed, but we haven't quite finished writing up the spec for that. For now it's a simple static key.\r\n- External joins: There's still a small issue with external joins. In theory, new joiners just need the `identity_link_wrapper_key` to join the group, but if we start rotating that, we run into race conditions. How we solve that depends a bit on the situations in which we need external joins. Maybe we can discuss this in a future interim.\r\n- Connections: For Minimal Metadata Rooms to work, users need to learn the `connection_key` of other users they want to add to a group. Since we probably also want a notion of \"connection\" for other things such as consent, this PR only expresses the requirement for connection key exchange for now.",
       "createdAt": "2025-01-13T07:35:44Z",
-      "updatedAt": "2025-02-27T00:21:46Z",
+      "updatedAt": "2025-02-28T21:12:09Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "291f60313025445b7c32434a81f7681de7adab36",
@@ -9019,6 +9037,13 @@
           "body": "After the MIMI interim, I think I like the idea of accepting this PR up to line 1821 and adding a note that the key exchange is going to be addressed separately. Then we can try a few keying solutions and see how will they fit our requirements (either for credentials only, or also for sensitive data in the GroupContext, like room metadata).",
           "createdAt": "2025-02-26T20:51:05Z",
           "updatedAt": "2025-02-26T20:51:05Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "One other issue that occurred to me is that the Hub could enforce some membership changes based on a member giving the pseudonym a role, but Preauthorization would be useless since the credentials are all or nothing. Selective disclosure or ZKPs in credentials would be more flexible.",
+          "createdAt": "2025-02-28T21:12:08Z",
+          "updatedAt": "2025-02-28T21:12:08Z"
         }
       ],
       "reviews": [
@@ -9202,26 +9227,49 @@
       "id": "PR_kwDOKZ8QO86K3p1w",
       "title": "Move Participant List and Room Metadata in",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/102",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Move Participant List and Room Metadata over from draft-mahy-mimi-app-components",
       "createdAt": "2025-02-11T21:58:48Z",
-      "updatedAt": "2025-02-11T22:02:04Z",
+      "updatedAt": "2025-02-28T21:38:45Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
-      "baseRefOid": "291f60313025445b7c32434a81f7681de7adab36",
+      "baseRefOid": "a0d82da4e1f227a6acd2f25524960ff0ba454ec9",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "plist-metadata",
-      "headRefOid": "e99a347864e5a3fc8f805cde9a23a720438586dd",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "f021143de960ec9d69bdcd353a8cba40aa875a0f",
+      "closedAt": "2025-02-28T21:38:45Z",
+      "mergedAt": "2025-02-28T21:38:45Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "53de480f986a0a887e70a13aea420290c7507680"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86eD0RJ",
+          "commit": {
+            "abbreviatedOid": "315f871"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-28T21:25:54Z",
+          "updatedAt": "2025-02-28T21:26:39Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "```suggestion\r\nflows where a user can \"knock\" to ask to enter a room, nor does it\r\n```",
+              "createdAt": "2025-02-28T21:25:54Z",
+              "updatedAt": "2025-02-28T21:26:39Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 104,
@@ -9315,6 +9363,94 @@
           "body": "",
           "createdAt": "2025-02-26T17:03:26Z",
           "updatedAt": "2025-02-26T17:03:26Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 107,
+      "id": "PR_kwDOKZ8QO86M9ahx",
+      "title": "Fix inconsistencies in GroupInfoResponse",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/107",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- Fix inconsistencies in GroupInfoResponse\r\n- In error response cases, don't require the MLS payload",
+      "createdAt": "2025-02-28T16:00:13Z",
+      "updatedAt": "2025-02-28T21:43:41Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "a0d82da4e1f227a6acd2f25524960ff0ba454ec9",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "groupinfo-fix",
+      "headRefOid": "53a027f18b0c0dec7aba0fca7715e6b91d35a196",
+      "closedAt": "2025-02-28T21:43:41Z",
+      "mergedAt": "2025-02-28T21:43:41Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "ca463fed74f03e7a05ba2ff3b62158f02312035e"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86eDyMW",
+          "commit": {
+            "abbreviatedOid": "c40e8b8"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2025-02-28T21:19:52Z",
+          "updatedAt": "2025-02-28T21:24:43Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "```suggestion\r\n    case success:\r\n```",
+              "createdAt": "2025-02-28T21:19:53Z",
+              "updatedAt": "2025-02-28T21:24:43Z"
+            },
+            {
+              "originalPosition": 30,
+              "body": "What happens in other cases?  You could add something like:\r\n\r\n```\r\n    default: struct{}\r\n```",
+              "createdAt": "2025-02-28T21:24:37Z",
+              "updatedAt": "2025-02-28T21:24:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86eD5lH",
+          "commit": {
+            "abbreviatedOid": "c40e8b8"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-28T21:41:10Z",
+          "updatedAt": "2025-02-28T21:41:10Z",
+          "comments": [
+            {
+              "originalPosition": 39,
+              "body": "```suggestion\r\n      };\r\n  default: struct{};\r\n```",
+              "createdAt": "2025-02-28T21:41:10Z",
+              "updatedAt": "2025-02-28T21:41:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86eD6TC",
+          "commit": {
+            "abbreviatedOid": "53a027f"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-28T21:43:22Z",
+          "updatedAt": "2025-02-28T21:43:22Z",
           "comments": []
         }
       ]
