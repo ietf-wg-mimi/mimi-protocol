@@ -39,7 +39,7 @@ author:
     email: konrad.kohbrok@datashrine.de
  -
     fullname: Rohan Mahy
-    organization: Unaffiliated
+    organization: Rohan Mahy Consulting Services
     email: rohan.ietf@gmail.com
  -
     fullname: Travis Ralston
@@ -51,14 +51,16 @@ author:
     email: ietf@raphaelrobert.com
 
 normative:
-  I-D.kohbrok-mls-associated-parties:
-    title: MLS Associated parties
-    author:
-      name: Konrad Kohbrok
-      org: Phoenix R&D
-      email: konrad.kohbrok@datashrine.de
-    date: 2024
-
+    OidcCore:
+        target: https://openid.net/specs/openid-connect-core-1_0.html
+        title: "OpenID Connect Core 1.0 incorporating errata set 2"
+        date: 2023-12-15
+        author:
+           - name: Nat Sakimura
+           - name: John Bradley
+           - name: Michael B. Jones
+           - name: Breno de Medeiros
+           - name: Chuck Mortimore
 
 informative:
   SecretConversations:
@@ -150,37 +152,26 @@ of the room (including, for example, the room's participant list).
 
 In this version of the document, we have tried to capture enough concrete
 functionality to enable basic application functionality, while defining enough
-of a protocol framework to indicate how to add other necessary functionality.  The
-following functions are likely to be needed by the complete protocol, but are
-not covered here:
+of a protocol framework to indicate how to add other necessary functionality.
+The following functions are likely to be needed by the complete protocol, but
+are not covered here:
 
 Authorization policy:
 : In this document, we introduce a notional concept of roles for
-participants, and permissions for roles. Actual messaging systems have more
-complex and well-specified authorization policies about which clients can
-take which actions in a room.
+participants, and permissions for roles. Concrete authorization policies
+are defined in {{I-D.ietf-mimi-room-policy}}.
 
-Advanced join/leave flows:
-: In this document, all adds / removes / joins / leaves are initiated from
-within the group, or by a new joiner who already has permission to join,
-as this aligns well with MLS.  Messaging applications
-support a variety of other flows, some of which this protocol will need to
-support.
+Knock and invite flows:
+: This document describes how user can be added, or how authorized users can
+add themselves to a group based on the policy of the room. It does not include
+flows where a user can "knock" to ask to enter a room, nor does it
+include "invitations", where a user offers information to another user about
+how to be added to a room.
 
 Identifiers:
 : Certain entities in the MIMI system need to be identified in the protocol.  In
 this document, we define a notional syntax for identifiers, but a more
 concrete one should be defined.
-
-Abuse reporting:
-: There is no mechanism in this document for reporting abusive behavior to a
-messaging provider.
-
-Identifier resolution:
-: In some cases, the identifier used to initiate communications with a user
-might be different from the identifier that should be used internally.  For
-example, a user-visible handle might need to be mapped to a durable internal
-identifier.  This document provides no mechanism for such resolution.
 
 Authentication
 : While MLS provides basic message authentication, users should also be able
@@ -680,12 +671,13 @@ capable of participating in the corresponding room.
 The hub server for the room stores the state of the room, comprising:
 
 * The *base policy* of the room, which does not depend on the specific
-  participants in the room. For example, this includes the room roles
-  and their permissions.
+  participants in the room. For example, this includes the room *roles*
+  and their permissions (defined in {{!I-D.ietf-mimi-room-policy}} and
+  *preauthorization* policy).
 * The *participant list*: a list of the users who are participants of the
-  room, and each user's role in the room.
-
-> **TODO**: We need a more full description of the room, room state syntax.
+  room, and each user's role in the room (defined in {{participant-list}}).
+* Room metadata, such as the room name, description, and image (defined in
+  {{room-metadata}}).
 
 When a client requests key material via the hub, the hub records the
 KeyPackageRef values for the returned KeyPackages, and the identity of the
@@ -695,20 +687,20 @@ Welcome message to the proper provider.
 ### Participant List Changes
 
 The participant list can be changed by adding or removing users, or changing
-a user's role.  These changes are described without a specific syntax as a
-list of adds, removes, and role changes:
+a user's role.  These changes are described as a list of adds, removes, and
+role changes, as described in {{participant-list}}.
 
 ~~~ ascii-art
-Add: ["mimi://d.example/u/diana", "admin"],
-     ["mimi://e.example/u/eric", "admin"],
+Add: ["mimi://d.example/u/diana", role: 4 (admin)],
+     ["mimi://e.example/u/eric", role: 3 (moderator)],
 Remove: ["mimi://b.example/u/bob"],
-SetRole: [["mimi://c.example/u/cathy", "admin"]]
+SetRole: [["mimi://c.example/u/cathy", role: 1 (banned)]]
 ~~~
 {: #fig-room-state-change title="Changing the state of the room" }
 
-To put these changes into effect, a client or server encodes them in an AppSync
-proposal, signs the proposal as a PublicMessage, and submits them to the
-`update` endpoint on the hub.
+To put these changes into effect, a client or server encodes them in an
+AppDataUpdate {{!I-D.ietf-mls-extensions}} proposal, signs the proposal as a
+PublicMessage, and submits them to the `update` endpoint on the hub.
 
 # MIMI Endpoints and Framing
 
@@ -1077,7 +1069,7 @@ struct {
 If the protocol is MLS 1.0, the request body (`appMessage`) is an MLSMessage
 with a WireFormat of PrivateMessage, and a `content_type` of `application`.
 The `sendingUri` is a valid URI of the sender and is an active participant
-in the room.
+in the room (a user URI in the participant list of the room).
 
 The response indicates if the message was accepted by the hub provider. If a
 `frankingTag` was included in the `FrankAAD` extension in the PrivateMessage
@@ -1103,7 +1095,10 @@ struct {
           /* the hub acceptance time
              (in milliseconds from the UNIX epoch) */
           uint64 acceptedTimestamp;
-          optional uint8[32] serverFrank;
+          optional struct {
+            uint8[32] serverFrank;
+            uint8[32] franking_integrity_check;
+          };
         case epochTooOld:
           /* current MLS epoch for the MLS group */
           uint64 currentEpoch;
@@ -1141,24 +1136,22 @@ significant changes as discussed in the final paragraph of this section.
 
 #### Client creation and sending
 
-When ready to send an application message with the MIMI content format,
-the sender generates a new cryptographically random 256-bit `franking_key`.
-An example mechanism to generate the `franking_key` safely is discussed in
-{{example-franking-alg}}.
+When generating an application message with the MIMI content format
+{{!I-D.ietf-mimi-content}}, the sender generates a per-message cryptographically
+random 256-bit salt. (An example mechanism to safely generate the salt is
+discussed in Section 8.2 of {{!I-D.ietf-mimi-content}}.)
 
-Next the sender attaches to the message the `franking_key` and any other
-fields the sender wishes to commit that are not otherwise represented in the
-content. For a MIMI content object, the sender creates a CBOR "FrankingAssertion" map containing the `franking_key`, sender URI, and room
-URI. It adds this FrankingAssertion to the extensions map at the top level
-of the MIMI content using the integer key TBD1.
+Next the sender attaches to the message any fields the sender wishes to commit
+that are not otherwise represented in the content. For a MIMI content object,
+the sender creates a CBOR "FrankingAssertion" map containing the room URI and
+the sender's user URI. It adds this FrankingAssertion to the extensions map at
+the top level of the MIMI content using the integer key TBD1.
 
 ~~~ cbor-diag
 / FrankingAssertion map /
 {
-  / FrankingKey    / 1: h'9c8af7674941aa95f8df37bd36ea89f2
-                          a3ab433aa5baa8e5e465f08a7e8e3b57',
-  / SenderURI      / 2: "mimi://b.example/u/alice",
-  / RoomURI        / 3: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+  / RoomURI        / 1: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+  / SenderUserURI  / 2: "mimi://b.example/u/alice"
 }
 ~~~
 
@@ -1167,10 +1160,11 @@ it just means that the sender is claiming it sent the values in the content,
 and cannot later deny to a receiver that it sent them.
 
 Then the client calculates the `franking_tag`, as the HMAC SHA256 of the
-`application_data` (which includes the FrankingAssertion extension), using the `franking_key`:
+`application_data` (which includes the FrankingAssertion extension), using the
+`salt` in the MIMI content format:
 
 ~~~
-franking_tag = HMAC_SHA256( franking_key, application_data)
+franking_tag = HMAC_SHA256( salt, application_data)
 ~~~
 
 The client includes the `franking_tag` in the Additional Authenticated Data
@@ -1184,10 +1178,11 @@ by the server).
 #### Hub processing
 
 The Hub relies on a per-epoch secret shared among the members of the group
-and itself to obfuscate the message metadata (the `context`) the Hub uses
-while franking. It derives the `franking_context_secret` (with the label
-"franking_context") from the `ap_exporter_secret` in the Associated Party
-Key Schedule {{I-D.kohbrok-mls-associated-parties}}.
+and itself to provider integrity over the message metadata the Hub uses
+(serverURI, roomURI) and adds (acceptedTimestamp, serverFrank) while franking.
+It derives the `franking_integrity_secret`, using the label
+"franking_integrity", from the `ap_exporter_secret` in the Associated Party Key
+Schedule {{!I-D.kohbrok-mls-associated-parties}}.
 
 ~~~ aasvg
          ...
@@ -1198,19 +1193,22 @@ Key Schedule {{I-D.kohbrok-mls-associated-parties}}.
           |
           |
           +--------------------> DeriveSecret(., "ap_exporter")
-          |                      = ap_exporter_secret
-          |                               |
-          |                               |
-          V                               V
-    DeriveSecret(., "init")      DeriveSecret(., "franking_context")
-          |                      = franking_context_secret
-          |
+          |                               = ap_exporter_secret
+          |                                     |
+          |                                     |
+          V                                     |
+    DeriveSecret(., "init")                     |
+          |                                     |
+          |                                     |
+          |                                     |
+          |                                     V
+          |          DeriveSecret(., "franking_integrity")
+          |                   = franking_integrity_secret
           |
           V
     init_secret_[n]
 ~~~
 {: title="The Extended Associated Party Key Schedule" #extended-ap-key-schedule }
-
 
 When the Hub receives an acceptable application message with the `FrankAAD`
 AAD extension and a valid sender identity, it calculates a server frank for
@@ -1219,50 +1217,77 @@ the message as follows:
 ~~~
 context = senderURI || roomURI || acceptedTimestamp
 serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
-franking_context_hash = SHA256(franking_context_secret || context)
+franking_integrity_check = HMAC_SHA256(franking_integrity_secret,
+  serverFrank || context)
 ~~~
 
 `HUBkey` is a secret symmetric key used on the Hub which the Hub can use to verify its own tags.
 
+The `franking_integrity_check` is used by receivers to verify that the
+values added by the Hub (the `serverFrank`, and `acceptedTimestamp`) were not
+modified by a follower provider, and that the `senderURI` and `roomURI` match
+those provided by the sending client.
+The specific construction used is discussed in the Security Considerations
+in {{franking}}.
+
 The Hub fans out the encrypted message (which includes the `franking_tag`),
 the `serverFrank`, the `acceptedTimestamp`, the room URI, and the
-`franking_context_hash`. Note that the `senderURI` is not included in the
-application message, so the sender can remain anonymous with respect to
-follower providers.
+`franking_integrity_check`. Note that the `senderURI` is encrypted in the
+application message, so the sender can remain anonymous with respect to follower
+providers.
 
 #### Receiver verification of frank
 
 When a client receives and decrypts an otherwise valid application message
 from a hub provider, the client looks for the existence of a frank
 (consisting of the `franking_tag` in the AAD, the `serverFrank` and the
-`franking_context_hash`. If so, it derives the `franking_context_secret`
-from the `ap_exporter_secret` in the Associated Party Key Schedule
-{{I-D.kohbrok-mls-associated-parties}}; then it verifies the construction of
-the `franking_tag` from the content of the message, and the construction of
-the `franking_context_hash` from the sender URI, room ID,
-`acceptedTimestamp`, and `franking_context_secret`.
+`franking_integrity_check`). If those fields are available, the client derives the
+`franking_integrity_secret` from the `ap_exporter_secret` in the Associated
+Party Key Schedule {{I-D.kohbrok-mls-associated-parties}}.
 
-The receiving client receives a sender identifier in three different locations. The receiver verifies that they are all the same:
+Next it verifies the integrity of the `serverFrank`, `acceptedTimestamp`,
+`senderURI`, and `roomURI` by calculating its own `franking_integrity_check`
+from these values with the `franking_integrity_secret` and comparing it to the
+provided `franking_integrity_check`.
 
-- the sender's identity in its credential in its MLS LeafNode
-- the sender's identity asserted in the FrankingAssertion map inside the MIMI Content
-- the (hidden) sender's identity in the context used to create the `serverFrank`. The client hashes the concatenation of the sender's identity, the room ID, and the acceptedTimestamp. If this hash matches the context_validation hash, then the identity used by the server was correct.
+Finally it verifies the construction of the `franking_tag` from the content
+of the message (including the embedded `salt`),
+that the sender's identity in its credential in its MLS LeafNode matches
+the sender's user identity asserted in the FrankingAssertion map inside the MIMI
+Content, and that the RoomURI inside the MIMI Content matches the room ID in
+the received message.
 
-The receiver needs to store the frank with the decoded message so it can be
-used later.
+The receiver needs to store the frank and context with the decoded message
+so it can be used later.
 
 #### Comparison with the Facebook franking scheme
 
-Unlike in the Facebook franking scheme {{SecretConversations}}, the sender
-"commits to" its `franking_tag` as Additional Authenticated Data (AAD) inside the end-to-end encrypted message, and the hub only sends a hash of
-its context. This first change insures that the client cannot come up with
-another `franking_key` and message that has the same `franking_tag`
-{{Grubbs2017}}{{InvisibleSalamanders}}. According to {{Grubbs2017}},
+Unlike in the Facebook franking scheme {{SecretConversations}}, the MIMI
+use case involves traffic which can transit multiple federated providers,
+any of which may be compromised or malicious. The MIMI franking scheme
+described here differs in the following ways.
+
+The sender
+includes its `franking_tag` as Additional Authenticated Data (AAD) inside the end-to-end encrypted message. This insures that the `franking_tag` is not tampered with by the sender's provider.
+According to {{Grubbs2017}},
 "... [Facebook's] franking scheme does not bind [the franking tag] to [the
 ciphertext] by including [the franking tag] in the associated data during
 encryption".
-The second change allows receivers to validate the sender URI in the hub's
-context, without revealing the sender URI to follower providers.
+
+In MLS, the Hub cannot view the sender identity in an application message,
+so the sender sends its identity to the Hub. The hub never sends the
+identity of the sender to receivers, since this would be observed by
+follower providers. However, the receiver needs to verify that the sender
+identity provided by the sender's provider to the Hub matches the identity
+the receiver sees after it decrypts the message. Using a key shared between
+members and the Hub (the `franking_integrity_secret`) the Hub sends an HMAC
+of its context (sender identity, room id, and timestamp) and the serverFrank
+with this key. The second change provides two functions. Itallows receivers to
+validate the sender URI in the hub's context, without revealing the sender URI
+to follower providers. It also prevents a follower provider from "mauling" the
+serverFrank, or breaking the context comparison (by modifying the
+`acceptedTimestamp`). Each receiver uses this to verify that the timestamp and
+franking parameters added by the Hub were not modified.
 
 
 ## Fanout Messages and Room Events
@@ -1292,9 +1317,8 @@ POST /notify/{roomId}
 
 ~~~ tls
 struct {
-  uint8[32] franking_tag;
   uint8[32] serverFrank;
-  uint8[32] franking_context_hash;
+  uint8[32] franking_integrity_check;
 } Frank;
 
 struct {
@@ -1311,6 +1335,12 @@ struct {
            optional Frank frank;
         case welcome:
            RatchetTreeOption ratchetTreeOption;
+        case proposal:
+           /* a list of additional proposals, each represented */
+           /* as either PublicMessage or SemiPrivateMessage    */
+           MLSMessage moreProposals<V>;
+        case commit:
+           struct {};
       };
   };
 } FanoutMessage;
@@ -1330,7 +1360,11 @@ failover in high availability recovery scenarios.
 Clients that are being removed SHOULD receive the corresponding
 Commit message, so they can recognize that they have been removed and clean up
 their internal state. A removed client might not receive a commit if it was
-removed as a malicious or abusive client, or if it obviously deleted.
+removed as a malicious or abusive client, or if it was obviously deleted.
+
+The `moreProposals` list in a `FanoutMessage` MUST be the same as the
+corresponding `moreProposals` list in the `HandshakeBundle` of an
+`UpdateRequest`.
 
 The response to a FanoutMessage contains no body. The HTTP response code
 indicates if the messages in the request were accepted (201 response code), or
@@ -1415,7 +1449,8 @@ struct {
       Credential requestingCredential;
       HPKEPublicKey groupInfoPublicKey;
       opaque joiningCode<V>;
-      /* SignWithLabel(., "GroupInfoRequestTBS", GroupInfoRequestTBS) */
+      /* SignWithLabel(requestingSignatureKey,          */
+      /*    "GroupInfoRequestTBS", GroupInfoRequestTBS) */
       opaque signature<V>;
   };
 } GroupInfoRequest;
@@ -1449,27 +1484,32 @@ encrypted_groupinfo_and_tree = EncryptWithLabel(
 
 struct {
   Protocol version;
+  opaque room_id<V>;
   GroupInfoCode status;
   select (protocol) {
     case mls10:
       CipherSuite cipher_suite;
-      opaque room_id<V>;
       ExternalSender hub_sender;
-      opaque encrypted_groupinfo_and_tree<V>;
+      HPKECiphertext encrypted_groupinfo_and_tree;
   };
 } GroupInfoResponseTBS;
 
 struct {
   Protocol version;
+  opaque room_id<V>;
   GroupInfoCode status;
-  select (protocol) {
-    case mls10:
-      CipherSuite cipher_suite;
-      opaque room_id<V>;
-      ExternalSender hub_sender;
-      opaque encrypted_groupinfo_and_tree<V>;
-      /* SignWithLabel(., "GroupInfoResponseTBS", GroupInfoResponseTBS) */
-      opaque signature<V>;
+  select (status) {
+    case success:
+      select (protocol) {
+        case mls10:
+          CipherSuite cipher_suite;
+          ExternalSender hub_sender;
+          HPKECiphertext encrypted_groupinfo_and_tree;
+          /* SignWithLabel(hub_sender, "GroupInfoResponseTBS", */
+          /*                GroupInfoResponseTBS) */
+          opaque signature<V>;
+      };
+  default: struct{};
   };
 } GroupInfoResponse;
 ~~~
@@ -1627,7 +1667,11 @@ account so even an exact handle search returns no results. He could still
 send a join link out-of-band to Alice for her to join a room of Zach's
 choosing.
 
-The request body is described as:
+The request body is described as below. Each request can contain multiple
+query elements, which all have to match for the request to match (AND
+semantics). For example matching both the OpenID Connect (OIDC) {{OidcCore}}
+`given_name` and `family_name`, or matching the OIDC `given_name` and the
+organization (from the vCard {{!RFC6350}} ORG property).
 
 ~~~ tls
 enum {
@@ -1645,15 +1689,43 @@ enum {
 
 struct {
   SearchIdentifierType searchType;
-  opaque searchValue<V>;  /* a UTF8 string */
   select(type) {
     case oidcStdClaim:
       opaque claimName<V>;
     case vcardField:
-      opaque fieldName<V>;
+      opaque propertyName<V>;
   };
+  opaque searchValue<V>;  /* a UTF8 string */
+} QueryElement;
+
+struct {
+  QueryElement query_elements<V>;
 } IdentifierRequest;
 ~~~
+
+The semantics of the `SearchIdentifierType` values are as follows. `handle`
+means that the entire handle URI matches exactly (for example: `im:alice.smith@a.example`). `nick` means that the nickname or handle
+user part matches exactly (for example: `alice.smith`). The same account or
+human user may have multiple values which all match the `nick` field. `email`
+means the `addr-spec` production from {{!RFC5322}} matches the query string
+exactly, for example (`asmith@a.example`). `phone` means the international
+format of a telephone number with the "+" prefix matches exactly (for example:
+`+12125551212`).
+
+`partialName` means that the query string matches a case-insensitive substring
+of any field which contains the name of a (usually human) user. For example,
+`mat` would match first (given) or middle names Matt, Matthew, Mathias, or
+Mathieu and last (family) names of Mather and Matali. `wholeProfile` means that
+the query string matches a substring of any searchable field in
+a user's profile.
+
+`oidcStdClaim` means that the query string exactly matches the specified
+UserInfo Standard Claim (defined in Section 5.1 of {{OidcCore}}).
+`vcardField` means that the query string exactly matches the specified vCard
+property listed in the vCard Properties IANA registry.
+
+As noted above, searches only return results for a user when the fields searched
+are searchable according the user's and provider's search policies.
 
 The response body is described as an `IdentifierResponse`. It can contain
 multiple matches depending on the type of query and the policy of the target
@@ -1967,7 +2039,10 @@ applies to events changing the room state.
 
 Each room is represented cryptographically by an MLS group. The Hub that
 manages the room also manages the list of group members, i.e. the
-list of clients belonging to users currently in the room.
+list of clients belonging to users currently in the room. Application state
+that is stored in the MLS GroupContext is stored as application components
+in the `app_data_dictionary` extension, as described in {{Section 4.6 of
+!I-D.ietf-mls-extensions}}.
 
 ## Proposal-commit paradigm
 
@@ -1999,6 +2074,125 @@ participant belonging to a follower server leaves the room, the certificate of
 that user MUST be removed from the list. Changes to the `external_senders`
 extension only take effect when the MLS proposal containing the event is
 committed by a MIMI commit.
+
+## Participant List
+
+The participant list is a list of "users" in a room. Within a room, each user
+is assigned exactly one *role* (expressed with a `role_index` and described
+in {{!I-D.ietf-mimi-room-policy}} at any given time (specifically within any MLS
+epoch). In a room that has multiple MLS clients per "user", the identifier for
+each user in `participants.user` is the same across all that user's clients in
+the room. Note that each user has a single role at any point in time, and
+therefore all clients of the same user also have the same role.
+
+The participant list may include inactive participants, which currently do not
+have any clients in the corresponding MLS group, for example if their clients
+do not have available KeyPackages or if all of their clients are temporarily
+"kicked" out of the group. The participant list can also contain participants
+that are explicitly banned, by assigning them a suitable role which does not
+have any capabilities.
+
+~~~ tls-presentation
+struct {
+  opaque user<V>;
+  uint32 role_index;
+} UserRolePair;
+
+struct {
+  UserRolePair participants<V>;
+} ParticipantListData;
+~~~
+
+ParticipantListData is the format of the `data` field inside the ComponentData
+struct for the Participant list Metadata component in the `app_data_dictionary`
+GroupContext extension.
+
+~~~ tls-presentation
+struct {
+  uint32 user_index;
+  uint32 role_index;
+} UserindexRolePair;
+
+struct {
+  UserindexRolePair changedRoleParticipants<V>
+  uint32 removedIndices<V>;
+  UserRolePair addedParticipants<V>;
+} ParticipantListUpdate;
+~~~
+
+ParticipantListUpdate is the contents of an AppDataUpdate Proposal with the
+component ID for the participant list. The index of the `participants` vector
+in the current `ParticipantListData` struct is referenced as the `user_index`
+when making changes. First the `changedRoleParticipants` list contains
+`UserindexRolePair`s with the index of a user who changed roles and their new
+role. Next is the `removedIndices` list which has a list of users to remove
+completely from the participant list. Finally there is a list of
+`addedParticipants` (which contains a user and role) that is appended to the
+end of the `ParticipantListData`.
+
+Each of these actions (modifying a user's role, removing a user, and adding a
+user) is authorized separately according to the rules specified in
+{{!I-D.ietf-mimi-room-policy}}. If all the changes are authorized, the
+`ParticipantListData` is modified accordingly.
+
+A single commit is not valid if it contain any combination of Participant list
+updates that operate on (add, remove, or change the role of) the same user in
+the participant list more than once.
+
+## Room Metadata
+
+The Room Metadata component contains data about a room which might be displayed
+as human-readable information for the room, such as the name of the room and a
+URL pointing to its room image/avatar.
+
+It can contain a list of `room_descriptions`, each of which can have a specific
+`language_tag` and `media_type` along with the `description_content`. An empty
+`media_type` implies `text/plain;charset=utf-8`.
+
+RoomMetaData is the format of the `data` field inside the ComponentData struct
+for the Room Metadata component in the `app_data_dictionary` GroupContext
+extension.
+
+~~~ tls-presentation
+/* a valid URI (ex: MIMI URI) */
+struct {
+  opaque uri<V>;
+} Uri;
+
+/* a sequence of valid UTF8 without nulls */
+struct {
+  opaque string<V>;
+} UTF8String;
+
+struct {
+  /* an empty media_type is equivalent to text/plain;charset=utf-8 */
+  opaque media_type<V>;
+  opaque language_tag<V>;
+  opaque description_content<V>;
+} RichDescription;
+
+struct {
+  Uri room_uri;
+  UTF8String room_name;
+  RichDescription room_descriptions<V>;
+  /* an https URI resolving to an avatar image */
+  Uri room_avatar;
+  UTF8String room_subject;
+  UTF8String room_mood;
+} RoomMetaData;
+
+RoomMetaData RoomMetaUpdate;
+~~~
+
+RoomMetaUpdate (which has the same format as RoomMetaData) is the format of the
+`update` field inside the AppDataUpdate struct in an AppDataUpdate Proposal for
+the Room Metadata component.
+If the contents of the `update` field are valid and if the proposer is
+authorized to generate such an update, the value of the `update` field
+completely replaces the value of the `data` field.
+
+Only a single Room metadata update is valid per commit.
+
 
 # Consent
 
@@ -2057,6 +2251,8 @@ room.
 
 # Security Considerations
 
+>**TODO**: Add MIMI threat model, and great expand this section.
+
 The MIMI protocol incorporates several layers of security.
 
 Individual protocol actions are protected against network attackers with
@@ -2084,25 +2280,18 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 
 TBD.
 
-### Example algorithm for generating franking keys {#example-franking-alg}
-
-To ensure a strong source of entropy for the `franking_key` included in each
-message, the client can export a secret from the MLS key schedule, for
-example with the label `franking_base_secret` and calculate the
-`franking_key` as the HMAC of a locally generated nonce and the
-`franking_base_secret`.
-
-~~~
-franking_key = HMAC_SHA256( franking_base_secret, nonce )
-~~~
+>**TODO**: Present the franking mechanism to CFRG for review.
 
 
 # IANA Considerations
 
+>**TODO**: Add registration of MIMI content format extension, and a SafeAAD
+component.
 
 --- back
 
 # Acknowledgments
 {:numbered="false"}
 
-> **TODO**:
+Thanks to Paul Grubs, Jon Millican, and Julia Len for their reviews of the
+franking mechanism and suggested changes.
