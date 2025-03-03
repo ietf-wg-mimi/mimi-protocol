@@ -1867,7 +1867,7 @@ struct {
   clients real identifier
 
 
-In each room, the `user_pseudonym` of a client MUST be the same across all
+In any given room, the `user_pseudonym` of a client MUST be the same across all
 clients of a user and it MUST be the same as the user's entry in the participant
 list.
 
@@ -1886,9 +1886,9 @@ struct {
 } IdentityLinkTBE
 ~~~
 
-The `identity_link_ciphertext` is created by encrypting the IdentityLinkTBE,
-which contains the client's real credential, as well as a signature over the
-PseudonymousCredentialTBS using the client credential's signature key.
+The `identity_link_ciphertext` is created by encrypting the IdentityLinkTBE.
+The IdentityLinkTBE contains the client's real credential, and a signature over the
+PseudonymousCredentialTBS signed with the client credential's `signature_public_key`.
 
 The `identity_link_key` used for encryption is unique per pseudonymous credential.
 It is derived from the client's `connection_key`.
@@ -1989,10 +1989,9 @@ During connection establishment, users MUST exchange connection keys in a
 mutually authenticated way and in such a way that only the two users learn the
 key.
 
-When a user wants to add another user to an MMR, it fetches KeyPackages with
-PseudonymousCredentials that share a user pseudonym (see
+When a user wants to add another user to an MMR, it fetches one KeyPackage for each of that user's clients, such that each of the clients keypackages has a PseudonymousCredential that shares a single user pseudonym (see
 {{pseudonymous-keypackages}}). The adder then derives the `identity_link_key`
-for all KeyPackages and re-encrypts those keys under the MMR's
+for all the added client's KeyPackages and re-encrypts those keys under the MMR's
 `identity_link_wrapper_key`. When adding the user to the MMR, it includes the
 AddAAD as described in {{identity-link-keys}}.
 
