@@ -1826,6 +1826,80 @@ struct {
 
 There is no response body. The response code only indicates if the abuse report was accepted, not if any specific automated or human action was taken.
 
+# Minimal metadata rooms
+
+The room state is visible to the hub and with it the room's participant list,
+giving the hub access to a significant amount of user metadata.
+
+To limit the amount of metadata the hub has access to, rooms can be created as
+_minimal metadata rooms_ (MMR). In an MMR the participant list and the
+credentials in the room's underlying MLS group consist only of pseudonyms. The
+real identifiers are stored alongside the pseudonyms encrypted under a key known
+only to room participants, but not the hub.
+
+MMRs requires some additional key management, which leads to restrictions in how
+the MMR can be joined and which users each participant can add to the room.
+
+## Credential encryption
+
+Identifiers of participants and their clients occur in two locations in a room's
+state: the participant list and the credentials of the room's underlying MLS
+group. In an MMR, the real identifiers of clients and users are replaced by
+pseudonyms in the shape of random UUIDs qualified with the domain of the user's
+provider.
+
+In MMRs, all leaves of the underlying group MUST contain PseudonymousCredentials.
+
+~~~ tls
+struct {
+  IdentifierUri client_pseudonym;
+  IdentifierUri user_pseudonym;
+  opaque signature_public_key;
+  opaque identity_link_ciphertext<V>;
+} PseudonymousCredential
+~~~
+
+- `user_pseudonym`: The pseudonym of the client's user in this group
+- `client_pseudonym`: The pseudonym of the client identified by this credential
+- `signature_public_key`: The signature public key used to authenticate MLS
+  messages
+- `identity_link_ciphertext`: A ciphertext containing a credential with the
+  clients real identifier
+
+
+In any given room, the `user_pseudonym` of a client MUST be the same across all
+clients of a user and it MUST be the same as the user's entry in the participant
+list.
+
+~~~ tls
+struct {
+  IdentifierUri client_pseudonym;
+  IdentifierUri user_pseudonym;
+  opaque signature_public_key;
+} PseudonymousCredentialTBS
+
+struct {
+  /* SignWithLabel(., "PseudonymousCredentialTBS",
+    PseudonymousCredentialTBS) */
+  opaque pseudonymous_credential_signature<V>;
+  Credential client_credential;
+} IdentityLinkTBE
+~~~
+
+The `identity_link_ciphertext` is created by encrypting the IdentityLinkTBE.
+The IdentityLinkTBE contains the client's real credential, and a signature over the
+PseudonymousCredentialTBS signed with the client credential's `signature_public_key`.
+
+> **TODO**: Specify a key management scheme that ideally
+> - is efficient
+> - allows the basic MIMI flows
+> - ensures that all participants can learn the identities of all other
+>   participants at all times
+> - provides FS and PCS w.r.t. metadata hiding
+>
+> There are several options that represent different trade-offs, but are not yet
+> fully specified. They will be added at a later date.
+
 # Relation between MIMI state and cryptographic state
 
 ## Room state
