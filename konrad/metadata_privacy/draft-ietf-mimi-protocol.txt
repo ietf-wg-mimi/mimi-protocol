@@ -113,10 +113,6 @@ Table of Contents
      5.9.  Report abuse
    6.  Minimal metadata rooms
      6.1.  Credential encryption
-     6.2.  Identity link keys
-     6.3.  Identity link wrapper key
-     6.4.  Connection keys
-       6.4.1.  Pseudonymous KeyPackages
    7.  Relation between MIMI state and cryptographic state
      7.1.  Room state
      7.2.  Cryptographic room representation
@@ -1973,124 +1969,13 @@ ServerC->ClientC*: [[ Commit ]]
    credential, and a signature over the PseudonymousCredentialTBS signed
    with the client credential's signature_public_key.
 
-   The identity_link_key used for encryption is unique per pseudonymous
-   credential.  It is derived from the client's connection_key.
+      *TODO*: Specify a key management scheme that ideally - is
+      efficient - allows the basic MIMI flows - ensures that all
+      participants can learn the identities of all other participants at
+      all times - provides FS and PCS w.r.t. metadata hiding
 
-   identity_link_key = ExpandWithLabel(connection_key,
-     "IdentityLinkKey", PseudonymousCredentialTBS, KDF.Nh)
-
-   See Section 6.4 for more details on connection_keys.
-
-   Pseudonyms are specific to each room and client since the
-   identity_link_key is unique per pseudonymous credential and
-   pseudonymous credentials are meant to be used only once (i.e. in one
-   room).  Re-use of pseudonymous credential can occur if KeyPackages
-   are re-used.  See Section 6.4.1.
-
-6.2.  Identity link keys
-
-   To allow all participants of a room's underlying group to link each
-   pseudonym with a real identity, all identity link keys must be
-   available to all participants, including new joiners.  To that end,
-   and to ensure agreement among group members, the identity_link_keys
-   are stored encrypted in the IdentityLinkKeysExtension.  The MLS group
-   underpinning an MMR MUST contain an IdentityLinkKeysExtension.
-
-   struct {
-     opaque ciphertext<V>;
-   } EncryptedIdentityLinkKey
-
-   struct {
-     optional<EncryptedIdentityLinkKey> identity_link_key_ciphertexts<V>;
-   } IdentityLinkKeysExtension
-
-   The identity_link_key_ciphertexts vector has as many entries as the
-   MLS group has leaves and it contains the encrypted identity_link_key
-   of each group member at the leaf index of that member.
-
-   The individual identity_link_keys of the participants are encrypted
-   using the group's identity_link_wrapper_key (see Section 6.3).
-
-   When members are removed from the group, the corresponding entries in
-   the IdentityLinkKeysExtension MUST be removed as well.
-
-   When members are added to the group via a room state update (see
-   Section 5.3), the sender MUST use the SafeAAD mechanism described in
-   [I-D.ietf-mls-extensions] to include an AddAAD.
-
-   struct {
-     EncryptedIdentityLinkKey identity_link_key_ciphertextexts<V>;
-   } AddAAD
-
-   Each identity_link_key_ciphertext corresponds to an added group
-   member.  The order of ciphertexts in the identity_link_ciphertexts
-   MUST be the same as that of the Add proposals in the commit adding
-   the new members.
-
-6.3.  Identity link wrapper key
-
-   TODO: The concept of an identity link wrapper key will be replaced by
-   the TreeWrap protocol, which is currently still work in progress.
-
-   The identity link wrapper key protects the identity_link_keys of a
-   group while they are stored on the server.  The
-   identity_link_wrapper_key is sampled randomly when the group is
-   created.  It is static throughout the lifetime of the group.
-
-   When participants are added to an MMR via the add flow, the Welcome
-   message MUST include an IdentityLinkWrapperKeyExtension which
-   contains the group's identity_link_wrapper_key.
-
-   struct {
-     opaque identity_link_wrapper_key<V>;
-   } IdentityLinkWrapperKeyExtension
-
-   TODO: External joiners must also learn the identity link wrapper key,
-   e.g. as part of a join link.  This creates difficulties if we want to
-   rotate the identity_link_wrapper_key in the future (or indeed if we
-   use TreeWrap, which will also rotate keys.)
-
-6.4.  Connection keys
-
-   TODO: This section assumes that MIMI will have a mechanism that
-   establishes a connection (for lack of a better term) between two
-   users.  The content of this section heavily depends on what
-   connection establishment will look like, so for now the section only
-   contains a sketch of the functionality around connection keys.
-
-   Upon user creation, each user samples a random connection_key.  That
-   key is required by any other user that wants to add the user to an
-   MMR via the add flow.
-
-   During connection establishment, users MUST exchange connection keys
-   in a mutually authenticated way and in such a way that only the two
-   users learn the key.
-
-   When a user wants to add another user to an MMR, it fetches one
-   KeyPackage for each of that user's clients, such that each of the
-   clients keypackages has a PseudonymousCredential that shares a single
-   user pseudonym (see Section 6.4.1).  The adder then derives the
-   identity_link_key for all the added client's KeyPackages and re-
-   encrypts those keys under the MMR's identity_link_wrapper_key.  When
-   adding the user to the MMR, it includes the AddAAD as described in
-   Section 6.2.
-
-   Users can rotate their connection key by sampling a new key and
-   sending the new key to all users with which they are connected.
-
-6.4.1.  Pseudonymous KeyPackages
-
-   If a user wants to support MMRs it needs to upload KeyPackages with
-   PseudonymousCredentials for all of its clients.
-
-   As all of a user's clients in an MMR MUST share the same
-   user_pseudonym, a user's clients MUST ensure that other users can
-   obtain sets of KeyPackages with consistent user_pseudonyms.
-
-   Note that a user's user_pseudonyms are only unique per group as long
-   as adding users don't re-use KeyPackages.  KeyPackage re-use (e.g. in
-   case a user's supply of KeyPackages is exhausted) will lead to
-   duplicate use of user_pseudonyms.
+      There are several options that represent different trade-offs, but
+      are not yet fully specified.  They will be added at a later date.
 
 7.  Relation between MIMI state and cryptographic state
 

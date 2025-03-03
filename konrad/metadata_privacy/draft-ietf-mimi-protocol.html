@@ -1288,20 +1288,6 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
                 <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-credential-encryption" class="internal xref">Credential encryption</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
-                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-identity-link-keys" class="internal xref">Identity link keys</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.3">
-                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="auto internal xref">6.3</a>.  <a href="#name-identity-link-wrapper-key" class="internal xref">Identity link wrapper key</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.4">
-                <p id="section-toc.1-1.6.2.4.1"><a href="#section-6.4" class="auto internal xref">6.4</a>.  <a href="#name-connection-keys" class="internal xref">Connection keys</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.4.2.1">
-                    <p id="section-toc.1-1.6.2.4.2.1.1"><a href="#section-6.4.1" class="auto internal xref">6.4.1</a>.  <a href="#name-pseudonymous-keypackages" class="internal xref">Pseudonymous KeyPackages</a></p>
-</li>
-                </ul>
-</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
@@ -4030,130 +4016,18 @@ struct {
 <p id="section-6.1-7">The <code>identity_link_ciphertext</code> is created by encrypting the IdentityLinkTBE.
 The IdentityLinkTBE contains the client's real credential, and a signature over the
 PseudonymousCredentialTBS signed with the client credential's <code>signature_public_key</code>.<a href="#section-6.1-7" class="pilcrow">¶</a></p>
-<p id="section-6.1-8">The <code>identity_link_key</code> used for encryption is unique per pseudonymous credential.
-It is derived from the client's <code>connection_key</code>.<a href="#section-6.1-8" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-6.1-9">
-<pre>
-identity_link_key = ExpandWithLabel(connection_key,
-  "IdentityLinkKey", PseudonymousCredentialTBS, KDF.Nh)
-</pre><a href="#section-6.1-9" class="pilcrow">¶</a>
-</div>
-<p id="section-6.1-10">See <a href="#connection-keys" class="auto internal xref">Section 6.4</a> for more details on <code>connection_key</code>s.<a href="#section-6.1-10" class="pilcrow">¶</a></p>
-<p id="section-6.1-11">Pseudonyms are specific to each room and client since the <code>identity_link_key</code> is
-unique per pseudonymous credential and pseudonymous credentials are meant to be
-used only once (i.e. in one room). Re-use of pseudonymous credential can occur
-if KeyPackages are re-used. See <a href="#pseudonymous-keypackages" class="auto internal xref">Section 6.4.1</a>.<a href="#section-6.1-11" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="identity-link-keys">
-<section id="section-6.2">
-        <h3 id="name-identity-link-keys">
-<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-identity-link-keys" class="section-name selfRef">Identity link keys</a>
-        </h3>
-<p id="section-6.2-1">To allow all participants of a room's underlying group to link each pseudonym
-with a real identity, all identity link keys must be available to all
-participants, including new joiners. To that end, and to ensure agreement among
-group members, the <code>identity_link_keys</code> are stored encrypted in the
-IdentityLinkKeysExtension. The MLS group underpinning an MMR <span class="bcp14">MUST</span> contain an
-IdentityLinkKeysExtension.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-6.2-2">
-<pre>
-struct {
-  opaque ciphertext&lt;V&gt;;
-} EncryptedIdentityLinkKey
-
-struct {
-  optional&lt;EncryptedIdentityLinkKey&gt; identity_link_key_ciphertexts&lt;V&gt;;
-} IdentityLinkKeysExtension
-</pre><a href="#section-6.2-2" class="pilcrow">¶</a>
-</div>
-<p id="section-6.2-3">The <code>identity_link_key_ciphertexts</code> vector has as many entries as the MLS group
-has leaves and it contains the encrypted <code>identity_link_key</code> of each group
-member at the leaf index of that member.<a href="#section-6.2-3" class="pilcrow">¶</a></p>
-<p id="section-6.2-4">The individual <code>identity_link_keys</code> of the participants are encrypted using the
-group's <code>identity_link_wrapper_key</code> (see <a href="#identity-link-wrapper-key" class="auto internal xref">Section 6.3</a>).<a href="#section-6.2-4" class="pilcrow">¶</a></p>
-<p id="section-6.2-5">When members are removed from the group, the corresponding entries in the
-IdentityLinkKeysExtension <span class="bcp14">MUST</span> be removed as well.<a href="#section-6.2-5" class="pilcrow">¶</a></p>
-<p id="section-6.2-6">When members are added to the group via a room state update (see
-<a href="#update-room-state" class="auto internal xref">Section 5.3</a>), the sender <span class="bcp14">MUST</span> use the SafeAAD mechanism described in
-<span>[<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span> to include an AddAAD.<a href="#section-6.2-6" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-6.2-7">
-<pre>
-struct {
-  EncryptedIdentityLinkKey identity_link_key_ciphertextexts&lt;V&gt;;
-} AddAAD
-</pre><a href="#section-6.2-7" class="pilcrow">¶</a>
-</div>
-<p id="section-6.2-8">Each <code>identity_link_key_ciphertext</code> corresponds to an added group member. The
-order of ciphertexts in the <code>identity_link_ciphertexts</code> <span class="bcp14">MUST</span> be the same as that
-of the Add proposals in the commit adding the new members.<a href="#section-6.2-8" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="identity-link-wrapper-key">
-<section id="section-6.3">
-        <h3 id="name-identity-link-wrapper-key">
-<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-identity-link-wrapper-key" class="section-name selfRef">Identity link wrapper key</a>
-        </h3>
-<p id="section-6.3-1">TODO: The concept of an identity link wrapper key will be replaced by the
-TreeWrap protocol, which is currently still work in progress.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
-<p id="section-6.3-2">The identity link wrapper key protects the <code>identity_link_key</code>s of a group while
-they are stored on the server. The <code>identity_link_wrapper_key</code> is sampled
-randomly when the group is created. It is static throughout the lifetime of the
-group.<a href="#section-6.3-2" class="pilcrow">¶</a></p>
-<p id="section-6.3-3">When participants are added to an MMR via the add flow, the Welcome message <span class="bcp14">MUST</span>
-include an IdentityLinkWrapperKeyExtension which contains the group's
-<code>identity_link_wrapper_key</code>.<a href="#section-6.3-3" class="pilcrow">¶</a></p>
-<div class="lang-tls sourcecode" id="section-6.3-4">
-<pre>
-struct {
-  opaque identity_link_wrapper_key&lt;V&gt;;
-} IdentityLinkWrapperKeyExtension
-</pre><a href="#section-6.3-4" class="pilcrow">¶</a>
-</div>
-<p id="section-6.3-5">TODO: External joiners must also learn the identity link wrapper key, e.g. as
-part of a join link. This creates difficulties if we want to rotate the
-<code>identity_link_wrapper_key</code> in the future (or indeed if we use TreeWrap, which
-will also rotate keys.)<a href="#section-6.3-5" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="connection-keys">
-<section id="section-6.4">
-        <h3 id="name-connection-keys">
-<a href="#section-6.4" class="section-number selfRef">6.4. </a><a href="#name-connection-keys" class="section-name selfRef">Connection keys</a>
-        </h3>
-<p id="section-6.4-1">TODO: This section assumes that MIMI will have a mechanism that establishes a
-connection (for lack of a better term) between two users. The content of this
-section heavily depends on what connection establishment will look like, so for
-now the section only contains a sketch of the functionality around connection
-keys.<a href="#section-6.4-1" class="pilcrow">¶</a></p>
-<p id="section-6.4-2">Upon user creation, each user samples a random <code>connection_key</code>. That key is
-required by any other user that wants to add the user to an MMR via the add
-flow.<a href="#section-6.4-2" class="pilcrow">¶</a></p>
-<p id="section-6.4-3">During connection establishment, users <span class="bcp14">MUST</span> exchange connection keys in a
-mutually authenticated way and in such a way that only the two users learn the
-key.<a href="#section-6.4-3" class="pilcrow">¶</a></p>
-<p id="section-6.4-4">When a user wants to add another user to an MMR, it fetches one KeyPackage for each of that user's clients, such that each of the clients keypackages has a PseudonymousCredential that shares a single user pseudonym (see
-<a href="#pseudonymous-keypackages" class="auto internal xref">Section 6.4.1</a>). The adder then derives the <code>identity_link_key</code>
-for all the added client's KeyPackages and re-encrypts those keys under the MMR's
-<code>identity_link_wrapper_key</code>. When adding the user to the MMR, it includes the
-AddAAD as described in <a href="#identity-link-keys" class="auto internal xref">Section 6.2</a>.<a href="#section-6.4-4" class="pilcrow">¶</a></p>
-<p id="section-6.4-5">Users can rotate their connection key by sampling a new key and sending the new
-key to all users with which they are connected.<a href="#section-6.4-5" class="pilcrow">¶</a></p>
-<div id="pseudonymous-keypackages">
-<section id="section-6.4.1">
-          <h4 id="name-pseudonymous-keypackages">
-<a href="#section-6.4.1" class="section-number selfRef">6.4.1. </a><a href="#name-pseudonymous-keypackages" class="section-name selfRef">Pseudonymous KeyPackages</a>
-          </h4>
-<p id="section-6.4.1-1">If a user wants to support MMRs it needs to upload KeyPackages with
-PseudonymousCredentials for all of its clients.<a href="#section-6.4.1-1" class="pilcrow">¶</a></p>
-<p id="section-6.4.1-2">As all of a user's clients in an MMR <span class="bcp14">MUST</span> share the same <code>user_pseudonym</code>, a
-user's clients <span class="bcp14">MUST</span> ensure that other users can obtain sets of KeyPackages with
-consistent <code>user_pseudonyms</code>.<a href="#section-6.4.1-2" class="pilcrow">¶</a></p>
-<p id="section-6.4.1-3">Note that a user's <code>user_pseudonyms</code> are only unique per group as long as adding
-users don't re-use KeyPackages. KeyPackage re-use (e.g. in case a user's supply
-of KeyPackages is exhausted) will lead to duplicate use of <code>user_pseudonyms</code>.<a href="#section-6.4.1-3" class="pilcrow">¶</a></p>
-</section>
-</div>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-6.1-8.1">
+            <p id="section-6.1-8.1.1"><strong>TODO</strong>: Specify a key management scheme that ideally
+- is efficient
+- allows the basic MIMI flows
+- ensures that all participants can learn the identities of all other
+  participants at all times
+- provides FS and PCS w.r.t. metadata hiding<a href="#section-6.1-8.1.1" class="pilcrow">¶</a></p>
+<p id="section-6.1-8.1.2">There are several options that represent different trade-offs, but are not yet
+fully specified. They will be added at a later date.<a href="#section-6.1-8.1.2" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 </section>
 </div>
 </section>
