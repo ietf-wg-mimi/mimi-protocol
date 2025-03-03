@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 1 September 2025               The Matrix.org Foundation C.I.C.
+Expires: 4 September 2025               The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 1 September 2025               The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                        28 February 2025
+                                                            3 March 2025
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 September 2025.
+   This Internet-Draft will expire on 4 September 2025.
 
 Copyright Notice
 
@@ -111,20 +111,22 @@ Table of Contents
      5.7.  Convey explicit consent
      5.8.  Find internal address
      5.9.  Report abuse
-   6.  Relation between MIMI state and cryptographic state
-     6.1.  Room state
-     6.2.  Cryptographic room representation
-     6.3.  Proposal-commit paradigm
-     6.4.  Authenticating proposals
-     6.5.  Participant List
-     6.6.  Room Metadata
-   7.  Consent
-   8.  Security Considerations
-     8.1.  Franking
-   9.  IANA Considerations
-   10. References
-     10.1.  Normative References
-     10.2.  Informative References
+   6.  Minimal metadata rooms
+     6.1.  Credential encryption
+   7.  Relation between MIMI state and cryptographic state
+     7.1.  Room state
+     7.2.  Cryptographic room representation
+     7.3.  Proposal-commit paradigm
+     7.4.  Authenticating proposals
+     7.5.  Participant List
+     7.6.  Room Metadata
+   8.  Consent
+   9.  Security Considerations
+     9.1.  Franking
+   10. IANA Considerations
+   11. References
+     11.1.  Normative References
+     11.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -340,7 +342,7 @@ Table of Contents
    ServerB to Bob's clients.
 
       *NOTE:* In the protocol, it is necessary to have consent (see
-      Section 7) and access control on these operations.  We have elided
+      Section 8) and access control on these operations.  We have elided
       that step here in the interest of simplicity.
 
    ClientA1       ServerA         ServerB         ClientB*
@@ -734,10 +736,10 @@ ServerC->ClientC*: [[ Commit ]]
 
    *  The _participant list_: a list of the users who are participants
       of the room, and each user's role in the room (defined in
-      Section 6.5).
+      Section 7.5).
 
    *  Room metadata, such as the room name, description, and image
-      (defined in Section 6.6).
+      (defined in Section 7.6).
 
    When a client requests key material via the hub, the hub records the
    KeyPackageRef values for the returned KeyPackages, and the identity
@@ -748,7 +750,7 @@ ServerC->ClientC*: [[ Commit ]]
 
    The participant list can be changed by adding or removing users, or
    changing a user's role.  These changes are described as a list of
-   adds, removes, and role changes, as described in Section 6.5.
+   adds, removes, and role changes, as described in Section 7.5.
 
    Add: ["mimi://d.example/u/diana", role: 4 (admin)],
         ["mimi://e.example/u/eric", role: 3 (moderator)],
@@ -1297,7 +1299,7 @@ ServerC->ClientC*: [[ Commit ]]
    not modified by a follower provider, and that the senderURI and
    roomURI match those provided by the sending client.  The specific
    construction used is discussed in the Security Considerations in
-   Section 8.1.
+   Section 9.1.
 
    The Hub fans out the encrypted message (which includes the
    franking_tag), the serverFrank, the acceptedTimestamp, the room URI,
@@ -1607,7 +1609,7 @@ ServerC->ClientC*: [[ Commit ]]
 
 5.7.  Convey explicit consent
 
-   As discussed in Section 7, there are many ways that a provider could
+   As discussed in Section 8, there are many ways that a provider could
    implicitly determine consent.  This section describes a mechanism by
    which providers can explicitly request consent from a user of another
    provider, cancel such a request, convey that consent was granted, or
@@ -1899,9 +1901,85 @@ ServerC->ClientC*: [[ Commit ]]
    abuse report was accepted, not if any specific automated or human
    action was taken.
 
-6.  Relation between MIMI state and cryptographic state
+6.  Minimal metadata rooms
 
-6.1.  Room state
+   The room state is visible to the hub and with it the room's
+   participant list, giving the hub access to a significant amount of
+   user metadata.
+
+   To limit the amount of metadata the hub has access to, rooms can be
+   created as _minimal metadata rooms_ (MMR).  In an MMR the participant
+   list and the credentials in the room's underlying MLS group consist
+   only of pseudonyms.  The real identifiers are stored alongside the
+   pseudonyms encrypted under a key known only to room participants, but
+   not the hub.
+
+   MMRs requires some additional key management, which leads to
+   restrictions in how the MMR can be joined and which users each
+   participant can add to the room.
+
+6.1.  Credential encryption
+
+   Identifiers of participants and their clients occur in two locations
+   in a room's state: the participant list and the credentials of the
+   room's underlying MLS group.  In an MMR, the real identifiers of
+   clients and users are replaced by pseudonyms in the shape of random
+   UUIDs qualified with the domain of the user's provider.
+
+   In MMRs, all leaves of the underlying group MUST contain
+   PseudonymousCredentials.
+
+   struct {
+     IdentifierUri client_pseudonym;
+     IdentifierUri user_pseudonym;
+     opaque signature_public_key;
+     opaque identity_link_ciphertext<V>;
+   } PseudonymousCredential
+
+   *  user_pseudonym: The pseudonym of the client's user in this group
+
+   *  client_pseudonym: The pseudonym of the client identified by this
+      credential
+
+   *  signature_public_key: The signature public key used to
+      authenticate MLS messages
+
+   *  identity_link_ciphertext: A ciphertext containing a credential
+      with the clients real identifier
+
+   In any given room, the user_pseudonym of a client MUST be the same
+   across all clients of a user and it MUST be the same as the user's
+   entry in the participant list.
+
+   struct {
+     IdentifierUri client_pseudonym;
+     IdentifierUri user_pseudonym;
+     opaque signature_public_key;
+   } PseudonymousCredentialTBS
+
+   struct {
+     /* SignWithLabel(., "PseudonymousCredentialTBS",
+       PseudonymousCredentialTBS) */
+     opaque pseudonymous_credential_signature<V>;
+     Credential client_credential;
+   } IdentityLinkTBE
+
+   The identity_link_ciphertext is created by encrypting the
+   IdentityLinkTBE.  The IdentityLinkTBE contains the client's real
+   credential, and a signature over the PseudonymousCredentialTBS signed
+   with the client credential's signature_public_key.
+
+      *TODO*: Specify a key management scheme that ideally - is
+      efficient - allows the basic MIMI flows - ensures that all
+      participants can learn the identities of all other participants at
+      all times - provides FS and PCS w.r.t. metadata hiding
+
+      There are several options that represent different trade-offs, but
+      are not yet fully specified.  They will be added at a later date.
+
+7.  Relation between MIMI state and cryptographic state
+
+7.1.  Room state
 
    The state of a room consists of its room ID, its base policy, its
    participant list (including the role and participation state of each
@@ -1923,7 +2001,7 @@ ServerC->ClientC*: [[ Commit ]]
    proposal implementing the event was not yet committed by a client.
    Note that this only applies to events changing the room state.
 
-6.2.  Cryptographic room representation
+7.2.  Cryptographic room representation
 
    Each room is represented cryptographically by an MLS group.  The Hub
    that manages the room also manages the list of group members, i.e.
@@ -1932,7 +2010,7 @@ ServerC->ClientC*: [[ Commit ]]
    application components in the app_data_dictionary extension, as
    described in Section 4.6 of [I-D.ietf-mls-extensions].
 
-6.3.  Proposal-commit paradigm
+7.3.  Proposal-commit paradigm
 
    The MLS protocol follows a proposal-commit paradigm.  Any party
    involved in a room (follower server, Hub or clients) can send
@@ -1948,7 +2026,7 @@ ServerC->ClientC*: [[ Commit ]]
    the group state also includes a copy of the room state at the time of
    the most recent commit, it is also covered by the agreement.
 
-6.4.  Authenticating proposals
+7.4.  Authenticating proposals
 
    MLS requires that MLS proposals from the Hub and from follower
    servers (external senders in MLS terminology) be authenticated using
@@ -1964,7 +2042,7 @@ ServerC->ClientC*: [[ Commit ]]
    Changes to the external_senders extension only take effect when the
    MLS proposal containing the event is committed by a MIMI commit.
 
-6.5.  Participant List
+7.5.  Participant List
 
    The participant list is a list of "users" in a room.  Within a room,
    each user is assigned exactly one _role_ (expressed with a role_index
@@ -2027,7 +2105,7 @@ ServerC->ClientC*: [[ Commit ]]
    Participant list updates that operate on (add, remove, or change the
    role of) the same user in the participant list more than once.
 
-6.6.  Room Metadata
+7.6.  Room Metadata
 
    The Room Metadata component contains data about a room which might be
    displayed as human-readable information for the room, such as the
@@ -2080,7 +2158,7 @@ ServerC->ClientC*: [[ Commit ]]
 
    Only a single Room metadata update is valid per commit.
 
-7.  Consent
+8.  Consent
 
    Most instant messaging systems have some notion of how a user
    consents to be added to a room, and how they manipulate this consent.
@@ -2139,7 +2217,7 @@ ServerC->ClientC*: [[ Commit ]]
    same time as sending the consent request, Alice grants consent to Bob
    to add her to any room.
 
-8.  Security Considerations
+9.  Security Considerations
 
       *TODO*: Add MIMI threat model, and great expand this section.
 
@@ -2170,20 +2248,20 @@ ServerC->ClientC*: [[ Commit ]]
    this cost is offset by the simplicity of not having multiple policy
    enforcement points.
 
-8.1.  Franking
+9.1.  Franking
 
    TBD.
 
       *TODO*: Present the franking mechanism to CFRG for review.
 
-9.  IANA Considerations
+10.  IANA Considerations
 
       *TODO*: Add registration of MIMI content format extension, and a
       SafeAAD component.
 
-10.  References
+11.  References
 
-10.1.  Normative References
+11.1.  Normative References
 
    [I-D.barnes-mimi-arch]
               Barnes, R., "An Architecture for More Instant Messaging
@@ -2202,16 +2280,16 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.ietf-mimi-content]
               Mahy, R., "More Instant Messaging Interoperability (MIMI)
               message content", Work in Progress, Internet-Draft, draft-
-              ietf-mimi-content-05, 20 December 2024,
+              ietf-mimi-content-06, 28 February 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mimi-
-              content-05>.
+              content-06>.
 
    [I-D.ietf-mimi-room-policy]
               Mahy, R., "Room Policy for the More Instant Messaging
               Interoperability (MIMI) Protocol", Work in Progress,
-              Internet-Draft, draft-ietf-mimi-room-policy-00, 15
-              November 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-mimi-room-policy-00>.
+              Internet-Draft, draft-ietf-mimi-room-policy-01, 2 March
+              2025, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              mimi-room-policy-01>.
 
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
@@ -2294,7 +2372,7 @@ ServerC->ClientC*: [[ Commit ]]
               Security (MLS) Protocol", RFC 9420, DOI 10.17487/RFC9420,
               July 2023, <https://www.rfc-editor.org/rfc/rfc9420>.
 
-10.2.  Informative References
+11.2.  Informative References
 
    [Grubbs2017]
               Grubbs, P., Lu, J., and T. Ristenpart, "Message Franking
