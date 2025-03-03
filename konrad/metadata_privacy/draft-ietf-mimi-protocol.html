@@ -4008,7 +4008,7 @@ messages<a href="#section-6.1-4.3.1" class="pilcrow">¶</a></p>
 clients real identifier<a href="#section-6.1-4.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-6.1-5">In each room, the <code>user_pseudonym</code> of a client <span class="bcp14">MUST</span> be the same across all
+<p id="section-6.1-5">In any given room, the <code>user_pseudonym</code> of a client <span class="bcp14">MUST</span> be the same across all
 clients of a user and it <span class="bcp14">MUST</span> be the same as the user's entry in the participant
 list.<a href="#section-6.1-5" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-6.1-6">
@@ -4027,9 +4027,9 @@ struct {
 } IdentityLinkTBE
 </pre><a href="#section-6.1-6" class="pilcrow">¶</a>
 </div>
-<p id="section-6.1-7">The <code>identity_link_ciphertext</code> is created by encrypting the IdentityLinkTBE,
-which contains the client's real credential, as well as a signature over the
-PseudonymousCredentialTBS using the client credential's signature key.<a href="#section-6.1-7" class="pilcrow">¶</a></p>
+<p id="section-6.1-7">The <code>identity_link_ciphertext</code> is created by encrypting the IdentityLinkTBE.
+The IdentityLinkTBE contains the client's real credential, and a signature over the
+PseudonymousCredentialTBS signed with the client credential's <code>signature_public_key</code>.<a href="#section-6.1-7" class="pilcrow">¶</a></p>
 <p id="section-6.1-8">The <code>identity_link_key</code> used for encryption is unique per pseudonymous credential.
 It is derived from the client's <code>connection_key</code>.<a href="#section-6.1-8" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-6.1-9">
@@ -4132,10 +4132,9 @@ flow.<a href="#section-6.4-2" class="pilcrow">¶</a></p>
 <p id="section-6.4-3">During connection establishment, users <span class="bcp14">MUST</span> exchange connection keys in a
 mutually authenticated way and in such a way that only the two users learn the
 key.<a href="#section-6.4-3" class="pilcrow">¶</a></p>
-<p id="section-6.4-4">When a user wants to add another user to an MMR, it fetches KeyPackages with
-PseudonymousCredentials that share a user pseudonym (see
+<p id="section-6.4-4">When a user wants to add another user to an MMR, it fetches one KeyPackage for each of that user's clients, such that each of the clients keypackages has a PseudonymousCredential that shares a single user pseudonym (see
 <a href="#pseudonymous-keypackages" class="auto internal xref">Section 6.4.1</a>). The adder then derives the <code>identity_link_key</code>
-for all KeyPackages and re-encrypts those keys under the MMR's
+for all the added client's KeyPackages and re-encrypts those keys under the MMR's
 <code>identity_link_wrapper_key</code>. When adding the user to the MMR, it includes the
 AddAAD as described in <a href="#identity-link-keys" class="auto internal xref">Section 6.2</a>.<a href="#section-6.4-4" class="pilcrow">¶</a></p>
 <p id="section-6.4-5">Users can rotate their connection key by sampling a new key and sending the new
