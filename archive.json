@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-02T00:47:40.068285+00:00",
+  "timestamp": "2025-03-04T00:44:49.535555+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -9012,24 +9012,26 @@
       "id": "PR_kwDOKZ8QO86HfehY",
       "title": "Add section on minimal metadata rooms",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/101",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "kkohbrok",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This PR introduces the notion of pseudonymous credentials for MIMI by introducing a new room type \"Minimal Metadata Rooms\". We could also make that a configuration flag and/or use another name. I'm open to suggestions in that regard. There are still a few TODOs/open questions, though:\r\n\r\n- Encryption of `identity_link_keys`: We intend to solve this via the TreeWrap mechanism we proposed, but we haven't quite finished writing up the spec for that. For now it's a simple static key.\r\n- External joins: There's still a small issue with external joins. In theory, new joiners just need the `identity_link_wrapper_key` to join the group, but if we start rotating that, we run into race conditions. How we solve that depends a bit on the situations in which we need external joins. Maybe we can discuss this in a future interim.\r\n- Connections: For Minimal Metadata Rooms to work, users need to learn the `connection_key` of other users they want to add to a group. Since we probably also want a notion of \"connection\" for other things such as consent, this PR only expresses the requirement for connection key exchange for now.",
       "createdAt": "2025-01-13T07:35:44Z",
-      "updatedAt": "2025-02-28T21:12:09Z",
+      "updatedAt": "2025-03-03T13:34:06Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
-      "baseRefOid": "291f60313025445b7c32434a81f7681de7adab36",
+      "baseRefOid": "ca463fed74f03e7a05ba2ff3b62158f02312035e",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "konrad/metadata_privacy",
-      "headRefOid": "ded2324292e45df2c95790a52c97695f0b66ae20",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "7b047ad15141ba93fef1163d073a67e443cc78fc",
+      "closedAt": "2025-03-03T13:34:06Z",
+      "mergedAt": "2025-03-03T13:34:06Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "61a1488cc44efe1096e6227ca1f7186ab889563c"
+      },
       "comments": [
         {
           "author": "rohanmahy",
@@ -9044,6 +9046,13 @@
           "body": "One other issue that occurred to me is that the Hub could enforce some membership changes based on a member giving the pseudonym a role, but Preauthorization would be useless since the credentials are all or nothing. Selective disclosure or ZKPs in credentials would be more flexible.",
           "createdAt": "2025-02-28T21:12:08Z",
           "updatedAt": "2025-02-28T21:12:08Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "After a quick discussion OOB, I've cut the key management portion of the PR and replaced it with a TODO. I hope this reduces the PR to the portion we have agreement on s.t. we can merge before cutting the next draft version.",
+          "createdAt": "2025-03-03T12:54:26Z",
+          "updatedAt": "2025-03-03T12:54:26Z"
         }
       ],
       "reviews": [
@@ -9219,6 +9228,57 @@
               "updatedAt": "2025-02-27T00:21:46Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86eJUte",
+          "commit": {
+            "abbreviatedOid": "012aecf"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Thanks for the review! I've addressed a few of the issues and tried to answer some of your questions. Please take a look.",
+          "createdAt": "2025-03-03T07:18:00Z",
+          "updatedAt": "2025-03-03T07:34:01Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "The signature key isn't necessarily static, but maybe that's okay. Sure, we could also combine user and client pseudonym into a single identifier if you'd prefer that. No strong opinion here.",
+              "createdAt": "2025-03-03T07:18:00Z",
+              "updatedAt": "2025-03-03T07:34:01Z"
+            },
+            {
+              "originalPosition": 103,
+              "body": "Yes, that's why it's `optional`. We could save those `None` bytes and pack the `identity_link_keys` tight, but I thought lining them up with the leaf indices would be more intuitive.",
+              "createdAt": "2025-03-03T07:25:23Z",
+              "updatedAt": "2025-03-03T07:34:01Z"
+            },
+            {
+              "originalPosition": 124,
+              "body": "Yes. Somehow I thought the `identity_link_ciphertexts` would be stored outside the group, but storing them in the group context is probably better. I guess there's no reason not to use AppSync here. What do you think?",
+              "createdAt": "2025-03-03T07:26:48Z",
+              "updatedAt": "2025-03-03T07:34:01Z"
+            },
+            {
+              "originalPosition": 133,
+              "body": "Yes, that's not ideal. We're working on a mechanism that gives us nice FS and PCS guarantees that line up with those we get from MLS.",
+              "createdAt": "2025-03-03T07:33:24Z",
+              "updatedAt": "2025-03-03T07:34:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86eMwWL",
+          "commit": {
+            "abbreviatedOid": "7b047ad"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-03-03T13:33:54Z",
+          "updatedAt": "2025-03-03T13:33:54Z",
+          "comments": []
         }
       ]
     },
@@ -9454,6 +9514,34 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 108,
+      "id": "PR_kwDOKZ8QO86NJ9mK",
+      "title": "Ready to Submit draft-ietf-mimi-protocol-03",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/108",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-03-03T13:47:17Z",
+      "updatedAt": "2025-03-03T13:48:02Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "61a1488cc44efe1096e6227ca1f7186ab889563c",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "submit-03",
+      "headRefOid": "6abd1bc5955650af217d5401cfe299c254c099d2",
+      "closedAt": "2025-03-03T13:48:02Z",
+      "mergedAt": "2025-03-03T13:48:02Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "5080565278e0949af3425efd8d7381312c9cc1a1"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }
