@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-04T00:44:49.535555+00:00",
+  "timestamp": "2025-03-06T00:44:38.992528+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -270,7 +270,7 @@
       ],
       "body": "> **ISSUE**: Come to consensus on a specific binary encoding for the MIMI\r\n> transport protocol.\r\n\r\nCurrently we use TLS-serialized structs.",
       "createdAt": "2023-11-09T12:17:51Z",
-      "updatedAt": "2024-12-04T17:10:40Z",
+      "updatedAt": "2025-03-05T05:54:43Z",
       "closedAt": null,
       "comments": [
         {
@@ -370,6 +370,13 @@
           "body": "Action here (for @rohanmahy)  is to go to the list to formally establish consensus on (1) TLS encoding for MIMI-protocol and (2) HTTP as a transport.",
           "createdAt": "2024-12-04T17:10:31Z",
           "updatedAt": "2024-12-04T17:10:31Z"
+        },
+        {
+          "author": "Neustradamus",
+          "authorAssociation": "NONE",
+          "body": "To follow this ticket.",
+          "createdAt": "2025-03-05T05:54:41Z",
+          "updatedAt": "2025-03-05T05:54:41Z"
         }
       ]
     },
@@ -388,7 +395,7 @@
       ],
       "body": "> **ISSUE**: Come to consensus on a specific set of MIMI transport protocol\r\n> semantics.",
       "createdAt": "2023-11-09T12:21:07Z",
-      "updatedAt": "2024-12-04T17:11:59Z",
+      "updatedAt": "2025-03-05T05:49:57Z",
       "closedAt": null,
       "comments": [
         {
@@ -397,6 +404,13 @@
           "body": "Action here is the same as for #25 (https://github.com/ietf-wg-mimi/mimi-protocol/issues/25#issuecomment-2518054125)",
           "createdAt": "2024-12-04T17:11:57Z",
           "updatedAt": "2024-12-04T17:11:57Z"
+        },
+        {
+          "author": "Neustradamus",
+          "authorAssociation": "NONE",
+          "body": "To follow this important ticket.",
+          "createdAt": "2025-03-05T05:49:56Z",
+          "updatedAt": "2025-03-05T05:49:56Z"
         }
       ]
     },
@@ -902,7 +916,7 @@
       ],
       "body": "I feel like it's a missed opportunity by the MIMI WG to essentially ignore the prior art created with the XMPP standard and make no effort to be compatible with the existing XMPP internet standard.\r\n\r\nI'm not sure why an entirely new transport protocol and message format that is not compatible with XMPP is being considered, instead of a XMPP protocol extension for MLS.\r\n\r\nThe advantages of Matrix were eventual consistency and more decentralized rooms, but the protocol proposal makes no mention of those features and the scaling issues Matrix has show that they're probably a bad idea too. Is it really worth breaking compatibility with XMPP just to replace XML with JSON?",
       "createdAt": "2023-12-02T13:48:21Z",
-      "updatedAt": "2024-12-14T12:14:56Z",
+      "updatedAt": "2025-03-05T05:49:40Z",
       "closedAt": "2024-12-04T17:24:18Z",
       "comments": [
         {
@@ -995,6 +1009,13 @@
           "body": "This is related to #26, in that we might want to support XMPP core as a transport for MIMI instead of/in addition to HTTPS.\r\n\r\nWe are closing this issue in that we believe nothing is missing to allow interop with XMPP, except for what is tracked in #26. There's no other action to take on this issue.",
           "createdAt": "2024-12-04T17:24:18Z",
           "updatedAt": "2024-12-04T17:24:18Z"
+        },
+        {
+          "author": "Neustradamus",
+          "authorAssociation": "NONE",
+          "body": "To follow this important ticket about XMPP.",
+          "createdAt": "2025-03-05T05:49:39Z",
+          "updatedAt": "2025-03-05T05:49:39Z"
         }
       ]
     },
@@ -1518,6 +1539,22 @@
           "updatedAt": "2025-02-27T01:35:12Z"
         }
       ]
+    },
+    {
+      "number": 109,
+      "id": "I_kwDOKZ8QO86sojo1",
+      "title": "Not up-to-date releases",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/109",
+      "state": "OPEN",
+      "author": "Neustradamus",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Dear @ietf-wg-mini team,\n\nThanks for your work!\n\nI have discovered that it is old here:\n- https://github.com/ietf-wg-mimi/mimi-protocol\n- https://github.com/ietf-wg-mimi/mimi-protocol/releases\n\nLatest release is old: draft-ralston-mimi-protocol-02 (2024-03-04).\n\nCan you add all versions?\n\nHere, the ietf.org mimi group documents:\n- https://datatracker.ietf.org/group/mimi/documents/\n\nThe current is from 2025-03-03:\n- https://datatracker.ietf.org/doc/draft-ietf-mimi-protocol/\n\nThanks in advance.",
+      "createdAt": "2025-03-05T06:03:00Z",
+      "updatedAt": "2025-03-05T06:03:00Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
