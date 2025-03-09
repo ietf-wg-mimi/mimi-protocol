@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-06T00:44:38.992528+00:00",
+  "timestamp": "2025-03-09T00:39:28.782061+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1545,16 +1545,38 @@
       "id": "I_kwDOKZ8QO86sojo1",
       "title": "Not up-to-date releases",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/109",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Neustradamus",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
-      "body": "Dear @ietf-wg-mini team,\n\nThanks for your work!\n\nI have discovered that it is old here:\n- https://github.com/ietf-wg-mimi/mimi-protocol\n- https://github.com/ietf-wg-mimi/mimi-protocol/releases\n\nLatest release is old: draft-ralston-mimi-protocol-02 (2024-03-04).\n\nCan you add all versions?\n\nHere, the ietf.org mimi group documents:\n- https://datatracker.ietf.org/group/mimi/documents/\n\nThe current is from 2025-03-03:\n- https://datatracker.ietf.org/doc/draft-ietf-mimi-protocol/\n\nThanks in advance.",
+      "body": "Dear @ietf-wg-mimi team,\n\nThanks for your work!\n\nI have discovered that it is old here:\n- https://github.com/ietf-wg-mimi/mimi-protocol\n- https://github.com/ietf-wg-mimi/mimi-protocol/releases\n\nLatest release is old: draft-ralston-mimi-protocol-02 (2024-03-04).\n\nCan you add all versions?\n\nHere, the ietf.org mimi group documents:\n- https://datatracker.ietf.org/group/mimi/documents/\n\nThe current is from 2025-03-03:\n- https://datatracker.ietf.org/doc/draft-ietf-mimi-protocol/\n\nThanks in advance.",
       "createdAt": "2025-03-05T06:03:00Z",
-      "updatedAt": "2025-03-05T06:03:00Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-03-06T12:03:51Z",
+      "closedAt": "2025-03-06T12:00:42Z",
+      "comments": [
+        {
+          "author": "Neustradamus",
+          "authorAssociation": "NONE",
+          "body": "@rohanmahy: Since latest draft-ralston-mimi-protocol-02:\n- https://datatracker.ietf.org/doc/draft-ralston-mimi-protocol/\n- https://datatracker.ietf.org/doc/draft-ralston-mimi-protocol/02/\n\nThere are:\n- https://datatracker.ietf.org/doc/draft-ietf-mimi-protocol/\n- https://datatracker.ietf.org/doc/draft-ietf-mimi-protocol/00/\n- https://datatracker.ietf.org/doc/draft-ietf-mimi-protocol/01/\n- https://datatracker.ietf.org/doc/draft-ietf-mimi-protocol/02/\n- https://datatracker.ietf.org/doc/draft-ietf-mimi-protocol/03/\n\nCan you revert your latest PR and publish one by one to have the full history?\n\nThanks in advance.",
+          "createdAt": "2025-03-06T11:09:26Z",
+          "updatedAt": "2025-03-06T11:09:26Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I deleted all the releases from the old repo. All WG releases are tagged.",
+          "createdAt": "2025-03-06T12:00:42Z",
+          "updatedAt": "2025-03-06T12:00:42Z"
+        },
+        {
+          "author": "Neustradamus",
+          "authorAssociation": "NONE",
+          "body": "@rohanmahy: Thanks!",
+          "createdAt": "2025-03-06T12:03:50Z",
+          "updatedAt": "2025-03-06T12:03:50Z"
+        }
+      ]
     }
   ],
   "pulls": [
