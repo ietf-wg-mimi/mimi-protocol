@@ -771,16 +771,19 @@ requested using this primitive MUST be sent via the hub provider of whatever
 room they will be used in. (If this is not the case, the hub provider will be
 unable to forward a Welcome message to the target provider).
 
-The path includes the target user. The request body includes the protocol
-(currently just MLS 1.0), and the requesting user. When the request is being
-made in the context of adding the target user to a room, the request MUST include
-the room ID for which the KeyPackage is intended, as the target may have only
-granted consent for a specific room.
+The path includes the target user URI (with any necessary percent-encoding). The
+request body includes the protocol (currently just MLS 1.0), and the requesting
+user. When the request is being made in the context of adding the target user to
+a room, the request MUST include the room ID for which the KeyPackage is
+intended, as the target may have only granted consent for a specific room.
 
-For MLS, the request includes a non-empty list of acceptable MLS ciphersuites,
-and an MLS `RequiredCapabilities` object (which contains credential types,
-non-default proposal types, and extensions) required by the requesting provider
-(these lists can be an empty).
+For MLS, the request includes a non-empty list of acceptable MLS ciphersuites.
+Next there is an MLS `RequiredCapabilities` object, which contains (possibly
+empty) lists of required credential types, non-default proposal types, and
+extensions) required by the requesting provider. Next there is a
+SignaturePublicKey and a corresponding Credential for the requester. Finally,
+the request includes a signature, using the SignaturePublicKey and covering
+KeyMaterialRequestTBS.
 
 The request body has the following form.
 
@@ -798,8 +801,30 @@ struct {
         case mls10:
             CipherSuite acceptableCiphersuites<V>;
             RequiredCapabilities requiredCapabilities;
+            SignaturePublicKey requesterSignatureKey;
+            Credential requesterCredential;
+            /* SignWithLabel(requesterSignatureKey,              */
+            /*   "KeyMaterialRequestTBS", KeyMaterialRequestTBS) */
+            opaque key_material_request_signature<V>;
     };
 } KeyMaterialRequest;
+
+struct {
+    Protocol protocol;
+    IdentifierUri requestingUser;
+    IdentifierUri targetUser;
+    IdentifierUri roomId;
+    select (protocol) {
+        case mls10:
+            CipherSuite acceptableCiphersuites<V>;
+            RequiredCapabilities requiredCapabilities;
+            SignaturePublicKey requesterSignatureKey;
+            Credential requesterCredential;
+    };
+} KeyMaterialRequestTBS;
+
+key_material_request_signature = SignWithLabel(requesterSignatureKey
+                      "KeyMaterialRequestTBS", KeyMaterialRequestTBS)
 ~~~
 
 The response contains a user status code that indicates keying material was
