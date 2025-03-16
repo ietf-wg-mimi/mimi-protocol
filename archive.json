@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-13T00:45:22.367396+00:00",
+  "timestamp": "2025-03-16T00:50:05.841058+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1577,6 +1577,22 @@
           "updatedAt": "2025-03-06T12:03:50Z"
         }
       ]
+    },
+    {
+      "number": 110,
+      "id": "I_kwDOKZ8QO86uJUlk",
+      "title": "Add requester Credential and signature to KeyMateiral endpoint",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/110",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "signature of the request should also cover the room ID",
+      "createdAt": "2025-03-15T03:34:33Z",
+      "updatedAt": "2025-03-15T10:55:17Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
