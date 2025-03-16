@@ -752,7 +752,9 @@ GET /.well-known/mimi-protocol-directory
   "identifierQuery":
      "https://mimi.example.com/v1/identifierQuery/{domain}",
   "reportAbuse":
-     "https://mimi.example.com/v1/reportAbuse/{roomId}"
+     "https://mimi.example.com/v1/reportAbuse/{roomId}",
+  "proxyDownload"
+     "https://mimi.example.com/v1/proxyDownload/{downloadUrl}"
 }
 ~~~
 
@@ -1825,6 +1827,44 @@ struct {
 ~~~
 
 There is no response body. The response code only indicates if the abuse report was accepted, not if any specific automated or human action was taken.
+
+
+## Download Files
+
+IM systems make extensive use of inline images, videos, and sounds, and often include attached files, all of which will be referred to as "assets" in this section. Assets are stored (encrypted) on various external servers, and typically uploaded and fetched using HTTP {{!RFC9110}} protected with TLS {{RFC8446}}.
+
+Broadly, two approaches are used for storage of assets in federated IM systems.
+In the most common approach, the assets are uploaded to the local system of the uploader.
+In other systems, the assets are uploaded to the system hosting the equivalent of a MIMI room.
+MIMI supports both of these approaches.
+
+The `proxyDownload` endpoint defined in this section is used to prevent the provider hosting the asset from learning about the IP addresses, number, and online status of clients associated with another provider, when that client downloads an asset/attachment in a specific room.
+
+The client consults the intersection of the room policy and its local policy to determine if and how to upload assets, where to upload them, and with which credentials. The details of the upload are out of scope of this document.
+
+MIMI room policy {{!I-D.ietf-mimi-room-policy}} includes an asset policy that specifies which domain name to use for asset download for each provider's domain of a potential asset sender.
+
+When a receiving client receives a reference to an external asset sent by a participant from another provider, the receiving client downloads the asset over a proxy on the hub, protected using Oblivious HTTP (OHTTP) {{!RFC9458}}.
+The receiving client MUST verify that the download URL host part is associated with the asset server domain specified for the sender's identity.
+The receiving client uses its local provider's OHTTP Relay; the hub provider is the OHTTP Gateway; and the `proxyDownload` endpoint is the OHTTP Target Resource on the Hub.
+The first time the receiving client accesses the `proxyDownload` endpoint, it fetches the MIMI directory of the Hub provider for `proxyDownload` endpoint.
+It then uses an HTTP GET (sent over OHTTP using the local provider relay and the hub's gateway) to the `proxyDownload` endpoint as specified in the directory with the asset's `downloadUrl` of the asset.
+
+> The `downloadUrl` would be the `uri` field in an `ExternalPart` in a MIMI content {{!I-D.ietf-mimi-content}} message.
+
+~~~
+GET /proxyDownload/{downloadUrl}
+~~~
+
+The Hub MUST verify that the download URL host part is associated with the asset server domain for one of its peer providers.
+If the request succeeds, the response body contains the contents of the
+downloaded URL.
+The Hub is encouraged to cache the resources it downloads.
+
+In terms of the privacy of this mechanism, the Hub only sees that a specific provider requested an (opaque to the Hub) URL from another provider. It does not know the room or the specific client.
+The provider of the uploader sees requests for an (encrypted) asset coming from the Hub provider. When caching is employed, the provider will only see periodic requests.
+The receiver's provider will see one request to the Hub, among presumably many requests. It has no information about the sender, URL, or room associated with that request.
+
 
 # Minimal metadata rooms
 
