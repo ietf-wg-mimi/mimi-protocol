@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-16T00:50:05.841058+00:00",
+  "timestamp": "2025-03-18T00:45:15.846455+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1581,7 +1581,7 @@
     {
       "number": 110,
       "id": "I_kwDOKZ8QO86uJUlk",
-      "title": "Add requester Credential and signature to KeyMateiral endpoint",
+      "title": "Add requester Credential and signature to KeyMaterial endpoint",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/110",
       "state": "OPEN",
       "author": "rohanmahy",
@@ -1590,7 +1590,7 @@
       "labels": [],
       "body": "signature of the request should also cover the room ID",
       "createdAt": "2025-03-15T03:34:33Z",
-      "updatedAt": "2025-03-15T10:55:17Z",
+      "updatedAt": "2025-03-16T02:38:47Z",
       "closedAt": null,
       "comments": []
     }
@@ -8113,7 +8113,7 @@
       "id": "PR_kwDOKZ8QO85pgiRV",
       "title": "Add a download files proxy primitive",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/75",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -8122,14 +8122,14 @@
       ],
       "body": "",
       "createdAt": "2024-03-13T13:40:11Z",
-      "updatedAt": "2024-05-08T17:43:40Z",
+      "updatedAt": "2025-03-16T07:19:22Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "353cc7e612b6de148df168fc0a9b6b58acae6c36",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "rohan/downloadFiles",
       "headRefOid": "5c8b5df60de44db162e3b12ae033111710868648",
-      "closedAt": null,
+      "closedAt": "2025-03-16T07:04:56Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -8140,6 +8140,13 @@
           "body": "Once we have more room policy established, we can have attachments policies. One of these could specify if attachments are to be stored in the local sender's provider domain or the hub's domain. The download proxy primitive could then be restricted to only working for URLs in the specified domain, or even restricted to a specific path.",
           "createdAt": "2024-03-20T22:13:55Z",
           "updatedAt": "2024-03-20T22:13:55Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing in favor of #111 ",
+          "createdAt": "2025-03-16T07:04:56Z",
+          "updatedAt": "2025-03-16T07:04:56Z"
         }
       ],
       "reviews": [
@@ -9094,7 +9101,7 @@
       "labels": [],
       "body": "This PR introduces the notion of pseudonymous credentials for MIMI by introducing a new room type \"Minimal Metadata Rooms\". We could also make that a configuration flag and/or use another name. I'm open to suggestions in that regard. There are still a few TODOs/open questions, though:\r\n\r\n- Encryption of `identity_link_keys`: We intend to solve this via the TreeWrap mechanism we proposed, but we haven't quite finished writing up the spec for that. For now it's a simple static key.\r\n- External joins: There's still a small issue with external joins. In theory, new joiners just need the `identity_link_wrapper_key` to join the group, but if we start rotating that, we run into race conditions. How we solve that depends a bit on the situations in which we need external joins. Maybe we can discuss this in a future interim.\r\n- Connections: For Minimal Metadata Rooms to work, users need to learn the `connection_key` of other users they want to add to a group. Since we probably also want a notion of \"connection\" for other things such as consent, this PR only expresses the requirement for connection key exchange for now.",
       "createdAt": "2025-01-13T07:35:44Z",
-      "updatedAt": "2025-03-03T13:34:06Z",
+      "updatedAt": "2025-03-16T07:18:38Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "ca463fed74f03e7a05ba2ff3b62158f02312035e",
@@ -9369,7 +9376,7 @@
       "labels": [],
       "body": "Move Participant List and Room Metadata over from draft-mahy-mimi-app-components",
       "createdAt": "2025-02-11T21:58:48Z",
-      "updatedAt": "2025-02-28T21:38:45Z",
+      "updatedAt": "2025-03-16T07:18:26Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "a0d82da4e1f227a6acd2f25524960ff0ba454ec9",
@@ -9472,7 +9479,7 @@
       "labels": [],
       "body": "Addresses issue #103 ",
       "createdAt": "2025-02-25T05:07:16Z",
-      "updatedAt": "2025-02-26T17:30:55Z",
+      "updatedAt": "2025-03-16T07:18:27Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "9202a1140e5ba3266c3606c29fc12fe5c3cc3796",
@@ -9514,7 +9521,7 @@
       "labels": [],
       "body": "- Fix inconsistencies in GroupInfoResponse\r\n- In error response cases, don't require the MLS payload",
       "createdAt": "2025-02-28T16:00:13Z",
-      "updatedAt": "2025-02-28T21:43:41Z",
+      "updatedAt": "2025-03-16T07:18:24Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "a0d82da4e1f227a6acd2f25524960ff0ba454ec9",
@@ -9602,7 +9609,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-03-03T13:47:17Z",
-      "updatedAt": "2025-03-03T13:48:02Z",
+      "updatedAt": "2025-03-16T07:18:23Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "61a1488cc44efe1096e6227ca1f7186ab889563c",
@@ -9615,6 +9622,174 @@
       "mergeCommit": {
         "oid": "5080565278e0949af3425efd8d7381312c9cc1a1"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 111,
+      "id": "PR_kwDOKZ8QO86Ozy7_",
+      "title": "Create new proxyDownload endpoint",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/111",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This replaces #75 \r\n\r\nIt adds Oblivious HTTP between the downloading provider and the Hub provider.",
+      "createdAt": "2025-03-16T07:04:32Z",
+      "updatedAt": "2025-03-17T03:59:37Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "download2",
+      "headRefOid": "0c5b489d3d3ae06f571e8a011f574670fbc920d5",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "mar-v-in",
+          "authorAssociation": "NONE",
+          "body": "Previously, the mimi-protocol was mostly about the protocol between user's provider and hub and leaves the exact protocol between client and provider out of scope. The use of OHTTP adds specific requirements to the client in the whole design. \r\n\r\nI think stating that the Hub must provide an HTTP proxy with specific properties that is made available to the provider should be sufficient for the purpose of mimi-protocol: it allows for the client to use any protocol of their choice to instruct their provider to download the file via the hub's HTTP proxy.",
+          "createdAt": "2025-03-17T02:56:53Z",
+          "updatedAt": "2025-03-17T02:56:53Z"
+        },
+        {
+          "author": "mar-v-in",
+          "authorAssociation": "NONE",
+          "body": "I also think the protocol laid out here allows a provider server to use a hub server (that one of their user is using) as a proxy to any remote server by setting that remote server's domain (temporarily) as their asset server domain.\r\n\r\nI also probably missed how the hub server is supposed to discover the asset server domains of its members: it's not in the directory and even if it was, the hub also can't know which provider's directory to query when requested to download a file.",
+          "createdAt": "2025-03-17T03:36:18Z",
+          "updatedAt": "2025-03-17T03:36:18Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86gRZkr",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-03-17T01:02:44Z",
+          "updatedAt": "2025-03-17T01:50:34Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "I think that you are making stronger claims than you can really justify here.  In particular, I don't think that you can claim that the server doesn't learn about the number of clients.",
+              "createdAt": "2025-03-17T01:02:45Z",
+              "updatedAt": "2025-03-17T01:50:34Z"
+            },
+            {
+              "originalPosition": 27,
+              "body": "```suggestion\r\nThe client consults the intersection of the room policy and its local policy to determine if and how to upload assets, where to upload them, and with which credentials. The details of the upload process are out of scope of this document.\r\n```",
+              "createdAt": "2025-03-17T01:16:46Z",
+              "updatedAt": "2025-03-17T01:50:34Z"
+            },
+            {
+              "originalPosition": 34,
+              "body": "This probably needs to specify where the client gets the hub's configuration.  The key configuration that the client uses is the configuration of the hub.\r\n\r\nThe local provider also needs to be able to setup relay endpoints that point to different hubs.",
+              "createdAt": "2025-03-17T01:27:18Z",
+              "updatedAt": "2025-03-17T01:50:34Z"
+            },
+            {
+              "originalPosition": 35,
+              "body": "You should draw a picture for this.",
+              "createdAt": "2025-03-17T01:27:34Z",
+              "updatedAt": "2025-03-17T01:50:34Z"
+            },
+            {
+              "originalPosition": 37,
+              "body": "I don't understand this bit.  Why do you have it quoted \"> ...\"?\r\n\r\nMore concretely, why are you putting the download URL on the end of /proxyDownload/ ?  That makes no sense to me.\r\n\r\nPresumably, the client is going to make a request to the relay (POST with an encrypted BHTTP payload).  That payload will include a GET request to the URL that was attached to a message.",
+              "createdAt": "2025-03-17T01:31:07Z",
+              "updatedAt": "2025-03-17T01:50:34Z"
+            },
+            {
+              "originalPosition": 43,
+              "body": "This probably needs to be more carefully specified.  There is a case here where the hub gateway (and therefore the relay) is per-room and another where the gateway is global to the hub.  You'll need to decide what works.  It seems to me like the only reason why the hub does this check is so that it doesn't get used as an open relay.  So you could make this a single gateway endpoint for the entire hub.  On the other hand, if this is setup per-room, then you will allow the hub to make finer-grained access control decisions, at the cost of more configuration complexity and lower privacy.",
+              "createdAt": "2025-03-17T01:38:13Z",
+              "updatedAt": "2025-03-17T01:50:34Z"
+            },
+            {
+              "originalPosition": 46,
+              "body": "{{RFC6919}}\r\n\r\nI think that you probably want to explain:\r\n\r\n1. That the hub can cache resources.\r\n2. What the consequences of that caching would be.",
+              "createdAt": "2025-03-17T01:39:12Z",
+              "updatedAt": "2025-03-17T01:50:34Z"
+            },
+            {
+              "originalPosition": 48,
+              "body": "You probably need a more complete analysis of the privacy properties of this system.  Including taking the position that the hub is actively looking to undermine the privacy of room participants.\r\n\r\nConsider the case where the hub selectively forwards messages to participants, for instance, by staggering delivery.  If clients are online, they might hit the gateway immediately after receiving a URL.  In that way, the hub knows both the URL that was in the message, and which client initiated that download.  It also learns how large the asset is.\r\n\r\nThis is likely the best that we can expect to achieve here, in that the hub already has this sort of information available to it.  Though it does create a covert channel from the message originator to the hub, which can be attached to individual recipients.",
+              "createdAt": "2025-03-17T01:46:48Z",
+              "updatedAt": "2025-03-17T01:50:34Z"
+            },
+            {
+              "originalPosition": 49,
+              "body": "\"the provider of the uploader\" probably needs a clear term; it's a little clunky.",
+              "createdAt": "2025-03-17T01:49:35Z",
+              "updatedAt": "2025-03-17T01:50:34Z"
+            },
+            {
+              "originalPosition": 50,
+              "body": "This is through the relay it provides, yes?  Maybe say so.",
+              "createdAt": "2025-03-17T01:50:29Z",
+              "updatedAt": "2025-03-17T01:50:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86gR9D7",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "raphaelrobert",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-03-17T03:56:57Z",
+          "updatedAt": "2025-03-17T03:59:37Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "So far we have been calling them \"attachments\", including in draft-ietf-mimi-content. We should not introduce a different yet synonymous term.",
+              "createdAt": "2025-03-17T03:56:57Z",
+              "updatedAt": "2025-03-17T03:59:37Z"
+            },
+            {
+              "originalPosition": 23,
+              "body": "Do we have consensus on the fact that we want to support both approaches? I think in past discussions we wanted to focus on the hub-only approach.",
+              "createdAt": "2025-03-17T03:58:44Z",
+              "updatedAt": "2025-03-17T03:59:38Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 112,
+      "id": "PR_kwDOKZ8QO86Oz3AG",
+      "title": "Make Key Material requests safer from provider tampering",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/112",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "addresses Issue #110 ",
+      "createdAt": "2025-03-16T07:45:38Z",
+      "updatedAt": "2025-03-16T07:48:19Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "sign-kp-request",
+      "headRefOid": "c69c6dc3518f3e0c5917e57f00cdb4fe702d740a",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
