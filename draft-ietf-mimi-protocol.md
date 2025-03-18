@@ -1458,7 +1458,9 @@ struct {
 
 If successful, the response body contains the GroupInfo and a way
 to get the ratchet_tree, both encrypted with the `groupInfoPublcKey`
-passed in the request.
+passed in the request. The response contains a unique random
+`group_info_response_nonce` to prevent the Hub's signature key from being used
+repeatedly with the same inputs.
 
 ~~~ tls
 enum {
@@ -1491,6 +1493,7 @@ struct {
       CipherSuite cipher_suite;
       ExternalSender hub_sender;
       HPKECiphertext encrypted_groupinfo_and_tree;
+      uint8 group_info_response_nonce[16];
   };
 } GroupInfoResponseTBS;
 
@@ -1505,8 +1508,9 @@ struct {
           CipherSuite cipher_suite;
           ExternalSender hub_sender;
           HPKECiphertext encrypted_groupinfo_and_tree;
-          /* SignWithLabel(hub_sender, "GroupInfoResponseTBS", */
-          /*                GroupInfoResponseTBS) */
+          uint8 group_info_response_nonce[16];
+          /* SignWithLabel(hub_sender.signature_key,        */
+          /*  "GroupInfoResponseTBS", GroupInfoResponseTBS) */
           opaque signature<V>;
       };
   default: struct{};
