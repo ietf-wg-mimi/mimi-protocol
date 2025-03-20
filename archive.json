@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-18T00:45:15.846455+00:00",
+  "timestamp": "2025-03-20T00:44:39.186072+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -175,7 +175,7 @@
       ],
       "body": "Room name, etc",
       "createdAt": "2023-11-09T08:05:59Z",
-      "updatedAt": "2024-12-04T17:04:50Z",
+      "updatedAt": "2025-03-19T01:06:45Z",
       "closedAt": null,
       "comments": [
         {
@@ -219,6 +219,13 @@
           "body": "Rohan says there is a mechanism in room-policy that addresses this. Rohan to follow up on-list to make sure that issue originators are satisfied with that.",
           "createdAt": "2024-12-04T17:04:42Z",
           "updatedAt": "2024-12-04T17:04:42Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think we now have this capability, to keep extensible state in a MIMI room in the GroupContext using app_data_dictionary. Some of it may need to be encrypted for members only, which is functionality also needed for minimal metadata rooms #101 ",
+          "createdAt": "2025-03-19T01:06:44Z",
+          "updatedAt": "2025-03-19T01:06:44Z"
         }
       ]
     },
@@ -232,11 +239,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "WG reviewed"
+        "WG reviewed",
+        "has-PR"
       ],
       "body": "Where we assume the external attachment blob (\"media\") is stored on a follower server, another server/the hub needs a way to fetch that media on behalf of its local clients.\r\n\r\nWe do not want to support clients requesting the media directly.\r\n\r\nTODO: Discuss authentication/right to download.",
       "createdAt": "2023-11-09T09:37:53Z",
-      "updatedAt": "2024-12-04T17:08:27Z",
+      "updatedAt": "2025-03-18T14:41:50Z",
       "closedAt": null,
       "comments": [
         {
@@ -252,6 +260,13 @@
           "body": "Making progress here is blocked on writing down a proper threat model, tracked in #93.",
           "createdAt": "2024-12-04T17:08:26Z",
           "updatedAt": "2024-12-04T17:08:26Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "See now #111 ",
+          "createdAt": "2025-03-18T14:41:33Z",
+          "updatedAt": "2025-03-18T14:41:33Z"
         }
       ]
     },
@@ -270,7 +285,7 @@
       ],
       "body": "> **ISSUE**: Come to consensus on a specific binary encoding for the MIMI\r\n> transport protocol.\r\n\r\nCurrently we use TLS-serialized structs.",
       "createdAt": "2023-11-09T12:17:51Z",
-      "updatedAt": "2025-03-05T05:54:43Z",
+      "updatedAt": "2025-03-19T08:01:41Z",
       "closedAt": null,
       "comments": [
         {
@@ -377,6 +392,13 @@
           "body": "To follow this ticket.",
           "createdAt": "2025-03-05T05:54:41Z",
           "updatedAt": "2025-03-05T05:54:41Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Emailed the list. Will close unless credible alternate proposed by April 3",
+          "createdAt": "2025-03-19T08:01:41Z",
+          "updatedAt": "2025-03-19T08:01:41Z"
         }
       ]
     },
@@ -395,7 +417,7 @@
       ],
       "body": "> **ISSUE**: Come to consensus on a specific set of MIMI transport protocol\r\n> semantics.",
       "createdAt": "2023-11-09T12:21:07Z",
-      "updatedAt": "2025-03-05T05:49:57Z",
+      "updatedAt": "2025-03-19T08:01:11Z",
       "closedAt": null,
       "comments": [
         {
@@ -411,6 +433,13 @@
           "body": "To follow this important ticket.",
           "createdAt": "2025-03-05T05:49:56Z",
           "updatedAt": "2025-03-05T05:49:56Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Emailed the list. Will close unless credible alternate proposed by April 3",
+          "createdAt": "2025-03-19T08:01:10Z",
+          "updatedAt": "2025-03-19T08:01:10Z"
         }
       ]
     },
@@ -855,7 +884,7 @@
       ],
       "body": "> **TODO**: Discuss if this participation state is desirable, and figure out\r\n> details for how it works. It'd likely just be an `m.room.user` state event\r\n> with no MLS interaction, like invites are.\r\n\r\n> **TODO**: If we have an Add event as discussed in a TODO in the \"Invites\"\r\n> section, an \"Add\" would probably be the response to a knock.",
       "createdAt": "2023-11-09T12:54:20Z",
-      "updatedAt": "2024-12-18T17:49:38Z",
+      "updatedAt": "2025-03-19T03:13:35Z",
       "closedAt": null,
       "comments": [
         {
@@ -899,6 +928,13 @@
           "body": "If I understand this correctly, this is a feature Signal has. Users can generate an invite link to a group, but new participants still have to be allowed individually. If that's what it is, this is actually a very useful feature for communities or in business messaging.",
           "createdAt": "2024-12-18T17:49:37Z",
           "updatedAt": "2024-12-18T17:49:37Z"
+        },
+        {
+          "author": "coopdanger",
+          "authorAssociation": "NONE",
+          "body": "Agree with Raphael.",
+          "createdAt": "2025-03-19T03:13:35Z",
+          "updatedAt": "2025-03-19T03:13:35Z"
         }
       ]
     },
@@ -1587,10 +1623,28 @@
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has-PR"
+      ],
       "body": "signature of the request should also cover the room ID",
       "createdAt": "2025-03-15T03:34:33Z",
-      "updatedAt": "2025-03-16T02:38:47Z",
+      "updatedAt": "2025-03-18T14:40:40Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 114,
+      "id": "I_kwDOKZ8QO86upwn1",
+      "title": "Timestamp integrity for history",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/114",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Currently the integrity of the timestamp is available when franking, but only for active participants/member clients. It would be nice if I replace my phone, restoring my history, I can still verify the integrity of the original timestamp (and Frank). ",
+      "createdAt": "2025-03-19T01:26:20Z",
+      "updatedAt": "2025-03-19T01:26:20Z",
       "closedAt": null,
       "comments": []
     }
@@ -9637,7 +9691,7 @@
       "labels": [],
       "body": "This replaces #75 \r\n\r\nIt adds Oblivious HTTP between the downloading provider and the Hub provider.",
       "createdAt": "2025-03-16T07:04:32Z",
-      "updatedAt": "2025-03-17T03:59:37Z",
+      "updatedAt": "2025-03-19T09:10:52Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
@@ -9662,6 +9716,20 @@
           "body": "I also think the protocol laid out here allows a provider server to use a hub server (that one of their user is using) as a proxy to any remote server by setting that remote server's domain (temporarily) as their asset server domain.\r\n\r\nI also probably missed how the hub server is supposed to discover the asset server domains of its members: it's not in the directory and even if it was, the hub also can't know which provider's directory to query when requested to download a file.",
           "createdAt": "2025-03-17T03:36:18Z",
           "updatedAt": "2025-03-17T03:36:18Z"
+        },
+        {
+          "author": "raphaelrobert",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As discussed during the ietf122 mimi session, I propose to simplify this by making the hub squarely responsible for anything related to attachments:\r\n - the hub hosts attachments\r\n - the hub can enforce quotas\r\n \r\n This makes for a far easier architecture and a more consistent UX.",
+          "createdAt": "2025-03-19T03:14:10Z",
+          "updatedAt": "2025-03-19T03:14:10Z"
+        },
+        {
+          "author": "mar-v-in",
+          "authorAssociation": "NONE",
+          "body": "In the end in any approach the file has to travel the CSSSC path and given we use HTTPS for message transfer on the S-to-S links, it feels only obvious to use it for the file transfer as well. So the question we're discussing effectively is if the transfer from sending server to hub is via GET or PUT. The architecture doesn't change by a lot.\n\nAlso, the hub in practice won't be able to completely enforce limits, simply because any file can likely be uploaded to an external service and displayed as a link that recipients can access using an external software.",
+          "createdAt": "2025-03-19T09:10:51Z",
+          "updatedAt": "2025-03-19T09:10:51Z"
         }
       ],
       "reviews": [
@@ -9764,6 +9832,78 @@
               "updatedAt": "2025-03-17T03:59:38Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86gufyx",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-03-18T23:57:35Z",
+          "updatedAt": "2025-03-18T23:57:35Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "My recollection was that webex and teams supported their equivalent of the system for storage and we wanted to stay agnostic. In any case, the technical solution that restricts the downloads to come from one of the participants' local attachment servers allows any of them to delegate this URL to the hub server. ",
+              "createdAt": "2025-03-18T23:57:35Z",
+              "updatedAt": "2025-03-18T23:57:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86guf2L",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-03-18T23:57:50Z",
+          "updatedAt": "2025-03-18T23:57:50Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "ok. I'll update.",
+              "createdAt": "2025-03-18T23:57:50Z",
+              "updatedAt": "2025-03-18T23:57:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86gvEn5",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-03-19T01:50:35Z",
+          "updatedAt": "2025-03-19T01:56:21Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "I honestly like \"assets\" a little better, and I think it's slightly more commonly used in practice.",
+              "createdAt": "2025-03-19T01:50:35Z",
+              "updatedAt": "2025-03-19T01:56:21Z"
+            },
+            {
+              "originalPosition": 23,
+              "body": "AFAIK, neither Webex nor Teams is federated in any sense that would make a good analogy here.  The hub-only approach does seem simpler, though (a) it increases the cost to be a hub and (b) could impede hub transition later.  Given those drawbacks, having some flexibility here seem good.",
+              "createdAt": "2025-03-19T01:53:06Z",
+              "updatedAt": "2025-03-19T01:56:21Z"
+            },
+            {
+              "originalPosition": 25,
+              "body": "Maybe you could if the hub cached assets.  That could be a compromise between the hub-only approach and the flexible approach.",
+              "createdAt": "2025-03-19T01:54:02Z",
+              "updatedAt": "2025-03-19T01:56:21Z"
+            }
+          ]
         }
       ]
     },
@@ -9792,6 +9932,46 @@
       "mergeCommit": null,
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 113,
+      "id": "PR_kwDOKZ8QO86PMEAq",
+      "title": "Add group_info_response_nonce to prevent 2-time pad attacks",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/113",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-03-18T23:46:41Z",
+      "updatedAt": "2025-03-19T00:48:17Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "ginfo-resp-nonce",
+      "headRefOid": "d4f788196dede7a06d124e4d640f83abd4ddf4ce",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86guqWu",
+          "commit": {
+            "abbreviatedOid": "d4f7881"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "This is not a \"2-time pad\" (terrible phrase; almost never a real thing), this is bounding the replayability of the signature.  You should either:\r\n\r\n1. Put a nonce in the request, which the response signature must include\r\n2. Put a timestamp in the response, which the requester compares to their local time\r\n\r\nClearly (1) would be preferable, because it doesn't require time sync.",
+          "createdAt": "2025-03-19T00:48:17Z",
+          "updatedAt": "2025-03-19T00:48:17Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
