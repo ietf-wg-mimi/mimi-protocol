@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-20T00:44:39.186072+00:00",
+  "timestamp": "2025-03-23T00:50:37.445409+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1645,6 +1645,69 @@
       "body": "Currently the integrity of the timestamp is available when franking, but only for active participants/member clients. It would be nice if I replace my phone, restoring my history, I can still verify the integrity of the original timestamp (and Frank). ",
       "createdAt": "2025-03-19T01:26:20Z",
       "updatedAt": "2025-03-19T01:26:20Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 115,
+      "id": "I_kwDOKZ8QO86u46za",
+      "title": "Implicit specification that franking-sender must include salt",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/115",
+      "state": "OPEN",
+      "author": "felixlinker",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section \"Receiver verification of frank\" specifies that the receiver of a franked message must verify its tag using the embedded salt:\n\nhttps://github.com/ietf-wg-mimi/mimi-protocol/blob/5080565278e0949af3425efd8d7381312c9cc1a1/draft-ietf-mimi-protocol.md?plain=1#L1254\n\nThe specification of the sender, however, does not mention that the sender should include the salt. Just a nit and probably an oversight, but better to be fixed! :)",
+      "createdAt": "2025-03-20T05:48:28Z",
+      "updatedAt": "2025-03-20T05:48:28Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 116,
+      "id": "I_kwDOKZ8QO86u5gOq",
+      "title": "Inconsistency between sections 5.4.1.3 and 5.9",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/116",
+      "state": "OPEN",
+      "author": "felixlinker",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "5.4.1.3 says \u201ethe receiver needs to store the frank,\u201c (unclear which one, but I presume the server frank), 5.9 says the report must include \u201e[a messages] franks\u201c (plural!). This shouldn't change much from the perspective of security, but could lead to interoperability issues.",
+      "createdAt": "2025-03-20T06:57:33Z",
+      "updatedAt": "2025-03-20T07:16:38Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "felixlinker",
+          "authorAssociation": "NONE",
+          "body": "Also, the type and name of field `Frank frank;` in `AbusiveMessage` suggests it contains only a single frank.",
+          "createdAt": "2025-03-20T07:08:04Z",
+          "updatedAt": "2025-03-20T07:08:17Z"
+        },
+        {
+          "author": "felixlinker",
+          "authorAssociation": "NONE",
+          "body": "Aha, found the type definition of `Frank` in Sec 5.5., which clears up things. Nevertheless, I think 5.4.1.3 should be more explicit about what needs to be stored :)",
+          "createdAt": "2025-03-20T07:16:36Z",
+          "updatedAt": "2025-03-20T07:16:36Z"
+        }
+      ]
+    },
+    {
+      "number": 117,
+      "id": "I_kwDOKZ8QO86u6cnl",
+      "title": "AbusiveMessage does not include salt",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/117",
+      "state": "OPEN",
+      "author": "felixlinker",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "@rohanmahy Let me know that the the sender's salt it used to generate the initial franking tag should be included in the MIMI content of the `AbusiveMessage`. That field's type, however, is `opaque` suggesting its values shouldn't matter to implementations.",
+      "createdAt": "2025-03-20T08:45:49Z",
+      "updatedAt": "2025-03-20T08:45:49Z",
       "closedAt": null,
       "comments": []
     }
