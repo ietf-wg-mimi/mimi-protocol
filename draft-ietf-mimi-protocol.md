@@ -1072,10 +1072,10 @@ The `sendingUri` is a valid URI of the sender and is an active participant
 in the room (a user URI in the participant list of the room).
 
 The response indicates if the message was accepted by the hub provider. If a
-`frankingTag` was included in the `FrankAAD` extension in the PrivateMessage
-Additional Authenticated Data (AAD) in the request, the server attempts to
-frank the message and includes the `serverFrank` in a successful response
-(see the next subsection).
+`frankingTag` was included in the `FrankAAD` extension {{iana-frank-aad}} in the
+PrivateMessage Additional Authenticated Data (AAD) in the request, the server
+attempts to frank the message and includes the `serverFrank` in a successful
+response (see the next subsection).
 
 ~~~ tls
 enum {
@@ -1084,6 +1084,11 @@ enum {
   epochTooOld(2),
   (255)
 } SubmitResponseCode;
+
+struct {
+  uint8[32] serverFrank;
+  uint8[32] franking_integrity_signature;
+} Frank;
 
 struct {
   Protocol protocol;
@@ -1095,10 +1100,7 @@ struct {
           /* the hub acceptance time
              (in milliseconds from the UNIX epoch) */
           uint64 acceptedTimestamp;
-          optional struct {
-            uint8[32] serverFrank;
-            uint8[32] franking_integrity_check;
-          };
+          optional Frank frank;
         case epochTooOld:
           /* current MLS epoch for the MLS group */
           uint64 currentEpoch;
@@ -1143,25 +1145,24 @@ discussed in Section 8.2 of {{!I-D.ietf-mimi-content}}.)
 
 Next the sender attaches to the message any fields the sender wishes to commit
 that are not otherwise represented in the content. For a MIMI content object,
-the sender creates a CBOR "FrankingAssertion" map containing the room URI and
-the sender's user URI. It adds this FrankingAssertion to the extensions map at
-the top level of the MIMI content using the integer key TBD1.
+the sender includes the sender's user URI and room URI in the MIMI content
+extensions map (see definitions in {{Section 8.3 of !I-D.ietf-mimi-content}}).
 
 ~~~ cbor-diag
-/ FrankingAssertion map /
+/ MIMI content extensions map /
 {
-  / RoomURI        / 1: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
-  / SenderUserURI  / 2: "mimi://b.example/u/alice"
+  / sender_uri / 1: "mimi://b.example/u/alice"
+  / room_uri   / 2: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
 }
 ~~~
 
-Note that this assertion does not vouch for the validity of these values,
+Note that these assertions does not vouch for the validity of these values,
 it just means that the sender is claiming it sent the values in the content,
 and cannot later deny to a receiver that it sent them.
 
 Then the client calculates the `franking_tag`, as the HMAC SHA256 of the
-`application_data` (which includes the FrankingAssertion extension), using the
-`salt` in the MIMI content format:
+`application_data` (which includes the values in the extensions map above)
+using the `salt` in the MIMI content format:
 
 ~~~
 franking_tag = HMAC_SHA256( salt, application_data)
@@ -1177,62 +1178,34 @@ by the server).
 
 #### Hub processing
 
-The Hub relies on a per-epoch secret shared among the members of the group
-and itself to provider integrity over the message metadata the Hub uses
-(serverURI, roomURI) and adds (acceptedTimestamp, serverFrank) while franking.
-It derives the `franking_integrity_secret`, using the label
-"franking_integrity", from the `ap_exporter_secret` in the Associated Party Key
-Schedule {{!I-D.kohbrok-mls-associated-parties}}.
-
-~~~ aasvg
-         ...
-          |
-          |
-          V
-    ap_epoch_secret
-          |
-          |
-          +--------------------> DeriveSecret(., "ap_exporter")
-          |                               = ap_exporter_secret
-          |                                     |
-          |                                     |
-          V                                     |
-    DeriveSecret(., "init")                     |
-          |                                     |
-          |                                     |
-          |                                     |
-          |                                     V
-          |          DeriveSecret(., "franking_integrity")
-          |                   = franking_integrity_secret
-          |
-          V
-    init_secret_[n]
-~~~
-{: title="The Extended Associated Party Key Schedule" #extended-ap-key-schedule }
+When a valid `franking_signature_key` application component
+{{iana-franking-sig-key}} is present in the GroupContext, the Hub can frank
+messages, and sign the frank with its corresponding `franking_private_key`.
 
 When the Hub receives an acceptable application message with the `FrankAAD`
 AAD extension and a valid sender identity, it calculates a server frank for
-the message as follows:
+the message, and a `franking_integrity_signature` as follows:
 
 ~~~
-context = senderURI || roomURI || acceptedTimestamp
+context = sender_uri || room_uri || acceptedTimestamp
 serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
-franking_integrity_check = HMAC_SHA256(franking_integrity_secret,
-  serverFrank || context)
+franking_integrity_signature =
+  Signature.Sign(franking_private_key, serverFrank || context)
 ~~~
 
-`HUBkey` is a secret symmetric key used on the Hub which the Hub can use to verify its own tags.
+`HUBkey` is a secret symmetric key used on the Hub which the Hub can use to
+verify its own `serverFrank`.
 
-The `franking_integrity_check` is used by receivers to verify that the
+The `franking_integrity_signature` is used by receivers to verify that the
 values added by the Hub (the `serverFrank`, and `acceptedTimestamp`) were not
-modified by a follower provider, and that the `senderURI` and `roomURI` match
+modified by a follower provider, and that the `sender_uri` and `room_uri` match
 those provided by the sending client.
 The specific construction used is discussed in the Security Considerations
 in {{franking}}.
 
 The Hub fans out the encrypted message (which includes the `franking_tag`),
 the `serverFrank`, the `acceptedTimestamp`, the room URI, and the
-`franking_integrity_check`. Note that the `senderURI` is encrypted in the
+`franking_integrity_signature`. Note that the `sender_uri` is encrypted in the
 application message, so the sender can remain anonymous with respect to follower
 providers.
 
@@ -1241,21 +1214,26 @@ providers.
 When a client receives and decrypts an otherwise valid application message
 from a hub provider, the client looks for the existence of a frank
 (consisting of the `franking_tag` in the AAD, the `serverFrank` and the
-`franking_integrity_check`). If those fields are available, the client derives the
-`franking_integrity_secret` from the `ap_exporter_secret` in the Associated
-Party Key Schedule {{I-D.kohbrok-mls-associated-parties}}.
+`franking_integrity_signature`). If those fields are available, the client looks
+for the `franking_signature_key` application component in the GroupContext.
 
 Next it verifies the integrity of the `serverFrank`, `acceptedTimestamp`,
-`senderURI`, and `roomURI` by calculating its own `franking_integrity_check`
-from these values with the `franking_integrity_secret` and comparing it to the
-provided `franking_integrity_check`.
+`sender_uri`, and `room_uri` by calculating the `signed_content` and verifying
+the `franking_integrity_signature` as described below.
+
+~~~
+signed_content = frankingTag ||
+                  sender_uri || room_uri || acceptedTimestamp
+Signature.Verify(franking_signature_key, signed_content,
+                           franking_integrity_signature)
+~~~
 
 Finally it verifies the construction of the `franking_tag` from the content
 of the message (including the embedded `salt`),
 that the sender's identity in its credential in its MLS LeafNode matches
-the sender's user identity asserted in the FrankingAssertion map inside the MIMI
-Content, and that the RoomURI inside the MIMI Content matches the room ID in
-the received message.
+the `sender_uri` asserted in the extensions map inside the MIMI Content, and
+that the `room_uri` asserted in the extensions map inside the MIMI Content
+matches the room ID in the received message.
 
 The receiver needs to store the frank and context with the decoded message
 so it can be used later.
@@ -1267,7 +1245,7 @@ use case involves traffic which can transit multiple federated providers,
 any of which may be compromised or malicious. The MIMI franking scheme
 described here differs in the following ways.
 
-The sender
+Firstly, the sender
 includes its `franking_tag` as Additional Authenticated Data (AAD) inside the end-to-end encrypted message. This insures that the `franking_tag` is not tampered with by the sender's provider.
 According to {{Grubbs2017}},
 "... [Facebook's] franking scheme does not bind [the franking tag] to [the
@@ -1279,15 +1257,16 @@ so the sender sends its identity to the Hub. The hub never sends the
 identity of the sender to receivers, since this would be observed by
 follower providers. However, the receiver needs to verify that the sender
 identity provided by the sender's provider to the Hub matches the identity
-the receiver sees after it decrypts the message. Using a key shared between
-members and the Hub (the `franking_integrity_secret`) the Hub sends an HMAC
-of its context (sender identity, room id, and timestamp) and the serverFrank
-with this key. The second change provides two functions. Itallows receivers to
-validate the sender URI in the hub's context, without revealing the sender URI
-to follower providers. It also prevents a follower provider from "mauling" the
-serverFrank, or breaking the context comparison (by modifying the
-`acceptedTimestamp`). Each receiver uses this to verify that the timestamp and
-franking parameters added by the Hub were not modified.
+the receiver sees after it decrypts the message. Using the
+`franking_integrity_signature` generated by the Hub, receivers can verify the
+message context (sender identity, room id, and timestamp) and the serverFrank
+with `franking_signature_key` in the GroupContext.
+This second change provides two functions. It allows receivers to
+validate the `sender_uri` in the hub's context, without revealing the sender URI
+to follower providers. It also prevents a follower provider from modifying the
+serverFrank, or any elements of the context (ex: modifying the
+`acceptedTimestamp`) without detection. A valid signature ensures
+that follower providers did not tamper with the context or the serverFrank.
 
 
 ## Fanout Messages and Room Events
@@ -1316,11 +1295,6 @@ POST /notify/{roomId}
 ~~~
 
 ~~~ tls
-struct {
-  uint8[32] serverFrank;
-  uint8[32] franking_integrity_check;
-} Frank;
-
 struct {
   /* the hub acceptance time (in milliseconds from the UNIX epoch) */
   uint64 timestamp;
@@ -2173,8 +2147,10 @@ TBD.
 
 # IANA Considerations
 
->**TODO**: Add registration of MIMI content format extension, and a SafeAAD
-component.
+## FrankAAD app component {#iana-frank-aad}
+
+## franking_signature_key app component {#iana-franking-sig-key}
+
 
 --- back
 
@@ -2182,4 +2158,7 @@ component.
 {:numbered="false"}
 
 Thanks to Paul Grubs, Jon Millican, and Julia Len for their reviews of the
-franking mechanism and suggested changes.
+franking mechanism and suggested changes. Thanks to Felix Linker for his
+preliminary [formal methods
+analysis](https://github.com/felixlinker/mimi-franking-tamarin/) of MIMI
+franking.
