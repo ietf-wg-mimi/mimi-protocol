@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-04-01T00:54:07.406210+00:00",
+  "timestamp": "2025-04-27T00:52:41.561511+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1660,9 +1660,17 @@
       "labels": [],
       "body": "Section \"Receiver verification of frank\" specifies that the receiver of a franked message must verify its tag using the embedded salt:\n\nhttps://github.com/ietf-wg-mimi/mimi-protocol/blob/5080565278e0949af3425efd8d7381312c9cc1a1/draft-ietf-mimi-protocol.md?plain=1#L1254\n\nThe specification of the sender, however, does not mention that the sender should include the salt. Just a nit and probably an oversight, but better to be fixed! :)",
       "createdAt": "2025-03-20T05:48:28Z",
-      "updatedAt": "2025-03-20T05:48:28Z",
+      "updatedAt": "2025-04-24T19:42:23Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The salt is required in every MIMI message. It is a fixed-length, fixed-type item, and is the first item in the fixed-length array that is the top level of any MIMI message.\n\nI'll see what I can write to clarify that in mimi-protocol.",
+          "createdAt": "2025-04-24T19:42:21Z",
+          "updatedAt": "2025-04-24T19:42:21Z"
+        }
+      ]
     },
     {
       "number": 116,
@@ -9754,7 +9762,7 @@
       "labels": [],
       "body": "This replaces #75 \r\n\r\nIt adds Oblivious HTTP between the downloading provider and the Hub provider.",
       "createdAt": "2025-03-16T07:04:32Z",
-      "updatedAt": "2025-03-19T09:10:52Z",
+      "updatedAt": "2025-04-25T15:50:25Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
@@ -9793,6 +9801,27 @@
           "body": "In the end in any approach the file has to travel the CSSSC path and given we use HTTPS for message transfer on the S-to-S links, it feels only obvious to use it for the file transfer as well. So the question we're discussing effectively is if the transfer from sending server to hub is via GET or PUT. The architecture doesn't change by a lot.\n\nAlso, the hub in practice won't be able to completely enforce limits, simply because any file can likely be uploaded to an external service and displayed as a link that recipients can access using an external software.",
           "createdAt": "2025-03-19T09:10:51Z",
           "updatedAt": "2025-03-19T09:10:51Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> As discussed during the ietf122 mimi session, I propose to simplify this by making the hub squarely responsible for anything related to attachments:\r\n> \r\n>     * the hub hosts attachments\r\n>     * the hub can enforce quotas\r\n\r\nI think we can expect near zero adoption from any major provider in that case. What's the motivation for a large provider to act as a hub for other clients?\r\n",
+          "createdAt": "2025-04-24T19:39:17Z",
+          "updatedAt": "2025-04-24T19:39:17Z"
+        },
+        {
+          "author": "raphaelrobert",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> I think we can expect near zero adoption from any major provider in that case. What's the motivation for a large provider to act as a hub for other clients?\r\n\r\nYou claimed that at IETF122 already, but it would be good to back that claim with some concrete evidence.\r\n\r\nI don't understand why large providers would be treated any differently than small ones. The provider who becomes the hub is decided at room creation. Rooms hosted by a specific provider can only be created by users of that provider. In that moment, a provider can decide\r\n\r\n a) if federating with other users is allowed, and\r\n b) if so, what the quota for the room is (either in total or per user), and\r\n c) what the retention time is.\r\n\r\nI don't understand why there would be a bias towards large providers. And even if there was, providers remain in control of the cost.\r\n\r\n\r\n\r\n",
+          "createdAt": "2025-04-25T14:13:28Z",
+          "updatedAt": "2025-04-25T14:13:28Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> > I think we can expect near zero adoption from any major provider in that case. What's the motivation for a large provider to act as a hub for other clients?\r\n> \r\n> You claimed that at IETF122 already, but it would be good to back that claim with some concrete evidence.\r\n\r\nThe cost of storing assets is one of the most expensive parts of a messaging service, assets need to be stored for a longer amount of time and brings a host of other liabilities.\r\n\r\nIf hub A has some user from provider B, we expect provider downtime to be fairly short (minutes or hours) with rare cases of a couple of days. In most cases, messages sent to provider B for participants can be cleaned up within minutes. By contrast the expectation is that assets/attachments are stored for a much longer amount of time, in the 30 days to 1 year time frame. They are also 3-4 orders of magnitude larger than typical messages. \r\n\r\nWe have no proposed mechanism yet to allow a participant from a non-hub provider to upload assets. We know that the balance of authentication, privacy, and policy enforcement is a very hard balance and it is more challenging due to the multiparty nature of this flow.\r\n\r\nNext we have legal liability for assets. If someone reports an asset, there are a variety of legal issues in most jurisdictions. For example for CSAM, the asset needs to be quarantined. In many jurisdictions it can't even be viewed by regular administrative staff without breaking the law. It may need to be kept as evidence for years. These are all accepted costs and risks for the hub's own users, but accepting these costs and risks for others is a disproportionate burden for assets than for messages.\r\n \r\n> I don't understand why large providers would be treated any differently than small ones. The provider who becomes the hub is decided at room creation. Rooms hosted by a specific provider can only be created by users of that provider. In that moment, a provider can decide\r\n\r\nThey are not treated any differently, but all the large providers today are a free service to their users. Any providers who are free (large or small) do not get additional revenue from non-hub users. For text messaging the cost of hosting a room with several non-hub users is relatively low, but much higher if assets need to be supported.\r\n\r\nI could easily imagine some small or medium sized providers that want to offer a paid service where everything is stored on the hub in certain rooms, but absent that there is no motivation to change the default modus operandi of messaging services. MIMI protocol would not need to be changed to support an additional optional endpoint.\r\n\r\nFinally, in our charter we said we were going to try to have a light touch and not design a client to server protocol, nor dictate too much. All commercial messaging services that I know about already have a mechanism to store assets on the client's provider. This seems a pretty big departure for a questionable philosophical argument.\r\n\r\n> a) if federating with other users is allowed, and b) if so, what the quota for the room is (either in total or per user), and c) what the retention time is.\r\n> \r\n> I don't understand why there would be a bias towards large providers. And even if there was, providers remain in control of the cost.\r\nI'm not sure I understand. For MIMI to be successful, it needs to work for both large and small providers. If no large providers can deploy it (or no small providers for that matter), then we have failed. That's not a bias, it is the recognition that a healthy ecosystem needs to contain both.\r\n\r\n",
+          "createdAt": "2025-04-25T15:46:42Z",
+          "updatedAt": "2025-04-25T15:50:24Z"
         }
       ],
       "reviews": [
@@ -9967,6 +9996,46 @@
               "updatedAt": "2025-03-19T01:56:21Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86mbvUy",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-24T19:33:12Z",
+          "updatedAt": "2025-04-24T19:33:12Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "@martinthomson  Yes, that was overstating things. \r\n\r\nThe hub can't learn the number of participants from a provider B that are **in a specific room** if that provider has participants in several rooms on that hub. The hub only learns the total number of asset requests coming from the provider's OHTTP relay.  \r\n\r\nAre you ok with some rephrasing of that?",
+              "createdAt": "2025-04-24T19:33:12Z",
+              "updatedAt": "2025-04-24T19:33:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86mdWbu",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-24T23:20:09Z",
+          "updatedAt": "2025-04-24T23:20:09Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "Yeah, the hub learns the number of requests from each provider, which is <= the number of participants, I expect (unless participants request content multiple times, which I guess is also possible).\r\n\r\nThe hosting entity would learn that someone has requested the content.",
+              "createdAt": "2025-04-24T23:20:09Z",
+              "updatedAt": "2025-04-24T23:20:09Z"
+            }
+          ]
         }
       ]
     },
@@ -10035,6 +10104,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 118,
+      "id": "PR_kwDOKZ8QO86T2tYV",
+      "title": "Change franking_integrity to use signature; add acknowledgement",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/118",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- Change franking_integrity to use signature\r\n- acknowledge Felix Linker for Tamarin formal methods model",
+      "createdAt": "2025-04-25T04:02:45Z",
+      "updatedAt": "2025-04-25T04:02:45Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "sign-frank",
+      "headRefOid": "993fef2299fd2eaab8e7ccadfb769d557a4883e7",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
