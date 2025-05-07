@@ -1159,8 +1159,15 @@ FrankingAgentData franking_agent;
 FrankingAgentData FrankingAgentUpdate;
 ~~~
 
+The signature algorithm of the `franking_signature_key` is the same as the
+cipher suite of the MLS group.
+
 FrankingAgentUpdate is the format of the `update` field inside the AppDataUpdate
-struct in an AppDataUpdate Proposal for the `franking_agent` component.
+struct in an AppDataUpdate Proposal for the `franking_agent` component. The use
+of AppDataUpdate on the `franking_agent` is RECOMMENDED only when adding a new
+`franking_agent`. To avoid confusion about which signature key to use, when an
+MLS client rotates the `franking_agent`, the client SHOULD create a new MLS
+group by sending a ReInit proposal.
 
 
 #### Client creation and sending
