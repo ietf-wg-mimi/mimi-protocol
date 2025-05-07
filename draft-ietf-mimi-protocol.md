@@ -1188,7 +1188,7 @@ the MIMI content extensions map (see definitions in {{Section 8.3 of
 }
 ~~~
 
-Note that these assertions does not vouch for the validity of these values,
+Note that these assertions do not vouch for the validity of these values,
 it just means that the sender is claiming it sent the values in the content,
 and cannot later deny to a receiver that it sent them.
 
@@ -2186,7 +2186,7 @@ TBD.
 
 # IANA Considerations
 
-This document registers the following two MLS application components per
+This document registers the following four MLS application components per
 {{Section 7.6 of !I-D.ietf-mls-extensions}}.
 
 ## frank_aad app component {#iana-frank-aad}
