@@ -3166,7 +3166,7 @@ enum {
 
 struct {
   uint8[32] server_frank;
-  uint8[32] franking_integrity_signature;
+  opaque franking_integrity_signature&lt;V&gt;;
 } Frank;
 
 struct {
@@ -3247,8 +3247,14 @@ FrankingAgentData franking_agent;
 FrankingAgentData FrankingAgentUpdate;
 </pre><a href="#section-5.4.1-4" class="pilcrow">¶</a>
 </div>
-<p id="section-5.4.1-5">FrankingAgentUpdate is the format of the <code>update</code> field inside the AppDataUpdate
-struct in an AppDataUpdate Proposal for the <code>franking_agent</code> component.<a href="#section-5.4.1-5" class="pilcrow">¶</a></p>
+<p id="section-5.4.1-5">The signature algorithm of the <code>franking_signature_key</code> is the same as the
+cipher suite of the MLS group.<a href="#section-5.4.1-5" class="pilcrow">¶</a></p>
+<p id="section-5.4.1-6">FrankingAgentUpdate is the format of the <code>update</code> field inside the AppDataUpdate
+struct in an AppDataUpdate Proposal for the <code>franking_agent</code> component. The use
+of AppDataUpdate on the <code>franking_agent</code> is <span class="bcp14">RECOMMENDED</span> only when adding a new
+<code>franking_agent</code>. To avoid confusion about which signature key to use, when an
+MLS client rotates the <code>franking_agent</code>, the client <span class="bcp14">SHOULD</span> create a new MLS
+group by sending a ReInit proposal.<a href="#section-5.4.1-6" class="pilcrow">¶</a></p>
 <div id="client-creation-and-sending">
 <section id="section-5.4.1.1">
             <h5 id="name-client-creation-and-sending">
