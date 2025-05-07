@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 27 October 2025                The Matrix.org Foundation C.I.C.
+Expires: 8 November 2025                The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 27 October 2025                The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                           25 April 2025
+                                                              7 May 2025
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 October 2025.
+   This Internet-Draft will expire on 8 November 2025.
 
 Copyright Notice
 
@@ -124,8 +124,10 @@ Table of Contents
    9.  Security Considerations
      9.1.  Franking
    10. IANA Considerations
-     10.1.  FrankAAD app component
+     10.1.  frank_aad app component
      10.2.  franking_signature_key app component
+     10.3.  participant_list app component
+     10.4.  room_metadata app component
    11. References
      11.1.  Normative References
      11.2.  Informative References
@@ -1092,7 +1094,7 @@ ServerC->ClientC*: [[ Commit ]]
      select (responseCode) {
        case success:
          /* the hub acceptance time (in milliseconds from the UNIX epoch) */
-         uint64 acceptedTimestamp;
+         uint64 accepted_timestamp;
        case wrongEpoch:
          /* current MLS epoch for the MLS group */
          uint64 currentEpoch;
@@ -1141,10 +1143,10 @@ ServerC->ClientC*: [[ Commit ]]
    the room).
 
    The response indicates if the message was accepted by the hub
-   provider.  If a frankingTag was included in the FrankAAD extension
+   provider.  If a franking_tag was included in the frank_aad component
    Section 10.1 in the PrivateMessage Additional Authenticated Data
    (AAD) in the request, the server attempts to frank the message and
-   includes the serverFrank in a successful response (see the next
+   includes the server_frank in a successful response (see the next
    subsection).
 
    enum {
@@ -1155,7 +1157,7 @@ ServerC->ClientC*: [[ Commit ]]
    } SubmitResponseCode;
 
    struct {
-     uint8[32] serverFrank;
+     uint8[32] server_frank;
      uint8[32] franking_integrity_signature;
    } Frank;
 
@@ -1168,7 +1170,7 @@ ServerC->ClientC*: [[ Commit ]]
            case success:
              /* the hub acceptance time
                 (in milliseconds from the UNIX epoch) */
-             uint64 acceptedTimestamp;
+             uint64 accepted_timestamp;
              optional Frank frank;
            case epochTooOld:
              /* current MLS epoch for the MLS group */
@@ -1212,19 +1214,48 @@ ServerC->ClientC*: [[ Commit ]]
    solution with two significant changes as discussed in the final
    paragraph of this section.
 
+   MIMI franking relies on two new MLS application components.  The
+   first is the frank_aad Safe AAD component Section 4.9 of
+   [I-D.ietf-mls-extensions].  The second is the franking_agent
+   GroupContext component Section 4.6 of [I-D.ietf-mls-extensions].  The
+   structure of franking_agent mirrors that of the ExternerSender struct
+   described in Section 12.1.8.1 of [RFC9420].  It contains a single
+   signature key.
+
+   struct {
+     uint8[32] franking_tag
+   } FrankAAD;
+
+   FrankAAD frank_aad;
+
+   struct {
+     SignaturePublicKey franking_signature_key;
+     Credential credential;
+   } FrankingAgentData;
+
+   FrankingAgentData franking_agent;
+   FrankingAgentData FrankingAgentUpdate;
+
+   FrankingAgentUpdate is the format of the update field inside the
+   AppDataUpdate struct in an AppDataUpdate Proposal for the
+   franking_agent component.
+
 5.4.1.1.  Client creation and sending
 
-   When generating an application message with the MIMI content format
-   [I-D.ietf-mimi-content], the sender generates a per-message
-   cryptographically random 256-bit salt.  (An example mechanism to
-   safely generate the salt is discussed in Section 8.2 of
-   [I-D.ietf-mimi-content].)
+   The franking mechanism requires the message format to contain a
+   random salt, the sender URI, and the room URI.  It describes the
+   exact way to extract these fields from the MIMI content format.
 
-   Next the sender attaches to the message any fields the sender wishes
-   to commit that are not otherwise represented in the content.  For a
-   MIMI content object, the sender includes the sender's user URI and
-   room URI in the MIMI content extensions map (see definitions in
-   Section 8.3 of [I-D.ietf-mimi-content]).
+   The MIMI content format [I-D.ietf-mimi-content] includes a per-
+   message, mandatory, cryptographically random 256-bit salt generated
+   by the sender.  (An example mechanism to safely generate the salt is
+   discussed in Section 8.2 of [I-D.ietf-mimi-content].)
+
+   The sender of a MIMI content message attaches to the message any
+   fields the sender wishes to commit that are not otherwise represented
+   in the content.  For a MIMI content object, the sender includes the
+   sender's user URI and room URI in the MIMI content extensions map
+   (see definitions in Section 8.3 of [I-D.ietf-mimi-content]).
 
    / MIMI content extensions map /
    {
@@ -1244,61 +1275,65 @@ ServerC->ClientC*: [[ Commit ]]
    franking_tag = HMAC_SHA256( salt, application_data)
 
    The client includes the franking_tag in the Additional Authenticated
-   Data of the MLS PrivateMessage using the Safe Extension FrankAAD.
-   The client uses the MIMI submitMessage to send its message, and also
-   asserts a sender identity to the Hub, which could be a valid
-   pseudonym, and needs to match the sender URI value embedded in the
-   message.  If the message is accepted, the response includes the
-   accepted timestamp and the serverFrank (generated by the server).
+   Data of the MLS PrivateMessage using the frank_aad Safe AAD
+   component.  The client uses the MIMI submitMessage to send its
+   message, and also asserts a sender identity to the Hub, which could
+   be a valid pseudonym, and needs to match the sender URI value
+   embedded in the message.  If the message is accepted, the response
+   includes the accepted timestamp and the server_frank (generated by
+   the server).
 
 5.4.1.2.  Hub processing
 
-   When a valid franking_signature_key application component
-   Section 10.2 is present in the GroupContext, the Hub can frank
-   messages, and sign the frank with its corresponding
-   franking_private_key.
+   When a valid franking_agent application component Section 10.2 is
+   present in the GroupContext, the Hub can frank messages, and sign the
+   frank with the Hub's franking_private_key corresponding to the
+   franking_signature_key in the FrankingAgentData struct.
 
    When the Hub receives an acceptable application message with the
-   FrankAAD AAD extension and a valid sender identity, it calculates a
-   server frank for the message, and a franking_integrity_signature as
-   follows:
+   frank_aad Safe AAD component and a valid sender identity, it
+   calculates a server frank for the message, and a
+   franking_integrity_signature as follows:
 
-   context = sender_uri || room_uri || acceptedTimestamp
-   serverFrank = HMAC_SHA256(HUBkey, franking_tag || context )
+   context = sender_uri || room_uri || accepted_timestamp
+   server_frank = HMAC_SHA256(hub_key, franking_tag || context )
    franking_integrity_signature =
-     Signature.Sign(franking_private_key, serverFrank || context)
+     Signature.Sign(franking_private_key, server_frank || context)
 
-   HUBkey is a secret symmetric key used on the Hub which the Hub can
-   use to verify its own serverFrank.
+   hub_key is a secret symmetric key used on the Hub which the Hub can
+   use to verify its own server_frank.
 
    The franking_integrity_signature is used by receivers to verify that
-   the values added by the Hub (the serverFrank, and acceptedTimestamp)
-   were not modified by a follower provider, and that the sender_uri and
-   room_uri match those provided by the sending client.  The specific
-   construction used is discussed in the Security Considerations in
-   Section 9.1.
+   the values added by the Hub (the server_frank, and
+   accepted_timestamp) were not modified by a follower provider, and
+   that the sender_uri and room_uri match those provided by the sending
+   client.  The specific construction used is discussed in the Security
+   Considerations in Section 9.1.
 
    The Hub fans out the encrypted message (which includes the
-   franking_tag), the serverFrank, the acceptedTimestamp, the room URI,
-   and the franking_integrity_signature.  Note that the sender_uri is
-   encrypted in the application message, so the sender can remain
+   franking_tag), the server_frank, the accepted_timestamp, the room
+   URI, and the franking_integrity_signature.  Note that the sender_uri
+   is encrypted in the application message, so the sender can remain
    anonymous with respect to follower providers.
 
 5.4.1.3.  Receiver verification of frank
 
    When a client receives and decrypts an otherwise valid application
    message from a hub provider, the client looks for the existence of a
-   frank (consisting of the franking_tag in the AAD, the serverFrank and
-   the franking_integrity_signature).  If those fields are available,
-   the client looks for the franking_signature_key application component
-   in the GroupContext.
+   frank (consisting of the franking_tag in the AAD, the server_frank
+   and the franking_integrity_signature).  If those fields are
+   available, the client looks for the franking_agent application
+   component in the GroupContext.  It verifies the domain name in the
+   franking_agent.credential corresponds to the domain of the Hub, and
+   extracts the franking_signature_key.
 
-   Next it verifies the integrity of the serverFrank, acceptedTimestamp,
-   sender_uri, and room_uri by calculating the signed_content and
-   verifying the franking_integrity_signature as described below.
+   Next it verifies the integrity of the server_frank,
+   accepted_timestamp, sender_uri, and room_uri by calculating the
+   signed_content and verifying the franking_integrity_signature as
+   described below.
 
-   signed_content = frankingTag ||
-                     sender_uri || room_uri || acceptedTimestamp
+   signed_content = server_frank ||
+                     sender_uri || room_uri || accepted_timestamp
    Signature.Verify(franking_signature_key, signed_content,
                               franking_integrity_signature)
 
@@ -1319,13 +1354,13 @@ ServerC->ClientC*: [[ Commit ]]
    providers, any of which may be compromised or malicious.  The MIMI
    franking scheme described here differs in the following ways.
 
-   Firstly, the sender includes its franking_tag as Additional
-   Authenticated Data (AAD) inside the end-to-end encrypted message.
-   This insures that the franking_tag is not tampered with by the
-   sender's provider.  According to [Grubbs2017], "... [Facebook's]
-   franking scheme does not bind [the franking tag] to [the ciphertext]
-   by including [the franking tag] in the associated data during
-   encryption".
+   Firstly, the sender includes its franking_tag application component
+   as Additional Authenticated Data (AAD) inside the end-to-end
+   encrypted message.  This insures that the franking_tag is not
+   tampered with by the sender's provider.  According to [Grubbs2017],
+   "... [Facebook's] franking scheme does not bind [the franking tag] to
+   [the ciphertext] by including [the franking tag] in the associated
+   data during encryption".
 
    In MLS, the Hub cannot view the sender identity in an application
    message, so the sender sends its identity to the Hub. The hub never
@@ -1335,14 +1370,15 @@ ServerC->ClientC*: [[ Commit ]]
    the Hub matches the identity the receiver sees after it decrypts the
    message.  Using the franking_integrity_signature generated by the
    Hub, receivers can verify the message context (sender identity, room
-   id, and timestamp) and the serverFrank with franking_signature_key in
-   the GroupContext.  This second change provides two functions.  It
-   allows receivers to validate the sender_uri in the hub's context,
-   without revealing the sender URI to follower providers.  It also
-   prevents a follower provider from modifying the serverFrank, or any
-   elements of the context (ex: modifying the acceptedTimestamp) without
-   detection.  A valid signature ensures that follower providers did not
-   tamper with the context or the serverFrank.
+   id, and timestamp) and the server_frank with the
+   franking_signature_key in the franking_agent component in the
+   GroupContext.  This second change provides two functions.  It allows
+   receivers to validate the sender_uri in the hub's context, without
+   revealing the sender URI to follower providers.  It also prevents a
+   follower provider from modifying the server_frank, or any elements of
+   the context (ex: modifying the accepted_timestamp) without detection.
+   A valid signature ensures that follower providers did not tamper with
+   the context or the server_frank.
 
 5.5.  Fanout Messages and Room Events
 
@@ -1856,7 +1892,7 @@ ServerC->ClientC*: [[ Commit ]]
      /* alleged abusive content */
      opaque mimi_content<V>;
      Frank frank;
-     uint64 acceptedTimestamp;
+     uint64 accepted_timestamp;
    } AbusiveMessage;
 
    enum {
@@ -2045,6 +2081,8 @@ ServerC->ClientC*: [[ Commit ]]
      UserRolePair participants<V>;
    } ParticipantListData;
 
+   ParticipantListData participant_list;
+
    ParticipantListData is the format of the data field inside the
    ComponentData struct for the Participant list Metadata component in
    the app_data_dictionary GroupContext extension.
@@ -2121,6 +2159,8 @@ ServerC->ClientC*: [[ Commit ]]
      UTF8String room_subject;
      UTF8String room_mood;
    } RoomMetaData;
+
+   RoomMetaData room_metadata;
 
    RoomMetaData RoomMetaUpdate;
 
@@ -2227,13 +2267,58 @@ ServerC->ClientC*: [[ Commit ]]
 
    TBD.
 
-      *TODO*: Present the franking mechanism to CFRG for review.
-
 10.  IANA Considerations
 
-10.1.  FrankAAD app component
+   This document registers the following two MLS application components
+   per Section 7.6 of [I-D.ietf-mls-extensions].
+
+10.1.  frank_aad app component
+
+   *  Value: TBD1
+
+   *  Name: frank_aad
+
+   *  Where: AD
+
+   *  Recommended: Y
+
+   *  Reference: RFCXXXX
 
 10.2.  franking_signature_key app component
+
+   *  Value: TBD1
+
+   *  Name: frank_aad
+
+   *  Where: GC
+
+   *  Recommended: Y
+
+   *  Reference: RFCXXXX
+
+10.3.  participant_list app component
+
+   *  Value: TBD3
+
+   *  Name: participant_list
+
+   *  Where: GC
+
+   *  Recommended: Y
+
+   *  Reference: RFCXXXX
+
+10.4.  room_metadata app component
+
+   *  Value: TBD4
+
+   *  Name: room_metadata
+
+   *  Where: GC
+
+   *  Recommended: Y
+
+   *  Reference: RFCXXXX
 
 11.  References
 
