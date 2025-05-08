@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-04-29T00:49:16.901122+00:00",
+  "timestamp": "2025-05-08T00:50:59.359215+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -10115,28 +10115,69 @@
     {
       "number": 118,
       "id": "PR_kwDOKZ8QO86T2tYV",
-      "title": "Change franking_integrity to use signature; add acknowledgement",
+      "title": "Change franking_integrity to use signature",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/118",
       "state": "OPEN",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "- Change franking_integrity to use signature\r\n- acknowledge Felix Linker for Tamarin formal methods model",
+      "body": "- Change franking_integrity to use signature\r\n- create franking_agent GroupContext component to hold signature public key for validating franking_integrity_signature\r\n- clarify relationship with MIMI content salt, sender_uri, and room_uri\r\n- register all four app components with IANA\r\n- acknowledge Felix Linker for Tamarin formal methods model\r\n- regularize case conventions for franking-related fields",
       "createdAt": "2025-04-25T04:02:45Z",
-      "updatedAt": "2025-04-25T04:02:45Z",
+      "updatedAt": "2025-05-07T15:02:15Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "sign-frank",
-      "headRefOid": "993fef2299fd2eaab8e7ccadfb769d557a4883e7",
+      "headRefOid": "417cb6b9070cab3cabf7f5c254822e695e96bbc1",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86oGhR-",
+          "commit": {
+            "abbreviatedOid": "da7d895"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-05-07T04:14:33Z",
+          "updatedAt": "2025-05-07T04:14:33Z",
+          "comments": [
+            {
+              "originalPosition": 119,
+              "body": "```suggestion\r\nNote that these assertions do not vouch for the validity of these values,\r\n```",
+              "createdAt": "2025-05-07T04:14:33Z",
+              "updatedAt": "2025-05-07T04:14:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86oGilt",
+          "commit": {
+            "abbreviatedOid": "da7d895"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-05-07T04:17:58Z",
+          "updatedAt": "2025-05-07T04:17:58Z",
+          "comments": [
+            {
+              "originalPosition": 354,
+              "body": "```suggestion\r\nThis document registers the following four MLS application components per\r\n```",
+              "createdAt": "2025-05-07T04:17:58Z",
+              "updatedAt": "2025-05-07T04:17:58Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
