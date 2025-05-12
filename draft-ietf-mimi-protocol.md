@@ -1340,7 +1340,11 @@ struct {
            /* as either PublicMessage or SemiPrivateMessage    */
            MLSMessage moreProposals<V>;
         case commit:
-           struct {};
+           /* staple to an (external) commit any external proposals */
+           /* (in the new epoch, and from the hub) that were        */
+           /* invalidated in the previous epoch by the external     */
+           /* commit. */
+           MLSMessage externalProposals<V>;
       };
   };
 } FanoutMessage;
