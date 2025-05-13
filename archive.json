@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-05-08T00:50:59.359215+00:00",
+  "timestamp": "2025-05-13T00:51:05.301465+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1716,6 +1716,22 @@
       "body": "@rohanmahy Let me know that the the sender's salt it used to generate the initial franking tag should be included in the MIMI content of the `AbusiveMessage`. That field's type, however, is `opaque` suggesting its values shouldn't matter to implementations.",
       "createdAt": "2025-03-20T08:45:49Z",
       "updatedAt": "2025-03-20T08:45:49Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 119,
+      "id": "I_kwDOKZ8QO862KiMq",
+      "title": "Prevent colluding participants from overloading abuse reporting system",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/119",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Because the franking_integrity_hash uses a shared secret, malicious members can report non-existent messages that appear to have an acceptable franking_integrity_hash.\n\nSwitch to using a signature to validate the the integrity of the frank and context (timestamp) added by the hub.\n",
+      "createdAt": "2025-05-12T09:01:23Z",
+      "updatedAt": "2025-05-12T09:01:23Z",
       "closedAt": null,
       "comments": []
     }
@@ -10075,7 +10091,7 @@
     {
       "number": 113,
       "id": "PR_kwDOKZ8QO86PMEAq",
-      "title": "Add group_info_response_nonce to prevent 2-time pad attacks",
+      "title": "Add group_info_response_nonce to prevent replay attacks",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/113",
       "state": "OPEN",
       "author": "rohanmahy",
@@ -10084,7 +10100,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-03-18T23:46:41Z",
-      "updatedAt": "2025-03-19T00:48:17Z",
+      "updatedAt": "2025-05-12T12:50:08Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
@@ -10178,6 +10194,32 @@
           ]
         }
       ]
+    },
+    {
+      "number": 120,
+      "id": "PR_kwDOKZ8QO86V1bb7",
+      "title": "Make sure a new version of the hub's own invalidated pending proposals is stapled to an external commit",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/120",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-05-12T13:03:01Z",
+      "updatedAt": "2025-05-12T13:03:02Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "fanout-ext-props",
+      "headRefOid": "994e9ef64df26c7b7287d017618c252b5f77b146",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
