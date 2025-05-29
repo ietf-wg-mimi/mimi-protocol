@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-05-13T00:51:05.301465+00:00",
+  "timestamp": "2025-05-29T00:51:39.988716+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -9778,7 +9778,7 @@
       "labels": [],
       "body": "This replaces #75 \r\n\r\nIt adds Oblivious HTTP between the downloading provider and the Hub provider.",
       "createdAt": "2025-03-16T07:04:32Z",
-      "updatedAt": "2025-04-27T15:18:16Z",
+      "updatedAt": "2025-05-28T13:58:03Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
@@ -9845,6 +9845,13 @@
           "body": "Thanks for the added context. I feel we are going in circles because I have a hard time discerning what's an assumption in the above and what is an established fact.\r\n\r\nTo make some progress, I propose to zoom out a bit. I think we can agree on the following:\r\n a. The design philosophy has been to empower the hub to be the arbiter and enforcer of policies wherever possible\r\n b. There are concerns about the cost of hosting assets on the hub\r\n\r\nWe have discussed two options so far:\r\n 1. Dismiss b. so that we remain true to a. (Raphael and others)\r\n 2. Make an exception to a. to account for b. (Rohan)\r\n\r\nLet's consider some middle ground, i.e., option 3. Because of the CSSSC architecture, attachments have to transit via the hub anyway. Rather than making the hub just a proxy, we could leave it to the hub whether it wants to cache attachments or not. The hub provider could decide whether it wants the cheapest option (where other providers exclusively store the attachments of their respective users) or whether it prefers to shoulder the hosting costs and provide better attachment availability. In both cases, the hub can still enforce policies regarding assets (e.g. quotas).\r\n\r\nIn a scenario with client A on a.com, client B on b.com, and hub H, the flows would look as follows:\r\n\r\n**Upload**\r\n\r\n - Client A uploads an attachment to a.com\r\n - Client A advertises the attachment to the group via the hub by sharing the attachment id\r\n - Hub H can see (part of) that message and decide whether it wants to a) allow the upload and b) cache the attachment\r\n - In the case of b), the hub H downloads the attachment from a.com\r\n\r\n**Download**\r\n\r\n - Client B has learned about a new attachment\r\n - Client B asks its provider b.com to download the attachment from the hub H by providing its id\r\n - Depending on the hub's policy, it either serves the attachment from its cache or proxies the request to a.com\r\n\r\nAll we need to do for this is to describe the API to upload/download attachments at the hub.\r\n\r\n\r\n\r\n\r\n",
           "createdAt": "2025-04-27T15:18:15Z",
           "updatedAt": "2025-04-27T15:18:15Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Thanks for the added context. I feel we are going in circles because I have a hard time discerning what's an assumption in the above and what is an established fact.\r\n\r\nCould you be more specific about which assertions you don't agree with?\r\n\r\n> To make some progress, I propose to zoom out a bit. I think we can agree on the following: a. The design philosophy has been to empower the hub to be the arbiter and enforcer of policies wherever possible b. There are concerns about the cost of hosting assets on the hub\r\n> \r\n> We have discussed two options so far:\r\n> \r\n>     1. Dismiss b. so that we remain true to a. (Raphael and others)\r\n>     2. Make an exception to a. to account for b. (Rohan)\r\n\r\nI reject this characterization. I don't accept the absolutist statement that the hub is the enforcer of policies \"wherever possible\". Yes, it is central to managing handshake messages and controlling fanout. However it has little policy control over application messages. Policy enforcement of many of the capabilities in role-based access control, processing of expiring messages, validations of tags, handling keys correctly are all aspects of MIMI policy that fall to the clients.\r\n\r\nWe have discussed the storage of assets going back to the earliest MIMI WG meetings. Clients currently upload assets to their own providers. They send a link inside an end-to-end encrypted message. Managing policy of something inside an e2e encrypted message is normally entirely up to the clients. The only reason we are having this discussion is because of the privacy implications of a subsequent download directly from clients hosted by another provider, as was mentioned by dkg the first time I presented draft-mahy-mimi-content.\r\n\r\nWe had a reasonable amount of feedback about making OHTTP and the proxy endpoint optional to use at the last meeting. I propose instead that we make OHTTP gateway mandatory to implement on the hub and OHTTP relay is RECOMMENDED for all providers. We can build a separate mechanism/policy that allows the clients to upload to a hub on a per-room basis, but I think this should be optional.\r\n\r\n",
+          "createdAt": "2025-05-28T13:58:03Z",
+          "updatedAt": "2025-05-28T13:58:03Z"
         }
       ],
       "reviews": [
