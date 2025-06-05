@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-05-29T00:51:39.988716+00:00",
+  "timestamp": "2025-06-05T00:51:42.533582+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -9778,7 +9778,7 @@
       "labels": [],
       "body": "This replaces #75 \r\n\r\nIt adds Oblivious HTTP between the downloading provider and the Hub provider.",
       "createdAt": "2025-03-16T07:04:32Z",
-      "updatedAt": "2025-05-28T13:58:03Z",
+      "updatedAt": "2025-06-04T07:44:57Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
@@ -10066,6 +10066,19 @@
               "updatedAt": "2025-04-24T23:20:09Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86smCMO",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "Splow95",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-06-04T07:44:56Z",
+          "updatedAt": "2025-06-04T07:44:57Z",
+          "comments": []
         }
       ]
     },
