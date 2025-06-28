@@ -2206,8 +2206,8 @@ This document registers the following four MLS application components per
 
 ## franking_signature_key app component {#iana-franking-sig-key}
 
-- Value: TBD1
-- Name: frank_aad
+- Value: TBD2
+- Name: franking_signature_key
 - Where: GC
 - Recommended: Y
 - Reference: RFCXXXX
