@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 8 November 2025                The Matrix.org Foundation C.I.C.
+Expires: 30 December 2025               The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 8 November 2025                The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                              7 May 2025
+                                                            28 June 2025
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 November 2025.
+   This Internet-Draft will expire on 30 December 2025.
 
 Copyright Notice
 
@@ -2293,9 +2293,9 @@ ServerC->ClientC*: [[ Commit ]]
 
 10.2.  franking_signature_key app component
 
-   *  Value: TBD1
+   *  Value: TBD2
 
-   *  Name: frank_aad
+   *  Name: franking_signature_key
 
    *  Where: GC
 
