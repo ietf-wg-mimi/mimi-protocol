@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-05T00:51:42.533582+00:00",
+  "timestamp": "2025-06-29T00:58:57.613957+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -10094,7 +10094,7 @@
       "labels": [],
       "body": "addresses Issue #110 ",
       "createdAt": "2025-03-16T07:45:38Z",
-      "updatedAt": "2025-03-16T07:48:19Z",
+      "updatedAt": "2025-06-28T18:11:25Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
@@ -10106,7 +10106,21 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86w9jjI",
+          "commit": {
+            "abbreviatedOid": "c69c6dc"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-06-28T18:11:25Z",
+          "updatedAt": "2025-06-28T18:11:25Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 113,
@@ -10160,13 +10174,13 @@
       "labels": [],
       "body": "- Change franking_integrity to use signature\r\n- create franking_agent GroupContext component to hold signature public key for validating franking_integrity_signature\r\n- clarify relationship with MIMI content salt, sender_uri, and room_uri\r\n- register all four app components with IANA\r\n- acknowledge Felix Linker for Tamarin formal methods model\r\n- regularize case conventions for franking-related fields",
       "createdAt": "2025-04-25T04:02:45Z",
-      "updatedAt": "2025-05-07T15:02:15Z",
+      "updatedAt": "2025-06-28T18:22:21Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "sign-frank",
-      "headRefOid": "417cb6b9070cab3cabf7f5c254822e695e96bbc1",
+      "headRefOid": "c1db4a79ee3b58a198396359f02d91c20581e5fa",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -10212,6 +10226,58 @@
               "updatedAt": "2025-05-07T04:17:58Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86w7ZC0",
+          "commit": {
+            "abbreviatedOid": "417cb6b"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-06-28T04:35:46Z",
+          "updatedAt": "2025-06-28T04:35:46Z",
+          "comments": [
+            {
+              "originalPosition": 375,
+              "body": "```suggestion\r\n- Value: TBD2\r\n- Name: franking_signature_key\r\n```",
+              "createdAt": "2025-06-28T04:35:46Z",
+              "updatedAt": "2025-06-28T04:35:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86w9kzi",
+          "commit": {
+            "abbreviatedOid": "c1db4a7"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Couple of minor comments, overall LGTM.",
+          "createdAt": "2025-06-28T18:17:47Z",
+          "updatedAt": "2025-06-28T18:22:21Z",
+          "comments": [
+            {
+              "originalPosition": 201,
+              "body": "Concatenation here is not good.  Risk of confusion between the two URIs.  Better to do this with something like a TLS-syntax or CBOR struct so that it's length-delimited.  Likewise for the other concatenations here.",
+              "createdAt": "2025-06-28T18:17:47Z",
+              "updatedAt": "2025-06-28T18:22:21Z"
+            },
+            {
+              "originalPosition": 63,
+              "body": "Perhaps this should be a vec, instead of being fixed-size forever?",
+              "createdAt": "2025-06-28T18:18:20Z",
+              "updatedAt": "2025-06-28T18:22:21Z"
+            },
+            {
+              "originalPosition": 70,
+              "body": "I'm not thrilled that we're using Credential for a whole bunch of things that are not MLS clients.  But I don't have a great alternative in mind.",
+              "createdAt": "2025-06-28T18:19:34Z",
+              "updatedAt": "2025-06-28T18:22:21Z"
+            }
+          ]
         }
       ]
     },
@@ -10227,7 +10293,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-05-12T13:03:01Z",
-      "updatedAt": "2025-05-12T13:03:02Z",
+      "updatedAt": "2025-06-28T19:36:28Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
@@ -10238,8 +10304,30 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> This needs more prose to describe what you're doing here. It seems like the workflow you have in mind is:\r\n> \r\n>     * Hub generates some proposals, cues those up\r\n> \r\n>     * Someone comes along and does an external Commit\r\n> \r\n>     * Unfortunately, that external Commit can't include the hub's proposals\r\n> \r\n>     * So the Hub regenerates the proposals in the new epoch and distributes them\r\n> \r\n> \r\n> Assuming I have that right, \r\n\r\nyou've got that right.\r\n\r\n>I'm not clear on why you're sending the new proposals out like this. (Same with the `moreProposals` field above.) Is the expectation that a follower server or client is keeping a copy of the hub's proposal queue? If that's the case, shouldn't we just send the whole proposal queue in these cases? Wouldn't it be better just to send the proposal queue to a committer at the time they try to commit?\r\n\r\nUnless those proposals are legal inside an external commit (SelfRemove, AppDataUpdate, AppEphemeral), the client cannot just get a copy of the proposal queue, because their external commit would fail validation.",
+          "createdAt": "2025-06-28T19:36:27Z",
+          "updatedAt": "2025-06-28T19:36:27Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO86w9nHQ",
+          "commit": {
+            "abbreviatedOid": "994e9ef"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "This needs more prose to describe what you're doing here.  It seems like the workflow you have in mind is:\r\n\r\n* Hub generates some proposals, cues those up\r\n* Someone comes along and does an external Commit\r\n* Unfortunately, that external Commit can't include the hub's proposals\r\n* So the Hub regenerates the proposals in the new epoch and distributes them\r\n\r\nAssuming I have that right, I'm not clear on why you're sending the new proposals out like this.  (Same with the `moreProposals` field above.)  Is the expectation that a follower server or client is keeping a copy of the hub's proposal queue?   If that's the case, shouldn't we just send the whole proposal queue in these cases?  Wouldn't it be better just to send the proposal queue to a committer at the time they try to commit?",
+          "createdAt": "2025-06-28T18:37:38Z",
+          "updatedAt": "2025-06-28T18:37:38Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
