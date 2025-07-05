@@ -2818,15 +2818,18 @@ POST /keyMaterial/{targetUser}
 requested using this primitive <span class="bcp14">MUST</span> be sent via the hub provider of whatever
 room they will be used in. (If this is not the case, the hub provider will be
 unable to forward a Welcome message to the target provider).<a href="#section-5.2-3" class="pilcrow">¶</a></p>
-<p id="section-5.2-4">The path includes the target user. The request body includes the protocol
-(currently just MLS 1.0), and the requesting user. When the request is being
-made in the context of adding the target user to a room, the request <span class="bcp14">MUST</span> include
-the room ID for which the KeyPackage is intended, as the target may have only
-granted consent for a specific room.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
-<p id="section-5.2-5">For MLS, the request includes a non-empty list of acceptable MLS ciphersuites,
-and an MLS <code>RequiredCapabilities</code> object (which contains credential types,
-non-default proposal types, and extensions) required by the requesting provider
-(these lists can be an empty).<a href="#section-5.2-5" class="pilcrow">¶</a></p>
+<p id="section-5.2-4">The path includes the target user URI (with any necessary percent-encoding). The
+request body includes the protocol (currently just MLS 1.0), and the requesting
+user. When the request is being made in the context of adding the target user to
+a room, the request <span class="bcp14">MUST</span> include the room ID for which the KeyPackage is
+intended, as the target may have only granted consent for a specific room.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
+<p id="section-5.2-5">For MLS, the request includes a non-empty list of acceptable MLS ciphersuites.
+Next there is an MLS <code>RequiredCapabilities</code> object, which contains (possibly
+empty) lists of required credential types, non-default proposal types, and
+extensions) required by the requesting provider. Next there is a
+SignaturePublicKey and a corresponding Credential for the requester. Finally,
+the request includes a signature, using the SignaturePublicKey and covering
+KeyMaterialRequestTBS.<a href="#section-5.2-5" class="pilcrow">¶</a></p>
 <p id="section-5.2-6">The request body has the following form.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.2-7">
 <pre>
@@ -2843,8 +2846,30 @@ struct {
         case mls10:
             CipherSuite acceptableCiphersuites&lt;V&gt;;
             RequiredCapabilities requiredCapabilities;
+            SignaturePublicKey requesterSignatureKey;
+            Credential requesterCredential;
+            /* SignWithLabel(requesterSignatureKey,              */
+            /*   "KeyMaterialRequestTBS", KeyMaterialRequestTBS) */
+            opaque key_material_request_signature&lt;V&gt;;
     };
 } KeyMaterialRequest;
+
+struct {
+    Protocol protocol;
+    IdentifierUri requestingUser;
+    IdentifierUri targetUser;
+    IdentifierUri roomId;
+    select (protocol) {
+        case mls10:
+            CipherSuite acceptableCiphersuites&lt;V&gt;;
+            RequiredCapabilities requiredCapabilities;
+            SignaturePublicKey requesterSignatureKey;
+            Credential requesterCredential;
+    };
+} KeyMaterialRequestTBS;
+
+key_material_request_signature = SignWithLabel(requesterSignatureKey
+                      "KeyMaterialRequestTBS", KeyMaterialRequestTBS)
 </pre><a href="#section-5.2-7" class="pilcrow">¶</a>
 </div>
 <p id="section-5.2-8">The response contains a user status code that indicates keying material was
