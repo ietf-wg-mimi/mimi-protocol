@@ -1855,15 +1855,15 @@ abuse, and the `note` is a UTF8 human-readable string, which can be empty.
 > insufficient.
 
 Finally, abuse reports can optionally contain a handful of allegedly
-`AbusiveMessage`s, each of which contains an allegedly abusive message, its
-`server_frank`, its `franking_integrity_signature`, and its
-`accepted_timestamp`.
+`AbusiveMessage`s, each of which contains an allegedly abusive
+`message_content`, its `server_frank`, its `franking_integrity_signature`, and
+its `accepted_timestamp`.
 
 ~~~ tls
 struct {
-  /* the MIMI Content message containing */
-  /* alleged abusive content */
-  opaque mimi_content<V>;
+  /* the message content (ex: MIMI Content message) containing */
+  /* allegedly abusive content                                 */
+  opaque message_content<V>;
   Frank frank;
   uint64 accepted_timestamp;
 } AbusiveMessage;
@@ -1883,6 +1883,11 @@ struct {
 ~~~
 
 There is no response body. The response code only indicates if the abuse report was accepted, not if any specific automated or human action was taken.
+
+To validate an allegedly AbusiveMessage, the hub finds the salt, sender URI, and
+room URI inside the `message_content` and the `accepted_timestamp` to
+recalculate the `franking_tag` and `context`. Then the hub selects its relevant
+`hub_key` to regenerate the `server_frank`. Finally the hub verifies its `franking_integrity_signature`.
 
 # Minimal metadata rooms
 
