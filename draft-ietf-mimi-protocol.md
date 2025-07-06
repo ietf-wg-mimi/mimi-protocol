@@ -1356,6 +1356,14 @@ in the FanoutMessage.
 The hub provider also fans out any messages which originate from itself (ex: MLS
 External Proposals).
 
+> An external commit will invalidate certain pending proposals. For example, if
+> the hub generates Remove proposals to remove a lost client or a deleted user,
+> an external commit can invalidate pending Remove proposals. The hub would then
+> be expected to regenerate any relevant, comparable proposals in the new epoch.
+> To prevent a race condition where a member commit arrives before the
+> regenerated proposals arrive, the hub can staple regenerated proposals to an
+> external commit during the fanout process.
+
 The hub can include multiple concatenated `FanoutMessage` objects relevant to
 the same room. This endpoint uses the HTTP POST method.
 
@@ -1369,9 +1377,9 @@ struct {
   uint64 timestamp;
   select (protocol) {
     case mls10:
-      /* A PrivateMessage containing an application message,
-         a PublicMessage containing a proposal or commit,
-         or a Welcome message.                               */
+      /* A PrivateMessage containing an application message, */
+      /* a SemiPrivateMessage or PublicMessage containing a  */
+      /* proposal or commit, or a Welcome message.           */
       MLSMessage message;
       select (message.wire_format) {
         case application:
@@ -1383,7 +1391,11 @@ struct {
            /* as either PublicMessage or SemiPrivateMessage    */
            MLSMessage moreProposals<V>;
         case commit:
-           struct {};
+           /* If this was an external commit, and any pending      */
+           /* proposals were invalidated, staple the new epoch's   */
+           /* replacement proposals (from the hub) to the commit   */
+           /* commit */
+           MLSMessage externalProposals<V>;
       };
   };
 } FanoutMessage;
