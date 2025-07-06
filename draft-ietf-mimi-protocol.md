@@ -1303,8 +1303,8 @@ the `sender_uri` asserted in the extensions map inside the MIMI Content, and
 that the `room_uri` asserted in the extensions map inside the MIMI Content
 matches the room ID in the received message.
 
-The receiver needs to store the frank and context with the decoded message
-so it can be used later.
+The receiver needs to store the `server_frank`, `franking_integrity_signature`,
+and `context` fields with the decoded message, so they can be used later.
 
 #### Comparison with the Facebook franking scheme
 
@@ -1855,7 +1855,9 @@ abuse, and the `note` is a UTF8 human-readable string, which can be empty.
 > insufficient.
 
 Finally, abuse reports can optionally contain a handful of allegedly
-`AbusiveMessage`s, each of which contains an allegedly abusive message, its franks, and its timestamp.
+`AbusiveMessage`s, each of which contains an allegedly abusive message, its
+`server_frank`, its `franking_integrity_signature`, and its
+`accepted_timestamp`.
 
 ~~~ tls
 struct {
