@@ -3659,8 +3659,8 @@ struct {
           CipherSuite cipher_suite;
           ExternalSender hub_sender;
           HPKECiphertext encrypted_groupinfo_and_tree;
-          /* SignWithLabel(hub_sender, "GroupInfoResponseTBS", */
-          /*                GroupInfoResponseTBS) */
+          /* SignWithLabel(hub_sender.signature_key,        */
+          /*  "GroupInfoResponseTBS", GroupInfoResponseTBS) */
           opaque signature&lt;V&gt;;
       };
   default: struct{};
