@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-29T00:58:57.613957+00:00",
+  "timestamp": "2025-07-06T00:58:03.528500+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -275,7 +275,7 @@
       "id": "I_kwDOKZ8QO852WF9h",
       "title": "Binary encoding for MIMI transport",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/25",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -285,8 +285,8 @@
       ],
       "body": "> **ISSUE**: Come to consensus on a specific binary encoding for the MIMI\r\n> transport protocol.\r\n\r\nCurrently we use TLS-serialized structs.",
       "createdAt": "2023-11-09T12:17:51Z",
-      "updatedAt": "2025-03-19T08:01:41Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-04T08:16:03Z",
+      "closedAt": "2025-07-04T08:16:03Z",
       "comments": [
         {
           "author": "anoadragon453",
@@ -399,6 +399,13 @@
           "body": "Emailed the list. Will close unless credible alternate proposed by April 3",
           "createdAt": "2025-03-19T08:01:41Z",
           "updatedAt": "2025-03-19T08:01:41Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "There was a suggestion to use XMPP as the transport protocol, but not a lot of concrete details. One could definitely implement the functions in MIMI protocol using XMPP, however it does not seem that there is anyone willing to own a spec or implementation of MIMI protocol using XMPP. The consensus seems to be to continue using the HTTP-based mechanism that is in the mimi-protocol document today.\n\nClosing.",
+          "createdAt": "2025-07-04T08:16:03Z",
+          "updatedAt": "2025-07-04T08:16:03Z"
         }
       ]
     },
@@ -407,7 +414,7 @@
       "id": "I_kwDOKZ8QO852WHQd",
       "title": "Transport semantics",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/26",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -417,8 +424,8 @@
       ],
       "body": "> **ISSUE**: Come to consensus on a specific set of MIMI transport protocol\r\n> semantics.",
       "createdAt": "2023-11-09T12:21:07Z",
-      "updatedAt": "2025-03-19T08:01:11Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-04T08:16:40Z",
+      "closedAt": "2025-07-04T08:16:40Z",
       "comments": [
         {
           "author": "tgeoghegan",
@@ -440,6 +447,13 @@
           "body": "Emailed the list. Will close unless credible alternate proposed by April 3",
           "createdAt": "2025-03-19T08:01:10Z",
           "updatedAt": "2025-03-19T08:01:10Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing.",
+          "createdAt": "2025-07-04T08:16:40Z",
+          "updatedAt": "2025-07-04T08:16:40Z"
         }
       ]
     },
@@ -1724,14 +1738,76 @@
       "id": "I_kwDOKZ8QO862KiMq",
       "title": "Prevent colluding participants from overloading abuse reporting system",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/119",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Because the franking_integrity_hash uses a shared secret, malicious members can report non-existent messages that appear to have an acceptable franking_integrity_hash.\n\nSwitch to using a signature to validate the the integrity of the frank and context (timestamp) added by the hub.\n",
       "createdAt": "2025-05-12T09:01:23Z",
-      "updatedAt": "2025-05-12T09:01:23Z",
+      "updatedAt": "2025-07-05T22:21:24Z",
+      "closedAt": "2025-07-05T22:21:24Z",
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Addressed in #118 ",
+          "createdAt": "2025-07-05T22:21:24Z",
+          "updatedAt": "2025-07-05T22:21:24Z"
+        }
+      ]
+    },
+    {
+      "number": 121,
+      "id": "I_kwDOKZ8QO86-102n",
+      "title": "Move read / delivery status into another document",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/121",
+      "state": "CLOSED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The relative maturity of the mimi-content format and the delivery status format are quite far away. In addition, trust in the hub accepted timestamps needs to be provided by the miim-protocol franking mechanism. This normative dependency does not exist in the rest of the content-format document.",
+      "createdAt": "2025-07-04T08:20:57Z",
+      "updatedAt": "2025-07-05T22:20:24Z",
+      "closedAt": "2025-07-05T22:20:24Z",
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "mean for mimi-content\n",
+          "createdAt": "2025-07-04T15:50:19Z",
+          "updatedAt": "2025-07-04T15:50:19Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "meant this for the MIMI content repo",
+          "createdAt": "2025-07-04T15:50:57Z",
+          "updatedAt": "2025-07-04T15:50:57Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "meant this for the MIMI content repo. Close\n\n",
+          "createdAt": "2025-07-05T22:20:24Z",
+          "updatedAt": "2025-07-05T22:20:24Z"
+        }
+      ]
+    },
+    {
+      "number": 122,
+      "id": "I_kwDOKZ8QO86_ExEX",
+      "title": "Do we need franking context to use a struct or separators?",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/122",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Currently the message context used in franking is defined as the concatenation of 3 fields:\n\n```\ncontext = sender_uri || room_uri || accepted_timestamp\n```\n\nThere is a potential that these could be manipulated so a specially crafted sender_uri and room_uri could cause one client to appear as a blank user\n\nActually, there is no requirement that context be unique. We just need the context to correctly match the context fields in the sent message.\n\nSnipped from [MIMI Content Issue #61 ](https://github.com/ietf-wg-mimi/draft-ietf-mimi-content/issues/61):\n\"While you could have:\n`mimi://example.com/u/alicemimi://example.com/r/clubhouse` plus `mimi://example.com/r/clubhouse` in one message AND\n`mimi://example.com/u/alice` plus `mimi://example.com/r/clubhousemimi://example.com/r/clubhouse` in another message,\nit would take a pretty dumb hub to allow such a room ID and an AS with very permissive sender URI names.\"\n\n",
+      "createdAt": "2025-07-05T22:11:09Z",
+      "updatedAt": "2025-07-05T22:11:09Z",
       "closedAt": null,
       "comments": []
     }
@@ -10087,24 +10163,26 @@
       "id": "PR_kwDOKZ8QO86Oz3AG",
       "title": "Make Key Material requests safer from provider tampering",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/112",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "addresses Issue #110 ",
       "createdAt": "2025-03-16T07:45:38Z",
-      "updatedAt": "2025-06-28T18:11:25Z",
+      "updatedAt": "2025-07-05T22:19:36Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "sign-kp-request",
       "headRefOid": "c69c6dc3518f3e0c5917e57f00cdb4fe702d740a",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-07-05T22:19:36Z",
+      "mergedAt": "2025-07-05T22:19:36Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "d8a66e99c1b2dee35ee89c08f86de22f73f05e36"
+      },
       "comments": [],
       "reviews": [
         {
@@ -10167,24 +10245,26 @@
       "id": "PR_kwDOKZ8QO86T2tYV",
       "title": "Change franking_integrity to use signature",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/118",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "- Change franking_integrity to use signature\r\n- create franking_agent GroupContext component to hold signature public key for validating franking_integrity_signature\r\n- clarify relationship with MIMI content salt, sender_uri, and room_uri\r\n- register all four app components with IANA\r\n- acknowledge Felix Linker for Tamarin formal methods model\r\n- regularize case conventions for franking-related fields",
       "createdAt": "2025-04-25T04:02:45Z",
-      "updatedAt": "2025-06-28T18:22:21Z",
+      "updatedAt": "2025-07-05T22:18:35Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "sign-frank",
       "headRefOid": "c1db4a79ee3b58a198396359f02d91c20581e5fa",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-07-05T22:18:35Z",
+      "mergedAt": "2025-07-05T22:18:35Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "e550686e14325dbb36a29b829253ac1c7092fd51"
+      },
       "comments": [],
       "reviews": [
         {
@@ -10276,6 +10356,26 @@
               "body": "I'm not thrilled that we're using Credential for a whole bunch of things that are not MLS clients.  But I don't have a great alternative in mind.",
               "createdAt": "2025-06-28T18:19:34Z",
               "updatedAt": "2025-06-28T18:22:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86yQqm9",
+          "commit": {
+            "abbreviatedOid": "c1db4a7"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-05T21:59:46Z",
+          "updatedAt": "2025-07-05T21:59:46Z",
+          "comments": [
+            {
+              "originalPosition": 63,
+              "body": "The franking tag is strongly tied to the specific HMAC used in the franking algorithm, which uses HMAC_SHA256 exclusively right now. We would need to change a lot more if this becomes no longer prudent, at which point we can add a new MIMI protocol endpoint version or extension to switch to a new franking algorithm. This might work by defining a franking_tag_2 component for example. ",
+              "createdAt": "2025-07-05T21:59:46Z",
+              "updatedAt": "2025-07-05T21:59:46Z"
             }
           ]
         }
