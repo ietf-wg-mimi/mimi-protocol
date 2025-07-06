@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 6 January 2026                 The Matrix.org Foundation C.I.C.
+Expires: 7 January 2026                 The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 6 January 2026                 The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                             5 July 2025
+                                                             6 July 2025
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 January 2026.
+   This Internet-Draft will expire on 7 January 2026.
 
 Copyright Notice
 
@@ -1432,6 +1432,15 @@ ServerC->ClientC*: [[ Commit ]]
    The hub provider also fans out any messages which originate from
    itself (ex: MLS External Proposals).
 
+      An external commit will invalidate certain pending proposals.  For
+      example, if the hub generates Remove proposals to remove a lost
+      client or a deleted user, an external commit can invalidate
+      pending Remove proposals.  The hub would then be expected to
+      regenerate any relevant, comparable proposals in the new epoch.
+      To prevent a race condition where a member commit arrives before
+      the regenerated proposals arrive, the hub can staple regenerated
+      proposals to an external commit during the fanout process.
+
    The hub can include multiple concatenated FanoutMessage objects
    relevant to the same room.  This endpoint uses the HTTP POST method.
 
@@ -1442,9 +1451,9 @@ ServerC->ClientC*: [[ Commit ]]
      uint64 timestamp;
      select (protocol) {
        case mls10:
-         /* A PrivateMessage containing an application message,
-            a PublicMessage containing a proposal or commit,
-            or a Welcome message.                               */
+         /* A PrivateMessage containing an application message, */
+         /* a SemiPrivateMessage or PublicMessage containing a  */
+         /* proposal or commit, or a Welcome message.           */
          MLSMessage message;
          select (message.wire_format) {
            case application:
@@ -1456,7 +1465,11 @@ ServerC->ClientC*: [[ Commit ]]
               /* as either PublicMessage or SemiPrivateMessage    */
               MLSMessage moreProposals<V>;
            case commit:
-              struct {};
+              /* If this was an external commit, and any pending      */
+              /* proposals were invalidated, staple the new epoch's   */
+              /* replacement proposals (from the hub) to the commit   */
+              /* commit */
+              MLSMessage externalProposals<V>;
          };
      };
    } FanoutMessage;

@@ -1064,7 +1064,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 6 January 2026</td>
+<td class="center">Expires 7 January 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1077,12 +1077,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-07-05" class="published">5 July 2025</time>
+<time datetime="2025-07-06" class="published">6 July 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-01-06">6 January 2026</time></dd>
+<dd class="expires"><time datetime="2026-01-07">7 January 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1160,7 +1160,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 6 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 7 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3449,23 +3449,34 @@ of a Welcome message, a <code>RatchetTreeOption</code>
 in the FanoutMessage.<a href="#section-5.5-2" class="pilcrow">¶</a></p>
 <p id="section-5.5-3">The hub provider also fans out any messages which originate from itself (ex: MLS
 External Proposals).<a href="#section-5.5-3" class="pilcrow">¶</a></p>
-<p id="section-5.5-4">The hub can include multiple concatenated <code>FanoutMessage</code> objects relevant to
-the same room. This endpoint uses the HTTP POST method.<a href="#section-5.5-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.5-5">
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5.5-4.1">
+            <p id="section-5.5-4.1.1">An external commit will invalidate certain pending proposals. For example, if
+the hub generates Remove proposals to remove a lost client or a deleted user,
+an external commit can invalidate pending Remove proposals. The hub would then
+be expected to regenerate any relevant, comparable proposals in the new epoch.
+To prevent a race condition where a member commit arrives before the
+regenerated proposals arrive, the hub can staple regenerated proposals to an
+external commit during the fanout process.<a href="#section-5.5-4.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.5-5">The hub can include multiple concatenated <code>FanoutMessage</code> objects relevant to
+the same room. This endpoint uses the HTTP POST method.<a href="#section-5.5-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.5-6">
 <pre>
 POST /notify/{roomId}
-</pre><a href="#section-5.5-5" class="pilcrow">¶</a>
+</pre><a href="#section-5.5-6" class="pilcrow">¶</a>
 </div>
-<div class="lang-tls sourcecode" id="section-5.5-6">
+<div class="lang-tls sourcecode" id="section-5.5-7">
 <pre>
 struct {
   /* the hub acceptance time (in milliseconds from the UNIX epoch) */
   uint64 timestamp;
   select (protocol) {
     case mls10:
-      /* A PrivateMessage containing an application message,
-         a PublicMessage containing a proposal or commit,
-         or a Welcome message.                               */
+      /* A PrivateMessage containing an application message, */
+      /* a SemiPrivateMessage or PublicMessage containing a  */
+      /* proposal or commit, or a Welcome message.           */
       MLSMessage message;
       select (message.wire_format) {
         case application:
@@ -3477,57 +3488,61 @@ struct {
            /* as either PublicMessage or SemiPrivateMessage    */
            MLSMessage moreProposals&lt;V&gt;;
         case commit:
-           struct {};
+           /* If this was an external commit, and any pending      */
+           /* proposals were invalidated, staple the new epoch's   */
+           /* replacement proposals (from the hub) to the commit   */
+           /* commit */
+           MLSMessage externalProposals&lt;V&gt;;
       };
   };
 } FanoutMessage;
-</pre><a href="#section-5.5-6" class="pilcrow">¶</a>
+</pre><a href="#section-5.5-7" class="pilcrow">¶</a>
 </div>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-5.5-7.1">
-            <p id="section-5.5-7.1.1"><strong>NOTE:</strong> Correctly fanning out Welcome messages relies on the hub and target
-providers storing the <code>KeyPackageRef</code> of claimed KeyPackages.<a href="#section-5.5-7.1.1" class="pilcrow">¶</a></p>
+<li class="normal ulEmpty" id="section-5.5-8.1">
+            <p id="section-5.5-8.1.1"><strong>NOTE:</strong> Correctly fanning out Welcome messages relies on the hub and target
+providers storing the <code>KeyPackageRef</code> of claimed KeyPackages.<a href="#section-5.5-8.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-5.5-8">A client which receives a <code>success</code> to either an <code>UpdateRoomResponse</code> or a
+<p id="section-5.5-9">A client which receives a <code>success</code> to either an <code>UpdateRoomResponse</code> or a
 <code>SubmitMessageResponse</code> can view this as a commitment from the hub provider that
 the message will eventually be distributed to the group. The hub is not
 expected to forward the client's own message to the client or its provider.
 However, the client and its provider need to be prepared to receive the
 client's (effectively duplicate) message. This situation can occur during
-failover in high availability recovery scenarios.<a href="#section-5.5-8" class="pilcrow">¶</a></p>
-<p id="section-5.5-9">Clients that are being removed <span class="bcp14">SHOULD</span> receive the corresponding
+failover in high availability recovery scenarios.<a href="#section-5.5-9" class="pilcrow">¶</a></p>
+<p id="section-5.5-10">Clients that are being removed <span class="bcp14">SHOULD</span> receive the corresponding
 Commit message, so they can recognize that they have been removed and clean up
 their internal state. A removed client might not receive a commit if it was
-removed as a malicious or abusive client, or if it was obviously deleted.<a href="#section-5.5-9" class="pilcrow">¶</a></p>
-<p id="section-5.5-10">The <code>moreProposals</code> list in a <code>FanoutMessage</code> <span class="bcp14">MUST</span> be the same as the
+removed as a malicious or abusive client, or if it was obviously deleted.<a href="#section-5.5-10" class="pilcrow">¶</a></p>
+<p id="section-5.5-11">The <code>moreProposals</code> list in a <code>FanoutMessage</code> <span class="bcp14">MUST</span> be the same as the
 corresponding <code>moreProposals</code> list in the <code>HandshakeBundle</code> of an
-<code>UpdateRequest</code>.<a href="#section-5.5-10" class="pilcrow">¶</a></p>
-<p id="section-5.5-11">The response to a FanoutMessage contains no body. The HTTP response code
+<code>UpdateRequest</code>.<a href="#section-5.5-11" class="pilcrow">¶</a></p>
+<p id="section-5.5-12">The response to a FanoutMessage contains no body. The HTTP response code
 indicates if the messages in the request were accepted (201 response code), or
 if there was an error. The hub need not wait for a response before sending the
-next fanout message.<a href="#section-5.5-11" class="pilcrow">¶</a></p>
-<p id="section-5.5-12">If the hub server does not contain an HTTP 201 response code, then it <span class="bcp14">SHOULD</span>
+next fanout message.<a href="#section-5.5-12" class="pilcrow">¶</a></p>
+<p id="section-5.5-13">If the hub server does not contain an HTTP 201 response code, then it <span class="bcp14">SHOULD</span>
 retry the request, respecting any guidance provided by the server in HTTP header
 fields such as Retry-After.  If a follower server receives a duplicate request
 to the <code>/notify</code> endpoint, in the sense of a request from the same hub server
 with the same request body as a previous <code>/notify</code> request, then the follower
 server <span class="bcp14">MUST</span> return a 201 Accepted response.  In such cases, the follower server
 <span class="bcp14">SHOULD</span> process only the first request; subsequent duplicate requests <span class="bcp14">SHOULD</span> be
-ignored (despite the success response).<a href="#section-5.5-12" class="pilcrow">¶</a></p>
+ignored (despite the success response).<a href="#section-5.5-13" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-5.5-13.1">
-            <p id="section-5.5-13.1.1"><strong>NOTE:</strong> These deduplication provisions require follower servers to track
+<li class="normal ulEmpty" id="section-5.5-14.1">
+            <p id="section-5.5-14.1.1"><strong>NOTE:</strong> These deduplication provisions require follower servers to track
 which request bodies they have received from which hub servers.  Since the
 matching here is byte-exact, it can be done by keeping a rolling list of
-hashes of recent messages.<a href="#section-5.5-13.1.1" class="pilcrow">¶</a></p>
-<p id="section-5.5-13.1.2">This byte-exact replay criterion might not be the right deduplication
+hashes of recent messages.<a href="#section-5.5-14.1.1" class="pilcrow">¶</a></p>
+<p id="section-5.5-14.1.2">This byte-exact replay criterion might not be the right deduplication
 strategy.  There might be situations where it is valid for the same hub server
-to send the same payload multiple times, e.g., due to accidental collisions.<a href="#section-5.5-13.1.2" class="pilcrow">¶</a></p>
-<p id="section-5.5-13.1.3">If this is a concern, then an explicit transaction ID could be introduced.
+to send the same payload multiple times, e.g., due to accidental collisions.<a href="#section-5.5-14.1.2" class="pilcrow">¶</a></p>
+<p id="section-5.5-14.1.3">If this is a concern, then an explicit transaction ID could be introduced.
 The follower server would still have to keep a list of recently seen
 transaction IDs, but deduplication could be done irrespective of the content
-of request bodies.<a href="#section-5.5-13.1.3" class="pilcrow">¶</a></p>
+of request bodies.<a href="#section-5.5-14.1.3" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
