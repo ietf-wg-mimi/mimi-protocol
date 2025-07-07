@@ -1833,10 +1833,11 @@ There is no response body. The response code only indicates if the abuse report 
 
 IM systems make extensive use of inline images, videos, and sounds, and often include attached files, all of which will be referred to as "assets" in this section. Assets are stored (encrypted) on various external servers, and typically uploaded and fetched using HTTP {{!RFC9110}} protected with TLS {{RFC8446}}.
 
-Broadly, two approaches are used for storage of assets in federated IM systems.
-In the most common approach, the assets are uploaded to the local system of the uploader.
-In other systems, the assets are uploaded to the system hosting the equivalent of a MIMI room.
-MIMI supports both of these approaches.
+Broadly, two approaches are possibly for storage of assets in federated IM
+systems. In the vast majority of deployed systems, the assets are uploaded to
+the local system of the uploader. With the other approach, the assets are
+uploaded to the system hosting the equivalent of a MIMI room. MIMI supports
+asset downloads for both of these approaches.
 
 The `proxyDownload` endpoint defined in this section is used to prevent the
 provider hosting the asset from learning about the IP addresses, and online
