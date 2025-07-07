@@ -1838,9 +1838,15 @@ In the most common approach, the assets are uploaded to the local system of the 
 In other systems, the assets are uploaded to the system hosting the equivalent of a MIMI room.
 MIMI supports both of these approaches.
 
-The `proxyDownload` endpoint defined in this section is used to prevent the provider hosting the asset from learning about the IP addresses, number, and online status of clients associated with another provider, when that client downloads an asset/attachment in a specific room.
+The `proxyDownload` endpoint defined in this section is used to prevent the
+provider hosting the asset from learning about the IP addresses, and online
+status of clients associated with another provider, when that client downloads
+an asset/attachment in a specific room. When the provider hosting the asset has
+several rooms hosted by the hub, the provider also does not learn with which
+room to associate a specific asset, or the number of participants per room.
 
-The client consults the intersection of the room policy and its local policy to determine if and how to upload assets, where to upload them, and with which credentials. The details of the upload are out of scope of this document.
+The client consults the intersection of the room policy and its local policy to determine if and how to upload assets, where to upload them, and with which credentials. The details of the upload process are out of scope of this
+document.
 
 MIMI room policy {{!I-D.ietf-mimi-room-policy}} includes an asset policy that specifies which domain name to use for asset download for each provider's domain of a potential asset sender.
 
