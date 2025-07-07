@@ -1831,7 +1831,11 @@ There is no response body. The response code only indicates if the abuse report 
 
 ## Download Files
 
-IM systems make extensive use of inline images, videos, and sounds, and often include attached files, all of which will be referred to as "assets" in this section. Assets are stored (encrypted) on various external servers, and typically uploaded and fetched using HTTP {{!RFC9110}} protected with TLS {{RFC8446}}.
+IM systems make extensive use of inline images, videos, and sounds, and often
+include attached files, all of which will be referred to as "assets" in this
+section. Assets are stored (encrypted) on various external servers, an
+typically uploaded and fetched using HTTP {{!RFC9110}} protected with TLS
+{{RFC8446}}.
 
 Broadly, two approaches are possibly for storage of assets in federated IM
 systems. In the vast majority of deployed systems, the assets are uploaded to
@@ -1846,7 +1850,9 @@ an asset/attachment in a specific room. When the provider hosting the asset has
 several rooms hosted by the hub, the provider also does not learn with which
 room to associate a specific asset, or the number of participants per room.
 
-The client consults the intersection of the room policy and its local policy to determine if and how to upload assets, where to upload them, and with which credentials. The details of the upload process are out of scope of this
+The client consults the intersection of the room policy and its local policy to
+determine if and how to upload assets, where to upload them, and with which
+credentials. The details of the upload process are out of scope of this
 document.
 
 MIMI room policy {{!I-D.ietf-mimi-room-policy}} includes an asset policy that specifies which domain name to use for asset download for each provider's domain of a potential asset sender.
