@@ -1855,7 +1855,10 @@ determine if and how to upload assets, where to upload them, and with which
 credentials. The details of the upload process are out of scope of this
 document.
 
-MIMI room policy {{!I-D.ietf-mimi-room-policy}} includes an asset policy that specifies which domain name to use for asset download for each provider's domain of a potential asset sender.
+The MIMI room policy {{!I-D.ietf-mimi-room-policy}} in the group's GroupContext
+includes an `asset_policy` component that specifies which domain name to use for
+asset download for each provider's domain of a potential asset sender. This
+prevents the download proxy from being used as a completely open proxy.
 
 When a receiving client receives a reference to an external asset sent by a participant from another provider, the receiving client downloads the asset over a proxy on the hub, protected using Oblivious HTTP (OHTTP) {{!RFC9458}}.
 The receiving client MUST verify that the download URL host part is associated with the asset server domain specified for the sender's identity.
