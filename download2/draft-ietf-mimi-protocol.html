@@ -1282,6 +1282,17 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.10">
                 <p id="section-toc.1-1.5.2.10.1"><a href="#section-5.10" class="auto internal xref">5.10</a>. <a href="#name-download-files" class="internal xref">Download Files</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.10.2.1">
+                    <p id="section-toc.1-1.5.2.10.2.1.1"><a href="#section-5.10.1" class="auto internal xref">5.10.1</a>.  <a href="#name-direct-download" class="internal xref">Direct download</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.10.2.2">
+                    <p id="section-toc.1-1.5.2.10.2.2.1"><a href="#section-5.10.2" class="auto internal xref">5.10.2</a>.  <a href="#name-download-using-a-hub-proxy" class="internal xref">Download using a hub proxy</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.10.2.3">
+                    <p id="section-toc.1-1.5.2.10.2.3.1"><a href="#section-5.10.3" class="auto internal xref">5.10.3</a>.  <a href="#name-download-using-oblivious-ht" class="internal xref">Download using Oblivious HTTP</a></p>
+</li>
+                </ul>
 </li>
             </ul>
 </li>
@@ -3951,42 +3962,247 @@ struct {
         <h3 id="name-download-files">
 <a href="#section-5.10" class="section-number selfRef">5.10. </a><a href="#name-download-files" class="section-name selfRef">Download Files</a>
         </h3>
-<p id="section-5.10-1">IM systems make extensive use of inline images, videos, and sounds, and often include attached files, all of which will be referred to as "assets" in this section. Assets are stored (encrypted) on various external servers, and typically uploaded and fetched using HTTP <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span> protected with TLS <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>.<a href="#section-5.10-1" class="pilcrow">¶</a></p>
-<p id="section-5.10-2">Broadly, two approaches are used for storage of assets in federated IM systems.
-In the most common approach, the assets are uploaded to the local system of the uploader.
-In other systems, the assets are uploaded to the system hosting the equivalent of a MIMI room.
-MIMI supports both of these approaches.<a href="#section-5.10-2" class="pilcrow">¶</a></p>
-<p id="section-5.10-3">The <code>proxyDownload</code> endpoint defined in this section is used to prevent the
-provider hosting the asset from learning about the IP addresses, and online
-status of clients associated with another provider, when that client downloads
-an asset/attachment in a specific room. When the provider hosting the asset has
-several rooms hosted by the hub, the provider also does not learn with which
-room to associate a specific asset, or the number of participants per room.<a href="#section-5.10-3" class="pilcrow">¶</a></p>
-<p id="section-5.10-4">The client consults the intersection of the room policy and its local policy to determine if and how to upload assets, where to upload them, and with which credentials. The details of the upload process are out of scope of this
-document.<a href="#section-5.10-4" class="pilcrow">¶</a></p>
-<p id="section-5.10-5">MIMI room policy <span>[<a href="#I-D.ietf-mimi-room-policy" class="cite xref">I-D.ietf-mimi-room-policy</a>]</span> includes an asset policy that specifies which domain name to use for asset download for each provider's domain of a potential asset sender.<a href="#section-5.10-5" class="pilcrow">¶</a></p>
-<p id="section-5.10-6">When a receiving client receives a reference to an external asset sent by a participant from another provider, the receiving client downloads the asset over a proxy on the hub, protected using Oblivious HTTP (OHTTP) <span>[<a href="#RFC9458" class="cite xref">RFC9458</a>]</span>.
-The receiving client <span class="bcp14">MUST</span> verify that the download URL host part is associated with the asset server domain specified for the sender's identity.
-The receiving client uses its local provider's OHTTP Relay; the hub provider is the OHTTP Gateway; and the <code>proxyDownload</code> endpoint is the OHTTP Target Resource on the Hub.
-The first time the receiving client accesses the <code>proxyDownload</code> endpoint, it fetches the MIMI directory of the Hub provider for <code>proxyDownload</code> endpoint.
-It then uses an HTTP GET (sent over OHTTP using the local provider relay and the hub's gateway) to the <code>proxyDownload</code> endpoint as specified in the directory with the asset's <code>downloadUrl</code> of the asset.<a href="#section-5.10-6" class="pilcrow">¶</a></p>
+<p id="section-5.10-1">IM systems make extensive use of inline images, videos, and sounds, and often
+include attached files, all of which will be referred to as "assets" in this
+section. Assets are stored (encrypted) on various external servers, and
+typically uploaded and fetched using HTTP <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span> protected with TLS
+<span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>.<a href="#section-5.10-1" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-5.10-7.1">
-            <p id="section-5.10-7.1.1">The <code>downloadUrl</code> would be the <code>uri</code> field in an <code>ExternalPart</code> in a MIMI content <span>[<a href="#I-D.ietf-mimi-content" class="cite xref">I-D.ietf-mimi-content</a>]</span> message.<a href="#section-5.10-7.1.1" class="pilcrow">¶</a></p>
+<li class="normal ulEmpty" id="section-5.10-2.1">
+            <p id="section-5.10-2.1.1">In a MIMI content <span>[<a href="#I-D.ietf-mimi-content" class="cite xref">I-D.ietf-mimi-content</a>]</span> message, the download URI is an
+<code>https</code> URL conveyed in the <code>uri</code> field in an <code>ExternalPart</code> in a MIMI
+content message.<a href="#section-5.10-2.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<div class="alignLeft art-text artwork" id="section-5.10-8">
+<p id="section-5.10-3">Broadly, two approaches are possibly for storage of assets in federated IM
+systems. In the vast majority of deployed systems, the assets are uploaded to
+the local provider of the uploader. With the other approach, the assets are
+uploaded to the equivalent of the Hub system. MIMI is capable of asset
+downloads for both of these approaches.<a href="#section-5.10-3" class="pilcrow">¶</a></p>
+<p id="section-5.10-4">The client consults the intersection of the room policy and its local policy to
+determine if and how to upload assets, where to upload them, and with which
+credentials. The details of the upload process are out of scope of this
+document.<a href="#section-5.10-4" class="pilcrow">¶</a></p>
+<p id="section-5.10-5">The MIMI room policy <span>[<a href="#I-D.ietf-mimi-room-policy" class="cite xref">I-D.ietf-mimi-room-policy</a>]</span> in the group's GroupContext
+includes an <code>asset_policy</code> component that specifies which domain name to use
+for asset download for each potential asset provider. This prevents the
+download proxy from using a host part associated with the same domain that is
+not used for the storage of MIMI assets.<a href="#section-5.10-5" class="pilcrow">¶</a></p>
+<p id="section-5.10-6">For downloads, the clients can use any of three methods to download assets. The
+hub is not involved in the first and is required to implement support for the
+other two methods.<a href="#section-5.10-6" class="pilcrow">¶</a></p>
+<div id="direct-download">
+<section id="section-5.10.1">
+          <h4 id="name-direct-download">
+<a href="#section-5.10.1" class="section-number selfRef">5.10.1. </a><a href="#name-direct-download" class="section-name selfRef">Direct download</a>
+          </h4>
+<p id="section-5.10.1-1">Without any additional MIMI protocol mechanism, MIMI clients can download assets
+directly from the asset provider. Unfortunately this usually reveals sensitive
+private information about the client. In this case, the asset provider learns
+the IP address of the client, and timing information about when assets are downloaded, which is strongly linked with online presence. The asset provider
+can correlate other clients downloading the same assets and infer which clients
+are in which rooms. For this reason, direct client downloads of assets,
+especially from an asset provider which is not the download client's provider,
+are <span class="bcp14">NOT RECOMMENDED</span>.<a href="#section-5.10.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="download-using-a-hub-proxy">
+<section id="section-5.10.2">
+          <h4 id="name-download-using-a-hub-proxy">
+<a href="#section-5.10.2" class="section-number selfRef">5.10.2. </a><a href="#name-download-using-a-hub-proxy" class="section-name selfRef">Download using a hub proxy</a>
+          </h4>
+<p id="section-5.10.2-1">The hub offers the <code>proxyDownload</code> endpoint to proxy asset requests from
+downloading providers to known asset providers. This allows clients to hide
+their IP addresses from the asset provider (and the hub), although the hub and
+the downloading provider are still privy to the request.<a href="#section-5.10.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.10.2-2">The <code>proxyDownload</code> endpoint includes the target asset URL, but does not include
+the specific room or requester. When the provider hosting the asset has several
+rooms hosted by the hub, the provider also does not directly learn with which
+room to associate a specific asset.<a href="#section-5.10.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.10.2-3">As with other MIMI protocol endpoints, the actual endpoint URL is discovered
+using the MIMI protocol directory <a href="#directory" class="auto internal xref">Section 5.1</a>.<a href="#section-5.10.2-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.10.2-4">
 <pre>
 GET /proxyDownload/{downloadUrl}
-</pre><a href="#section-5.10-8" class="pilcrow">¶</a>
+</pre><a href="#section-5.10.2-4" class="pilcrow">¶</a>
 </div>
-<p id="section-5.10-9">The Hub <span class="bcp14">MUST</span> verify that the download URL host part is associated with the asset server domain for one of its peer providers.
-If the request succeeds, the response body contains the contents of the
-downloaded URL.
-The Hub is encouraged to cache the resources it downloads.<a href="#section-5.10-9" class="pilcrow">¶</a></p>
-<p id="section-5.10-10">In terms of the privacy of this mechanism, the Hub only sees that a specific provider requested an (opaque to the Hub) URL from another provider. It does not know the room or the specific client.
-The provider of the uploader sees requests for an (encrypted) asset coming from the Hub provider. When caching is employed, the provider will only see periodic requests.
-The receiver's provider will see one request to the Hub, among presumably many requests. It has no information about the sender, URL, or room associated with that request.<a href="#section-5.10-10" class="pilcrow">¶</a></p>
+<p id="section-5.10.2-5">The downloading provider sends the request to the hub. The hub <span class="bcp14">MUST</span> verify that
+the host part of the <code>downloadUrl</code> is associated with the asset server domain
+for one of its peer providers. This prevents the hub from becoming an open
+proxy.<a href="#section-5.10.2-5" class="pilcrow">¶</a></p>
+<p id="section-5.10.2-6">The overall flow is as shown below.<a href="#section-5.10.2-6" class="pilcrow">¶</a></p>
+<div id="section-5.10.2-7">
+            <div class="alignLeft art-svg artwork" id="section-5.10.2-7.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="336" width="568" viewBox="0 0 568 336" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,320" fill="none" stroke="black"></path>
+                <path d="M 152,48 L 152,320" fill="none" stroke="black"></path>
+                <path d="M 280,48 L 280,320" fill="none" stroke="black"></path>
+                <path d="M 408,48 L 408,320" fill="none" stroke="black"></path>
+                <path d="M 536,48 L 536,320" fill="none" stroke="black"></path>
+                <path d="M 416,80 Q 418,76.8 420,80 Q 422,83.2 424,80 Q 426,76.8 428,80 Q 430,83.2 432,80 Q 434,76.8 436,80 Q 438,83.2 440,80 Q 442,76.8 444,80 Q 446,83.2 448,80 Q 450,76.8 452,80 Q 454,83.2 456,80 Q 458,76.8 460,80 Q 462,83.2 464,80 Q 466,76.8 468,80 Q 470,83.2 472,80 Q 474,76.8 476,80 Q 478,83.2 480,80 Q 482,76.8 484,80 Q 486,83.2 488,80 Q 490,76.8 492,80 Q 494,83.2 496,80 Q 498,76.8 500,80 Q 502,83.2 504,80 Q 506,76.8 508,80 Q 510,83.2 512,80 Q 514,76.8 516,80 Q 518,83.2 520,80 Q 522,76.8 524,80 Q 526,83.2 528,80 Q 530,76.8 532,80 Q 534,83.2 536,80" fill="none" stroke="black"></path>
+                <path d="M 408,96 Q 410,92.8 412,96 Q 414,99.2 416,96 Q 418,92.8 420,96 Q 422,99.2 424,96 Q 426,92.8 428,96 Q 430,99.2 432,96 Q 434,92.8 436,96 Q 438,99.2 440,96 Q 442,92.8 444,96 Q 446,99.2 448,96 Q 450,92.8 452,96 Q 454,99.2 456,96 Q 458,92.8 460,96 Q 462,99.2 464,96 Q 466,92.8 468,96 Q 470,99.2 472,96 Q 474,92.8 476,96 Q 478,99.2 480,96 Q 482,92.8 484,96 Q 486,99.2 488,96 Q 490,92.8 492,96 Q 494,99.2 496,96 Q 498,92.8 500,96 Q 502,99.2 504,96 Q 506,92.8 508,96 Q 510,99.2 512,96 Q 514,92.8 516,96 Q 518,99.2 520,96 Q 522,92.8 524,96 Q 526,99.2 528,96" fill="none" stroke="black"></path>
+                <path d="M 416,144 Q 418,140.8 420,144 Q 422,147.2 424,144 Q 426,140.8 428,144 Q 430,147.2 432,144 Q 434,140.8 436,144 Q 438,147.2 440,144 Q 442,140.8 444,144 Q 446,147.2 448,144 Q 450,140.8 452,144 Q 454,147.2 456,144 Q 458,140.8 460,144 Q 462,147.2 464,144 Q 466,140.8 468,144 Q 470,147.2 472,144 Q 474,140.8 476,144 Q 478,147.2 480,144 Q 482,140.8 484,144 Q 486,147.2 488,144 Q 490,140.8 492,144 Q 494,147.2 496,144 Q 498,140.8 500,144 Q 502,147.2 504,144 Q 506,140.8 508,144 Q 510,147.2 512,144 Q 514,140.8 516,144 Q 518,147.2 520,144 Q 522,140.8 524,144 Q 526,147.2 528,144 Q 530,140.8 532,144 Q 534,147.2 536,144" fill="none" stroke="black"></path>
+                <path d="M 288,160 L 408,160" fill="none" stroke="black"></path>
+                <path d="M 160,176 L 400,176" fill="none" stroke="black"></path>
+                <path d="M 32,192 Q 34,188.8 36,192 Q 38,195.2 40,192 Q 42,188.8 44,192 Q 46,195.2 48,192 Q 50,188.8 52,192 Q 54,195.2 56,192 Q 58,188.8 60,192 Q 62,195.2 64,192 Q 66,188.8 68,192 Q 70,195.2 72,192 Q 74,188.8 76,192 Q 78,195.2 80,192 Q 82,188.8 84,192 Q 86,195.2 88,192 Q 90,188.8 92,192 Q 94,195.2 96,192 Q 98,188.8 100,192 Q 102,195.2 104,192 Q 106,188.8 108,192 Q 110,195.2 112,192 Q 114,188.8 116,192 Q 118,195.2 120,192 Q 122,188.8 124,192 Q 126,195.2 128,192 Q 130,188.8 132,192 Q 134,195.2 136,192 Q 138,188.8 140,192 Q 142,195.2 144,192 Q 146,188.8 148,192 Q 150,195.2 152,192" fill="none" stroke="black"></path>
+                <path d="M 408,192 Q 410,188.8 412,192 Q 414,195.2 416,192 Q 418,188.8 420,192 Q 422,195.2 424,192 Q 426,188.8 428,192 Q 430,195.2 432,192 Q 434,188.8 436,192 Q 438,195.2 440,192 Q 442,188.8 444,192 Q 446,195.2 448,192 Q 450,188.8 452,192 Q 454,195.2 456,192 Q 458,188.8 460,192 Q 462,195.2 464,192 Q 466,188.8 468,192 Q 470,195.2 472,192 Q 474,188.8 476,192 Q 478,195.2 480,192 Q 482,188.8 484,192 Q 486,195.2 488,192 Q 490,188.8 492,192 Q 494,195.2 496,192 Q 498,188.8 500,192 Q 502,195.2 504,192 Q 506,188.8 508,192 Q 510,195.2 512,192 Q 514,188.8 516,192 Q 518,195.2 520,192 Q 522,188.8 524,192 Q 526,195.2 528,192" fill="none" stroke="black"></path>
+                <path d="M 24,240 Q 26,236.8 28,240 Q 30,243.2 32,240 Q 34,236.8 36,240 Q 38,243.2 40,240 Q 42,236.8 44,240 Q 46,243.2 48,240 Q 50,236.8 52,240 Q 54,243.2 56,240 Q 58,236.8 60,240 Q 62,243.2 64,240 Q 66,236.8 68,240 Q 70,243.2 72,240 Q 74,236.8 76,240 Q 78,243.2 80,240 Q 82,236.8 84,240 Q 86,243.2 88,240 Q 90,236.8 92,240 Q 94,243.2 96,240 Q 98,236.8 100,240 Q 102,243.2 104,240 Q 106,236.8 108,240 Q 110,243.2 112,240 Q 114,236.8 116,240 Q 118,243.2 120,240 Q 122,236.8 124,240 Q 126,243.2 128,240 Q 130,236.8 132,240 Q 134,243.2 136,240 Q 138,236.8 140,240 Q 142,243.2 144,240" fill="none" stroke="black"></path>
+                <path d="M 152,256 L 272,256" fill="none" stroke="black"></path>
+                <path d="M 280,272 L 400,272" fill="none" stroke="black"></path>
+                <path d="M 288,288 L 408,288" fill="none" stroke="black"></path>
+                <path d="M 160,304 L 280,304" fill="none" stroke="black"></path>
+                <path d="M 32,320 Q 34,316.8 36,320 Q 38,323.2 40,320 Q 42,316.8 44,320 Q 46,323.2 48,320 Q 50,316.8 52,320 Q 54,323.2 56,320 Q 58,316.8 60,320 Q 62,323.2 64,320 Q 66,316.8 68,320 Q 70,323.2 72,320 Q 74,316.8 76,320 Q 78,323.2 80,320 Q 82,316.8 84,320 Q 86,323.2 88,320 Q 90,316.8 92,320 Q 94,323.2 96,320 Q 98,316.8 100,320 Q 102,323.2 104,320 Q 106,316.8 108,320 Q 110,323.2 112,320 Q 114,316.8 116,320 Q 118,323.2 120,320 Q 122,316.8 124,320 Q 126,323.2 128,320 Q 130,316.8 132,320 Q 134,323.2 136,320 Q 138,316.8 140,320 Q 142,323.2 144,320 Q 146,316.8 148,320 Q 150,323.2 152,320" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="536,192 524,186.4 524,197.6" fill="black" transform="rotate(0,528,192)"></polygon>
+                <polygon class="arrowhead" points="536,96 524,90.4 524,101.6" fill="black" transform="rotate(0,528,96)"></polygon>
+                <polygon class="arrowhead" points="424,144 412,138.4 412,149.6" fill="black" transform="rotate(180,416,144)"></polygon>
+                <polygon class="arrowhead" points="424,80 412,74.4 412,85.6" fill="black" transform="rotate(180,416,80)"></polygon>
+                <polygon class="arrowhead" points="408,272 396,266.4 396,277.6" fill="black" transform="rotate(0,400,272)"></polygon>
+                <polygon class="arrowhead" points="408,176 396,170.4 396,181.6" fill="black" transform="rotate(0,400,176)"></polygon>
+                <polygon class="arrowhead" points="296,288 284,282.4 284,293.6" fill="black" transform="rotate(180,288,288)"></polygon>
+                <polygon class="arrowhead" points="296,160 284,154.4 284,165.6" fill="black" transform="rotate(180,288,160)"></polygon>
+                <polygon class="arrowhead" points="280,256 268,250.4 268,261.6" fill="black" transform="rotate(0,272,256)"></polygon>
+                <polygon class="arrowhead" points="168,304 156,298.4 156,309.6" fill="black" transform="rotate(180,160,304)"></polygon>
+                <polygon class="arrowhead" points="168,176 156,170.4 156,181.6" fill="black" transform="rotate(180,160,176)"></polygon>
+                <polygon class="arrowhead" points="152,240 140,234.4 140,245.6" fill="black" transform="rotate(0,144,240)"></polygon>
+                <polygon class="arrowhead" points="40,320 28,314.4 28,325.6" fill="black" transform="rotate(180,32,320)"></polygon>
+                <polygon class="arrowhead" points="40,192 28,186.4 28,197.6" fill="black" transform="rotate(180,32,192)"></polygon>
+                <g class="text">
+                  <text x="36" y="36">ClientB1</text>
+                  <text x="152" y="36">ServerB</text>
+                  <text x="276" y="36">HubA</text>
+                  <text x="400" y="36">ServerC</text>
+                  <text x="532" y="36">ClientC1</text>
+                  <text x="452" y="68">Upload</text>
+                  <text x="504" y="68">asset</text>
+                  <text x="436" y="116">send</text>
+                  <text x="488" y="116">message</text>
+                  <text x="428" y="132">w/</text>
+                  <text x="464" y="132">asset</text>
+                  <text x="508" y="132">link</text>
+                  <text x="364" y="148">submit</text>
+                  <text x="228" y="164">fanout</text>
+                  <text x="56" y="212">fetch</text>
+                  <text x="104" y="212">asset</text>
+                  <text x="48" y="228">via</text>
+                  <text x="72" y="228">B</text>
+                  <text x="96" y="228">and</text>
+                  <text x="128" y="228">hub</text>
+                  <text x="216" y="244">proxyDownload</text>
+                  <text x="304" y="260">GET</text>
+                  <text x="344" y="260">asset</text>
+                </g>
+              </svg><a href="#section-5.10.2-7.1" class="pilcrow">¶</a>
+</div>
+</div>
+<p id="section-5.10.2-8">If the request succeeds, the response body contains the contents of the
+downloaded URL. The hub can reject <code>proxyDownload</code> requests by replying with
+standard HTTP error codes.<a href="#section-5.10.2-8" class="pilcrow">¶</a></p>
+<p id="section-5.10.2-9">In terms of the privacy of this mechanism, the hub only sees that a specific
+provider requested an (opaque to the hub) URL from another provider. It does not
+know the room or the specific client.
+The asset provider sees requests for an (encrypted) asset coming from the hub
+provider. When caching is employed, the asset provider will only see periodic
+requests.
+The receiver's provider will see one request to the hub, among presumably many
+requests. It has no information about the sender, URL, or room associated with
+that request, however it can collect the domains of specific asset providers,
+and it can use timing analysis to correlate incoming messages (which are
+associated with a room) and outgoing <code>proxyDownload</code> requests.<a href="#section-5.10.2-9" class="pilcrow">¶</a></p>
+<p id="section-5.10.2-10">Both the downloading provider and the hub can cache requests. This would tend to
+hide from the asset provider the number of downloading participants in a
+specific room, and make it more difficult for the hub to correlate a URL with a
+specific room based on the number of participants.<a href="#section-5.10.2-10" class="pilcrow">¶</a></p>
+<p id="section-5.10.2-11">The proxy download method improves the privacy of the clients with respect to
+the asset provider, and to some extent with the hub, but it still allows the
+downloading provider to correlate URLs with downloading users and infer which
+URLs are sent in which rooms.<a href="#section-5.10.2-11" class="pilcrow">¶</a></p>
+<p id="section-5.10.2-12">The hub is <span class="bcp14">REQUIRED</span> to implement this mechanism.<a href="#section-5.10.2-12" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="download-using-oblivious-http">
+<section id="section-5.10.3">
+          <h4 id="name-download-using-oblivious-ht">
+<a href="#section-5.10.3" class="section-number selfRef">5.10.3. </a><a href="#name-download-using-oblivious-ht" class="section-name selfRef">Download using Oblivious HTTP</a>
+          </h4>
+<p id="section-5.10.3-1">Oblivious HTTP (OHTTP) <span>[<a href="#RFC9458" class="cite xref">RFC9458</a>]</span> is a mechanism for the encapsulation of HTTP
+requests that provides a variety of desirable privacy properties. It provides
+the best privacy of the download mechanisms described here, but requires the
+client to implement an additional protocol.<a href="#section-5.10.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.10.3-2">Using OHTTP for asset download privacy works as follows. The clients sends an
+OHTTP request to the downloading provider's OHTTP Relay which forwards the
+request to the hub's OHTTP Gateway. The hub then sends a GET request for the
+asset to the asset provider (the Target)<a href="#section-5.10.3-2" class="pilcrow">¶</a></p>
+<p id="section-5.10.3-3">The hub <span class="bcp14">MUST</span> only accept OHTTP requests to Targets which are configured as asset
+storage locations for one of its peer providers.<a href="#section-5.10.3-3" class="pilcrow">¶</a></p>
+<div id="section-5.10.3-4">
+            <div class="alignLeft art-svg artwork" id="section-5.10.3-4.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="336" width="568" viewBox="0 0 568 336" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,320" fill="none" stroke="black"></path>
+                <path d="M 152,48 L 152,320" fill="none" stroke="black"></path>
+                <path d="M 280,48 L 280,320" fill="none" stroke="black"></path>
+                <path d="M 408,48 L 408,320" fill="none" stroke="black"></path>
+                <path d="M 536,48 L 536,320" fill="none" stroke="black"></path>
+                <path d="M 416,80 Q 418,76.8 420,80 Q 422,83.2 424,80 Q 426,76.8 428,80 Q 430,83.2 432,80 Q 434,76.8 436,80 Q 438,83.2 440,80 Q 442,76.8 444,80 Q 446,83.2 448,80 Q 450,76.8 452,80 Q 454,83.2 456,80 Q 458,76.8 460,80 Q 462,83.2 464,80 Q 466,76.8 468,80 Q 470,83.2 472,80 Q 474,76.8 476,80 Q 478,83.2 480,80 Q 482,76.8 484,80 Q 486,83.2 488,80 Q 490,76.8 492,80 Q 494,83.2 496,80 Q 498,76.8 500,80 Q 502,83.2 504,80 Q 506,76.8 508,80 Q 510,83.2 512,80 Q 514,76.8 516,80 Q 518,83.2 520,80 Q 522,76.8 524,80 Q 526,83.2 528,80 Q 530,76.8 532,80 Q 534,83.2 536,80" fill="none" stroke="black"></path>
+                <path d="M 408,96 Q 410,92.8 412,96 Q 414,99.2 416,96 Q 418,92.8 420,96 Q 422,99.2 424,96 Q 426,92.8 428,96 Q 430,99.2 432,96 Q 434,92.8 436,96 Q 438,99.2 440,96 Q 442,92.8 444,96 Q 446,99.2 448,96 Q 450,92.8 452,96 Q 454,99.2 456,96 Q 458,92.8 460,96 Q 462,99.2 464,96 Q 466,92.8 468,96 Q 470,99.2 472,96 Q 474,92.8 476,96 Q 478,99.2 480,96 Q 482,92.8 484,96 Q 486,99.2 488,96 Q 490,92.8 492,96 Q 494,99.2 496,96 Q 498,92.8 500,96 Q 502,99.2 504,96 Q 506,92.8 508,96 Q 510,99.2 512,96 Q 514,92.8 516,96 Q 518,99.2 520,96 Q 522,92.8 524,96 Q 526,99.2 528,96" fill="none" stroke="black"></path>
+                <path d="M 416,144 Q 418,140.8 420,144 Q 422,147.2 424,144 Q 426,140.8 428,144 Q 430,147.2 432,144 Q 434,140.8 436,144 Q 438,147.2 440,144 Q 442,140.8 444,144 Q 446,147.2 448,144 Q 450,140.8 452,144 Q 454,147.2 456,144 Q 458,140.8 460,144 Q 462,147.2 464,144 Q 466,140.8 468,144 Q 470,147.2 472,144 Q 474,140.8 476,144 Q 478,147.2 480,144 Q 482,140.8 484,144 Q 486,147.2 488,144 Q 490,140.8 492,144 Q 494,147.2 496,144 Q 498,140.8 500,144 Q 502,147.2 504,144 Q 506,140.8 508,144 Q 510,147.2 512,144 Q 514,140.8 516,144 Q 518,147.2 520,144 Q 522,140.8 524,144 Q 526,147.2 528,144 Q 530,140.8 532,144 Q 534,147.2 536,144" fill="none" stroke="black"></path>
+                <path d="M 288,160 L 408,160" fill="none" stroke="black"></path>
+                <path d="M 160,176 L 400,176" fill="none" stroke="black"></path>
+                <path d="M 32,192 Q 34,188.8 36,192 Q 38,195.2 40,192 Q 42,188.8 44,192 Q 46,195.2 48,192 Q 50,188.8 52,192 Q 54,195.2 56,192 Q 58,188.8 60,192 Q 62,195.2 64,192 Q 66,188.8 68,192 Q 70,195.2 72,192 Q 74,188.8 76,192 Q 78,195.2 80,192 Q 82,188.8 84,192 Q 86,195.2 88,192 Q 90,188.8 92,192 Q 94,195.2 96,192 Q 98,188.8 100,192 Q 102,195.2 104,192 Q 106,188.8 108,192 Q 110,195.2 112,192 Q 114,188.8 116,192 Q 118,195.2 120,192 Q 122,188.8 124,192 Q 126,195.2 128,192 Q 130,188.8 132,192 Q 134,195.2 136,192 Q 138,188.8 140,192 Q 142,195.2 144,192 Q 146,188.8 148,192 Q 150,195.2 152,192" fill="none" stroke="black"></path>
+                <path d="M 408,192 Q 410,188.8 412,192 Q 414,195.2 416,192 Q 418,188.8 420,192 Q 422,195.2 424,192 Q 426,188.8 428,192 Q 430,195.2 432,192 Q 434,188.8 436,192 Q 438,195.2 440,192 Q 442,188.8 444,192 Q 446,195.2 448,192 Q 450,188.8 452,192 Q 454,195.2 456,192 Q 458,188.8 460,192 Q 462,195.2 464,192 Q 466,188.8 468,192 Q 470,195.2 472,192 Q 474,188.8 476,192 Q 478,195.2 480,192 Q 482,188.8 484,192 Q 486,195.2 488,192 Q 490,188.8 492,192 Q 494,195.2 496,192 Q 498,188.8 500,192 Q 502,195.2 504,192 Q 506,188.8 508,192 Q 510,195.2 512,192 Q 514,188.8 516,192 Q 518,195.2 520,192 Q 522,188.8 524,192 Q 526,195.2 528,192" fill="none" stroke="black"></path>
+                <path d="M 24,238 L 144,238" fill="none" stroke="black"></path>
+                <path d="M 24,242 L 144,242" fill="none" stroke="black"></path>
+                <path d="M 280,272 L 400,272" fill="none" stroke="black"></path>
+                <path d="M 288,288 L 400,288" fill="none" stroke="black"></path>
+                <path d="M 32,318 L 144,318" fill="none" stroke="black"></path>
+                <path d="M 32,322 L 144,322" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="536,192 524,186.4 524,197.6" fill="black" transform="rotate(0,528,192)"></polygon>
+                <polygon class="arrowhead" points="536,96 524,90.4 524,101.6" fill="black" transform="rotate(0,528,96)"></polygon>
+                <polygon class="arrowhead" points="424,144 412,138.4 412,149.6" fill="black" transform="rotate(180,416,144)"></polygon>
+                <polygon class="arrowhead" points="424,80 412,74.4 412,85.6" fill="black" transform="rotate(180,416,80)"></polygon>
+                <polygon class="arrowhead" points="408,272 396,266.4 396,277.6" fill="black" transform="rotate(0,400,272)"></polygon>
+                <polygon class="arrowhead" points="408,176 396,170.4 396,181.6" fill="black" transform="rotate(0,400,176)"></polygon>
+                <polygon class="arrowhead" points="296,288 284,282.4 284,293.6" fill="black" transform="rotate(180,288,288)"></polygon>
+                <polygon class="arrowhead" points="296,160 284,154.4 284,165.6" fill="black" transform="rotate(180,288,160)"></polygon>
+                <polygon class="arrowhead" points="168,176 156,170.4 156,181.6" fill="black" transform="rotate(180,160,176)"></polygon>
+                <polygon class="arrowhead" points="152,240 140,234.4 140,245.6" fill="black" transform="rotate(0,144,240)"></polygon>
+                <polygon class="arrowhead" points="40,320 28,314.4 28,325.6" fill="black" transform="rotate(180,32,320)"></polygon>
+                <polygon class="arrowhead" points="40,192 28,186.4 28,197.6" fill="black" transform="rotate(180,32,192)"></polygon>
+                <g class="text">
+                  <text x="36" y="36">ClientB1</text>
+                  <text x="152" y="36">ServerB</text>
+                  <text x="276" y="36">HubA</text>
+                  <text x="400" y="36">ServerC</text>
+                  <text x="532" y="36">ClientC1</text>
+                  <text x="452" y="68">Upload</text>
+                  <text x="504" y="68">asset</text>
+                  <text x="436" y="116">send</text>
+                  <text x="488" y="116">message</text>
+                  <text x="428" y="132">w/</text>
+                  <text x="464" y="132">asset</text>
+                  <text x="508" y="132">link</text>
+                  <text x="364" y="148">submit</text>
+                  <text x="228" y="164">fanout</text>
+                  <text x="56" y="212">fetch</text>
+                  <text x="104" y="212">asset</text>
+                  <text x="56" y="228">OHTTP</text>
+                  <text x="112" y="228">wrapped</text>
+                  <text x="184" y="244">OHTTP</text>
+                  <text x="216" y="260">::::::::::::::&gt;</text>
+                  <text x="304" y="260">GET</text>
+                  <text x="344" y="260">asset</text>
+                  <text x="216" y="308">&lt;::::::::::::::</text>
+                </g>
+              </svg><a href="#section-5.10.3-4.1" class="pilcrow">¶</a>
+</div>
+</div>
+<p id="section-5.10.3-5">For the hub, an OHTTP Gateway is <span class="bcp14">REQUIRED</span> to implement. The hub <span class="bcp14">SHOULD</span> provide
+the OHTTP Gateway capability for its peer providers.<a href="#section-5.10.3-5" class="pilcrow">¶</a></p>
+<p id="section-5.10.3-6">Other providers <span class="bcp14">SHOULD</span> implement the OHTTP Relay capability and <span class="bcp14">SHOULD</span> enable
+the relay to access<a href="#section-5.10.3-6" class="pilcrow">¶</a></p>
+<p id="section-5.10.3-7">The main benefit of this mechanism is that the downloading provider does not
+learn the domains of every asset provider.<a href="#section-5.10.3-7" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 </section>
