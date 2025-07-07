@@ -752,7 +752,9 @@ GET /.well-known/mimi-protocol-directory
   "identifierQuery":
      "https://mimi.example.com/v1/identifierQuery/{domain}",
   "reportAbuse":
-     "https://mimi.example.com/v1/reportAbuse/{roomId}"
+     "https://mimi.example.com/v1/reportAbuse/{roomId}",
+  "proxyDownload"
+     "https://mimi.example.com/v1/proxyDownload/{downloadUrl}"
 }
 ~~~
 
@@ -1888,6 +1890,174 @@ To validate an allegedly AbusiveMessage, the hub finds the salt, sender URI, and
 room URI inside the `message_content` and the `accepted_timestamp` to
 recalculate the `franking_tag` and `context`. Then the hub selects its relevant
 `hub_key` to regenerate the `server_frank`. Finally the hub verifies its `franking_integrity_signature`.
+
+
+## Download Files
+
+IM systems make extensive use of inline images, videos, and sounds, and often
+include attached files, all of which will be referred to as "assets" in this
+section. Assets are stored (encrypted) on various external servers, and
+typically uploaded and fetched using HTTP {{!RFC9110}} protected with TLS
+{{RFC8446}}.
+
+> In a MIMI content {{!I-D.ietf-mimi-content}} message, the download URI is an
+> `https` URL conveyed in the `uri` field in an `ExternalPart` in a MIMI
+> content message.
+
+Broadly, two approaches are possibly for storage of assets in federated IM
+systems. In the vast majority of deployed systems, the assets are uploaded to
+the local provider of the uploader. With the other approach, the assets are
+uploaded to the equivalent of the Hub system. MIMI is capable of asset
+downloads for both of these approaches.
+
+The client consults the intersection of the room policy and its local policy to
+determine if and how to upload assets, where to upload them, and with which
+credentials. The details of the upload process are out of scope of this
+document.
+
+The MIMI room policy {{!I-D.ietf-mimi-room-policy}} in the group's GroupContext
+includes an `asset_policy` component that specifies which domain name to use
+for asset download for each potential asset provider. This prevents the
+download proxy from using a host part associated with the same domain that is
+not used for the storage of MIMI assets.
+
+For downloads, the clients can use any of three methods to download assets. The
+hub is not involved in the first and is required to implement support for the
+other two methods.
+
+### Direct download
+
+Without any additional MIMI protocol mechanism, MIMI clients can download assets
+directly from the asset provider. Unfortunately this usually reveals sensitive
+private information about the client. In this case, the asset provider learns
+the IP address of the client, and timing information about when assets are downloaded, which is strongly linked with online presence. The asset provider
+can correlate other clients downloading the same assets and infer which clients
+are in which rooms. For this reason, direct client downloads of assets,
+especially from an asset provider which is not the download client's provider,
+are NOT RECOMMENDED.
+
+### Download using a hub proxy
+
+The hub offers the `proxyDownload` endpoint to proxy asset requests from
+downloading providers to known asset providers. This allows clients to hide
+their IP addresses from the asset provider (and the hub), although the hub and
+the downloading provider are still privy to the request.
+
+The `proxyDownload` endpoint includes the target asset URL, but does not include
+the specific room or requester. When the provider hosting the asset has several
+rooms hosted by the hub, the provider also does not directly learn with which
+room to associate a specific asset.
+
+As with other MIMI protocol endpoints, the actual endpoint URL is discovered
+using the MIMI protocol directory {{directory}}.
+
+~~~
+GET /proxyDownload/{downloadUrl}
+~~~
+
+The downloading provider sends the request to the hub. The hub MUST verify that
+the host part of the `downloadUrl` is associated with the asset server domain
+for one of its peer providers. This prevents the hub from becoming an open
+proxy.
+
+The overall flow is as shown below.
+
+~~~ aasvg
+ClientB1       ServerB          HubA          ServerC         ClientC1
+  |               |               |               |               |
+  |               |               |               |  Upload asset |
+  |               |               |               |<~~~~~~~~~~~~~~+
+  |               |               |               +~~~~~~~~~~~~~~>|
+  |               |               |               | send message  |
+  |               |               |               | w/ asset link |
+  |               |               |       submit  |<~~~~~~~~~~~~~~+
+  |               |      fanout   |<--------------+               |
+  |               |<--------------+-------------->|               |
+  |<~~~~~~~~~~~~~~+               |               +~~~~~~~~~~~~~~>|
+  | fetch asset   |               |               |               |
+  | via B and hub |               |               |               |
+  +~~~~~~~~~~~~~~>| proxyDownload |               |               |
+  |               +-------------->| GET asset     |               |
+  |               |               +-------------->|               |
+  |               |               |<--------------+               |
+  |               |<--------------+               |               |
+  |<~~~~~~~~~~~~~~+               |               |               |
+~~~
+
+If the request succeeds, the response body contains the contents of the
+downloaded URL. The hub can reject `proxyDownload` requests by replying with
+standard HTTP error codes.
+
+In terms of the privacy of this mechanism, the hub only sees that a specific
+provider requested an (opaque to the hub) URL from another provider. It does not
+know the room or the specific client.
+The asset provider sees requests for an (encrypted) asset coming from the hub
+provider. When caching is employed, the asset provider will only see periodic
+requests.
+The receiver's provider will see one request to the hub, among presumably many
+requests. It has no information about the sender, URL, or room associated with
+that request, however it can collect the domains of specific asset providers,
+and it can use timing analysis to correlate incoming messages (which are
+associated with a room) and outgoing `proxyDownload` requests.
+
+Both the downloading provider and the hub can cache requests. This would tend to
+hide from the asset provider the number of downloading participants in a
+specific room, and make it more difficult for the hub to correlate a URL with a
+specific room based on the number of participants.
+
+The proxy download method improves the privacy of the clients with respect to
+the asset provider, and to some extent with the hub, but it still allows the
+downloading provider to correlate URLs with downloading users and infer which
+URLs are sent in which rooms.
+
+The hub is REQUIRED to implement this mechanism.
+
+### Download using Oblivious HTTP
+
+Oblivious HTTP (OHTTP) {{!RFC9458}} is a mechanism for the encapsulation of HTTP
+requests that provides a variety of desirable privacy properties. It provides
+the best privacy of the download mechanisms described here, but requires the
+client to implement an additional protocol.
+
+Using OHTTP for asset download privacy works as follows. The clients sends an
+OHTTP request to the downloading provider's OHTTP Relay which forwards the
+request to the hub's OHTTP Gateway. The hub then sends a GET request for the
+asset to the asset provider (the Target)
+
+The hub MUST only accept OHTTP requests to Targets which are configured as asset
+storage locations for one of its peer providers.
+
+~~~ aasvg
+ClientB1       ServerB          HubA          ServerC         ClientC1
+  |               |               |               |               |
+  |               |               |               |  Upload asset |
+  |               |               |               |<~~~~~~~~~~~~~~+
+  |               |               |               +~~~~~~~~~~~~~~>|
+  |               |               |               | send message  |
+  |               |               |               | w/ asset link |
+  |               |               |       submit  |<~~~~~~~~~~~~~~+
+  |               |      fanout   |<--------------+               |
+  |               |<--------------+-------------->|               |
+  |<~~~~~~~~~~~~~~+               |               +~~~~~~~~~~~~~~>|
+  | fetch asset   |               |               |               |
+  | OHTTP wrapped |               |               |               |
+  +==============>| OHTTP         |               |               |
+  |               +::::::::::::::>| GET asset     |               |
+  |               |               +-------------->|               |
+  |               |               |<--------------|               |
+  |               |<::::::::::::::+               |               |
+  |<==============|               |               |               |
+~~~
+
+For the hub, an OHTTP Gateway is REQUIRED to implement. The hub SHOULD provide
+the OHTTP Gateway capability for its peer providers.
+
+Other providers SHOULD implement the OHTTP Relay capability and SHOULD enable
+the relay to access
+
+The main benefit of this mechanism is that the downloading provider does not
+learn the domains of every asset provider.
+
 
 # Minimal metadata rooms
 
