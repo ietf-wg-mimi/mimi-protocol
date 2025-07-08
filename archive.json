@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-06T00:58:03.528500+00:00",
+  "timestamp": "2025-07-08T00:53:06.939750+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1633,7 +1633,7 @@
       "id": "I_kwDOKZ8QO86uJUlk",
       "title": "Add requester Credential and signature to KeyMaterial endpoint",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/110",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1642,9 +1642,17 @@
       ],
       "body": "signature of the request should also cover the room ID",
       "createdAt": "2025-03-15T03:34:33Z",
-      "updatedAt": "2025-03-18T14:40:40Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-07-06T16:26:16Z",
+      "closedAt": "2025-07-06T16:26:16Z",
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Addressed with #112 ",
+          "createdAt": "2025-07-06T16:26:16Z",
+          "updatedAt": "2025-07-06T16:26:16Z"
+        }
+      ]
     },
     {
       "number": 114,
@@ -1671,10 +1679,12 @@
       "author": "felixlinker",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has-PR"
+      ],
       "body": "Section \"Receiver verification of frank\" specifies that the receiver of a franked message must verify its tag using the embedded salt:\n\nhttps://github.com/ietf-wg-mimi/mimi-protocol/blob/5080565278e0949af3425efd8d7381312c9cc1a1/draft-ietf-mimi-protocol.md?plain=1#L1254\n\nThe specification of the sender, however, does not mention that the sender should include the salt. Just a nit and probably an oversight, but better to be fixed! :)",
       "createdAt": "2025-03-20T05:48:28Z",
-      "updatedAt": "2025-04-24T19:42:23Z",
+      "updatedAt": "2025-07-06T17:37:44Z",
       "closedAt": null,
       "comments": [
         {
@@ -1695,10 +1705,12 @@
       "author": "felixlinker",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has-PR"
+      ],
       "body": "5.4.1.3 says \u201ethe receiver needs to store the frank,\u201c (unclear which one, but I presume the server frank), 5.9 says the report must include \u201e[a messages] franks\u201c (plural!). This shouldn't change much from the perspective of security, but could lead to interoperability issues.",
       "createdAt": "2025-03-20T06:57:33Z",
-      "updatedAt": "2025-03-20T07:16:38Z",
+      "updatedAt": "2025-07-06T18:07:46Z",
       "closedAt": null,
       "comments": [
         {
@@ -1726,10 +1738,12 @@
       "author": "felixlinker",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has-PR"
+      ],
       "body": "@rohanmahy Let me know that the the sender's salt it used to generate the initial franking tag should be included in the MIMI content of the `AbusiveMessage`. That field's type, however, is `opaque` suggesting its values shouldn't matter to implementations.",
       "createdAt": "2025-03-20T08:45:49Z",
-      "updatedAt": "2025-03-20T08:45:49Z",
+      "updatedAt": "2025-07-06T18:07:34Z",
       "closedAt": null,
       "comments": []
     },
@@ -1808,6 +1822,22 @@
       "body": "Currently the message context used in franking is defined as the concatenation of 3 fields:\n\n```\ncontext = sender_uri || room_uri || accepted_timestamp\n```\n\nThere is a potential that these could be manipulated so a specially crafted sender_uri and room_uri could cause one client to appear as a blank user\n\nActually, there is no requirement that context be unique. We just need the context to correctly match the context fields in the sent message.\n\nSnipped from [MIMI Content Issue #61 ](https://github.com/ietf-wg-mimi/draft-ietf-mimi-content/issues/61):\n\"While you could have:\n`mimi://example.com/u/alicemimi://example.com/r/clubhouse` plus `mimi://example.com/r/clubhouse` in one message AND\n`mimi://example.com/u/alice` plus `mimi://example.com/r/clubhousemimi://example.com/r/clubhouse` in another message,\nit would take a pretty dumb hub to allow such a room ID and an AS with very permissive sender URI names.\"\n\n",
       "createdAt": "2025-07-05T22:11:09Z",
       "updatedAt": "2025-07-05T22:11:09Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 124,
+      "id": "I_kwDOKZ8QO86_UTS5",
+      "title": "add to security/privacy considerations a bunch of evil scenarios related to collusion and actively manipulating timing",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/124",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "from @martinthomson\n\nYou probably need a more complete analysis of the privacy properties of this system. Including taking the position that the hub is actively looking to undermine the privacy of room participants.\n\nConsider the case where the hub selectively forwards messages to participants, for instance, by staggering delivery. If clients are online, they might hit the gateway immediately after receiving a URL. In that way, the hub knows both the URL that was in the message, and which client initiated that download. It also learns how large the asset is.\n\nThis is likely the best that we can expect to achieve here, in that the hub already has this sort of information available to it. Though it does create a covert channel from the message originator to the hub, which can be attached to individual recipients.\n",
+      "createdAt": "2025-07-07T17:27:18Z",
+      "updatedAt": "2025-07-07T17:27:18Z",
       "closedAt": null,
       "comments": []
     }
@@ -9847,24 +9877,26 @@
       "id": "PR_kwDOKZ8QO86Ozy7_",
       "title": "Create new proxyDownload endpoint",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/111",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This replaces #75 \r\n\r\nIt adds Oblivious HTTP between the downloading provider and the Hub provider.",
       "createdAt": "2025-03-16T07:04:32Z",
-      "updatedAt": "2025-06-04T07:44:57Z",
+      "updatedAt": "2025-07-07T17:33:15Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
-      "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
+      "baseRefOid": "78975b7f55f936aa696e74212330a9eaf2adb907",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "download2",
-      "headRefOid": "0c5b489d3d3ae06f571e8a011f574670fbc920d5",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "ec490c26532e94750288f805a0e0f8f68d4bb3ac",
+      "closedAt": "2025-07-07T17:33:15Z",
+      "mergedAt": "2025-07-07T17:33:14Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "5f6478a853c7a356bc1300acd96f717714a3ec38"
+      },
       "comments": [
         {
           "author": "mar-v-in",
@@ -9928,6 +9960,20 @@
           "body": "> Thanks for the added context. I feel we are going in circles because I have a hard time discerning what's an assumption in the above and what is an established fact.\r\n\r\nCould you be more specific about which assertions you don't agree with?\r\n\r\n> To make some progress, I propose to zoom out a bit. I think we can agree on the following: a. The design philosophy has been to empower the hub to be the arbiter and enforcer of policies wherever possible b. There are concerns about the cost of hosting assets on the hub\r\n> \r\n> We have discussed two options so far:\r\n> \r\n>     1. Dismiss b. so that we remain true to a. (Raphael and others)\r\n>     2. Make an exception to a. to account for b. (Rohan)\r\n\r\nI reject this characterization. I don't accept the absolutist statement that the hub is the enforcer of policies \"wherever possible\". Yes, it is central to managing handshake messages and controlling fanout. However it has little policy control over application messages. Policy enforcement of many of the capabilities in role-based access control, processing of expiring messages, validations of tags, handling keys correctly are all aspects of MIMI policy that fall to the clients.\r\n\r\nWe have discussed the storage of assets going back to the earliest MIMI WG meetings. Clients currently upload assets to their own providers. They send a link inside an end-to-end encrypted message. Managing policy of something inside an e2e encrypted message is normally entirely up to the clients. The only reason we are having this discussion is because of the privacy implications of a subsequent download directly from clients hosted by another provider, as was mentioned by dkg the first time I presented draft-mahy-mimi-content.\r\n\r\nWe had a reasonable amount of feedback about making OHTTP and the proxy endpoint optional to use at the last meeting. I propose instead that we make OHTTP gateway mandatory to implement on the hub and OHTTP relay is RECOMMENDED for all providers. We can build a separate mechanism/policy that allows the clients to upload to a hub on a per-room basis, but I think this should be optional.\r\n\r\n",
           "createdAt": "2025-05-28T13:58:03Z",
           "updatedAt": "2025-05-28T13:58:03Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Previously, the mimi-protocol was mostly about the protocol between user's provider and hub and leaves the exact protocol between client and provider out of scope. The use of OHTTP adds specific requirements to the client in the whole design.\r\n> \r\n> I think stating that the Hub must provide an HTTP proxy with specific properties that is made available to the provider should be sufficient for the purpose of mimi-protocol: it allows for the client to use any protocol of their choice to instruct their provider to download the file via the hub's HTTP proxy.\r\n\r\nRewrote this section to describe the 3 mechanisms available to clients. OHTTP and plain proxying are both required of the hub. The clients can pick. I describe the privacy.",
+          "createdAt": "2025-07-07T17:29:57Z",
+          "updatedAt": "2025-07-07T17:29:57Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Merging so we have something to discuss, but not resolving the relevant issue.",
+          "createdAt": "2025-07-07T17:33:08Z",
+          "updatedAt": "2025-07-07T17:33:08Z"
         }
       ],
       "reviews": [
@@ -10155,6 +10201,186 @@
           "createdAt": "2025-06-04T07:44:56Z",
           "updatedAt": "2025-06-04T07:44:57Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86yWmx3",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-07T05:58:02Z",
+          "updatedAt": "2025-07-07T05:58:02Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "added text to explain that this is a component of the GroupContext, so it is set per room.",
+              "createdAt": "2025-07-07T05:58:02Z",
+              "updatedAt": "2025-07-07T05:58:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86yWncy",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-07T05:59:27Z",
+          "updatedAt": "2025-07-07T05:59:27Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "Incorporated in my working copy",
+              "createdAt": "2025-07-07T05:59:27Z",
+              "updatedAt": "2025-07-07T05:59:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86ygJNd",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-07T17:25:26Z",
+          "updatedAt": "2025-07-07T17:25:26Z",
+          "comments": [
+            {
+              "originalPosition": 37,
+              "body": "moved and re-explained",
+              "createdAt": "2025-07-07T17:25:26Z",
+              "updatedAt": "2025-07-07T17:25:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86ygJVc",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-07T17:25:39Z",
+          "updatedAt": "2025-07-07T17:25:39Z",
+          "comments": [
+            {
+              "originalPosition": 43,
+              "body": "added some text",
+              "createdAt": "2025-07-07T17:25:39Z",
+              "updatedAt": "2025-07-07T17:25:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86ygJZ_",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-07T17:25:48Z",
+          "updatedAt": "2025-07-07T17:25:48Z",
+          "comments": [
+            {
+              "originalPosition": 46,
+              "body": "done",
+              "createdAt": "2025-07-07T17:25:48Z",
+              "updatedAt": "2025-07-07T17:25:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86ygK1e",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-07T17:28:08Z",
+          "updatedAt": "2025-07-07T17:28:08Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "I'm going to create a separate issue for this #124 ",
+              "createdAt": "2025-07-07T17:28:08Z",
+              "updatedAt": "2025-07-07T17:28:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86ygLH6",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-07T17:28:37Z",
+          "updatedAt": "2025-07-07T17:28:38Z",
+          "comments": [
+            {
+              "originalPosition": 50,
+              "body": "not sure if I captured this one or not. I'm going to merge anyway",
+              "createdAt": "2025-07-07T17:28:37Z",
+              "updatedAt": "2025-07-07T17:28:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86ygMA7",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-07T17:30:12Z",
+          "updatedAt": "2025-07-07T17:30:12Z",
+          "comments": [
+            {
+              "originalPosition": 49,
+              "body": "asset provider",
+              "createdAt": "2025-07-07T17:30:12Z",
+              "updatedAt": "2025-07-07T17:30:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86ygMet",
+          "commit": {
+            "abbreviatedOid": "0c5b489"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-07T17:30:54Z",
+          "updatedAt": "2025-07-07T17:30:54Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "I outlined three approaches and we can discuss in Madrid",
+              "createdAt": "2025-07-07T17:30:54Z",
+              "updatedAt": "2025-07-07T17:30:54Z"
+            }
+          ]
         }
       ]
     },
@@ -10170,7 +10396,7 @@
       "labels": [],
       "body": "addresses Issue #110 ",
       "createdAt": "2025-03-16T07:45:38Z",
-      "updatedAt": "2025-07-05T22:19:36Z",
+      "updatedAt": "2025-07-06T15:23:37Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
@@ -10203,26 +10429,28 @@
     {
       "number": 113,
       "id": "PR_kwDOKZ8QO86PMEAq",
-      "title": "Add group_info_response_nonce to prevent replay attacks",
+      "title": "Fix the name of the key in SignWithLabel in GroupInfoResponse",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/113",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-03-18T23:46:41Z",
-      "updatedAt": "2025-05-12T12:50:08Z",
+      "updatedAt": "2025-07-06T17:19:32Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "ginfo-resp-nonce",
-      "headRefOid": "d4f788196dede7a06d124e4d640f83abd4ddf4ce",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "dde372648b0d688b4864de96d247151f32498fde",
+      "closedAt": "2025-07-06T17:12:14Z",
+      "mergedAt": "2025-07-06T17:12:14Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "85af18b65c73f28de1197c01280dbbf23858540e"
+      },
       "comments": [],
       "reviews": [
         {
@@ -10232,11 +10460,71 @@
           },
           "author": "bifurcation",
           "authorAssociation": "COLLABORATOR",
-          "state": "CHANGES_REQUESTED",
+          "state": "DISMISSED",
           "body": "This is not a \"2-time pad\" (terrible phrase; almost never a real thing), this is bounding the replayability of the signature.  You should either:\r\n\r\n1. Put a nonce in the request, which the response signature must include\r\n2. Put a timestamp in the response, which the requester compares to their local time\r\n\r\nClearly (1) would be preferable, because it doesn't require time sync.",
           "createdAt": "2025-03-19T00:48:17Z",
-          "updatedAt": "2025-03-19T00:48:17Z",
+          "updatedAt": "2025-07-06T17:12:07Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86yTu4t",
+          "commit": {
+            "abbreviatedOid": "d4f7881"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-06T17:05:25Z",
+          "updatedAt": "2025-07-06T17:05:25Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\r\npassed in the request.\r\n```",
+              "createdAt": "2025-07-06T17:05:25Z",
+              "updatedAt": "2025-07-06T17:05:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86yTu6w",
+          "commit": {
+            "abbreviatedOid": "d4f7881"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-06T17:05:39Z",
+          "updatedAt": "2025-07-06T17:05:39Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "```suggestion\r\n```",
+              "createdAt": "2025-07-06T17:05:39Z",
+              "updatedAt": "2025-07-06T17:05:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO86yTu8i",
+          "commit": {
+            "abbreviatedOid": "d4f7881"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-06T17:05:51Z",
+          "updatedAt": "2025-07-06T17:05:51Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "```suggestion\r\n```",
+              "createdAt": "2025-07-06T17:05:51Z",
+              "updatedAt": "2025-07-06T17:05:51Z"
+            }
+          ]
         }
       ]
     },
@@ -10252,7 +10540,7 @@
       "labels": [],
       "body": "- Change franking_integrity to use signature\r\n- create franking_agent GroupContext component to hold signature public key for validating franking_integrity_signature\r\n- clarify relationship with MIMI content salt, sender_uri, and room_uri\r\n- register all four app components with IANA\r\n- acknowledge Felix Linker for Tamarin formal methods model\r\n- regularize case conventions for franking-related fields",
       "createdAt": "2025-04-25T04:02:45Z",
-      "updatedAt": "2025-07-05T22:18:35Z",
+      "updatedAt": "2025-07-06T15:23:22Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
@@ -10386,31 +10674,33 @@
       "id": "PR_kwDOKZ8QO86V1bb7",
       "title": "Make sure a new version of the hub's own invalidated pending proposals is stapled to an external commit",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/120",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-05-12T13:03:01Z",
-      "updatedAt": "2025-06-28T19:36:28Z",
+      "updatedAt": "2025-07-06T17:19:34Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "5080565278e0949af3425efd8d7381312c9cc1a1",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "fanout-ext-props",
-      "headRefOid": "994e9ef64df26c7b7287d017618c252b5f77b146",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "3f9e7a67e2863078d0b64b429d3fdfaaea7ed8e9",
+      "closedAt": "2025-07-06T16:22:13Z",
+      "mergedAt": "2025-07-06T16:22:13Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "e5c08565b8ba27a23fedc3ab2fd1886b18a3c84e"
+      },
       "comments": [
         {
           "author": "rohanmahy",
           "authorAssociation": "COLLABORATOR",
-          "body": "> This needs more prose to describe what you're doing here. It seems like the workflow you have in mind is:\r\n> \r\n>     * Hub generates some proposals, cues those up\r\n> \r\n>     * Someone comes along and does an external Commit\r\n> \r\n>     * Unfortunately, that external Commit can't include the hub's proposals\r\n> \r\n>     * So the Hub regenerates the proposals in the new epoch and distributes them\r\n> \r\n> \r\n> Assuming I have that right, \r\n\r\nyou've got that right.\r\n\r\n>I'm not clear on why you're sending the new proposals out like this. (Same with the `moreProposals` field above.) Is the expectation that a follower server or client is keeping a copy of the hub's proposal queue? If that's the case, shouldn't we just send the whole proposal queue in these cases? Wouldn't it be better just to send the proposal queue to a committer at the time they try to commit?\r\n\r\nUnless those proposals are legal inside an external commit (SelfRemove, AppDataUpdate, AppEphemeral), the client cannot just get a copy of the proposal queue, because their external commit would fail validation.",
+          "body": "> This needs more prose to describe what you're doing here. It seems like the workflow you have in mind is:\r\n> \r\n>     * Hub generates some proposals, cues those up\r\n> \r\n>     * Someone comes along and does an external Commit\r\n> \r\n>     * Unfortunately, that external Commit can't include the hub's proposals\r\n> \r\n>     * So the Hub regenerates the proposals in the new epoch and distributes them\r\n> \r\n> \r\n> Assuming I have that right, \r\n\r\nyou've got that right.\r\n\r\n>I'm not clear on why you're sending the new proposals out like this. (Same with the `moreProposals` field above.) Is the expectation that a follower server or client is keeping a copy of the hub's proposal queue? If that's the case, shouldn't we just send the whole proposal queue in these cases? Wouldn't it be better just to send the proposal queue to a committer at the time they try to commit?\r\n\r\nUnless those proposals are legal inside an external commit (SelfRemove, AppDataUpdate, AppEphemeral), the client cannot just resend a copy of the old epoch's proposal queue, because their external commit would fail validation. \r\n\r\nThis stapling makes sure that any external policy proposals for the _new_ epoch would be available immediately with any commit and therefore assures that it is incorporated in the next (member) commit.",
           "createdAt": "2025-06-28T19:36:27Z",
-          "updatedAt": "2025-06-28T19:36:27Z"
+          "updatedAt": "2025-07-06T15:19:17Z"
         }
       ],
       "reviews": [
@@ -10421,13 +10711,41 @@
           },
           "author": "bifurcation",
           "authorAssociation": "COLLABORATOR",
-          "state": "CHANGES_REQUESTED",
+          "state": "DISMISSED",
           "body": "This needs more prose to describe what you're doing here.  It seems like the workflow you have in mind is:\r\n\r\n* Hub generates some proposals, cues those up\r\n* Someone comes along and does an external Commit\r\n* Unfortunately, that external Commit can't include the hub's proposals\r\n* So the Hub regenerates the proposals in the new epoch and distributes them\r\n\r\nAssuming I have that right, I'm not clear on why you're sending the new proposals out like this.  (Same with the `moreProposals` field above.)  Is the expectation that a follower server or client is keeping a copy of the hub's proposal queue?   If that's the case, shouldn't we just send the whole proposal queue in these cases?  Wouldn't it be better just to send the proposal queue to a committer at the time they try to commit?",
           "createdAt": "2025-06-28T18:37:38Z",
-          "updatedAt": "2025-06-28T18:37:38Z",
+          "updatedAt": "2025-07-06T16:22:00Z",
           "comments": []
         }
       ]
+    },
+    {
+      "number": 123,
+      "id": "PR_kwDOKZ8QO86dpcxI",
+      "title": "Salt text fixes",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/123",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Addresses comments from Issues #115 , #116, and #117 @felixlinker\r\n\r\n",
+      "createdAt": "2025-07-06T18:07:03Z",
+      "updatedAt": "2025-07-07T17:24:56Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "85af18b65c73f28de1197c01280dbbf23858540e",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "salt-text-fixes",
+      "headRefOid": "a0cc09318335935f40594d9ec6d5c5bed172ef6f",
+      "closedAt": "2025-07-07T17:24:56Z",
+      "mergedAt": "2025-07-07T17:24:56Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "78975b7f55f936aa696e74212330a9eaf2adb907"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }
