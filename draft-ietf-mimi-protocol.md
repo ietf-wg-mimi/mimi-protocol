@@ -1514,9 +1514,9 @@ struct {
 } GroupInfoRequest;
 ~~~
 
-If successful, the response body contains the GroupInfo and a way
-to get the ratchet_tree, both encrypted with the `groupInfoPublcKey`
-passed in the request.
+If successful, the response body contains the GroupInfo, a way to get the
+`ratchet_tree`, and a list of any pending proposals for the epoch, all
+encrypted with the `groupInfoPublcKey` passed in the request.
 
 ~~~ tls
 enum {
@@ -1528,8 +1528,16 @@ enum {
 } GroupInfoCode;
 
 struct {
+    MLSMessage proposal;
+    uint64 hub_accepted_time;
+} PendingProposal;
+
+struct {
   GroupInfo groupInfo;   /* without embedded ratchet_tree */
   RatchetTreeOption ratchetTreeOption;
+  /* A list of valid pending proposals accepted by the hub */
+  /* during the current epoch                              */
+  PendingProposal pending_proposals<V>;
 } GroupInfoRatchetTreeTBE;
 
 GroupInfoRatchetTreeTBE group_info_ratchet_tree_tbe;
