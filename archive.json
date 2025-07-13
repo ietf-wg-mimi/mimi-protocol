@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-08T00:53:06.939750+00:00",
+  "timestamp": "2025-07-13T00:59:50.939291+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -77,6 +77,11 @@
       "name": "chore",
       "description": "",
       "color": "000000"
+    },
+    {
+      "name": "needs-WG-discussion",
+      "description": null,
+      "color": "aaaaaa"
     }
   ],
   "issues": [
@@ -1838,6 +1843,25 @@
       "body": "from @martinthomson\n\nYou probably need a more complete analysis of the privacy properties of this system. Including taking the position that the hub is actively looking to undermine the privacy of room participants.\n\nConsider the case where the hub selectively forwards messages to participants, for instance, by staggering delivery. If clients are online, they might hit the gateway immediately after receiving a URL. In that way, the hub knows both the URL that was in the message, and which client initiated that download. It also learns how large the asset is.\n\nThis is likely the best that we can expect to achieve here, in that the hub already has this sort of information available to it. Though it does create a covert channel from the message originator to the hub, which can be attached to individual recipients.\n",
       "createdAt": "2025-07-07T17:27:18Z",
       "updatedAt": "2025-07-07T17:27:18Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 128,
+      "id": "I_kwDOKZ8QO87AN6Oq",
+      "title": "Minimize time that policy that policy enforcing proposals can be invalid.",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/128",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "has-PR",
+        "needs-WG-discussion"
+      ],
+      "body": "\n- Hub generates some proposals, cues those up\n- Someone comes along and does an external Commit\n- Unfortunately, that external Commit can't include the hub's proposals\n- So the Hub regenerates the proposals in the new epoch and distributes them stapled to the external commit.\n\npost-facto issue for #120 \n\nThis could become a non-issue if https://www.ietf.org/archive/id/draft-mahy-mls-ext-commit-pp-00.html is adopted.",
+      "createdAt": "2025-07-12T05:44:17Z",
+      "updatedAt": "2025-07-12T05:44:17Z",
       "closedAt": null,
       "comments": []
     }
@@ -9884,7 +9908,7 @@
       "labels": [],
       "body": "This replaces #75 \r\n\r\nIt adds Oblivious HTTP between the downloading provider and the Hub provider.",
       "createdAt": "2025-03-16T07:04:32Z",
-      "updatedAt": "2025-07-07T17:33:15Z",
+      "updatedAt": "2025-07-11T17:06:45Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "78975b7f55f936aa696e74212330a9eaf2adb907",
@@ -10731,7 +10755,7 @@
       "labels": [],
       "body": "Addresses comments from Issues #115 , #116, and #117 @felixlinker\r\n\r\n",
       "createdAt": "2025-07-06T18:07:03Z",
-      "updatedAt": "2025-07-07T17:24:56Z",
+      "updatedAt": "2025-07-11T17:06:47Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "85af18b65c73f28de1197c01280dbbf23858540e",
@@ -10745,6 +10769,96 @@
         "oid": "78975b7f55f936aa696e74212330a9eaf2adb907"
       },
       "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 125,
+      "id": "PR_kwDOKZ8QO86eiKPK",
+      "title": "Ready to Submit draft-ietf-mimi-protocol-04",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/125",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-07-11T16:52:13Z",
+      "updatedAt": "2025-07-11T17:06:44Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "5f6478a853c7a356bc1300acd96f717714a3ec38",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "ohfour",
+      "headRefOid": "ac8adb85852ff48f562491ca561adeec4d0d4467",
+      "closedAt": "2025-07-11T16:57:42Z",
+      "mergedAt": "2025-07-11T16:57:42Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "a04c365aeb85211760cd160c9f638a183032dd6d"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 126,
+      "id": "PR_kwDOKZ8QO86eiMnu",
+      "title": "Disable autopublish",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/126",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-07-11T16:55:58Z",
+      "updatedAt": "2025-07-11T17:06:43Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "5f6478a853c7a356bc1300acd96f717714a3ec38",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "rohanmahy-patch-1",
+      "headRefOid": "47837897fa2eaf6dc3807d4475033d86a6ffbe48",
+      "closedAt": "2025-07-11T16:56:44Z",
+      "mergedAt": "2025-07-11T16:56:44Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "1bdd46559ba135a410edaf5701f45b39464b0d0b"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 127,
+      "id": "PR_kwDOKZ8QO86eil56",
+      "title": "Include valid proposals sent during the current epoch with a GroupInfo response",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/127",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The MLS group for a room is in epoch <n>. \r\n\r\nValid SelfRemove proposals are received from a member, or Valid AppDataUpdate or AppEphemeral external proposals are received from an external_sender.\r\n\r\nThe hub needs to provide these valid pending proposals which would be included in an external commit.",
+      "createdAt": "2025-07-11T17:35:38Z",
+      "updatedAt": "2025-07-12T05:45:56Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "a04c365aeb85211760cd160c9f638a183032dd6d",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "ginfo-pp",
+      "headRefOid": "c938a5ffcb68f89690578ea3147725058c2884f5",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Already needed for SelfRemove, AppDataUpdate, and AppEphemeral proposals. Could potentially be any type if https://www.ietf.org/archive/id/draft-mahy-mls-ext-commit-pp-00.html is adopted.",
+          "createdAt": "2025-07-12T05:45:56Z",
+          "updatedAt": "2025-07-12T05:45:56Z"
+        }
+      ],
       "reviews": []
     }
   ]
