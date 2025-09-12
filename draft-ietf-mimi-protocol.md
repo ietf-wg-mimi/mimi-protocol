@@ -1267,7 +1267,7 @@ franking_integrity_signature =
 
 The `sender_length_uint16` and `room_length_unit16` are each a 16-bit unsigned
 integer length field in network order. Prepending the length before the URIs
-in the context prevents a class of attacks which could occur if room URIs and
+in the context prevents a class of attacks, which could occur if room URIs and
 sender URIs were created maliciously.
 
 `hub_key` is a secret symmetric key used on the Hub which the Hub can use to
