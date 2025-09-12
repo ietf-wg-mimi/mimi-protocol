@@ -1113,7 +1113,8 @@ enum {
 } SubmitResponseCode;
 
 struct {
-  uint8[32] server_frank;
+  uint8 server_frank[32];
+  uint16 franking_signature_ciphersuite;
   opaque franking_integrity_signature<V>;
 } Frank;
 
@@ -1187,7 +1188,8 @@ FrankingAgentData FrankingAgentUpdate;
 ~~~
 
 The signature algorithm of the `franking_signature_key` is the same as the
-signature scheme in the cipher suite of the MLS group.
+signature algorithm of cipher suite of the MLS group which corresponds to the
+room.
 
 FrankingAgentUpdate is the format of the `update` field inside the AppDataUpdate
 struct in an AppDataUpdate Proposal for the `franking_agent` component. The use
@@ -1200,7 +1202,7 @@ group by sending a ReInit proposal.
 #### Client creation and sending
 
 The franking mechanism requires any franked message format to contain a random
-salt, the sender URI, and the room URI. The section describes the exact way to
+salt, the sender URI, and the room URI. This section describes the exact way to
 extract these fields from the MIMI content format {{!I-D.ietf-mimi-content}}.
 Other message formats would need to describe how to locate or derive these
 values.
@@ -1218,8 +1220,8 @@ the MIMI content extensions map (see definitions in {{Section 8.3 of
 ~~~ cbor-diag
 / MIMI content extensions map /
 {
-  / sender_uri / 1: "mimi://b.example/u/alice"
-  / room_uri   / 2: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+  / sender_uri / 1: "mimi://b.example/u/alice",
+  / room_uri   / 2: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg"
 }
 ~~~
 
@@ -1268,24 +1270,29 @@ The `franking_integrity_signature` is used by receivers to verify that the
 values added by the Hub (the `server_frank`, and `accepted_timestamp`) were not
 modified by a follower provider, and that the `sender_uri` and `room_uri` match
 those provided by the sending client.
+The `franking_signature_ciphersuite` is the MLS cipher suite in use at the time
+the message is franked. It is used to insure that a frank contains the
+signature algorithm used to generate the `franking_integrity_signature`
 The specific construction used is discussed in the Security Considerations
 in {{franking}}.
 
 The Hub fans out the encrypted message (which includes the `franking_tag`),
-the `server_frank`, the `accepted_timestamp`, the room URI, and the
-`franking_integrity_signature`. Note that the `sender_uri` is encrypted in the
-application message, so the sender can remain anonymous with respect to follower
-providers.
+the `server_frank`, the `accepted_timestamp`, the room URI, the
+`franking_signature_ciphersuite` and the `franking_integrity_signature`.
+Note that the `sender_uri` is encrypted in the application message, so the
+sender can remain anonymous with respect to follower providers.
 
 #### Receiver verification of frank
 
 When a client receives and decrypts an otherwise valid application message
 from a hub provider, the client looks for the existence of a frank
-(consisting of the `franking_tag` in the AAD, the `server_frank` and the
-`franking_integrity_signature`). If those fields are available, the client looks
-for the `franking_agent` application component in the GroupContext. It verifies
-the domain name in the `franking_agent.credential` corresponds to the domain of
-the Hub, and extracts the `franking_signature_key`.
+(consisting of the `franking_tag` in the AAD, the `server_frank`, the
+`franking_signature_ciphersuite` and the `franking_integrity_signature`). If
+those fields are available, and the `franking_signature_ciphersuite` matches the
+MLS cipher suite in-use, the client looks for the `franking_agent`
+application component in the GroupContext. It verifies the domain name in the
+`franking_agent.credential` corresponds to the domain of the Hub, and extracts
+the `franking_signature_key`.
 
 Next it verifies the integrity of the `server_frank`, `accepted_timestamp`,
 `sender_uri`, and `room_uri` by calculating the `signed_content` and verifying
@@ -1305,8 +1312,9 @@ the `sender_uri` asserted in the extensions map inside the MIMI Content, and
 that the `room_uri` asserted in the extensions map inside the MIMI Content
 matches the room ID in the received message.
 
-The receiver needs to store the `server_frank`, `franking_integrity_signature`,
-and `context` fields with the decoded message, so they can be used later.
+The receiver needs to store the `server_frank`,
+`franking_signature_ciphersuite`, `franking_integrity_signature`, and `context`
+fields with the decoded message, so they can be used later.
 
 #### Comparison with the Facebook franking scheme
 
