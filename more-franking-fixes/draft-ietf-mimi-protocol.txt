@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 30 December 2025               The Matrix.org Foundation C.I.C.
+Expires: 16 March 2026                  The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 30 December 2025               The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                            28 June 2025
+                                                       12 September 2025
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 December 2025.
+   This Internet-Draft will expire on 16 March 2026.
 
 Copyright Notice
 
@@ -111,6 +111,10 @@ Table of Contents
      5.7.  Convey explicit consent
      5.8.  Find internal address
      5.9.  Report abuse
+     5.10. Download Files
+       5.10.1.  Direct download
+       5.10.2.  Download using a hub proxy
+       5.10.3.  Download using Oblivious HTTP
    6.  Minimal metadata rooms
      6.1.  Credential encryption
    7.  Relation between MIMI state and cryptographic state
@@ -815,7 +819,9 @@ ServerC->ClientC*: [[ Commit ]]
      "identifierQuery":
         "https://mimi.example.com/v1/identifierQuery/{domain}",
      "reportAbuse":
-        "https://mimi.example.com/v1/reportAbuse/{roomId}"
+        "https://mimi.example.com/v1/reportAbuse/{roomId}",
+     "proxyDownload"
+        "https://mimi.example.com/v1/proxyDownload/{downloadUrl}"
    }
 
 5.2.  Fetch Key Material
@@ -833,17 +839,21 @@ ServerC->ClientC*: [[ Commit ]]
    hub provider will be unable to forward a Welcome message to the
    target provider).
 
-   The path includes the target user.  The request body includes the
-   protocol (currently just MLS 1.0), and the requesting user.  When the
-   request is being made in the context of adding the target user to a
-   room, the request MUST include the room ID for which the KeyPackage
-   is intended, as the target may have only granted consent for a
-   specific room.
+   The path includes the target user URI (with any necessary percent-
+   encoding).  The request body includes the protocol (currently just
+   MLS 1.0), and the requesting user.  When the request is being made in
+   the context of adding the target user to a room, the request MUST
+   include the room ID for which the KeyPackage is intended, as the
+   target may have only granted consent for a specific room.
 
    For MLS, the request includes a non-empty list of acceptable MLS
-   ciphersuites, and an MLS RequiredCapabilities object (which contains
-   credential types, non-default proposal types, and extensions)
-   required by the requesting provider (these lists can be an empty).
+   ciphersuites.  Next there is an MLS RequiredCapabilities object,
+   which contains (possibly empty) lists of required credential types,
+   non-default proposal types, and extensions) required by the
+   requesting provider.  Next there is a SignaturePublicKey and a
+   corresponding Credential for the requester.  Finally, the request
+   includes a signature, using the SignaturePublicKey and covering
+   KeyMaterialRequestTBS.
 
    The request body has the following form.
 
@@ -860,8 +870,30 @@ ServerC->ClientC*: [[ Commit ]]
            case mls10:
                CipherSuite acceptableCiphersuites<V>;
                RequiredCapabilities requiredCapabilities;
+               SignaturePublicKey requesterSignatureKey;
+               Credential requesterCredential;
+               /* SignWithLabel(requesterSignatureKey,              */
+               /*   "KeyMaterialRequestTBS", KeyMaterialRequestTBS) */
+               opaque key_material_request_signature<V>;
        };
    } KeyMaterialRequest;
+
+   struct {
+       Protocol protocol;
+       IdentifierUri requestingUser;
+       IdentifierUri targetUser;
+       IdentifierUri roomId;
+       select (protocol) {
+           case mls10:
+               CipherSuite acceptableCiphersuites<V>;
+               RequiredCapabilities requiredCapabilities;
+               SignaturePublicKey requesterSignatureKey;
+               Credential requesterCredential;
+       };
+   } KeyMaterialRequestTBS;
+
+   key_material_request_signature = SignWithLabel(requesterSignatureKey
+                         "KeyMaterialRequestTBS", KeyMaterialRequestTBS)
 
    The response contains a user status code that indicates keying
    material was returned for all the user's clients (success), that
@@ -1157,7 +1189,8 @@ ServerC->ClientC*: [[ Commit ]]
    } SubmitResponseCode;
 
    struct {
-     uint8[32] server_frank;
+     uint8 server_frank[32];
+     uint16 franking_signature_ciphersuite;
      opaque franking_integrity_signature<V>;
    } Frank;
 
@@ -1237,7 +1270,8 @@ ServerC->ClientC*: [[ Commit ]]
    FrankingAgentData FrankingAgentUpdate;
 
    The signature algorithm of the franking_signature_key is the same as
-   the cipher suite of the MLS group.
+   the signature algorithm of cipher suite of the MLS group which
+   corresponds to the room.
 
    FrankingAgentUpdate is the format of the update field inside the
    AppDataUpdate struct in an AppDataUpdate Proposal for the
@@ -1249,14 +1283,16 @@ ServerC->ClientC*: [[ Commit ]]
 
 5.4.1.1.  Client creation and sending
 
-   The franking mechanism requires the message format to contain a
-   random salt, the sender URI, and the room URI.  It describes the
-   exact way to extract these fields from the MIMI content format.
+   The franking mechanism requires any franked message format to contain
+   a random salt, the sender URI, and the room URI.  This section
+   describes the exact way to extract these fields from the MIMI content
+   format [I-D.ietf-mimi-content].  Other message formats would need to
+   describe how to locate or derive these values.
 
-   The MIMI content format [I-D.ietf-mimi-content] includes a per-
-   message, mandatory, cryptographically random 256-bit salt generated
-   by the sender.  (An example mechanism to safely generate the salt is
-   discussed in Section 8.2 of [I-D.ietf-mimi-content].)
+   The MIMI content format includes a per-message, mandatory,
+   cryptographically random 128-bit salt generated by the sender.  (An
+   example mechanism to safely generate the salt is discussed in
+   Section 8.2 of [I-D.ietf-mimi-content].)
 
    The sender of a MIMI content message attaches to the message any
    fields the sender wishes to commit that are not otherwise represented
@@ -1266,8 +1302,8 @@ ServerC->ClientC*: [[ Commit ]]
 
    / MIMI content extensions map /
    {
-     / sender_uri / 1: "mimi://b.example/u/alice"
-     / room_uri   / 2: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+     / sender_uri / 1: "mimi://b.example/u/alice",
+     / room_uri   / 2: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg"
    }
 
    Note that these assertions do not vouch for the validity of these
@@ -1302,10 +1338,18 @@ ServerC->ClientC*: [[ Commit ]]
    calculates a server frank for the message, and a
    franking_integrity_signature as follows:
 
-   context = sender_uri || room_uri || accepted_timestamp
+   sender_ctx = sender_length_uint16 || sender_uri
+   room_ctx = room_length_uint16 || room_uri
+   context = sender_ctx || room_ctx || accepted_timestamp
    server_frank = HMAC_SHA256(hub_key, franking_tag || context )
    franking_integrity_signature =
      Signature.Sign(franking_private_key, server_frank || context)
+
+   The sender_length_uint16 and room_length_unit16 are each a 16-bit
+   unsigned integer length field in network order.  Prepending the
+   length before the URIs in the context prevents a class of attacks
+   which could occur if room URIs and sender URIs were created
+   maliciously.
 
    hub_key is a secret symmetric key used on the Hub which the Hub can
    use to verify its own server_frank.
@@ -1314,23 +1358,29 @@ ServerC->ClientC*: [[ Commit ]]
    the values added by the Hub (the server_frank, and
    accepted_timestamp) were not modified by a follower provider, and
    that the sender_uri and room_uri match those provided by the sending
-   client.  The specific construction used is discussed in the Security
-   Considerations in Section 9.1.
+   client.  The franking_signature_ciphersuite is the MLS cipher suite
+   in use at the time the message is franked.  It is used to insure that
+   a frank contains the signature algorithm used to generate the
+   franking_integrity_signature.  The specific construction used is
+   discussed in the Security Considerations in Section 9.1.
 
    The Hub fans out the encrypted message (which includes the
    franking_tag), the server_frank, the accepted_timestamp, the room
-   URI, and the franking_integrity_signature.  Note that the sender_uri
-   is encrypted in the application message, so the sender can remain
-   anonymous with respect to follower providers.
+   URI, the franking_signature_ciphersuite and the
+   franking_integrity_signature.  Note that the sender_uri is encrypted
+   in the application message, so the sender can remain anonymous with
+   respect to follower providers.
 
 5.4.1.3.  Receiver verification of frank
 
    When a client receives and decrypts an otherwise valid application
    message from a hub provider, the client looks for the existence of a
-   frank (consisting of the franking_tag in the AAD, the server_frank
-   and the franking_integrity_signature).  If those fields are
-   available, the client looks for the franking_agent application
-   component in the GroupContext.  It verifies the domain name in the
+   frank (consisting of the franking_tag in the AAD, the server_frank,
+   the franking_signature_ciphersuite and the
+   franking_integrity_signature).  If those fields are available, and
+   the franking_signature_ciphersuite matches the MLS cipher suite in-
+   use, the client looks for the franking_agent application component in
+   the GroupContext.  It verifies the domain name in the
    franking_agent.credential corresponds to the domain of the Hub, and
    extracts the franking_signature_key.
 
@@ -1340,19 +1390,20 @@ ServerC->ClientC*: [[ Commit ]]
    described below.
 
    signed_content = server_frank ||
-                     sender_uri || room_uri || accepted_timestamp
+                     sender_ctx || room_ctx || accepted_timestamp
    Signature.Verify(franking_signature_key, signed_content,
                               franking_integrity_signature)
 
    Finally it verifies the construction of the franking_tag from the
-   content of the message (including the embedded salt), that the
+   content format of the message (including the embedded salt), that the
    sender's identity in its credential in its MLS LeafNode matches the
    sender_uri asserted in the extensions map inside the MIMI Content,
    and that the room_uri asserted in the extensions map inside the MIMI
    Content matches the room ID in the received message.
 
-   The receiver needs to store the frank and context with the decoded
-   message so it can be used later.
+   The receiver needs to store the server_frank,
+   franking_signature_ciphersuite, franking_integrity_signature, and
+   context fields with the decoded message, so they can be used later.
 
 5.4.1.4.  Comparison with the Facebook franking scheme
 
@@ -1406,6 +1457,15 @@ ServerC->ClientC*: [[ Commit ]]
    The hub provider also fans out any messages which originate from
    itself (ex: MLS External Proposals).
 
+      An external commit will invalidate certain pending proposals.  For
+      example, if the hub generates Remove proposals to remove a lost
+      client or a deleted user, an external commit can invalidate
+      pending Remove proposals.  The hub would then be expected to
+      regenerate any relevant, comparable proposals in the new epoch.
+      To prevent a race condition where a member commit arrives before
+      the regenerated proposals arrive, the hub can staple regenerated
+      proposals to an external commit during the fanout process.
+
    The hub can include multiple concatenated FanoutMessage objects
    relevant to the same room.  This endpoint uses the HTTP POST method.
 
@@ -1416,9 +1476,9 @@ ServerC->ClientC*: [[ Commit ]]
      uint64 timestamp;
      select (protocol) {
        case mls10:
-         /* A PrivateMessage containing an application message,
-            a PublicMessage containing a proposal or commit,
-            or a Welcome message.                               */
+         /* A PrivateMessage containing an application message, */
+         /* a SemiPrivateMessage or PublicMessage containing a  */
+         /* proposal or commit, or a Welcome message.           */
          MLSMessage message;
          select (message.wire_format) {
            case application:
@@ -1430,7 +1490,11 @@ ServerC->ClientC*: [[ Commit ]]
               /* as either PublicMessage or SemiPrivateMessage    */
               MLSMessage moreProposals<V>;
            case commit:
-              struct {};
+              /* If this was an external commit, and any pending      */
+              /* proposals were invalidated, staple the new epoch's   */
+              /* replacement proposals (from the hub) to the commit   */
+              /* commit */
+              MLSMessage externalProposals<V>;
          };
      };
    } FanoutMessage;
@@ -1595,8 +1659,8 @@ ServerC->ClientC*: [[ Commit ]]
              CipherSuite cipher_suite;
              ExternalSender hub_sender;
              HPKECiphertext encrypted_groupinfo_and_tree;
-             /* SignWithLabel(hub_sender, "GroupInfoResponseTBS", */
-             /*                GroupInfoResponseTBS) */
+             /* SignWithLabel(hub_sender.signature_key,        */
+             /*  "GroupInfoResponseTBS", GroupInfoResponseTBS) */
              opaque signature<V>;
          };
      default: struct{};
@@ -1891,13 +1955,15 @@ ServerC->ClientC*: [[ Commit ]]
       are insufficient.
 
    Finally, abuse reports can optionally contain a handful of allegedly
-   AbusiveMessages, each of which contains an allegedly abusive message,
-   its franks, and its timestamp.
+   AbusiveMessages, each of which contains an allegedly abusive
+   message_content, its server_frank, its
+   franking_signature_ciphersuite, its franking_integrity_signature, and
+   its accepted_timestamp.
 
    struct {
-     /* the MIMI Content message containing */
-     /* alleged abusive content */
-     opaque mimi_content<V>;
+     /* the message content (ex: MIMI Content message) containing */
+     /* allegedly abusive content                                 */
+     opaque message_content<V>;
      Frank frank;
      uint64 accepted_timestamp;
    } AbusiveMessage;
@@ -1918,6 +1984,181 @@ ServerC->ClientC*: [[ Commit ]]
    There is no response body.  The response code only indicates if the
    abuse report was accepted, not if any specific automated or human
    action was taken.
+
+   To validate an allegedly AbusiveMessage, the hub finds the salt,
+   sender URI, and room URI inside the message_content and the
+   accepted_timestamp to recalculate the franking_tag and context.  Then
+   the hub selects its relevant hub_key to regenerate the server_frank.
+   Finally the hub verifies its franking_integrity_signature using the
+   signature algorithm embedded in the franking_signature_ciphersuite.
+
+5.10.  Download Files
+
+   IM systems make extensive use of inline images, videos, and sounds,
+   and often include attached files, all of which will be referred to as
+   "assets" in this section.  Assets are stored (encrypted) on various
+   external servers, and typically uploaded and fetched using HTTP
+   [RFC9110] protected with TLS [RFC8446].
+
+      In a MIMI content [I-D.ietf-mimi-content] message, the download
+      URI is an https URL conveyed in the uri field in an ExternalPart
+      in a MIMI content message.
+
+   Broadly, two approaches are possibly for storage of assets in
+   federated IM systems.  In the vast majority of deployed systems, the
+   assets are uploaded to the local provider of the uploader.  With the
+   other approach, the assets are uploaded to the equivalent of the Hub
+   system.  MIMI is capable of asset downloads for both of these
+   approaches.
+
+   The client consults the intersection of the room policy and its local
+   policy to determine if and how to upload assets, where to upload
+   them, and with which credentials.  The details of the upload process
+   are out of scope of this document.
+
+   The MIMI room policy [I-D.ietf-mimi-room-policy] in the group's
+   GroupContext includes an asset_policy component that specifies which
+   domain name to use for asset download for each potential asset
+   provider.  This prevents the download proxy from using a host part
+   associated with the same domain that is not used for the storage of
+   MIMI assets.
+
+   For downloads, the clients can use any of three methods to download
+   assets.  The hub is not involved in the first and is required to
+   implement support for the other two methods.
+
+5.10.1.  Direct download
+
+   Without any additional MIMI protocol mechanism, MIMI clients can
+   download assets directly from the asset provider.  Unfortunately this
+   usually reveals sensitive private information about the client.  In
+   this case, the asset provider learns the IP address of the client,
+   and timing information about when assets are downloaded, which is
+   strongly linked with online presence.  The asset provider can
+   correlate other clients downloading the same assets and infer which
+   clients are in which rooms.  For this reason, direct client downloads
+   of assets, especially from an asset provider which is not the
+   download client's provider, are NOT RECOMMENDED.
+
+5.10.2.  Download using a hub proxy
+
+   The hub offers the proxyDownload endpoint to proxy asset requests
+   from downloading providers to known asset providers.  This allows
+   clients to hide their IP addresses from the asset provider (and the
+   hub), although the hub and the downloading provider are still privy
+   to the request.
+
+   The proxyDownload endpoint includes the target asset URL, but does
+   not include the specific room or requester.  When the provider
+   hosting the asset has several rooms hosted by the hub, the provider
+   also does not directly learn with which room to associate a specific
+   asset.
+
+   As with other MIMI protocol endpoints, the actual endpoint URL is
+   discovered using the MIMI protocol directory Section 5.1.
+
+   GET /proxyDownload/{downloadUrl}
+
+   The downloading provider sends the request to the hub.  The hub MUST
+   verify that the host part of the downloadUrl is associated with the
+   asset server domain for one of its peer providers.  This prevents the
+   hub from becoming an open proxy.
+
+   The overall flow is as shown below.
+
+  ClientB1       ServerB          HubA          ServerC         ClientC1
+    |               |               |               |               |
+    |               |               |               |  Upload asset |
+    |               |               |               |<~~~~~~~~~~~~~~+
+    |               |               |               +~~~~~~~~~~~~~~>|
+    |               |               |               | send message  |
+    |               |               |               | w/ asset link |
+    |               |               |       submit  |<~~~~~~~~~~~~~~+
+    |               |      fanout   |<--------------+               |
+    |               |<--------------+-------------->|               |
+    |<~~~~~~~~~~~~~~+               |               +~~~~~~~~~~~~~~>|
+    | fetch asset   |               |               |               |
+    | via B and hub |               |               |               |
+    +~~~~~~~~~~~~~~>| proxyDownload |               |               |
+    |               +-------------->| GET asset     |               |
+    |               |               +-------------->|               |
+    |               |               |<--------------+               |
+    |               |<--------------+               |               |
+    |<~~~~~~~~~~~~~~+               |               |               |
+
+   If the request succeeds, the response body contains the contents of
+   the downloaded URL.  The hub can reject proxyDownload requests by
+   replying with standard HTTP error codes.
+
+   In terms of the privacy of this mechanism, the hub only sees that a
+   specific provider requested an (opaque to the hub) URL from another
+   provider.  It does not know the room or the specific client.  The
+   asset provider sees requests for an (encrypted) asset coming from the
+   hub provider.  When caching is employed, the asset provider will only
+   see periodic requests.  The receiver's provider will see one request
+   to the hub, among presumably many requests.  It has no information
+   about the sender, URL, or room associated with that request, however
+   it can collect the domains of specific asset providers, and it can
+   use timing analysis to correlate incoming messages (which are
+   associated with a room) and outgoing proxyDownload requests.
+
+   Both the downloading provider and the hub can cache requests.  This
+   would tend to hide from the asset provider the number of downloading
+   participants in a specific room, and make it more difficult for the
+   hub to correlate a URL with a specific room based on the number of
+   participants.
+
+   The proxy download method improves the privacy of the clients with
+   respect to the asset provider, and to some extent with the hub, but
+   it still allows the downloading provider to correlate URLs with
+   downloading users and infer which URLs are sent in which rooms.
+
+   The hub is REQUIRED to implement this mechanism.
+
+5.10.3.  Download using Oblivious HTTP
+
+   Oblivious HTTP (OHTTP) [RFC9458] is a mechanism for the encapsulation
+   of HTTP requests that provides a variety of desirable privacy
+   properties.  It provides the best privacy of the download mechanisms
+   described here, but requires the client to implement an additional
+   protocol.
+
+   Using OHTTP for asset download privacy works as follows.  The clients
+   sends an OHTTP request to the downloading provider's OHTTP Relay
+   which forwards the request to the hub's OHTTP Gateway.  The hub then
+   sends a GET request for the asset to the asset provider (the Target)
+
+   The hub MUST only accept OHTTP requests to Targets which are
+   configured as asset storage locations for one of its peer providers.
+
+  ClientB1       ServerB          HubA          ServerC         ClientC1
+    |               |               |               |               |
+    |               |               |               |  Upload asset |
+    |               |               |               |<~~~~~~~~~~~~~~+
+    |               |               |               +~~~~~~~~~~~~~~>|
+    |               |               |               | send message  |
+    |               |               |               | w/ asset link |
+    |               |               |       submit  |<~~~~~~~~~~~~~~+
+    |               |      fanout   |<--------------+               |
+    |               |<--------------+-------------->|               |
+    |<~~~~~~~~~~~~~~+               |               +~~~~~~~~~~~~~~>|
+    | fetch asset   |               |               |               |
+    | OHTTP wrapped |               |               |               |
+    +==============>| OHTTP         |               |               |
+    |               +::::::::::::::>| GET asset     |               |
+    |               |               +-------------->|               |
+    |               |               |<--------------|               |
+    |               |<::::::::::::::+               |               |
+    |<==============|               |               |               |
+
+   For the hub, an OHTTP Gateway is REQUIRED to implement.  The hub
+   SHOULD provide the OHTTP Gateway capability for its peer providers.
+
+   Other providers SHOULD implement the OHTTP Relay capability and
+   SHOULD enable the relay to access
+
+   The main benefit of this mechanism is that the downloading provider
+   does not learn the domains of every asset provider.
 
 6.  Minimal metadata rooms
 
@@ -2348,9 +2589,9 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.ietf-mimi-content]
               Mahy, R., "More Instant Messaging Interoperability (MIMI)
               message content", Work in Progress, Internet-Draft, draft-
-              ietf-mimi-content-06, 28 February 2025,
+              ietf-mimi-content-07, 7 July 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mimi-
-              content-06>.
+              content-07>.
 
    [I-D.ietf-mimi-room-policy]
               Mahy, R., "Room Policy for the More Instant Messaging
@@ -2362,9 +2603,9 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
               Extensions", Work in Progress, Internet-Draft, draft-ietf-
-              mls-extensions-06, 19 February 2025,
+              mls-extensions-08, 21 July 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mls-
-              extensions-06>.
+              extensions-08>.
 
    [I-D.mahy-mls-ratchet-tree-options]
               Mahy, R., "Ways to convey the Ratchet Tree in Messaging
@@ -2432,6 +2673,10 @@ ServerC->ClientC*: [[ Commit ]]
               Omara, E., and K. Cohn-Gordon, "The Messaging Layer
               Security (MLS) Protocol", RFC 9420, DOI 10.17487/RFC9420,
               July 2023, <https://www.rfc-editor.org/rfc/rfc9420>.
+
+   [RFC9458]  Thomson, M. and C. A. Wood, "Oblivious HTTP", RFC 9458,
+              DOI 10.17487/RFC9458, January 2024,
+              <https://www.rfc-editor.org/rfc/rfc9458>.
 
 11.2.  Informative References
 
