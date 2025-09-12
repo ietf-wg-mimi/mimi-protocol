@@ -1873,8 +1873,8 @@ abuse, and the `note` is a UTF8 human-readable string, which can be empty.
 
 Finally, abuse reports can optionally contain a handful of allegedly
 `AbusiveMessage`s, each of which contains an allegedly abusive
-`message_content`, its `server_frank`, its `franking_integrity_signature`, and
-its `accepted_timestamp`.
+`message_content`, its `server_frank`, its `franking_signature_ciphersuite`,
+its `franking_integrity_signature`, and its `accepted_timestamp`.
 
 ~~~ tls
 struct {
@@ -1899,12 +1899,15 @@ struct {
 } AbuseReport;
 ~~~
 
-There is no response body. The response code only indicates if the abuse report was accepted, not if any specific automated or human action was taken.
+There is no response body. The response code only indicates if the abuse report
+was accepted, not if any specific automated or human action was taken.
 
 To validate an allegedly AbusiveMessage, the hub finds the salt, sender URI, and
 room URI inside the `message_content` and the `accepted_timestamp` to
 recalculate the `franking_tag` and `context`. Then the hub selects its relevant
-`hub_key` to regenerate the `server_frank`. Finally the hub verifies its `franking_integrity_signature`.
+`hub_key` to regenerate the `server_frank`. Finally the hub verifies its
+`franking_integrity_signature` using the signature algorithm embedded in the
+`franking_signature_ciphersuite`.
 
 
 ## Download Files
