@@ -1257,11 +1257,18 @@ Safe AAD component and a valid sender identity, it calculates a server frank for
 the message, and a `franking_integrity_signature` as follows:
 
 ~~~
-context = sender_uri || room_uri || accepted_timestamp
+sender_ctx = sender_length_uint16 || sender_uri
+room_ctx = room_length_uint16 || room_uri
+context = sender_ctx || room_ctx || accepted_timestamp
 server_frank = HMAC_SHA256(hub_key, franking_tag || context )
 franking_integrity_signature =
   Signature.Sign(franking_private_key, server_frank || context)
 ~~~
+
+The `sender_length_uint16` and `room_length_unit16` are each a 16-bit unsigned
+integer length field in network order. Prepending the length before the URIs
+in the context prevents a class of attacks which could occur if room URIs and
+sender URIs were created maliciously.
 
 `hub_key` is a secret symmetric key used on the Hub which the Hub can use to
 verify its own `server_frank`.
@@ -1272,7 +1279,7 @@ modified by a follower provider, and that the `sender_uri` and `room_uri` match
 those provided by the sending client.
 The `franking_signature_ciphersuite` is the MLS cipher suite in use at the time
 the message is franked. It is used to insure that a frank contains the
-signature algorithm used to generate the `franking_integrity_signature`
+signature algorithm used to generate the `franking_integrity_signature`.
 The specific construction used is discussed in the Security Considerations
 in {{franking}}.
 
@@ -1300,7 +1307,7 @@ the `franking_integrity_signature` as described below.
 
 ~~~
 signed_content = server_frank ||
-                  sender_uri || room_uri || accepted_timestamp
+                  sender_ctx || room_ctx || accepted_timestamp
 Signature.Verify(franking_signature_key, signed_content,
                            franking_integrity_signature)
 ~~~
