@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-24T00:55:56.408502+00:00",
+  "timestamp": "2025-09-14T00:50:43.113335+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1845,12 +1845,22 @@
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has-PR"
+      ],
       "body": "Currently the message context used in franking is defined as the concatenation of 3 fields:\n\n```\ncontext = sender_uri || room_uri || accepted_timestamp\n```\n\nThere is a potential that these could be manipulated so a specially crafted sender_uri and room_uri could cause one client to appear as a blank user\n\nActually, there is no requirement that context be unique. We just need the context to correctly match the context fields in the sent message.\n\nSnipped from [MIMI Content Issue #61 ](https://github.com/ietf-wg-mimi/draft-ietf-mimi-content/issues/61):\n\"While you could have:\n`mimi://example.com/u/alicemimi://example.com/r/clubhouse` plus `mimi://example.com/r/clubhouse` in one message AND\n`mimi://example.com/u/alice` plus `mimi://example.com/r/clubhousemimi://example.com/r/clubhouse` in another message,\nit would take a pretty dumb hub to allow such a room ID and an AS with very permissive sender URI names.\"\n\n",
       "createdAt": "2025-07-05T22:11:09Z",
-      "updatedAt": "2025-07-05T22:11:09Z",
+      "updatedAt": "2025-09-12T15:06:26Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I considered three possibilities for constructing the franking context with lengths of the URIs:\n\n- CBOR (implemented in clients that support MIMI content)\n- TLS Presentation Language\n- fixed-sized length fields\n\n_Fixed-sized length fields_\nA mimi URI in this context would be represented in 2 octets with a uint16 (URIs <65536 octets). This is straightforward to generate and parse on any platform in any programming language.\n\n_CBOR_\nA mimi URI would be prepended in CBOR with 1 octets (URIs < 32 octets), 2 octets (URIs <256 octets), or 3 octets (URIs <65536 octets)\u2014typically with 2 octets.\nThe typical expression would be the same size, but the CBOR representation could be larger.\nThere is no specific reason a server would need to have a CBOR parser. The additional complexity of using CBOR for this very narrow use case if unwarranted.\n\n_TLS Presentation Language_\nA mimi URI would be prepended with a variable length size field with 1 (URIs <64 octets) or 2 (URIs < 16384 octets)\u2014typically with 2 octets.\nThere is no particular advantage to using TLS PL, especially since the result will be hashed before it is sent on the wire.\nIn the absence of a TLS PL library accessible, this representation requires bit shifting which is awkward in some high-level languages.\n\nI went with the Fixed-sized length field approach in PR #130 .",
+          "createdAt": "2025-09-12T14:49:01Z",
+          "updatedAt": "2025-09-12T14:49:01Z"
+        }
+      ]
     },
     {
       "number": 124,
@@ -1884,6 +1894,24 @@
       "body": "\n- Hub generates some proposals, cues those up\n- Someone comes along and does an external Commit\n- Unfortunately, that external Commit can't include the hub's proposals\n- So the Hub regenerates the proposals in the new epoch and distributes them stapled to the external commit.\n\npost-facto issue for #120 \n\nThis could become a non-issue if https://www.ietf.org/archive/id/draft-mahy-mls-ext-commit-pp-00.html is adopted.",
       "createdAt": "2025-07-12T05:44:17Z",
       "updatedAt": "2025-07-12T05:44:17Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 129,
+      "id": "I_kwDOKZ8QO87LQIB5",
+      "title": "frank does not contain signature algorithm",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/129",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "has-PR"
+      ],
+      "body": "If the signature algorithm used in a room changes (for example if the MLS group is reinitialized with a different ciphersuite), there is no way for the Hub to validate the `franking_integrity_signature` other than keeping track of the time it was changed or trying to brute force validate all the algorithms it has ever used. \n\nconsider adding the signature algorithm to the frank as follows:\n\n```\nstruct {\n  uint8 server_frank[32];\n  uint8 signature_algorithm;\n  opaque franking_integrity_signature<V>;\n} Frank;\n```\n",
+      "createdAt": "2025-09-12T10:58:03Z",
+      "updatedAt": "2025-09-12T15:06:09Z",
       "closedAt": null,
       "comments": []
     }
@@ -10881,6 +10909,32 @@
           "updatedAt": "2025-07-12T05:45:56Z"
         }
       ],
+      "reviews": []
+    },
+    {
+      "number": 130,
+      "id": "PR_kwDOKZ8QO86oQguH",
+      "title": "More franking fixes",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/130",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- Added an explicit (uint16) lengths for the sender URI and room URI in the franking context. Addresses #122 \r\n- Added a `franking_signature_ciphersuite` to allow the hub to validate a `franking_integrity_signature` even after the MLS ciphersuite has changed in that room. Addresses #129 ",
+      "createdAt": "2025-09-12T14:20:44Z",
+      "updatedAt": "2025-09-12T14:51:28Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "a04c365aeb85211760cd160c9f638a183032dd6d",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "more-franking-fixes",
+      "headRefOid": "b856f2e4be275e28927434843bcc13fa07866388",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
       "reviews": []
     }
   ]
