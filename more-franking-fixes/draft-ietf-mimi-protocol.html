@@ -1064,7 +1064,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 16 March 2026</td>
+<td class="center">Expires 19 March 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1077,12 +1077,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-09-12" class="published">12 September 2025</time>
+<time datetime="2025-09-15" class="published">15 September 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-03-16">16 March 2026</time></dd>
+<dd class="expires"><time datetime="2026-03-19">19 March 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1160,7 +1160,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 16 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 19 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3275,7 +3275,7 @@ contains a single signature key.<a href="#section-5.4.1-3" class="pilcrow">¶</a
 <div class="lang-tls sourcecode" id="section-5.4.1-4">
 <pre>
 struct {
-  uint8[32] franking_tag
+  uint8 franking_tag[32];
 } FrankAAD;
 
 FrankAAD frank_aad;
@@ -3330,18 +3330,25 @@ and cannot later deny to a receiver that it sent them.<a href="#section-5.4.1.1-
 <p id="section-5.4.1.1-6">Then the client calculates the <code>franking_tag</code>, as the HMAC SHA256 of the
 <code>application_data</code> (which includes the values in the extensions map above)
 using the <code>salt</code> in the MIMI content format:<a href="#section-5.4.1.1-6" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.4.1.1-7">
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5.4.1.1-7.1">
+                <p id="section-5.4.1.1-7.1.1">Note that when the content advertisement mechanism in {Section 6.2 of
+!I-D.ietf-mls-extensions} is used, the <code>application_data</code> includes the
+<code>media_type</code> in the <code>ApplicationFraming</code> struct.<a href="#section-5.4.1.1-7.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+<div class="alignLeft art-text artwork" id="section-5.4.1.1-8">
 <pre>
 franking_tag = HMAC_SHA256( salt, application_data)
-</pre><a href="#section-5.4.1.1-7" class="pilcrow">¶</a>
+</pre><a href="#section-5.4.1.1-8" class="pilcrow">¶</a>
 </div>
-<p id="section-5.4.1.1-8">The client includes the <code>franking_tag</code> in the Additional Authenticated Data
+<p id="section-5.4.1.1-9">The client includes the <code>franking_tag</code> in the Additional Authenticated Data
 of the MLS PrivateMessage using the <code>frank_aad</code> Safe AAD component. The client
 uses the MIMI submitMessage to send its message, and also asserts a sender
 identity to the Hub, which could be a valid pseudonym, and needs to match
 the sender URI value embedded in the message. If the message is accepted,
 the response includes the accepted timestamp and the server_frank (generated
-by the server).<a href="#section-5.4.1.1-8" class="pilcrow">¶</a></p>
+by the server).<a href="#section-5.4.1.1-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="hub-processing">
@@ -3356,23 +3363,31 @@ in the FrankingAgentData struct.<a href="#section-5.4.1.2-1" class="pilcrow">¶<
 <p id="section-5.4.1.2-2">When the Hub receives an acceptable application message with the <code>frank_aad</code>
 Safe AAD component and a valid sender identity, it calculates a server frank for
 the message, and a <code>franking_integrity_signature</code> as follows:<a href="#section-5.4.1.2-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.4.1.2-3">
+<div class="lang-tls sourcecode" id="section-5.4.1.2-3">
 <pre>
-sender_ctx = sender_length_uint16 || sender_uri
-room_ctx = room_length_uint16 || room_uri
-context = sender_ctx || room_ctx || accepted_timestamp
-server_frank = HMAC_SHA256(hub_key, franking_tag || context )
-franking_integrity_signature =
-  Signature.Sign(franking_private_key, server_frank || context)
+struct {
+    IdentifierUri sender_uri;
+    IdentifierUri room_uri;
+    uint64 accepted_timestamp;
+} ServerFrankingContext;
+
+ServerFrankingContext context;
+
+server_frank = HMAC_SHA256(hub_key, (franking_tag || context) )
+
+struct {
+    opaque server_frank[32];
+    CipherSuite franking_signature_ciphersuite;
+    ServerFrankingContext context;
+} FrankingIntegrityTBS;
+
+franking_integrity_signature = SignWithLabel(franking_private_key,
+    "FrankingIntegrityTBS", FrankingIntegrityTBS)
 </pre><a href="#section-5.4.1.2-3" class="pilcrow">¶</a>
 </div>
-<p id="section-5.4.1.2-4">The <code>sender_length_uint16</code> and <code>room_length_unit16</code> are each a 16-bit unsigned
-integer length field in network order. Prepending the length before the URIs
-in the context prevents a class of attacks, which could occur if room URIs and
-sender URIs were created maliciously.<a href="#section-5.4.1.2-4" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.2-5"><code>hub_key</code> is a secret symmetric key used on the Hub which the Hub can use to
-verify its own <code>server_frank</code>.<a href="#section-5.4.1.2-5" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.2-6">The <code>franking_integrity_signature</code> is used by receivers to verify that the
+<p id="section-5.4.1.2-4"><code>hub_key</code> is a secret symmetric key used on the Hub which the Hub can use to
+verify its own <code>server_frank</code>.<a href="#section-5.4.1.2-4" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.2-5">The <code>franking_integrity_signature</code> is used by receivers to verify that the
 values added by the Hub (the <code>server_frank</code>, and <code>accepted_timestamp</code>) were not
 modified by a follower provider, and that the <code>sender_uri</code> and <code>room_uri</code> match
 those provided by the sending client.
@@ -3380,12 +3395,12 @@ The <code>franking_signature_ciphersuite</code> is the MLS cipher suite in use a
 the message is franked. It is used to insure that a frank contains the
 signature algorithm used to generate the <code>franking_integrity_signature</code>.
 The specific construction used is discussed in the Security Considerations
-in <a href="#franking" class="auto internal xref">Section 9.1</a>.<a href="#section-5.4.1.2-6" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.2-7">The Hub fans out the encrypted message (which includes the <code>franking_tag</code>),
+in <a href="#franking" class="auto internal xref">Section 9.1</a>.<a href="#section-5.4.1.2-5" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.2-6">The Hub fans out the encrypted message (which includes the <code>franking_tag</code>),
 the <code>server_frank</code>, the <code>accepted_timestamp</code>, the room URI, the
 <code>franking_signature_ciphersuite</code> and the <code>franking_integrity_signature</code>.
 Note that the <code>sender_uri</code> is encrypted in the application message, so the
-sender can remain anonymous with respect to follower providers.<a href="#section-5.4.1.2-7" class="pilcrow">¶</a></p>
+sender can remain anonymous with respect to follower providers.<a href="#section-5.4.1.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="receiver-verification-of-frank">
@@ -3403,14 +3418,13 @@ application component in the GroupContext. It verifies the domain name in the
 <code>franking_agent.credential</code> corresponds to the domain of the Hub, and extracts
 the <code>franking_signature_key</code>.<a href="#section-5.4.1.3-1" class="pilcrow">¶</a></p>
 <p id="section-5.4.1.3-2">Next it verifies the integrity of the <code>server_frank</code>, <code>accepted_timestamp</code>,
-<code>sender_uri</code>, and <code>room_uri</code> by calculating the <code>signed_content</code> and verifying
-the <code>franking_integrity_signature</code> as described below.<a href="#section-5.4.1.3-2" class="pilcrow">¶</a></p>
+<code>sender_uri</code>, and <code>room_uri</code> by calculating the <code>ServerFrankingContext</code> and
+<code>FrankingIntegrityTBS</code>, and verifying the <code>franking_integrity_signature</code> as
+described below.<a href="#section-5.4.1.3-2" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.4.1.3-3">
 <pre>
-signed_content = server_frank ||
-                  sender_ctx || room_ctx || accepted_timestamp
-Signature.Verify(franking_signature_key, signed_content,
-                           franking_integrity_signature)
+VerifyWithLabel(franking_signature_key, "FrankingIntegrityTBS",
+     FrankingIntegrityTBS, franking_integrity_signature)
 </pre><a href="#section-5.4.1.3-3" class="pilcrow">¶</a>
 </div>
 <p id="section-5.4.1.3-4">Finally it verifies the construction of the <code>franking_tag</code> from the content
@@ -3735,7 +3749,8 @@ by the local provider).<a href="#section-5.6-12" class="pilcrow">¶</a></p>
 <a href="#section-5.7" class="section-number selfRef">5.7. </a><a href="#name-convey-explicit-consent" class="section-name selfRef">Convey explicit consent</a>
         </h3>
 <p id="section-5.7-1">As discussed in <a href="#consent" class="auto internal xref">Section 8</a>, there are many ways that a provider could
-implicitly determine consent. This section describes a mechanism by which providers can explicitly request consent from a user of another provider,
+implicitly determine consent. This section describes a mechanism by which
+providers can explicitly request consent from a user of another provider,
 cancel such a request, convey that consent was granted, or convey that
 consent was revoked or preemptively denied.<a href="#section-5.7-1" class="pilcrow">¶</a></p>
 <p id="section-5.7-2">Since they are not necessarily in the context of a room, consent requests
@@ -3805,7 +3820,9 @@ a <code>ConsentEntry</code>, with a <code>consentOperation</code> of <code>grant
 <code>revoke</code> for revocation or denial. Like a request, it includes the URI of the
 "requesting user" in the <code>requesterUri</code> and the target user URI in the
 <code>targetUri</code>. If consent is only granted or denied for a single room, the request includes the optional <code>roomId</code>.<a href="#section-5.7-8" class="pilcrow">¶</a></p>
-<p id="section-5.7-9">A <code>grant</code> or <code>revoke</code> does not need to be in response to an explicit request, nor does the <code>ConsentScope</code> need to match a previous <code>request</code> for the same <code>targetUri</code> and <code>requesterUri</code> pair.<a href="#section-5.7-9" class="pilcrow">¶</a></p>
+<p id="section-5.7-9">A <code>grant</code> or <code>revoke</code> does not need to be in response to an explicit request,
+nor does the <code>ConsentScope</code> need to match a previous <code>request</code> for the same
+<code>targetUri</code> and <code>requesterUri</code> pair.<a href="#section-5.7-9" class="pilcrow">¶</a></p>
 <p id="section-5.7-10">For example, in some systems there is a notion of a bilateral connection
 request. The party that initiates the connection request (for example Alice)
 would send a <code>requestConsent</code> for the target (ex: Bob), and send an

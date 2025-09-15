@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 16 March 2026                  The Matrix.org Foundation C.I.C.
+Expires: 19 March 2026                  The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 16 March 2026                  The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                       12 September 2025
+                                                       15 September 2025
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 March 2026.
+   This Internet-Draft will expire on 19 March 2026.
 
 Copyright Notice
 
@@ -1256,7 +1256,7 @@ ServerC->ClientC*: [[ Commit ]]
    signature key.
 
    struct {
-     uint8[32] franking_tag
+     uint8 franking_tag[32];
    } FrankAAD;
 
    FrankAAD frank_aad;
@@ -1315,6 +1315,10 @@ ServerC->ClientC*: [[ Commit ]]
    the application_data (which includes the values in the extensions map
    above) using the salt in the MIMI content format:
 
+      Note that when the content advertisement mechanism in {Section 6.2
+      of !I-D.ietf-mls-extensions} is used, the application_data
+      includes the media_type in the ApplicationFraming struct.
+
    franking_tag = HMAC_SHA256( salt, application_data)
 
    The client includes the franking_tag in the Additional Authenticated
@@ -1338,18 +1342,24 @@ ServerC->ClientC*: [[ Commit ]]
    calculates a server frank for the message, and a
    franking_integrity_signature as follows:
 
-   sender_ctx = sender_length_uint16 || sender_uri
-   room_ctx = room_length_uint16 || room_uri
-   context = sender_ctx || room_ctx || accepted_timestamp
-   server_frank = HMAC_SHA256(hub_key, franking_tag || context )
-   franking_integrity_signature =
-     Signature.Sign(franking_private_key, server_frank || context)
+   struct {
+       IdentifierUri sender_uri;
+       IdentifierUri room_uri;
+       uint64 accepted_timestamp;
+   } ServerFrankingContext;
 
-   The sender_length_uint16 and room_length_unit16 are each a 16-bit
-   unsigned integer length field in network order.  Prepending the
-   length before the URIs in the context prevents a class of attacks,
-   which could occur if room URIs and sender URIs were created
-   maliciously.
+   ServerFrankingContext context;
+
+   server_frank = HMAC_SHA256(hub_key, (franking_tag || context) )
+
+   struct {
+       opaque server_frank[32];
+       CipherSuite franking_signature_ciphersuite;
+       ServerFrankingContext context;
+   } FrankingIntegrityTBS;
+
+   franking_integrity_signature = SignWithLabel(franking_private_key,
+       "FrankingIntegrityTBS", FrankingIntegrityTBS)
 
    hub_key is a secret symmetric key used on the Hub which the Hub can
    use to verify its own server_frank.
@@ -1386,13 +1396,11 @@ ServerC->ClientC*: [[ Commit ]]
 
    Next it verifies the integrity of the server_frank,
    accepted_timestamp, sender_uri, and room_uri by calculating the
-   signed_content and verifying the franking_integrity_signature as
-   described below.
+   ServerFrankingContext and FrankingIntegrityTBS, and verifying the
+   franking_integrity_signature as described below.
 
-   signed_content = server_frank ||
-                     sender_ctx || room_ctx || accepted_timestamp
-   Signature.Verify(franking_signature_key, signed_content,
-                              franking_integrity_signature)
+   VerifyWithLabel(franking_signature_key, "FrankingIntegrityTBS",
+        FrankingIntegrityTBS, franking_integrity_signature)
 
    Finally it verifies the construction of the franking_tag from the
    content format of the message (including the embedded salt), that the
