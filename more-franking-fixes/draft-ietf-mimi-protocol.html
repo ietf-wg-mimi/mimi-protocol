@@ -1543,13 +1543,15 @@ in the MIMI protocol.  The scenario involves the following actors:<a href="#sect
 servers <code>ServerA</code>, <code>ServerB</code>, and <code>ServerC</code> respectively<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-2.2">
-          <p id="section-3-2.2.1">Users Alice (<code>alice</code>), Bob (<code>bob</code>) and Cathy (<code>cathy</code>) of the service providers <code>a.example</code>, <code>b.example</code>, and <code>c.example</code> respectively.<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.2.1">Users Alice (<code>alice</code>), Bob (<code>bob</code>) and Cathy (<code>cathy</code>) of the service
+providers <code>a.example</code>, <code>b.example</code>, and <code>c.example</code> respectively.<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-2.3">
           <p id="section-3-2.3.1">Clients <code>ClientA1</code>, <code>ClientA2</code>, <code>ClientB1</code>, etc. belonging to these users<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-2.4">
-          <p id="section-3-2.4.1">A room <code>clubhouse</code> hosted by hub provider <code>a.example</code> where the three users interact.<a href="#section-3-2.4.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.4.1">A room <code>clubhouse</code> hosted by hub provider <code>a.example</code> where the three users
+interact.<a href="#section-3-2.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-3-3">Inside the protocol, each provider is represented by a domain name in the
@@ -3916,7 +3918,8 @@ struct {
 </pre><a href="#section-5.8-6" class="pilcrow">¶</a>
 </div>
 <p id="section-5.8-7">The semantics of the <code>SearchIdentifierType</code> values are as follows. <code>handle</code>
-means that the entire handle URI matches exactly (for example: <code>im:alice.smith@a.example</code>). <code>nick</code> means that the nickname or handle
+means that the entire handle URI matches exactly (for example:
+<code>im:alice.smith@a.example</code>). <code>nick</code> means that the nickname or handle
 user part matches exactly (for example: <code>alice.smith</code>). The same account or
 human user may have multiple values which all match the <code>nick</code> field. <code>email</code>
 means the <code>addr-spec</code> production from <span>[<a href="#RFC5322" class="cite xref">RFC5322</a>]</span> matches the query string
@@ -4095,7 +4098,8 @@ other two methods.<a href="#section-5.10-6" class="pilcrow">¶</a></p>
 <p id="section-5.10.1-1">Without any additional MIMI protocol mechanism, MIMI clients can download assets
 directly from the asset provider. Unfortunately this usually reveals sensitive
 private information about the client. In this case, the asset provider learns
-the IP address of the client, and timing information about when assets are downloaded, which is strongly linked with online presence. The asset provider
+the IP address of the client, and timing information about when assets are
+downloaded, which is strongly linked with online presence. The asset provider
 can correlate other clients downloading the same assets and infer which clients
 are in which rooms. For this reason, direct client downloads of assets,
 especially from an asset provider which is not the download client's provider,
