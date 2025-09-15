@@ -1173,7 +1173,7 @@ contains a single signature key.
 
 ~~~ tls
 struct {
-  uint8[32] franking_tag
+  uint8 franking_tag[32];
 } FrankAAD;
 
 FrankAAD frank_aad;
@@ -1232,6 +1232,10 @@ and cannot later deny to a receiver that it sent them.
 Then the client calculates the `franking_tag`, as the HMAC SHA256 of the
 `application_data` (which includes the values in the extensions map above)
 using the `salt` in the MIMI content format:
+
+> Note that when the content advertisement mechanism in {Section 6.2 of
+> !I-D.ietf-mls-extensions} is used, the `application_data` includes the
+> `media_type` in the `ApplicationFraming` struct.
 
 ~~~
 franking_tag = HMAC_SHA256( salt, application_data)
