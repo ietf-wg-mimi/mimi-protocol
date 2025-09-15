@@ -1260,19 +1260,26 @@ When the Hub receives an acceptable application message with the `frank_aad`
 Safe AAD component and a valid sender identity, it calculates a server frank for
 the message, and a `franking_integrity_signature` as follows:
 
-~~~
-sender_ctx = sender_length_uint16 || sender_uri
-room_ctx = room_length_uint16 || room_uri
-context = sender_ctx || room_ctx || accepted_timestamp
-server_frank = HMAC_SHA256(hub_key, franking_tag || context )
-franking_integrity_signature =
-  Signature.Sign(franking_private_key, server_frank || context)
-~~~
+~~~ tls
+struct {
+    IdentifierUri sender_uri;
+    IdentifierUri room_uri;
+    uint64 accepted_timestamp;
+} ServerFrankingContext;
 
-The `sender_length_uint16` and `room_length_unit16` are each a 16-bit unsigned
-integer length field in network order. Prepending the length before the URIs
-in the context prevents a class of attacks, which could occur if room URIs and
-sender URIs were created maliciously.
+ServerFrankingContext context;
+
+server_frank = HMAC_SHA256(hub_key, (franking_tag || context) )
+
+struct {
+    opaque server_frank[32];
+    CipherSuite franking_signature_ciphersuite;
+    ServerFrankingContext context;
+} FrankingIntegrityTBS;
+
+franking_integrity_signature = SignWithLabel(franking_private_key,
+    "FrankingIntegrityTBS", FrankingIntegrityTBS)
+~~~
 
 `hub_key` is a secret symmetric key used on the Hub which the Hub can use to
 verify its own `server_frank`.
@@ -1306,14 +1313,13 @@ application component in the GroupContext. It verifies the domain name in the
 the `franking_signature_key`.
 
 Next it verifies the integrity of the `server_frank`, `accepted_timestamp`,
-`sender_uri`, and `room_uri` by calculating the `signed_content` and verifying
-the `franking_integrity_signature` as described below.
+`sender_uri`, and `room_uri` by calculating the `ServerFrankingContext` and
+`FrankingIntegrityTBS`, and verifying the `franking_integrity_signature` as
+described below.
 
 ~~~
-signed_content = server_frank ||
-                  sender_ctx || room_ctx || accepted_timestamp
-Signature.Verify(franking_signature_key, signed_content,
-                           franking_integrity_signature)
+VerifyWithLabel(franking_signature_key, "FrankingIntegrityTBS",
+     FrankingIntegrityTBS, franking_integrity_signature)
 ~~~
 
 Finally it verifies the construction of the `franking_tag` from the content
@@ -1614,7 +1620,8 @@ by the local provider).
 ## Convey explicit consent
 
 As discussed in {{consent}}, there are many ways that a provider could
-implicitly determine consent. This section describes a mechanism by which providers can explicitly request consent from a user of another provider,
+implicitly determine consent. This section describes a mechanism by which
+providers can explicitly request consent from a user of another provider,
 cancel such a request, convey that consent was granted, or convey that
 consent was revoked or preemptively denied.
 
@@ -1688,7 +1695,9 @@ a `ConsentEntry`, with a `consentOperation` of `grant` (for a grant), or
 "requesting user" in the `requesterUri` and the target user URI in the
 `targetUri`. If consent is only granted or denied for a single room, the request includes the optional `roomId`.
 
-A `grant` or `revoke` does not need to be in response to an explicit request, nor does the `ConsentScope` need to match a previous `request` for the same `targetUri` and `requesterUri` pair.
+A `grant` or `revoke` does not need to be in response to an explicit request,
+nor does the `ConsentScope` need to match a previous `request` for the same
+`targetUri` and `requesterUri` pair.
 
 For example, in some systems there is a notion of a bilateral connection
 request. The party that initiates the connection request (for example Alice)
