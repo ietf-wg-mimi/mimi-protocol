@@ -223,9 +223,11 @@ in the MIMI protocol.  The scenario involves the following actors:
 
 * Service providers `a.example`, `b.example`, and `c.example` represented by
   servers `ServerA`, `ServerB`, and `ServerC` respectively
-* Users Alice (`alice`), Bob (`bob`) and Cathy (`cathy`) of the service providers `a.example`, `b.example`, and `c.example` respectively.
+* Users Alice (`alice`), Bob (`bob`) and Cathy (`cathy`) of the service
+  providers `a.example`, `b.example`, and `c.example` respectively.
 * Clients `ClientA1`, `ClientA2`, `ClientB1`, etc. belonging to these users
-* A room `clubhouse` hosted by hub provider `a.example` where the three users interact.
+* A room `clubhouse` hosted by hub provider `a.example` where the three users
+  interact.
 
 Inside the protocol, each provider is represented by a domain name in the
 `host` production of the `authority` of a MIMI URI {{!RFC3986}}. Specific
@@ -1790,7 +1792,8 @@ struct {
 ~~~
 
 The semantics of the `SearchIdentifierType` values are as follows. `handle`
-means that the entire handle URI matches exactly (for example: `im:alice.smith@a.example`). `nick` means that the nickname or handle
+means that the entire handle URI matches exactly (for example:
+`im:alice.smith@a.example`). `nick` means that the nickname or handle
 user part matches exactly (for example: `alice.smith`). The same account or
 human user may have multiple values which all match the `nick` field. `email`
 means the `addr-spec` production from {{!RFC5322}} matches the query string
@@ -1961,7 +1964,8 @@ other two methods.
 Without any additional MIMI protocol mechanism, MIMI clients can download assets
 directly from the asset provider. Unfortunately this usually reveals sensitive
 private information about the client. In this case, the asset provider learns
-the IP address of the client, and timing information about when assets are downloaded, which is strongly linked with online presence. The asset provider
+the IP address of the client, and timing information about when assets are
+downloaded, which is strongly linked with online presence. The asset provider
 can correlate other clients downloading the same assets and infer which clients
 are in which rooms. For this reason, direct client downloads of assets,
 especially from an asset provider which is not the download client's provider,
