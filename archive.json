@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-09-14T00:50:43.113335+00:00",
+  "timestamp": "2025-09-16T00:44:39.501360+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1850,7 +1850,7 @@
       ],
       "body": "Currently the message context used in franking is defined as the concatenation of 3 fields:\n\n```\ncontext = sender_uri || room_uri || accepted_timestamp\n```\n\nThere is a potential that these could be manipulated so a specially crafted sender_uri and room_uri could cause one client to appear as a blank user\n\nActually, there is no requirement that context be unique. We just need the context to correctly match the context fields in the sent message.\n\nSnipped from [MIMI Content Issue #61 ](https://github.com/ietf-wg-mimi/draft-ietf-mimi-content/issues/61):\n\"While you could have:\n`mimi://example.com/u/alicemimi://example.com/r/clubhouse` plus `mimi://example.com/r/clubhouse` in one message AND\n`mimi://example.com/u/alice` plus `mimi://example.com/r/clubhousemimi://example.com/r/clubhouse` in another message,\nit would take a pretty dumb hub to allow such a room ID and an AS with very permissive sender URI names.\"\n\n",
       "createdAt": "2025-07-05T22:11:09Z",
-      "updatedAt": "2025-09-12T15:06:26Z",
+      "updatedAt": "2025-09-15T08:56:54Z",
       "closedAt": null,
       "comments": [
         {
@@ -1859,6 +1859,13 @@
           "body": "I considered three possibilities for constructing the franking context with lengths of the URIs:\n\n- CBOR (implemented in clients that support MIMI content)\n- TLS Presentation Language\n- fixed-sized length fields\n\n_Fixed-sized length fields_\nA mimi URI in this context would be represented in 2 octets with a uint16 (URIs <65536 octets). This is straightforward to generate and parse on any platform in any programming language.\n\n_CBOR_\nA mimi URI would be prepended in CBOR with 1 octets (URIs < 32 octets), 2 octets (URIs <256 octets), or 3 octets (URIs <65536 octets)\u2014typically with 2 octets.\nThe typical expression would be the same size, but the CBOR representation could be larger.\nThere is no specific reason a server would need to have a CBOR parser. The additional complexity of using CBOR for this very narrow use case if unwarranted.\n\n_TLS Presentation Language_\nA mimi URI would be prepended with a variable length size field with 1 (URIs <64 octets) or 2 (URIs < 16384 octets)\u2014typically with 2 octets.\nThere is no particular advantage to using TLS PL, especially since the result will be hashed before it is sent on the wire.\nIn the absence of a TLS PL library accessible, this representation requires bit shifting which is awkward in some high-level languages.\n\nI went with the Fixed-sized length field approach in PR #130 .",
           "createdAt": "2025-09-12T14:49:01Z",
           "updatedAt": "2025-09-12T14:49:01Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I did this initially using a the fixed-sized approach and it was sort of ugly. In addition, the client already needs to do a handful of other things with TLS PL. The keys it is verifying with will need to come from a library that supports TLS PL anyway to hold the public signature key of the franker and its Credential.\n\nI updated the PR appropriately.",
+          "createdAt": "2025-09-15T08:56:54Z",
+          "updatedAt": "2025-09-15T08:56:54Z"
         }
       ]
     },
@@ -10923,13 +10930,13 @@
       "labels": [],
       "body": "- Added an explicit (uint16) lengths for the sender URI and room URI in the franking context. Addresses #122 \r\n- Added a `franking_signature_ciphersuite` to allow the hub to validate a `franking_integrity_signature` even after the MLS ciphersuite has changed in that room. Addresses #129 ",
       "createdAt": "2025-09-12T14:20:44Z",
-      "updatedAt": "2025-09-12T14:51:28Z",
+      "updatedAt": "2025-09-15T11:39:19Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "a04c365aeb85211760cd160c9f638a183032dd6d",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "more-franking-fixes",
-      "headRefOid": "b856f2e4be275e28927434843bcc13fa07866388",
+      "headRefOid": "b7a3446d4ecbe3d1de2b0c8c0fd4b6d214a88b04",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
