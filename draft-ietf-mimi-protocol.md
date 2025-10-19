@@ -1116,7 +1116,7 @@ enum {
 
 struct {
   uint8 server_frank[32];
-  uint16 franking_signature_ciphersuite;
+  CipherSuite franking_signature_ciphersuite;
   opaque franking_integrity_signature<V>;
 } Frank;
 
