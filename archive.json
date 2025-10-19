@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-09-16T00:44:39.501360+00:00",
+  "timestamp": "2025-10-19T00:54:33.804405+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -10930,7 +10930,7 @@
       "labels": [],
       "body": "- Added an explicit (uint16) lengths for the sender URI and room URI in the franking context. Addresses #122 \r\n- Added a `franking_signature_ciphersuite` to allow the hub to validate a `franking_integrity_signature` even after the MLS ciphersuite has changed in that room. Addresses #129 ",
       "createdAt": "2025-09-12T14:20:44Z",
-      "updatedAt": "2025-09-15T11:39:19Z",
+      "updatedAt": "2025-10-18T05:54:32Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "a04c365aeb85211760cd160c9f638a183032dd6d",
@@ -10942,7 +10942,46 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO87H1DRv",
+          "commit": {
+            "abbreviatedOid": "b7a3446"
+          },
+          "author": "bifurcation",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-18T05:50:54Z",
+          "updatedAt": "2025-10-18T05:54:32Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "Do you want to have an explicit type for the ciphersuite?  Like [MLS does](https://rfcs.online/rfcs/rfc9420.html#section-17.1)",
+              "createdAt": "2025-10-18T05:50:54Z",
+              "updatedAt": "2025-10-18T05:54:32Z"
+            },
+            {
+              "originalPosition": 19,
+              "body": "This should probably be a vector instead of something syntactically fixed-length, to allow for cipher agility.",
+              "createdAt": "2025-10-18T05:51:24Z",
+              "updatedAt": "2025-10-18T05:54:32Z"
+            },
+            {
+              "originalPosition": 29,
+              "body": "Ditto comment about fixed-length.",
+              "createdAt": "2025-10-18T05:51:33Z",
+              "updatedAt": "2025-10-18T05:54:32Z"
+            },
+            {
+              "originalPosition": 92,
+              "body": "You shouldn't be nailed to a single MAC here.  There should be some way to update it, even if it's a whole version upgrade.  Fine handling this as a follow-on, though, since it's a little tangential to the main point here.",
+              "createdAt": "2025-10-18T05:53:56Z",
+              "updatedAt": "2025-10-18T05:54:32Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
