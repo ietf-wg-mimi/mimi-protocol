@@ -223,9 +223,11 @@ in the MIMI protocol.  The scenario involves the following actors:
 
 * Service providers `a.example`, `b.example`, and `c.example` represented by
   servers `ServerA`, `ServerB`, and `ServerC` respectively
-* Users Alice (`alice`), Bob (`bob`) and Cathy (`cathy`) of the service providers `a.example`, `b.example`, and `c.example` respectively.
+* Users Alice (`alice`), Bob (`bob`) and Cathy (`cathy`) of the service
+  providers `a.example`, `b.example`, and `c.example` respectively.
 * Clients `ClientA1`, `ClientA2`, `ClientB1`, etc. belonging to these users
-* A room `clubhouse` hosted by hub provider `a.example` where the three users interact.
+* A room `clubhouse` hosted by hub provider `a.example` where the three users
+  interact.
 
 Inside the protocol, each provider is represented by a domain name in the
 `host` production of the `authority` of a MIMI URI {{!RFC3986}}. Specific
@@ -1113,7 +1115,8 @@ enum {
 } SubmitResponseCode;
 
 struct {
-  uint8[32] server_frank;
+  uint8 server_frank[32];
+  CipherSuite franking_signature_ciphersuite;
   opaque franking_integrity_signature<V>;
 } Frank;
 
@@ -1172,7 +1175,7 @@ contains a single signature key.
 
 ~~~ tls
 struct {
-  uint8[32] franking_tag
+  uint8 franking_tag[32];
 } FrankAAD;
 
 FrankAAD frank_aad;
@@ -1187,7 +1190,8 @@ FrankingAgentData FrankingAgentUpdate;
 ~~~
 
 The signature algorithm of the `franking_signature_key` is the same as the
-signature scheme in the cipher suite of the MLS group.
+signature algorithm of cipher suite of the MLS group which corresponds to the
+room.
 
 FrankingAgentUpdate is the format of the `update` field inside the AppDataUpdate
 struct in an AppDataUpdate Proposal for the `franking_agent` component. The use
@@ -1200,7 +1204,7 @@ group by sending a ReInit proposal.
 #### Client creation and sending
 
 The franking mechanism requires any franked message format to contain a random
-salt, the sender URI, and the room URI. The section describes the exact way to
+salt, the sender URI, and the room URI. This section describes the exact way to
 extract these fields from the MIMI content format {{!I-D.ietf-mimi-content}}.
 Other message formats would need to describe how to locate or derive these
 values.
@@ -1218,8 +1222,8 @@ the MIMI content extensions map (see definitions in {{Section 8.3 of
 ~~~ cbor-diag
 / MIMI content extensions map /
 {
-  / sender_uri / 1: "mimi://b.example/u/alice"
-  / room_uri   / 2: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+  / sender_uri / 1: "mimi://b.example/u/alice",
+  / room_uri   / 2: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg"
 }
 ~~~
 
@@ -1230,6 +1234,10 @@ and cannot later deny to a receiver that it sent them.
 Then the client calculates the `franking_tag`, as the HMAC SHA256 of the
 `application_data` (which includes the values in the extensions map above)
 using the `salt` in the MIMI content format:
+
+> Note that when the content advertisement mechanism in {Section 6.2 of
+> !I-D.ietf-mls-extensions} is used, the `application_data` includes the
+> `media_type` in the `ApplicationFraming` struct.
 
 ~~~
 franking_tag = HMAC_SHA256( salt, application_data)
@@ -1254,11 +1262,25 @@ When the Hub receives an acceptable application message with the `frank_aad`
 Safe AAD component and a valid sender identity, it calculates a server frank for
 the message, and a `franking_integrity_signature` as follows:
 
-~~~
-context = sender_uri || room_uri || accepted_timestamp
-server_frank = HMAC_SHA256(hub_key, franking_tag || context )
-franking_integrity_signature =
-  Signature.Sign(franking_private_key, server_frank || context)
+~~~ tls
+struct {
+    IdentifierUri sender_uri;
+    IdentifierUri room_uri;
+    uint64 accepted_timestamp;
+} ServerFrankingContext;
+
+ServerFrankingContext context;
+
+server_frank = HMAC_SHA256(hub_key, (franking_tag || context) )
+
+struct {
+    opaque server_frank[32];
+    CipherSuite franking_signature_ciphersuite;
+    ServerFrankingContext context;
+} FrankingIntegrityTBS;
+
+franking_integrity_signature = SignWithLabel(franking_private_key,
+    "FrankingIntegrityTBS", FrankingIntegrityTBS)
 ~~~
 
 `hub_key` is a secret symmetric key used on the Hub which the Hub can use to
@@ -1268,34 +1290,38 @@ The `franking_integrity_signature` is used by receivers to verify that the
 values added by the Hub (the `server_frank`, and `accepted_timestamp`) were not
 modified by a follower provider, and that the `sender_uri` and `room_uri` match
 those provided by the sending client.
+The `franking_signature_ciphersuite` is the MLS cipher suite in use at the time
+the message is franked. It is used to insure that a frank contains the
+signature algorithm used to generate the `franking_integrity_signature`.
 The specific construction used is discussed in the Security Considerations
 in {{franking}}.
 
 The Hub fans out the encrypted message (which includes the `franking_tag`),
-the `server_frank`, the `accepted_timestamp`, the room URI, and the
-`franking_integrity_signature`. Note that the `sender_uri` is encrypted in the
-application message, so the sender can remain anonymous with respect to follower
-providers.
+the `server_frank`, the `accepted_timestamp`, the room URI, the
+`franking_signature_ciphersuite` and the `franking_integrity_signature`.
+Note that the `sender_uri` is encrypted in the application message, so the
+sender can remain anonymous with respect to follower providers.
 
 #### Receiver verification of frank
 
 When a client receives and decrypts an otherwise valid application message
 from a hub provider, the client looks for the existence of a frank
-(consisting of the `franking_tag` in the AAD, the `server_frank` and the
-`franking_integrity_signature`). If those fields are available, the client looks
-for the `franking_agent` application component in the GroupContext. It verifies
-the domain name in the `franking_agent.credential` corresponds to the domain of
-the Hub, and extracts the `franking_signature_key`.
+(consisting of the `franking_tag` in the AAD, the `server_frank`, the
+`franking_signature_ciphersuite` and the `franking_integrity_signature`). If
+those fields are available, and the `franking_signature_ciphersuite` matches the
+MLS cipher suite in-use, the client looks for the `franking_agent`
+application component in the GroupContext. It verifies the domain name in the
+`franking_agent.credential` corresponds to the domain of the Hub, and extracts
+the `franking_signature_key`.
 
 Next it verifies the integrity of the `server_frank`, `accepted_timestamp`,
-`sender_uri`, and `room_uri` by calculating the `signed_content` and verifying
-the `franking_integrity_signature` as described below.
+`sender_uri`, and `room_uri` by calculating the `ServerFrankingContext` and
+`FrankingIntegrityTBS`, and verifying the `franking_integrity_signature` as
+described below.
 
 ~~~
-signed_content = server_frank ||
-                  sender_uri || room_uri || accepted_timestamp
-Signature.Verify(franking_signature_key, signed_content,
-                           franking_integrity_signature)
+VerifyWithLabel(franking_signature_key, "FrankingIntegrityTBS",
+     FrankingIntegrityTBS, franking_integrity_signature)
 ~~~
 
 Finally it verifies the construction of the `franking_tag` from the content
@@ -1305,8 +1331,9 @@ the `sender_uri` asserted in the extensions map inside the MIMI Content, and
 that the `room_uri` asserted in the extensions map inside the MIMI Content
 matches the room ID in the received message.
 
-The receiver needs to store the `server_frank`, `franking_integrity_signature`,
-and `context` fields with the decoded message, so they can be used later.
+The receiver needs to store the `server_frank`,
+`franking_signature_ciphersuite`, `franking_integrity_signature`, and `context`
+fields with the decoded message, so they can be used later.
 
 #### Comparison with the Facebook franking scheme
 
@@ -1595,7 +1622,8 @@ by the local provider).
 ## Convey explicit consent
 
 As discussed in {{consent}}, there are many ways that a provider could
-implicitly determine consent. This section describes a mechanism by which providers can explicitly request consent from a user of another provider,
+implicitly determine consent. This section describes a mechanism by which
+providers can explicitly request consent from a user of another provider,
 cancel such a request, convey that consent was granted, or convey that
 consent was revoked or preemptively denied.
 
@@ -1669,7 +1697,9 @@ a `ConsentEntry`, with a `consentOperation` of `grant` (for a grant), or
 "requesting user" in the `requesterUri` and the target user URI in the
 `targetUri`. If consent is only granted or denied for a single room, the request includes the optional `roomId`.
 
-A `grant` or `revoke` does not need to be in response to an explicit request, nor does the `ConsentScope` need to match a previous `request` for the same `targetUri` and `requesterUri` pair.
+A `grant` or `revoke` does not need to be in response to an explicit request,
+nor does the `ConsentScope` need to match a previous `request` for the same
+`targetUri` and `requesterUri` pair.
 
 For example, in some systems there is a notion of a bilateral connection
 request. The party that initiates the connection request (for example Alice)
@@ -1762,7 +1792,8 @@ struct {
 ~~~
 
 The semantics of the `SearchIdentifierType` values are as follows. `handle`
-means that the entire handle URI matches exactly (for example: `im:alice.smith@a.example`). `nick` means that the nickname or handle
+means that the entire handle URI matches exactly (for example:
+`im:alice.smith@a.example`). `nick` means that the nickname or handle
 user part matches exactly (for example: `alice.smith`). The same account or
 human user may have multiple values which all match the `nick` field. `email`
 means the `addr-spec` production from {{!RFC5322}} matches the query string
@@ -1858,8 +1889,8 @@ abuse, and the `note` is a UTF8 human-readable string, which can be empty.
 
 Finally, abuse reports can optionally contain a handful of allegedly
 `AbusiveMessage`s, each of which contains an allegedly abusive
-`message_content`, its `server_frank`, its `franking_integrity_signature`, and
-its `accepted_timestamp`.
+`message_content`, its `server_frank`, its `franking_signature_ciphersuite`,
+its `franking_integrity_signature`, and its `accepted_timestamp`.
 
 ~~~ tls
 struct {
@@ -1884,12 +1915,15 @@ struct {
 } AbuseReport;
 ~~~
 
-There is no response body. The response code only indicates if the abuse report was accepted, not if any specific automated or human action was taken.
+There is no response body. The response code only indicates if the abuse report
+was accepted, not if any specific automated or human action was taken.
 
 To validate an allegedly AbusiveMessage, the hub finds the salt, sender URI, and
 room URI inside the `message_content` and the `accepted_timestamp` to
 recalculate the `franking_tag` and `context`. Then the hub selects its relevant
-`hub_key` to regenerate the `server_frank`. Finally the hub verifies its `franking_integrity_signature`.
+`hub_key` to regenerate the `server_frank`. Finally the hub verifies its
+`franking_integrity_signature` using the signature algorithm embedded in the
+`franking_signature_ciphersuite`.
 
 
 ## Download Files
@@ -1930,7 +1964,8 @@ other two methods.
 Without any additional MIMI protocol mechanism, MIMI clients can download assets
 directly from the asset provider. Unfortunately this usually reveals sensitive
 private information about the client. In this case, the asset provider learns
-the IP address of the client, and timing information about when assets are downloaded, which is strongly linked with online presence. The asset provider
+the IP address of the client, and timing information about when assets are
+downloaded, which is strongly linked with online presence. The asset provider
 can correlate other clients downloading the same assets and infer which clients
 are in which rooms. For this reason, direct client downloads of assets,
 especially from an asset provider which is not the download client's provider,
