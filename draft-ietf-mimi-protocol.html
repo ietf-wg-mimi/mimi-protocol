@@ -22,26 +22,25 @@ integrates the Messaging Layer Security (MLS) protocol to provide end-to-end sec
 assurances, including authentication of protocol participants, confidentiality
 of messages exchanged within a room, and agreement on the state of the room. 
     " name="description">
-<meta content="xml2rfc 3.29.0" name="generator">
+<meta content="xml2rfc 3.31.0" name="generator">
 <meta content="mimi" name="keyword">
 <meta content="interoperable messaging" name="keyword">
 <meta content="chat" name="keyword">
 <meta content="secure messaging" name="keyword">
 <meta content="draft-ietf-mimi-protocol-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.29.0
-    Python 3.12.11
+  xml2rfc 3.31.0
+    Python 3.12.12
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.1
-    platformdirs 4.3.8
+    platformdirs 4.5.0
     pycountry 24.6.1
     PyYAML 6.0.2
-    requests 2.32.4
-    setuptools 80.9.0
-    wcwidth 0.2.13
+    requests 2.32.5
+    wcwidth 0.2.14
 -->
 <link href="draft-ietf-mimi-protocol.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1060,11 +1059,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">MIMI+MLS Protocol</td>
-<td class="right">July 2025</td>
+<td class="right">October 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 12 January 2026</td>
+<td class="center">Expires 22 April 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1077,12 +1076,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-07-11" class="published">11 July 2025</time>
+<time datetime="2025-10-19" class="published">19 October 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-01-12">12 January 2026</time></dd>
+<dd class="expires"><time datetime="2026-04-22">22 April 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1160,7 +1159,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 12 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 22 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1543,13 +1542,15 @@ in the MIMI protocol.  The scenario involves the following actors:<a href="#sect
 servers <code>ServerA</code>, <code>ServerB</code>, and <code>ServerC</code> respectively<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-2.2">
-          <p id="section-3-2.2.1">Users Alice (<code>alice</code>), Bob (<code>bob</code>) and Cathy (<code>cathy</code>) of the service providers <code>a.example</code>, <code>b.example</code>, and <code>c.example</code> respectively.<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.2.1">Users Alice (<code>alice</code>), Bob (<code>bob</code>) and Cathy (<code>cathy</code>) of the service
+providers <code>a.example</code>, <code>b.example</code>, and <code>c.example</code> respectively.<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-2.3">
           <p id="section-3-2.3.1">Clients <code>ClientA1</code>, <code>ClientA2</code>, <code>ClientB1</code>, etc. belonging to these users<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-2.4">
-          <p id="section-3-2.4.1">A room <code>clubhouse</code> hosted by hub provider <code>a.example</code> where the three users interact.<a href="#section-3-2.4.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.4.1">A room <code>clubhouse</code> hosted by hub provider <code>a.example</code> where the three users
+interact.<a href="#section-3-2.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-3-3">Inside the protocol, each provider is represented by a domain name in the
@@ -3206,7 +3207,8 @@ enum {
 } SubmitResponseCode;
 
 struct {
-  uint8[32] server_frank;
+  uint8 server_frank[32];
+  CipherSuite franking_signature_ciphersuite;
   opaque franking_integrity_signature&lt;V&gt;;
 } Frank;
 
@@ -3267,14 +3269,14 @@ learn the content of the message, nor the sender.<a href="#section-5.4.1-1" clas
 franking mechanism is largely motivated by that solution with two
 significant changes as discussed in the final paragraph of this section.<a href="#section-5.4.1-2" class="pilcrow">¶</a></p>
 <p id="section-5.4.1-3">MIMI franking relies on two new MLS application components. The first is the
-<code>frank_aad</code> Safe AAD component <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-07#section-4.9" class="relref">Section 4.9</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>. The
-second is the <code>franking_agent</code> GroupContext component <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-07#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>. The structure of <code>franking_agent</code> mirrors that of
+<code>frank_aad</code> Safe AAD component <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-08#section-4.9" class="relref">Section 4.9</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>. The
+second is the <code>franking_agent</code> GroupContext component <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-08#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>. The structure of <code>franking_agent</code> mirrors that of
 the <code>ExternerSender</code> struct described in <span><a href="https://rfc-editor.org/rfc/rfc9420#section-12.1.8.1" class="relref">Section 12.1.8.1</a> of [<a href="#RFC9420" class="cite xref">RFC9420</a>]</span>. It
 contains a single signature key.<a href="#section-5.4.1-3" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.4.1-4">
 <pre>
 struct {
-  uint8[32] franking_tag
+  uint8 franking_tag[32];
 } FrankAAD;
 
 FrankAAD frank_aad;
@@ -3289,7 +3291,8 @@ FrankingAgentData FrankingAgentUpdate;
 </pre><a href="#section-5.4.1-4" class="pilcrow">¶</a>
 </div>
 <p id="section-5.4.1-5">The signature algorithm of the <code>franking_signature_key</code> is the same as the
-signature scheme in the cipher suite of the MLS group.<a href="#section-5.4.1-5" class="pilcrow">¶</a></p>
+signature algorithm of cipher suite of the MLS group which corresponds to the
+room.<a href="#section-5.4.1-5" class="pilcrow">¶</a></p>
 <p id="section-5.4.1-6">FrankingAgentUpdate is the format of the <code>update</code> field inside the AppDataUpdate
 struct in an AppDataUpdate Proposal for the <code>franking_agent</code> component. The use
 of AppDataUpdate on the <code>franking_agent</code> is <span class="bcp14">RECOMMENDED</span> only when adding a new
@@ -3302,7 +3305,7 @@ group by sending a ReInit proposal.<a href="#section-5.4.1-6" class="pilcrow">¶
 <a href="#section-5.4.1.1" class="section-number selfRef">5.4.1.1. </a><a href="#name-client-creation-and-sending" class="section-name selfRef">Client creation and sending</a>
             </h5>
 <p id="section-5.4.1.1-1">The franking mechanism requires any franked message format to contain a random
-salt, the sender URI, and the room URI. The section describes the exact way to
+salt, the sender URI, and the room URI. This section describes the exact way to
 extract these fields from the MIMI content format <span>[<a href="#I-D.ietf-mimi-content" class="cite xref">I-D.ietf-mimi-content</a>]</span>.
 Other message formats would need to describe how to locate or derive these
 values.<a href="#section-5.4.1.1-1" class="pilcrow">¶</a></p>
@@ -3317,8 +3320,8 @@ the MIMI content extensions map (see definitions in <span><a href="https://datat
 <pre>
 / MIMI content extensions map /
 {
-  / sender_uri / 1: "mimi://b.example/u/alice"
-  / room_uri   / 2: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+  / sender_uri / 1: "mimi://b.example/u/alice",
+  / room_uri   / 2: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg"
 }
 </pre><a href="#section-5.4.1.1-4" class="pilcrow">¶</a>
 </div>
@@ -3328,18 +3331,25 @@ and cannot later deny to a receiver that it sent them.<a href="#section-5.4.1.1-
 <p id="section-5.4.1.1-6">Then the client calculates the <code>franking_tag</code>, as the HMAC SHA256 of the
 <code>application_data</code> (which includes the values in the extensions map above)
 using the <code>salt</code> in the MIMI content format:<a href="#section-5.4.1.1-6" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.4.1.1-7">
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-5.4.1.1-7.1">
+                <p id="section-5.4.1.1-7.1.1">Note that when the content advertisement mechanism in {Section 6.2 of
+!I-D.ietf-mls-extensions} is used, the <code>application_data</code> includes the
+<code>media_type</code> in the <code>ApplicationFraming</code> struct.<a href="#section-5.4.1.1-7.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+<div class="alignLeft art-text artwork" id="section-5.4.1.1-8">
 <pre>
 franking_tag = HMAC_SHA256( salt, application_data)
-</pre><a href="#section-5.4.1.1-7" class="pilcrow">¶</a>
+</pre><a href="#section-5.4.1.1-8" class="pilcrow">¶</a>
 </div>
-<p id="section-5.4.1.1-8">The client includes the <code>franking_tag</code> in the Additional Authenticated Data
+<p id="section-5.4.1.1-9">The client includes the <code>franking_tag</code> in the Additional Authenticated Data
 of the MLS PrivateMessage using the <code>frank_aad</code> Safe AAD component. The client
 uses the MIMI submitMessage to send its message, and also asserts a sender
 identity to the Hub, which could be a valid pseudonym, and needs to match
 the sender URI value embedded in the message. If the message is accepted,
 the response includes the accepted timestamp and the server_frank (generated
-by the server).<a href="#section-5.4.1.1-8" class="pilcrow">¶</a></p>
+by the server).<a href="#section-5.4.1.1-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="hub-processing">
@@ -3354,12 +3364,26 @@ in the FrankingAgentData struct.<a href="#section-5.4.1.2-1" class="pilcrow">¶<
 <p id="section-5.4.1.2-2">When the Hub receives an acceptable application message with the <code>frank_aad</code>
 Safe AAD component and a valid sender identity, it calculates a server frank for
 the message, and a <code>franking_integrity_signature</code> as follows:<a href="#section-5.4.1.2-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.4.1.2-3">
+<div class="lang-tls sourcecode" id="section-5.4.1.2-3">
 <pre>
-context = sender_uri || room_uri || accepted_timestamp
-server_frank = HMAC_SHA256(hub_key, franking_tag || context )
-franking_integrity_signature =
-  Signature.Sign(franking_private_key, server_frank || context)
+struct {
+    IdentifierUri sender_uri;
+    IdentifierUri room_uri;
+    uint64 accepted_timestamp;
+} ServerFrankingContext;
+
+ServerFrankingContext context;
+
+server_frank = HMAC_SHA256(hub_key, (franking_tag || context) )
+
+struct {
+    opaque server_frank[32];
+    CipherSuite franking_signature_ciphersuite;
+    ServerFrankingContext context;
+} FrankingIntegrityTBS;
+
+franking_integrity_signature = SignWithLabel(franking_private_key,
+    "FrankingIntegrityTBS", FrankingIntegrityTBS)
 </pre><a href="#section-5.4.1.2-3" class="pilcrow">¶</a>
 </div>
 <p id="section-5.4.1.2-4"><code>hub_key</code> is a secret symmetric key used on the Hub which the Hub can use to
@@ -3368,13 +3392,16 @@ verify its own <code>server_frank</code>.<a href="#section-5.4.1.2-4" class="pil
 values added by the Hub (the <code>server_frank</code>, and <code>accepted_timestamp</code>) were not
 modified by a follower provider, and that the <code>sender_uri</code> and <code>room_uri</code> match
 those provided by the sending client.
+The <code>franking_signature_ciphersuite</code> is the MLS cipher suite in use at the time
+the message is franked. It is used to insure that a frank contains the
+signature algorithm used to generate the <code>franking_integrity_signature</code>.
 The specific construction used is discussed in the Security Considerations
 in <a href="#franking" class="auto internal xref">Section 9.1</a>.<a href="#section-5.4.1.2-5" class="pilcrow">¶</a></p>
 <p id="section-5.4.1.2-6">The Hub fans out the encrypted message (which includes the <code>franking_tag</code>),
-the <code>server_frank</code>, the <code>accepted_timestamp</code>, the room URI, and the
-<code>franking_integrity_signature</code>. Note that the <code>sender_uri</code> is encrypted in the
-application message, so the sender can remain anonymous with respect to follower
-providers.<a href="#section-5.4.1.2-6" class="pilcrow">¶</a></p>
+the <code>server_frank</code>, the <code>accepted_timestamp</code>, the room URI, the
+<code>franking_signature_ciphersuite</code> and the <code>franking_integrity_signature</code>.
+Note that the <code>sender_uri</code> is encrypted in the application message, so the
+sender can remain anonymous with respect to follower providers.<a href="#section-5.4.1.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="receiver-verification-of-frank">
@@ -3384,20 +3411,21 @@ providers.<a href="#section-5.4.1.2-6" class="pilcrow">¶</a></p>
             </h5>
 <p id="section-5.4.1.3-1">When a client receives and decrypts an otherwise valid application message
 from a hub provider, the client looks for the existence of a frank
-(consisting of the <code>franking_tag</code> in the AAD, the <code>server_frank</code> and the
-<code>franking_integrity_signature</code>). If those fields are available, the client looks
-for the <code>franking_agent</code> application component in the GroupContext. It verifies
-the domain name in the <code>franking_agent.credential</code> corresponds to the domain of
-the Hub, and extracts the <code>franking_signature_key</code>.<a href="#section-5.4.1.3-1" class="pilcrow">¶</a></p>
+(consisting of the <code>franking_tag</code> in the AAD, the <code>server_frank</code>, the
+<code>franking_signature_ciphersuite</code> and the <code>franking_integrity_signature</code>). If
+those fields are available, and the <code>franking_signature_ciphersuite</code> matches the
+MLS cipher suite in-use, the client looks for the <code>franking_agent</code>
+application component in the GroupContext. It verifies the domain name in the
+<code>franking_agent.credential</code> corresponds to the domain of the Hub, and extracts
+the <code>franking_signature_key</code>.<a href="#section-5.4.1.3-1" class="pilcrow">¶</a></p>
 <p id="section-5.4.1.3-2">Next it verifies the integrity of the <code>server_frank</code>, <code>accepted_timestamp</code>,
-<code>sender_uri</code>, and <code>room_uri</code> by calculating the <code>signed_content</code> and verifying
-the <code>franking_integrity_signature</code> as described below.<a href="#section-5.4.1.3-2" class="pilcrow">¶</a></p>
+<code>sender_uri</code>, and <code>room_uri</code> by calculating the <code>ServerFrankingContext</code> and
+<code>FrankingIntegrityTBS</code>, and verifying the <code>franking_integrity_signature</code> as
+described below.<a href="#section-5.4.1.3-2" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.4.1.3-3">
 <pre>
-signed_content = server_frank ||
-                  sender_uri || room_uri || accepted_timestamp
-Signature.Verify(franking_signature_key, signed_content,
-                           franking_integrity_signature)
+VerifyWithLabel(franking_signature_key, "FrankingIntegrityTBS",
+     FrankingIntegrityTBS, franking_integrity_signature)
 </pre><a href="#section-5.4.1.3-3" class="pilcrow">¶</a>
 </div>
 <p id="section-5.4.1.3-4">Finally it verifies the construction of the <code>franking_tag</code> from the content
@@ -3406,8 +3434,9 @@ that the sender's identity in its credential in its MLS LeafNode matches
 the <code>sender_uri</code> asserted in the extensions map inside the MIMI Content, and
 that the <code>room_uri</code> asserted in the extensions map inside the MIMI Content
 matches the room ID in the received message.<a href="#section-5.4.1.3-4" class="pilcrow">¶</a></p>
-<p id="section-5.4.1.3-5">The receiver needs to store the <code>server_frank</code>, <code>franking_integrity_signature</code>,
-and <code>context</code> fields with the decoded message, so they can be used later.<a href="#section-5.4.1.3-5" class="pilcrow">¶</a></p>
+<p id="section-5.4.1.3-5">The receiver needs to store the <code>server_frank</code>,
+<code>franking_signature_ciphersuite</code>, <code>franking_integrity_signature</code>, and <code>context</code>
+fields with the decoded message, so they can be used later.<a href="#section-5.4.1.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="comparison-with-the-facebook-franking-scheme">
@@ -3721,7 +3750,8 @@ by the local provider).<a href="#section-5.6-12" class="pilcrow">¶</a></p>
 <a href="#section-5.7" class="section-number selfRef">5.7. </a><a href="#name-convey-explicit-consent" class="section-name selfRef">Convey explicit consent</a>
         </h3>
 <p id="section-5.7-1">As discussed in <a href="#consent" class="auto internal xref">Section 8</a>, there are many ways that a provider could
-implicitly determine consent. This section describes a mechanism by which providers can explicitly request consent from a user of another provider,
+implicitly determine consent. This section describes a mechanism by which
+providers can explicitly request consent from a user of another provider,
 cancel such a request, convey that consent was granted, or convey that
 consent was revoked or preemptively denied.<a href="#section-5.7-1" class="pilcrow">¶</a></p>
 <p id="section-5.7-2">Since they are not necessarily in the context of a room, consent requests
@@ -3791,7 +3821,9 @@ a <code>ConsentEntry</code>, with a <code>consentOperation</code> of <code>grant
 <code>revoke</code> for revocation or denial. Like a request, it includes the URI of the
 "requesting user" in the <code>requesterUri</code> and the target user URI in the
 <code>targetUri</code>. If consent is only granted or denied for a single room, the request includes the optional <code>roomId</code>.<a href="#section-5.7-8" class="pilcrow">¶</a></p>
-<p id="section-5.7-9">A <code>grant</code> or <code>revoke</code> does not need to be in response to an explicit request, nor does the <code>ConsentScope</code> need to match a previous <code>request</code> for the same <code>targetUri</code> and <code>requesterUri</code> pair.<a href="#section-5.7-9" class="pilcrow">¶</a></p>
+<p id="section-5.7-9">A <code>grant</code> or <code>revoke</code> does not need to be in response to an explicit request,
+nor does the <code>ConsentScope</code> need to match a previous <code>request</code> for the same
+<code>targetUri</code> and <code>requesterUri</code> pair.<a href="#section-5.7-9" class="pilcrow">¶</a></p>
 <p id="section-5.7-10">For example, in some systems there is a notion of a bilateral connection
 request. The party that initiates the connection request (for example Alice)
 would send a <code>requestConsent</code> for the target (ex: Bob), and send an
@@ -3885,7 +3917,8 @@ struct {
 </pre><a href="#section-5.8-6" class="pilcrow">¶</a>
 </div>
 <p id="section-5.8-7">The semantics of the <code>SearchIdentifierType</code> values are as follows. <code>handle</code>
-means that the entire handle URI matches exactly (for example: <code>im:alice.smith@a.example</code>). <code>nick</code> means that the nickname or handle
+means that the entire handle URI matches exactly (for example:
+<code>im:alice.smith@a.example</code>). <code>nick</code> means that the nickname or handle
 user part matches exactly (for example: <code>alice.smith</code>). The same account or
 human user may have multiple values which all match the <code>nick</code> field. <code>email</code>
 means the <code>addr-spec</code> production from <span>[<a href="#RFC5322" class="cite xref">RFC5322</a>]</span> matches the query string
@@ -3986,8 +4019,8 @@ insufficient.<a href="#section-5.9-4.1.1" class="pilcrow">¶</a></p>
         </ul>
 <p id="section-5.9-5">Finally, abuse reports can optionally contain a handful of allegedly
 <code>AbusiveMessage</code>s, each of which contains an allegedly abusive
-<code>message_content</code>, its <code>server_frank</code>, its <code>franking_integrity_signature</code>, and
-its <code>accepted_timestamp</code>.<a href="#section-5.9-5" class="pilcrow">¶</a></p>
+<code>message_content</code>, its <code>server_frank</code>, its <code>franking_signature_ciphersuite</code>,
+its <code>franking_integrity_signature</code>, and its <code>accepted_timestamp</code>.<a href="#section-5.9-5" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.9-6">
 <pre>
 struct {
@@ -4012,11 +4045,14 @@ struct {
 } AbuseReport;
 </pre><a href="#section-5.9-6" class="pilcrow">¶</a>
 </div>
-<p id="section-5.9-7">There is no response body. The response code only indicates if the abuse report was accepted, not if any specific automated or human action was taken.<a href="#section-5.9-7" class="pilcrow">¶</a></p>
+<p id="section-5.9-7">There is no response body. The response code only indicates if the abuse report
+was accepted, not if any specific automated or human action was taken.<a href="#section-5.9-7" class="pilcrow">¶</a></p>
 <p id="section-5.9-8">To validate an allegedly AbusiveMessage, the hub finds the salt, sender URI, and
 room URI inside the <code>message_content</code> and the <code>accepted_timestamp</code> to
 recalculate the <code>franking_tag</code> and <code>context</code>. Then the hub selects its relevant
-<code>hub_key</code> to regenerate the <code>server_frank</code>. Finally the hub verifies its <code>franking_integrity_signature</code>.<a href="#section-5.9-8" class="pilcrow">¶</a></p>
+<code>hub_key</code> to regenerate the <code>server_frank</code>. Finally the hub verifies its
+<code>franking_integrity_signature</code> using the signature algorithm embedded in the
+<code>franking_signature_ciphersuite</code>.<a href="#section-5.9-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="download-files">
@@ -4061,7 +4097,8 @@ other two methods.<a href="#section-5.10-6" class="pilcrow">¶</a></p>
 <p id="section-5.10.1-1">Without any additional MIMI protocol mechanism, MIMI clients can download assets
 directly from the asset provider. Unfortunately this usually reveals sensitive
 private information about the client. In this case, the asset provider learns
-the IP address of the client, and timing information about when assets are downloaded, which is strongly linked with online presence. The asset provider
+the IP address of the client, and timing information about when assets are
+downloaded, which is strongly linked with online presence. The asset provider
 can correlate other clients downloading the same assets and infer which clients
 are in which rooms. For this reason, direct client downloads of assets,
 especially from an asset provider which is not the download client's provider,
@@ -4394,7 +4431,7 @@ applies to events changing the room state.<a href="#section-7.1-4" class="pilcro
 manages the room also manages the list of group members, i.e. the
 list of clients belonging to users currently in the room. Application state
 that is stored in the MLS GroupContext is stored as application components
-in the <code>app_data_dictionary</code> extension, as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-07#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+in the <code>app_data_dictionary</code> extension, as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-08#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="proposal-commit-paradigm">
@@ -4660,7 +4697,7 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <a href="#section-10" class="section-number selfRef">10. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
 <p id="section-10-1">This document registers the following four MLS application components per
-<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-07#section-7.6" class="relref">Section 7.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>.<a href="#section-10-1" class="pilcrow">¶</a></p>
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-08#section-7.6" class="relref">Section 7.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>.<a href="#section-10-1" class="pilcrow">¶</a></p>
 <div id="iana-frank-aad">
 <section id="section-10.1">
         <h3 id="name-frank_aad-app-component">
@@ -4788,15 +4825,15 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <dd class="break"></dd>
 <dt id="I-D.ietf-mls-extensions">[I-D.ietf-mls-extensions]</dt>
         <dd>
-<span class="refAuthor">Robert, R.</span>, <span class="refTitle">"The Messaging Layer Security (MLS) Extensions"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mls-extensions-07</span>, <time datetime="2025-07-03" class="refDate">3 July 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-07">https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-07</a>&gt;</span>. </dd>
+<span class="refAuthor">Robert, R.</span>, <span class="refTitle">"The Messaging Layer Security (MLS) Extensions"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mls-extensions-08</span>, <time datetime="2025-07-21" class="refDate">21 July 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-08">https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-08</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.mahy-mls-ratchet-tree-options">[I-D.mahy-mls-ratchet-tree-options]</dt>
         <dd>
-<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Ways to convey the Ratchet Tree in Messaging Layer Security"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-ratchet-tree-options-02</span>, <time datetime="2025-04-22" class="refDate">22 April 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-ratchet-tree-options-02">https://datatracker.ietf.org/doc/html/draft-mahy-mls-ratchet-tree-options-02</a>&gt;</span>. </dd>
+<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Ways to convey the Ratchet Tree in Messaging Layer Security"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-ratchet-tree-options-03</span>, <time datetime="2025-10-16" class="refDate">16 October 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-ratchet-tree-options-03">https://datatracker.ietf.org/doc/html/draft-mahy-mls-ratchet-tree-options-03</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.mahy-mls-semiprivatemessage">[I-D.mahy-mls-semiprivatemessage]</dt>
         <dd>
-<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Semi-Private Messages in the Messaging Layer Security (MLS) Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-semiprivatemessage-05</span>, <time datetime="2025-04-21" class="refDate">21 April 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-05">https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-05</a>&gt;</span>. </dd>
+<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Semi-Private Messages in the Messaging Layer Security (MLS) Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-semiprivatemessage-06</span>, <time datetime="2025-10-16" class="refDate">16 October 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-06">https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-06</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="OidcCore">[OidcCore]</dt>
         <dd>

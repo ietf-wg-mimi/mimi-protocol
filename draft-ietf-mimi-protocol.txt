@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 12 January 2026                The Matrix.org Foundation C.I.C.
+Expires: 22 April 2026                  The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 12 January 2026                The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                            11 July 2025
+                                                         19 October 2025
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 January 2026.
+   This Internet-Draft will expire on 22 April 2026.
 
 Copyright Notice
 
@@ -1189,7 +1189,8 @@ ServerC->ClientC*: [[ Commit ]]
    } SubmitResponseCode;
 
    struct {
-     uint8[32] server_frank;
+     uint8 server_frank[32];
+     CipherSuite franking_signature_ciphersuite;
      opaque franking_integrity_signature<V>;
    } Frank;
 
@@ -1255,7 +1256,7 @@ ServerC->ClientC*: [[ Commit ]]
    signature key.
 
    struct {
-     uint8[32] franking_tag
+     uint8 franking_tag[32];
    } FrankAAD;
 
    FrankAAD frank_aad;
@@ -1269,7 +1270,8 @@ ServerC->ClientC*: [[ Commit ]]
    FrankingAgentData FrankingAgentUpdate;
 
    The signature algorithm of the franking_signature_key is the same as
-   the signature scheme in the cipher suite of the MLS group.
+   the signature algorithm of cipher suite of the MLS group which
+   corresponds to the room.
 
    FrankingAgentUpdate is the format of the update field inside the
    AppDataUpdate struct in an AppDataUpdate Proposal for the
@@ -1282,7 +1284,7 @@ ServerC->ClientC*: [[ Commit ]]
 5.4.1.1.  Client creation and sending
 
    The franking mechanism requires any franked message format to contain
-   a random salt, the sender URI, and the room URI.  The section
+   a random salt, the sender URI, and the room URI.  This section
    describes the exact way to extract these fields from the MIMI content
    format [I-D.ietf-mimi-content].  Other message formats would need to
    describe how to locate or derive these values.
@@ -1300,8 +1302,8 @@ ServerC->ClientC*: [[ Commit ]]
 
    / MIMI content extensions map /
    {
-     / sender_uri / 1: "mimi://b.example/u/alice"
-     / room_uri   / 2: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg",
+     / sender_uri / 1: "mimi://b.example/u/alice",
+     / room_uri   / 2: "mimi://hub.example/r/Rl33FWLCYWOwxHrYnpWDQg"
    }
 
    Note that these assertions do not vouch for the validity of these
@@ -1312,6 +1314,10 @@ ServerC->ClientC*: [[ Commit ]]
    Then the client calculates the franking_tag, as the HMAC SHA256 of
    the application_data (which includes the values in the extensions map
    above) using the salt in the MIMI content format:
+
+      Note that when the content advertisement mechanism in {Section 6.2
+      of !I-D.ietf-mls-extensions} is used, the application_data
+      includes the media_type in the ApplicationFraming struct.
 
    franking_tag = HMAC_SHA256( salt, application_data)
 
@@ -1336,10 +1342,24 @@ ServerC->ClientC*: [[ Commit ]]
    calculates a server frank for the message, and a
    franking_integrity_signature as follows:
 
-   context = sender_uri || room_uri || accepted_timestamp
-   server_frank = HMAC_SHA256(hub_key, franking_tag || context )
-   franking_integrity_signature =
-     Signature.Sign(franking_private_key, server_frank || context)
+   struct {
+       IdentifierUri sender_uri;
+       IdentifierUri room_uri;
+       uint64 accepted_timestamp;
+   } ServerFrankingContext;
+
+   ServerFrankingContext context;
+
+   server_frank = HMAC_SHA256(hub_key, (franking_tag || context) )
+
+   struct {
+       opaque server_frank[32];
+       CipherSuite franking_signature_ciphersuite;
+       ServerFrankingContext context;
+   } FrankingIntegrityTBS;
+
+   franking_integrity_signature = SignWithLabel(franking_private_key,
+       "FrankingIntegrityTBS", FrankingIntegrityTBS)
 
    hub_key is a secret symmetric key used on the Hub which the Hub can
    use to verify its own server_frank.
@@ -1348,35 +1368,39 @@ ServerC->ClientC*: [[ Commit ]]
    the values added by the Hub (the server_frank, and
    accepted_timestamp) were not modified by a follower provider, and
    that the sender_uri and room_uri match those provided by the sending
-   client.  The specific construction used is discussed in the Security
-   Considerations in Section 9.1.
+   client.  The franking_signature_ciphersuite is the MLS cipher suite
+   in use at the time the message is franked.  It is used to insure that
+   a frank contains the signature algorithm used to generate the
+   franking_integrity_signature.  The specific construction used is
+   discussed in the Security Considerations in Section 9.1.
 
    The Hub fans out the encrypted message (which includes the
    franking_tag), the server_frank, the accepted_timestamp, the room
-   URI, and the franking_integrity_signature.  Note that the sender_uri
-   is encrypted in the application message, so the sender can remain
-   anonymous with respect to follower providers.
+   URI, the franking_signature_ciphersuite and the
+   franking_integrity_signature.  Note that the sender_uri is encrypted
+   in the application message, so the sender can remain anonymous with
+   respect to follower providers.
 
 5.4.1.3.  Receiver verification of frank
 
    When a client receives and decrypts an otherwise valid application
    message from a hub provider, the client looks for the existence of a
-   frank (consisting of the franking_tag in the AAD, the server_frank
-   and the franking_integrity_signature).  If those fields are
-   available, the client looks for the franking_agent application
-   component in the GroupContext.  It verifies the domain name in the
+   frank (consisting of the franking_tag in the AAD, the server_frank,
+   the franking_signature_ciphersuite and the
+   franking_integrity_signature).  If those fields are available, and
+   the franking_signature_ciphersuite matches the MLS cipher suite in-
+   use, the client looks for the franking_agent application component in
+   the GroupContext.  It verifies the domain name in the
    franking_agent.credential corresponds to the domain of the Hub, and
    extracts the franking_signature_key.
 
    Next it verifies the integrity of the server_frank,
    accepted_timestamp, sender_uri, and room_uri by calculating the
-   signed_content and verifying the franking_integrity_signature as
-   described below.
+   ServerFrankingContext and FrankingIntegrityTBS, and verifying the
+   franking_integrity_signature as described below.
 
-   signed_content = server_frank ||
-                     sender_uri || room_uri || accepted_timestamp
-   Signature.Verify(franking_signature_key, signed_content,
-                              franking_integrity_signature)
+   VerifyWithLabel(franking_signature_key, "FrankingIntegrityTBS",
+        FrankingIntegrityTBS, franking_integrity_signature)
 
    Finally it verifies the construction of the franking_tag from the
    content format of the message (including the embedded salt), that the
@@ -1386,8 +1410,8 @@ ServerC->ClientC*: [[ Commit ]]
    Content matches the room ID in the received message.
 
    The receiver needs to store the server_frank,
-   franking_integrity_signature, and context fields with the decoded
-   message, so they can be used later.
+   franking_signature_ciphersuite, franking_integrity_signature, and
+   context fields with the decoded message, so they can be used later.
 
 5.4.1.4.  Comparison with the Facebook franking scheme
 
@@ -1940,8 +1964,9 @@ ServerC->ClientC*: [[ Commit ]]
 
    Finally, abuse reports can optionally contain a handful of allegedly
    AbusiveMessages, each of which contains an allegedly abusive
-   message_content, its server_frank, its franking_integrity_signature,
-   and its accepted_timestamp.
+   message_content, its server_frank, its
+   franking_signature_ciphersuite, its franking_integrity_signature, and
+   its accepted_timestamp.
 
    struct {
      /* the message content (ex: MIMI Content message) containing */
@@ -1972,7 +1997,8 @@ ServerC->ClientC*: [[ Commit ]]
    sender URI, and room URI inside the message_content and the
    accepted_timestamp to recalculate the franking_tag and context.  Then
    the hub selects its relevant hub_key to regenerate the server_frank.
-   Finally the hub verifies its franking_integrity_signature.
+   Finally the hub verifies its franking_integrity_signature using the
+   signature algorithm embedded in the franking_signature_ciphersuite.
 
 5.10.  Download Files
 
@@ -2585,23 +2611,23 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
               Extensions", Work in Progress, Internet-Draft, draft-ietf-
-              mls-extensions-07, 3 July 2025,
+              mls-extensions-08, 21 July 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mls-
-              extensions-07>.
+              extensions-08>.
 
    [I-D.mahy-mls-ratchet-tree-options]
               Mahy, R., "Ways to convey the Ratchet Tree in Messaging
               Layer Security", Work in Progress, Internet-Draft, draft-
-              mahy-mls-ratchet-tree-options-02, 22 April 2025,
+              mahy-mls-ratchet-tree-options-03, 16 October 2025,
               <https://datatracker.ietf.org/doc/html/draft-mahy-mls-
-              ratchet-tree-options-02>.
+              ratchet-tree-options-03>.
 
    [I-D.mahy-mls-semiprivatemessage]
               Mahy, R., "Semi-Private Messages in the Messaging Layer
               Security (MLS) Protocol", Work in Progress, Internet-
-              Draft, draft-mahy-mls-semiprivatemessage-05, 21 April
+              Draft, draft-mahy-mls-semiprivatemessage-06, 16 October
               2025, <https://datatracker.ietf.org/doc/html/draft-mahy-
-              mls-semiprivatemessage-05>.
+              mls-semiprivatemessage-06>.
 
    [OidcCore] Sakimura, N., Bradley, J., Jones, M. B., Medeiros, B. de.,
               and C. Mortimore, "OpenID Connect Core 1.0 incorporating
