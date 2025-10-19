@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 19 March 2026                  The Matrix.org Foundation C.I.C.
+Expires: 22 April 2026                  The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 19 March 2026                  The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                       15 September 2025
+                                                         19 October 2025
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 March 2026.
+   This Internet-Draft will expire on 22 April 2026.
 
 Copyright Notice
 
@@ -1190,7 +1190,7 @@ ServerC->ClientC*: [[ Commit ]]
 
    struct {
      uint8 server_frank[32];
-     uint16 franking_signature_ciphersuite;
+     CipherSuite franking_signature_ciphersuite;
      opaque franking_integrity_signature<V>;
    } Frank;
 
@@ -2618,16 +2618,16 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.mahy-mls-ratchet-tree-options]
               Mahy, R., "Ways to convey the Ratchet Tree in Messaging
               Layer Security", Work in Progress, Internet-Draft, draft-
-              mahy-mls-ratchet-tree-options-02, 22 April 2025,
+              mahy-mls-ratchet-tree-options-03, 16 October 2025,
               <https://datatracker.ietf.org/doc/html/draft-mahy-mls-
-              ratchet-tree-options-02>.
+              ratchet-tree-options-03>.
 
    [I-D.mahy-mls-semiprivatemessage]
               Mahy, R., "Semi-Private Messages in the Messaging Layer
               Security (MLS) Protocol", Work in Progress, Internet-
-              Draft, draft-mahy-mls-semiprivatemessage-05, 21 April
+              Draft, draft-mahy-mls-semiprivatemessage-06, 16 October
               2025, <https://datatracker.ietf.org/doc/html/draft-mahy-
-              mls-semiprivatemessage-05>.
+              mls-semiprivatemessage-06>.
 
    [OidcCore] Sakimura, N., Bradley, J., Jones, M. B., Medeiros, B. de.,
               and C. Mortimore, "OpenID Connect Core 1.0 incorporating
