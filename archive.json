@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-19T00:54:33.804405+00:00",
+  "timestamp": "2025-10-21T00:49:37.572541+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -903,7 +903,7 @@
       ],
       "body": "> **TODO**: Discuss if this participation state is desirable, and figure out\r\n> details for how it works. It'd likely just be an `m.room.user` state event\r\n> with no MLS interaction, like invites are.\r\n\r\n> **TODO**: If we have an Add event as discussed in a TODO in the \"Invites\"\r\n> section, an \"Add\" would probably be the response to a knock.",
       "createdAt": "2023-11-09T12:54:20Z",
-      "updatedAt": "2025-03-19T03:13:35Z",
+      "updatedAt": "2025-10-19T19:15:48Z",
       "closedAt": null,
       "comments": [
         {
@@ -954,6 +954,13 @@
           "body": "Agree with Raphael.",
           "createdAt": "2025-03-19T03:13:35Z",
           "updatedAt": "2025-03-19T03:13:35Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> If I understand this correctly, this is a feature Signal has. Users can generate an invite link to a group, but new participants still have to be allowed individually. If that's what it is, this is actually a very useful feature for communities or in business messaging.\n\nWe implemented the functionality @raphaelrobert described by allowing joiningCodes to be per user. The joiningCode is itself a web token which contains any relevant constraints, including who is allowed to join. If you were going to support joiningCodes with external proposals instead of external commits, we would need to add a joiningCode field in the update endpoint. Other than that I don't see what is required. ",
+          "createdAt": "2025-10-19T19:15:48Z",
+          "updatedAt": "2025-10-19T19:15:48Z"
         }
       ]
     },
@@ -1841,7 +1848,7 @@
       "id": "I_kwDOKZ8QO86_ExEX",
       "title": "Do we need franking context to use a struct or separators?",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/122",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1850,8 +1857,8 @@
       ],
       "body": "Currently the message context used in franking is defined as the concatenation of 3 fields:\n\n```\ncontext = sender_uri || room_uri || accepted_timestamp\n```\n\nThere is a potential that these could be manipulated so a specially crafted sender_uri and room_uri could cause one client to appear as a blank user\n\nActually, there is no requirement that context be unique. We just need the context to correctly match the context fields in the sent message.\n\nSnipped from [MIMI Content Issue #61 ](https://github.com/ietf-wg-mimi/draft-ietf-mimi-content/issues/61):\n\"While you could have:\n`mimi://example.com/u/alicemimi://example.com/r/clubhouse` plus `mimi://example.com/r/clubhouse` in one message AND\n`mimi://example.com/u/alice` plus `mimi://example.com/r/clubhousemimi://example.com/r/clubhouse` in another message,\nit would take a pretty dumb hub to allow such a room ID and an AS with very permissive sender URI names.\"\n\n",
       "createdAt": "2025-07-05T22:11:09Z",
-      "updatedAt": "2025-09-15T08:56:54Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-19T19:06:33Z",
+      "closedAt": "2025-10-19T19:06:33Z",
       "comments": [
         {
           "author": "rohanmahy",
@@ -1866,6 +1873,13 @@
           "body": "I did this initially using a the fixed-sized approach and it was sort of ugly. In addition, the client already needs to do a handful of other things with TLS PL. The keys it is verifying with will need to come from a library that supports TLS PL anyway to hold the public signature key of the franker and its Credential.\n\nI updated the PR appropriately.",
           "createdAt": "2025-09-15T08:56:54Z",
           "updatedAt": "2025-09-15T08:56:54Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Address in #130 . Closing",
+          "createdAt": "2025-10-19T19:06:33Z",
+          "updatedAt": "2025-10-19T19:06:33Z"
         }
       ]
     },
@@ -1909,7 +1923,7 @@
       "id": "I_kwDOKZ8QO87LQIB5",
       "title": "frank does not contain signature algorithm",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/129",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1918,9 +1932,17 @@
       ],
       "body": "If the signature algorithm used in a room changes (for example if the MLS group is reinitialized with a different ciphersuite), there is no way for the Hub to validate the `franking_integrity_signature` other than keeping track of the time it was changed or trying to brute force validate all the algorithms it has ever used. \n\nconsider adding the signature algorithm to the frank as follows:\n\n```\nstruct {\n  uint8 server_frank[32];\n  uint8 signature_algorithm;\n  opaque franking_integrity_signature<V>;\n} Frank;\n```\n",
       "createdAt": "2025-09-12T10:58:03Z",
-      "updatedAt": "2025-09-12T15:06:09Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-10-19T19:06:21Z",
+      "closedAt": "2025-10-19T19:06:21Z",
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Address in #130 . Closing",
+          "createdAt": "2025-10-19T19:06:21Z",
+          "updatedAt": "2025-10-19T19:06:21Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -10923,24 +10945,26 @@
       "id": "PR_kwDOKZ8QO86oQguH",
       "title": "More franking fixes",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/130",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "- Added an explicit (uint16) lengths for the sender URI and room URI in the franking context. Addresses #122 \r\n- Added a `franking_signature_ciphersuite` to allow the hub to validate a `franking_integrity_signature` even after the MLS ciphersuite has changed in that room. Addresses #129 ",
       "createdAt": "2025-09-12T14:20:44Z",
-      "updatedAt": "2025-10-18T05:54:32Z",
+      "updatedAt": "2025-10-19T19:05:46Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "a04c365aeb85211760cd160c9f638a183032dd6d",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "more-franking-fixes",
-      "headRefOid": "b7a3446d4ecbe3d1de2b0c8c0fd4b6d214a88b04",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "ebc977c2b0e3d73c47ae2fca26959998fc5440b2",
+      "closedAt": "2025-10-19T19:05:46Z",
+      "mergedAt": "2025-10-19T19:05:46Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "8568b5b98770a66dfa4585c9772ec9a41690038f"
+      },
       "comments": [],
       "reviews": [
         {
@@ -10980,8 +11004,122 @@
               "updatedAt": "2025-10-18T05:54:32Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO87H86g2",
+          "commit": {
+            "abbreviatedOid": "b7a3446"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-19T19:03:42Z",
+          "updatedAt": "2025-10-19T19:03:42Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "Good point\r\n```suggestion\r\n  CipherSuite franking_signature_ciphersuite;\r\n```",
+              "createdAt": "2025-10-19T19:03:42Z",
+              "updatedAt": "2025-10-19T19:03:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO87H86lH",
+          "commit": {
+            "abbreviatedOid": "b7a3446"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-19T19:04:31Z",
+          "updatedAt": "2025-10-19T19:04:32Z",
+          "comments": [
+            {
+              "originalPosition": 92,
+              "body": "Yes. The way to update the MAC is to update the entire franking mechanism. ",
+              "createdAt": "2025-10-19T19:04:32Z",
+              "updatedAt": "2025-10-19T19:04:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKZ8QO87H86o8",
+          "commit": {
+            "abbreviatedOid": "ebc977c"
+          },
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-19T19:05:08Z",
+          "updatedAt": "2025-10-19T19:05:08Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "This was discussed in WG meetings and concluded in favor of a fixed length.",
+              "createdAt": "2025-10-19T19:05:08Z",
+              "updatedAt": "2025-10-19T19:05:08Z"
+            }
+          ]
         }
       ]
+    },
+    {
+      "number": 131,
+      "id": "PR_kwDOKZ8QO86uoDN6",
+      "title": "franking_agents is a list of key/credential pairs, not just one",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/131",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I don't think we really need this. There can be a single franking_agent per room, as there is only one Hub per room",
+      "createdAt": "2025-10-20T12:52:25Z",
+      "updatedAt": "2025-10-20T12:53:40Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "8568b5b98770a66dfa4585c9772ec9a41690038f",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "franking-agents-plural",
+      "headRefOid": "df00fc182fef424b62db798b56df48a4ddc5813b",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 132,
+      "id": "PR_kwDOKZ8QO86uoGnr",
+      "title": "Ready to Submit draft-ietf-mimi-protocol-05",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/132",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-10-20T12:56:33Z",
+      "updatedAt": "2025-10-20T12:56:49Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "8568b5b98770a66dfa4585c9772ec9a41690038f",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "submit-05",
+      "headRefOid": "1d40081834d6dfac83e0b58dc47ec4d208d45865",
+      "closedAt": "2025-10-20T12:56:49Z",
+      "mergedAt": "2025-10-20T12:56:48Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "4a4c265c9f07b1f23ee28ac42aa6366dff7cd77c"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }
