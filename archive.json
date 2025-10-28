@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-21T00:49:37.572541+00:00",
+  "timestamp": "2025-10-28T00:47:17.816133+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -903,7 +903,7 @@
       ],
       "body": "> **TODO**: Discuss if this participation state is desirable, and figure out\r\n> details for how it works. It'd likely just be an `m.room.user` state event\r\n> with no MLS interaction, like invites are.\r\n\r\n> **TODO**: If we have an Add event as discussed in a TODO in the \"Invites\"\r\n> section, an \"Add\" would probably be the response to a knock.",
       "createdAt": "2023-11-09T12:54:20Z",
-      "updatedAt": "2025-10-19T19:15:48Z",
+      "updatedAt": "2025-10-26T16:36:30Z",
       "closedAt": null,
       "comments": [
         {
@@ -961,6 +961,13 @@
           "body": "> If I understand this correctly, this is a feature Signal has. Users can generate an invite link to a group, but new participants still have to be allowed individually. If that's what it is, this is actually a very useful feature for communities or in business messaging.\n\nWe implemented the functionality @raphaelrobert described by allowing joiningCodes to be per user. The joiningCode is itself a web token which contains any relevant constraints, including who is allowed to join. If you were going to support joiningCodes with external proposals instead of external commits, we would need to add a joiningCode field in the update endpoint. Other than that I don't see what is required. ",
           "createdAt": "2025-10-19T19:15:48Z",
           "updatedAt": "2025-10-19T19:15:48Z"
+        },
+        {
+          "author": "mincerafter42",
+          "authorAssociation": "NONE",
+          "body": "> The joiningCode is itself a web token which contains any relevant constraints, including who is allowed to join.\n\nThis does not sound like the same functionality described; this sounds like users need to be vetted *before* generating an invite link, whereas the functionality described sounds like users being vetted *after* generating an invite link. I believe the latter would be more convenient in the event a user wishes to join a room, and would be allowed in by the members of the room, but has never communicated with any of the room's members before.",
+          "createdAt": "2025-10-26T16:36:30Z",
+          "updatedAt": "2025-10-26T16:36:30Z"
         }
       ]
     },
