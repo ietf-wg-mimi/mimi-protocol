@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-28T00:47:17.816133+00:00",
+  "timestamp": "2025-11-04T00:50:33.795072+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -170,7 +170,7 @@
       "id": "I_kwDOKZ8QO852UXde",
       "title": "Tracking arbitary state?",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/23",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -180,8 +180,8 @@
       ],
       "body": "Room name, etc",
       "createdAt": "2023-11-09T08:05:59Z",
-      "updatedAt": "2025-03-19T01:06:45Z",
-      "closedAt": null,
+      "updatedAt": "2025-11-03T22:55:12Z",
+      "closedAt": "2025-11-03T22:55:12Z",
       "comments": [
         {
           "author": "turt2live",
@@ -231,6 +231,13 @@
           "body": "I think we now have this capability, to keep extensible state in a MIMI room in the GroupContext using app_data_dictionary. Some of it may need to be encrypted for members only, which is functionality also needed for minimal metadata rooms #101 ",
           "createdAt": "2025-03-19T01:06:44Z",
           "updatedAt": "2025-03-19T01:06:44Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing based on app_data_dictionary support in mls-extensions.",
+          "createdAt": "2025-11-03T22:55:12Z",
+          "updatedAt": "2025-11-03T22:55:12Z"
         }
       ]
     },
@@ -239,7 +246,7 @@
       "id": "I_kwDOKZ8QO852VBff",
       "title": "Support external media requests",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/24",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "turt2live",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -249,8 +256,8 @@
       ],
       "body": "Where we assume the external attachment blob (\"media\") is stored on a follower server, another server/the hub needs a way to fetch that media on behalf of its local clients.\r\n\r\nWe do not want to support clients requesting the media directly.\r\n\r\nTODO: Discuss authentication/right to download.",
       "createdAt": "2023-11-09T09:37:53Z",
-      "updatedAt": "2025-03-18T14:41:50Z",
-      "closedAt": null,
+      "updatedAt": "2025-11-03T22:54:07Z",
+      "closedAt": "2025-11-03T22:54:06Z",
       "comments": [
         {
           "author": "rohanmahy",
@@ -272,6 +279,13 @@
           "body": "See now #111 ",
           "createdAt": "2025-03-18T14:41:33Z",
           "updatedAt": "2025-03-18T14:41:33Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "PR #111  merged into mimi-protocol and need for threat model is in #93. Closing. ",
+          "createdAt": "2025-11-03T22:54:07Z",
+          "updatedAt": "2025-11-03T22:54:07Z"
         }
       ]
     },
@@ -1678,16 +1692,24 @@
       "id": "I_kwDOKZ8QO86upwn1",
       "title": "Timestamp integrity for history",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/114",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Currently the integrity of the timestamp is available when franking, but only for active participants/member clients. It would be nice if I replace my phone, restoring my history, I can still verify the integrity of the original timestamp (and Frank). ",
       "createdAt": "2025-03-19T01:26:20Z",
-      "updatedAt": "2025-03-19T01:26:20Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-11-03T22:49:37Z",
+      "closedAt": "2025-11-03T22:49:37Z",
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Moved to https://github.com/ietf-wg-mimi/mimi-arch/issues/21",
+          "createdAt": "2025-11-03T22:49:37Z",
+          "updatedAt": "2025-11-03T22:49:37Z"
+        }
+      ]
     },
     {
       "number": 115,
@@ -1911,7 +1933,7 @@
       "id": "I_kwDOKZ8QO87AN6Oq",
       "title": "Minimize time that policy that policy enforcing proposals can be invalid.",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/128",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1921,9 +1943,17 @@
       ],
       "body": "\n- Hub generates some proposals, cues those up\n- Someone comes along and does an external Commit\n- Unfortunately, that external Commit can't include the hub's proposals\n- So the Hub regenerates the proposals in the new epoch and distributes them stapled to the external commit.\n\npost-facto issue for #120 \n\nThis could become a non-issue if https://www.ietf.org/archive/id/draft-mahy-mls-ext-commit-pp-00.html is adopted.",
       "createdAt": "2025-07-12T05:44:17Z",
-      "updatedAt": "2025-07-12T05:44:17Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-11-03T22:57:36Z",
+      "closedAt": "2025-11-03T22:57:36Z",
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Merged in #120 ",
+          "createdAt": "2025-11-03T22:57:36Z",
+          "updatedAt": "2025-11-03T22:57:36Z"
+        }
+      ]
     },
     {
       "number": 129,
@@ -1950,6 +1980,22 @@
           "updatedAt": "2025-10-19T19:06:21Z"
         }
       ]
+    },
+    {
+      "number": 133,
+      "id": "I_kwDOKZ8QO87VoE4O",
+      "title": "Share encrypted state with only members",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/133",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-11-03T23:00:46Z",
+      "updatedAt": "2025-11-03T23:00:46Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -11079,25 +11125,33 @@
       "id": "PR_kwDOKZ8QO86uoDN6",
       "title": "franking_agents is a list of key/credential pairs, not just one",
       "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/131",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rohanmahy",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "I don't think we really need this. There can be a single franking_agent per room, as there is only one Hub per room",
       "createdAt": "2025-10-20T12:52:25Z",
-      "updatedAt": "2025-10-20T12:53:40Z",
+      "updatedAt": "2025-11-03T19:30:19Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "8568b5b98770a66dfa4585c9772ec9a41690038f",
       "headRepository": "ietf-wg-mimi/mimi-protocol",
       "headRefName": "franking-agents-plural",
       "headRefOid": "df00fc182fef424b62db798b56df48a4ddc5813b",
-      "closedAt": null,
+      "closedAt": "2025-11-03T19:30:18Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I've concluded we should have a single franking agent per room since there is only one hub per room. Closing",
+          "createdAt": "2025-11-03T19:30:18Z",
+          "updatedAt": "2025-11-03T19:30:18Z"
+        }
+      ],
       "reviews": []
     },
     {
