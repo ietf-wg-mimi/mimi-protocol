@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 23 April 2026                  The Matrix.org Foundation C.I.C.
+Expires: 19 May 2026                    The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 23 April 2026                  The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                         20 October 2025
+                                                        15 November 2025
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 April 2026.
+   This Internet-Draft will expire on 19 May 2026.
 
 Copyright Notice
 
@@ -1619,9 +1619,9 @@ ServerC->ClientC*: [[ Commit ]]
      };
    } GroupInfoRequest;
 
-   If successful, the response body contains the GroupInfo and a way to
-   get the ratchet_tree, both encrypted with the groupInfoPublcKey
-   passed in the request.
+   If successful, the response body contains the GroupInfo, a way to get
+   the ratchet_tree, and a list of any pending proposals for the epoch,
+   all encrypted with the groupInfoPublcKey passed in the request.
 
    enum {
      reserved(0),
@@ -1632,8 +1632,16 @@ ServerC->ClientC*: [[ Commit ]]
    } GroupInfoCode;
 
    struct {
+       MLSMessage proposal;
+       uint64 hub_accepted_time;
+   } PendingProposal;
+
+   struct {
      GroupInfo groupInfo;   /* without embedded ratchet_tree */
      RatchetTreeOption ratchetTreeOption;
+     /* A list of valid pending proposals accepted by the hub */
+     /* during the current epoch                              */
+     PendingProposal pending_proposals<V>;
    } GroupInfoRatchetTreeTBE;
 
    GroupInfoRatchetTreeTBE group_info_ratchet_tree_tbe;
@@ -2604,9 +2612,9 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.ietf-mimi-room-policy]
               Mahy, R., "Room Policy for the More Instant Messaging
               Interoperability (MIMI) Protocol", Work in Progress,
-              Internet-Draft, draft-ietf-mimi-room-policy-01, 2 March
+              Internet-Draft, draft-ietf-mimi-room-policy-02, 20 October
               2025, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              mimi-room-policy-01>.
+              mimi-room-policy-02>.
 
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
@@ -2696,9 +2704,9 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.mahy-mimi-identity]
               Mahy, R., "More Instant Messaging Interoperability (MIMI)
               Identity Concepts", Work in Progress, Internet-Draft,
-              draft-mahy-mimi-identity-03, 3 March 2025,
+              draft-mahy-mimi-identity-04, 20 October 2025,
               <https://datatracker.ietf.org/doc/html/draft-mahy-mimi-
-              identity-03>.
+              identity-04>.
 
    [InvisibleSalamanders]
               Dodis, Y., Grubbs, P., Ristenpart, T., and J. Woodage,
