@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-16T00:55:11.481502+00:00",
+  "timestamp": "2025-12-07T00:58:04.596585+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -1996,6 +1996,124 @@
       "updatedAt": "2025-11-03T23:00:46Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 134,
+      "id": "I_kwDOKZ8QO87cHnUU",
+      "title": "Room to MLS Group mapping when using PQ MLS Combiner",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/134",
+      "state": "OPEN",
+      "author": "bitbltr",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The MIMI protocol seems to assume a 1:1 mapping of rooms to MLS groups. How should we handle the PQ case where there are 2 coordinated MLS groups as specified in [draft-ietf-mls-combiner](https://datatracker.ietf.org/doc/draft-ietf-mls-combiner/)? Should rooms be a 1:many mapping to MLS groups? Or should parent rooms be used in this case? If the latter, then there should be some guidance in the protocol document (or maybe the room policy document).",
+      "createdAt": "2025-12-04T05:27:16Z",
+      "updatedAt": "2025-12-05T00:00:22Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Hi,\r\nIf there are places that assume a single MLS group, please help point them\r\nout. I had in mind parent-dependent rooms, and situations where reinits\r\ncould cause a migration of MLS groups (and 2 could exist at the same time).\r\n\r\n\r\nIf application messages are only sent in the traditional group, then MIMI\r\ncould be oblivious, except that you would configure the mandatory use of\r\nthe extension and the PQ group id in the GC of the T group.\r\nHope this helps.\r\nthanks,\r\n-rohan\r\n\r\nOn Thu, 4 Dec 2025, 06:27 bitbltr, ***@***.***> wrote:\r\n\r\n> *bitbltr* created an issue (ietf-wg-mimi/mimi-protocol#134)\r\n> <https://github.com/ietf-wg-mimi/mimi-protocol/issues/134>\r\n>\r\n> The MIMI protocol seems to assume a 1:1 mapping of rooms to MLS groups.\r\n> How should we handle the PQ case where there are 2 coordinated MLS groups\r\n> as specified in draft-ietf-mls-combiner\r\n> <https://datatracker.ietf.org/doc/draft-ietf-mls-combiner/>? Should rooms\r\n> be a 1:many mapping to MLS groups? Or should parent rooms be used in this\r\n> case? If the latter, then there should be some guidance in the protocol\r\n> document (or maybe the room policy document).\r\n>\r\n> \u2014\r\n> Reply to this email directly, view it on GitHub\r\n> <https://github.com/ietf-wg-mimi/mimi-protocol/issues/134>, or unsubscribe\r\n> <https://github.com/notifications/unsubscribe-auth/AADSQPWKLHZJDFW7JVGCVYL377A4XAVCNFSM6AAAAACN724KOKVHI2DSMVQWIX3LMV43ASLTON2WKOZTGY4TEOJYGM2TOMQ>\r\n> .\r\n> You are receiving this because you are subscribed to this thread.Message\r\n> ID: ***@***.***>\r\n>\r\n",
+          "createdAt": "2025-12-04T06:35:50Z",
+          "updatedAt": "2025-12-04T06:35:50Z"
+        },
+        {
+          "author": "bitbltr",
+          "authorAssociation": "NONE",
+          "body": "Here is some language that seems to imply the 1:1 relationship. I may be wrong about certain sections, like Franking, but I tried to leave out trivial sections or areas where operations could be implied if there was no ambiguity about the room to group mapping.\n\n[1. Introduction](https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-1-5)\n\"each room is associated with an MLS group\"\n\"as to ensure that a client is joined to a room's MLS group\"\n\n[3.2. Alice adds Bob to the Room](https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-3.2-1)\n\"Second, Bob's clients must be added to the room's MLS group\"\n\n[3.6. Cathy adds a new device](https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-3.6-4)\n\"Cathy's new client sends the External Commit to the room's MLS group\"\n\n[4.2. End-to-End Security Layer](https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-4.2-1)\n\"Every MIMI room has an MLS group associated to it\"\n\n[5.3. Update Room State](https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-5.3)\nThere are a number of references in this section, including the UpdateRoomResponse, which contains a single epoch in the body\n```\n    case wrongEpoch:\n      /* current MLS epoch for the MLS group */\n      uint64 currentEpoch;\n```\n\n[5.4.1. Message Franking](https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-5.4.1)\n\"The signature algorithm of the `franking_signature_key` is the same as the signature algorithm of cipher suite of the MLS group which corresponds to the room\"\n\n[5.6. Claim group key information](https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-5.6)\n\"In MIMI, external joins are accomplished by fetching the MLS GroupInfo for a room's MLS group, and then sending an external commit incorporating the GroupInfo.\"\n\n[6.1. Credential encryption](https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-6.1)\n\"signature_public_key: The signature public key used to authenticate MLS messages\" - Assumes a single MLS group\n\n[7.2. Cryptographic room representation](https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-7.2)\n\"Each room is represented cryptographically by an MLS group.\"",
+          "createdAt": "2025-12-04T08:03:36Z",
+          "updatedAt": "2025-12-04T08:03:36Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "On Thu, 4 Dec 2025, 09:03 bitbltr, ***@***.***> wrote:\r\n\r\n> *bitbltr* left a comment (ietf-wg-mimi/mimi-protocol#134)\r\n> <https://github.com/ietf-wg-mimi/mimi-protocol/issues/134#issuecomment-3610771952>\r\n>\r\n> Here is some language that seems to imply the 1:1 relationship. I may be\r\n> wrong about certain sections, like Franking, but I tried to leave out\r\n> trivial sections or areas where operations could be implied if there was no\r\n> ambiguity about the room to group mapping.\r\n>\r\nThanks for looking at this. Sections 1-4 are non-normative and trying to\r\nexplain the basic concepts. It might be worth a note in Section 4, but I\r\ndon't think this is 100% necessary. Likewise The sentence 7.2 seems to be\r\ntalking generally and not in a normative way.\r\n\r\nHowever the areas you pointed out in Sections 5 and 6 need some work, even\r\nif we decide to make MIMI oblivious to the PQ group.\r\n\r\nthanks,\r\n-rohan\r\n\r\n1. Introduction\r\n> <https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-1-5>\r\n> \"each room is associated with an MLS group\"\r\n> \"as to ensure that a client is joined to a room's MLS group\"\r\n>\r\n> 3.2. Alice adds Bob to the Room\r\n> <https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-3.2-1>\r\n> \"Second, Bob's clients must be added to the room's MLS group\"\r\n>\r\n> 3.6. Cathy adds a new device\r\n> <https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-3.6-4>\r\n> \"Cathy's new client sends the External Commit to the room's MLS group\"\r\n>\r\n> 4.2. End-to-End Security Layer\r\n> <https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-4.2-1>\r\n> \"Every MIMI room has an MLS group associated to it\"\r\n>\r\n> 5.3. Update Room State\r\n> <https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-5.3>\r\n> There are a number of references in this section, including the\r\n> UpdateRoomResponse, which contains a single epoch in the body\r\n>\r\n>     case wrongEpoch:\r\n>       /* current MLS epoch for the MLS group */\r\n>       uint64 currentEpoch;\r\n>\r\n> 5.4.1. Message Franking\r\n> <https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-5.4.1>\r\n> \"The signature algorithm of the franking_signature_key is the same as the\r\n> signature algorithm of cipher suite of the MLS group which corresponds to\r\n> the room\"\r\n>\r\n> 5.6. Claim group key information\r\n> <https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-5.6>\r\n> \"In MIMI, external joins are accomplished by fetching the MLS GroupInfo\r\n> for a room's MLS group, and then sending an external commit incorporating\r\n> the GroupInfo.\"\r\n>\r\n> 6.1. Credential encryption\r\n> <https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-6.1>\r\n> \"signature_public_key: The signature public key used to authenticate MLS\r\n> messages\" - Assumes a single MLS group\r\n>\r\n> 7.2. Cryptographic room representation\r\n> <https://www.ietf.org/archive/id/draft-ietf-mimi-protocol-05.html#section-7.2>\r\n> \"Each room is represented cryptographically by an MLS group.\"\r\n>\r\n> \u2014\r\n> Reply to this email directly, view it on GitHub\r\n> <https://github.com/ietf-wg-mimi/mimi-protocol/issues/134#issuecomment-3610771952>,\r\n> or unsubscribe\r\n> <https://github.com/notifications/unsubscribe-auth/AADSQPUH5TRUU4ZGQHVSOZL377TG3AVCNFSM6AAAAACN724KOKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTMMJQG43TCOJVGI>\r\n> .\r\n> You are receiving this because you commented.Message ID:\r\n> ***@***.***>\r\n>\r\n",
+          "createdAt": "2025-12-04T10:32:06Z",
+          "updatedAt": "2025-12-04T10:32:06Z"
+        },
+        {
+          "author": "bitbltr",
+          "authorAssociation": "NONE",
+          "body": "I like the idea of MIMI being oblivious to the PQ group. Then we wouldn't need parent-dependent rooms and would simplify the implementation.",
+          "createdAt": "2025-12-04T10:43:04Z",
+          "updatedAt": "2025-12-04T10:43:04Z"
+        },
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "To be clear, the original motivation of parent dependant rooms is to have,\r\nfor example, a break out room of a larger conference, or a call in the\r\ncontext of a messaging group (ex: like Slack Huddle).\r\n\r\nI also like keeping MIMI appropriately oblivious.\r\nThanks,\r\n-rohan\r\n\r\nOn Thu, 4 Dec 2025, 11:43 bitbltr, ***@***.***> wrote:\r\n\r\n> *bitbltr* left a comment (ietf-wg-mimi/mimi-protocol#134)\r\n> <https://github.com/ietf-wg-mimi/mimi-protocol/issues/134#issuecomment-3611451044>\r\n>\r\n> I like the idea of MIMI being oblivious to the PQ group. Then we wouldn't\r\n> need parent-dependent rooms and would simplify the implementation.\r\n>\r\n> \u2014\r\n> Reply to this email directly, view it on GitHub\r\n> <https://github.com/ietf-wg-mimi/mimi-protocol/issues/134#issuecomment-3611451044>,\r\n> or unsubscribe\r\n> <https://github.com/notifications/unsubscribe-auth/AADSQPQOHJSRPI4KBCK7YBD4AAF45AVCNFSM6AAAAACN724KOKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTMMJRGQ2TCMBUGQ>\r\n> .\r\n> You are receiving this because you commented.Message ID:\r\n> ***@***.***>\r\n>\r\n",
+          "createdAt": "2025-12-04T12:10:49Z",
+          "updatedAt": "2025-12-04T12:10:49Z"
+        },
+        {
+          "author": "bitbltr",
+          "authorAssociation": "NONE",
+          "body": "I just meant that we wouldn't require parent-dependent rooms in the context of implementing a single PQ-based group. I understand and agree with the intended purpose of parent-dependent rooms. Thanks for clarifying. For the purposes of my current implementation, I will assume PQ obliviousness as the details are worked out.\n\nThanks!",
+          "createdAt": "2025-12-05T00:00:11Z",
+          "updatedAt": "2025-12-05T00:00:22Z"
+        }
+      ]
+    },
+    {
+      "number": 135,
+      "id": "I_kwDOKZ8QO87cHyLZ",
+      "title": "Concern that app_data_dictionary GroupContext extension can become a maintenance problem",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/135",
+      "state": "OPEN",
+      "author": "bitbltr",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I first expressed my concern in another thread ([MLS Extensions Issue 74](https://github.com/mlswg/mls-extensions/issues/74)), but Rohan pointed out that it may be more of an application issue than an MLS protocol issue, so I am restating the issue here.\n\nThe app_data_dictionary extension allows for both opaque and patch (incremental) updates. Opaque updates are easy to support because you just replace the entire value. However patch updates require the author of the component to publish the data format, and for the client applications to implement this format.\n\nWith interoperability in mind, I see 2 major caveats to allowing patch-enabled app_data_dictionary extensions in the group context:\n\n1. Every client app will need to implement every vendor component that is released in perpetuity or risk not being able to sync the group state. I think that is an unreasonable requirement for the apps.\n2. A major vendor could make one of their component IDs required for the MLS group, but not publish the data format. This would effectively lock out all other apps from being able to maintain the group state.\n\nI think that in the context of MIMI, all vendor private use components (IDs in the range of 0x8000 0000 to 0xFFFF FFFF) must be required to be opaque updates. This will allow any client to generically support any vendor component without writing new code.\n\nOf course, this means vendors can't use patch updates, but that may encourage them to keep the group context nice and small.\n\nI would love feedback on this.",
+      "createdAt": "2025-12-04T05:48:10Z",
+      "updatedAt": "2025-12-05T20:04:06Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As I understand the problem, it really only comes up in an interop context. Here, use of the vendor-private range is dangerous anyway, because different vendors could use the same ID for semantically different components. That being said, I may be missing something, because I don't really understand the two major caveats.\n\nRegarding 1: Clients that want to participare in a group only need to support the components required by that particular group, not every component any vendor releases in general. If a client wants to add a component to a group, all members need to support it first.\n \nRegarding 2: If a provider does not want to interoperate with some other provider, MIMI can't make them. In the end, MIMI is just a protocol. It's meant to enable interoperability but it can't enforce it.",
+          "createdAt": "2025-12-05T09:44:27Z",
+          "updatedAt": "2025-12-05T09:44:27Z"
+        },
+        {
+          "author": "bitbltr",
+          "authorAssociation": "NONE",
+          "body": "The issue is the group is not negotiated. The group is created by the first member and imposed on the others. So a nefarious actor could craft a group that only their app can sync to, negating the interoperability promise. This is about potential bad actors. Am I stating my concern clearly?\n\nRequiring opaque updates (for MIMI clients) would negate my concerns immediately. The scenario in mind is only an issue with patch updates.",
+          "createdAt": "2025-12-05T10:03:34Z",
+          "updatedAt": "2025-12-05T10:05:51Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In your scenario, is the bad actor the user, the client implementation or the provider? MIMI is generally meant to facilitate interop between messaging providers, not messaging apps/client implementations. \n\nBut even if it were about apps, if you don't want users of other apps to interoperate with yours, the MIMI protocol won't be able to force you. If you don't want interop, why use MIMI in the first place? Maybe I still don't understand the scenario/threat model.",
+          "createdAt": "2025-12-05T10:17:08Z",
+          "updatedAt": "2025-12-05T10:17:08Z"
+        },
+        {
+          "author": "bitbltr",
+          "authorAssociation": "NONE",
+          "body": "In my scenario, the bad actor is the client app developer (not the user). Let's say EvilCorp makes a MIMI client that interoperates with everyone. They spend a ton of money on marketing and get 51% market share. Then they implement a component with patch semantics, do not publish the specs, then require it on all conversations. Users would have to dump their client and use EvilCorp's app because it has the market share.",
+          "createdAt": "2025-12-05T10:24:04Z",
+          "updatedAt": "2025-12-05T10:24:04Z"
+        },
+        {
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Okay, that clears it up, thanks.\n\n1. MIMI is a provider-to-provider protocol, so EvilCorp would have to be a messaging provider, not just an app/client implementation.\n2. The MIMI protocol can't force EvilCorp to interoperate with other providers. Again, MIMI is meant to enable interoperability between willing parties, not enforce it in some way. You'd need actual regulation such as the DMA to achieve that. And even if MIMI were to require opaque updates, EvilCorp could just block network traffic from other providers.\n\nI like the sentiment, though.",
+          "createdAt": "2025-12-05T10:42:26Z",
+          "updatedAt": "2025-12-05T10:43:06Z"
+        },
+        {
+          "author": "bitbltr",
+          "authorAssociation": "NONE",
+          "body": "MIMI is not just a provider-to-provider protocol. It also defines standards for how clients interact with providers. Someone can create a MIMI client without having to deploy their own provider. Just like I can build an email client without being an email provider. So:\n1. Not strictly true\n2. I am looking at a scenario where a dominant company wants to take over the market of client apps at some point in the future. EvilCorp in that case would not want to limit what providers their client can connect to. I believe my proposed solution (requiring vendor components to have opaque updates) is a trivial way to prevent it.",
+          "createdAt": "2025-12-05T20:04:06Z",
+          "updatedAt": "2025-12-05T20:04:06Z"
+        }
+      ]
     }
   ],
   "pulls": [
