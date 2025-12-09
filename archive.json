@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-07T00:58:04.596585+00:00",
+  "timestamp": "2025-12-09T00:52:51.532506+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -2068,7 +2068,7 @@
       "labels": [],
       "body": "I first expressed my concern in another thread ([MLS Extensions Issue 74](https://github.com/mlswg/mls-extensions/issues/74)), but Rohan pointed out that it may be more of an application issue than an MLS protocol issue, so I am restating the issue here.\n\nThe app_data_dictionary extension allows for both opaque and patch (incremental) updates. Opaque updates are easy to support because you just replace the entire value. However patch updates require the author of the component to publish the data format, and for the client applications to implement this format.\n\nWith interoperability in mind, I see 2 major caveats to allowing patch-enabled app_data_dictionary extensions in the group context:\n\n1. Every client app will need to implement every vendor component that is released in perpetuity or risk not being able to sync the group state. I think that is an unreasonable requirement for the apps.\n2. A major vendor could make one of their component IDs required for the MLS group, but not publish the data format. This would effectively lock out all other apps from being able to maintain the group state.\n\nI think that in the context of MIMI, all vendor private use components (IDs in the range of 0x8000 0000 to 0xFFFF FFFF) must be required to be opaque updates. This will allow any client to generically support any vendor component without writing new code.\n\nOf course, this means vendors can't use patch updates, but that may encourage them to keep the group context nice and small.\n\nI would love feedback on this.",
       "createdAt": "2025-12-04T05:48:10Z",
-      "updatedAt": "2025-12-05T20:04:06Z",
+      "updatedAt": "2025-12-07T07:45:27Z",
       "closedAt": null,
       "comments": [
         {
@@ -2112,6 +2112,20 @@
           "body": "MIMI is not just a provider-to-provider protocol. It also defines standards for how clients interact with providers. Someone can create a MIMI client without having to deploy their own provider. Just like I can build an email client without being an email provider. So:\n1. Not strictly true\n2. I am looking at a scenario where a dominant company wants to take over the market of client apps at some point in the future. EvilCorp in that case would not want to limit what providers their client can connect to. I believe my proposed solution (requiring vendor components to have opaque updates) is a trivial way to prevent it.",
           "createdAt": "2025-12-05T20:04:06Z",
           "updatedAt": "2025-12-05T20:04:06Z"
+        },
+        {
+          "author": "alvestrand",
+          "authorAssociation": "NONE",
+          "body": "What EvilCorp can do is to *claim* to support MIMI and interoperability (\"look, we can join any group that is created with MIMI by these other vendors\", thus delaying or silencing regulator criticism) but still lock out or degrade the experience of people not using their client by this particular method.\n\nGiven the past experience (for instance with iMessages' \"green and blue messages\", and countless interop issues in email (my favorite is the death of the machine parseable \"delivery notification\" in SMTP because of Microsoft's failure to adhere to a protocol promise), there's no reason to suspect that this path won't be taken.\n\nDeclaring this behavior non-compliant is at least a little bit effective in raising the barrier to this scenario.",
+          "createdAt": "2025-12-07T07:06:18Z",
+          "updatedAt": "2025-12-07T07:06:18Z"
+        },
+        {
+          "author": "bitbltr",
+          "authorAssociation": "NONE",
+          "body": "Exactly. And even a good actor could cause a similar situation. Imagine that GoodCorp creates a component with patch semantics and publishes it instead of hiding it. All other clients will be still be incompatible with groups created by GoodCorp's client that use this component until the other clients implement the component spec.\n\nI strongly believe that the MIMI protocol should not allow patch semantics for vendor components for maximum forward compatibility.",
+          "createdAt": "2025-12-07T07:45:11Z",
+          "updatedAt": "2025-12-07T07:45:27Z"
         }
       ]
     }
