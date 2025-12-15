@@ -2456,7 +2456,7 @@ This document registers the following four MLS application components per
 
 ## frank_aad app component {#iana-frank-aad}
 
-- Value: TBD1
+- Value: 0x0020
 - Name: frank_aad
 - Where: AD
 - Recommended: Y
@@ -2464,7 +2464,7 @@ This document registers the following four MLS application components per
 
 ## franking_signature_key app component {#iana-franking-sig-key}
 
-- Value: TBD2
+- Value: 0x0021
 - Name: franking_signature_key
 - Where: GC
 - Recommended: Y
@@ -2472,7 +2472,7 @@ This document registers the following four MLS application components per
 
 ## participant_list app component
 
-- Value: TBD3
+- Value: 0x0022
 - Name: participant_list
 - Where: GC
 - Recommended: Y
@@ -2480,7 +2480,7 @@ This document registers the following four MLS application components per
 
 ## room_metadata app component
 
-- Value: TBD4
+- Value: 0x0023
 - Name: room_metadata
 - Where: GC
 - Recommended: Y
