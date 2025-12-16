@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-09T00:52:51.532506+00:00",
+  "timestamp": "2025-12-16T00:54:46.421702+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -11312,6 +11312,34 @@
       "mergedBy": "rohanmahy",
       "mergeCommit": {
         "oid": "4a4c265c9f07b1f23ee28ac42aa6366dff7cd77c"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 136,
+      "id": "PR_kwDOKZ8QO86483oU",
+      "title": "Add specific MIMI component values",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/136",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-12-15T15:23:17Z",
+      "updatedAt": "2025-12-15T15:25:09Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "2e7a7773c270129ecaace4e69789e6f098eee953",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "component-nums",
+      "headRefOid": "b76f41afcebc476f5e5f55279af9821ce0bd8948",
+      "closedAt": "2025-12-15T15:25:09Z",
+      "mergedAt": "2025-12-15T15:25:09Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "0acb5fbe0b86833cb6e50f99e7dc9d29213b4af6"
       },
       "comments": [],
       "reviews": []
