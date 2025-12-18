@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-16T00:54:46.421702+00:00",
+  "timestamp": "2025-12-18T00:51:01.294492+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -2128,6 +2128,54 @@
           "updatedAt": "2025-12-07T07:45:27Z"
         }
       ]
+    },
+    {
+      "number": 137,
+      "id": "I_kwDOKZ8QO87elXKJ",
+      "title": "ietf-what-mimicking/protocol I",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/137",
+      "state": "CLOSED",
+      "author": "haihuiliang48-sys",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-12-16T11:13:40Z",
+      "updatedAt": "2025-12-16T12:36:15Z",
+      "closedAt": "2025-12-16T12:36:15Z",
+      "comments": []
+    },
+    {
+      "number": 138,
+      "id": "I_kwDOKZ8QO87euxxu",
+      "title": "Big dream",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/138",
+      "state": "OPEN",
+      "author": "haihuiliang48-sys",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "_Originally posted by @rjsparks in https://github.com/ietf-tools/datatracker/pull/9855_",
+      "createdAt": "2025-12-17T00:16:57Z",
+      "updatedAt": "2025-12-17T00:16:57Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 139,
+      "id": "I_kwDOKZ8QO87e6Esy",
+      "title": "Split list of join links from the JoinLinkPolicy",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/139",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-12-17T17:18:21Z",
+      "updatedAt": "2025-12-17T17:18:21Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
