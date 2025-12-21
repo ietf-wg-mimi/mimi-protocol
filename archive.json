@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-18T00:51:01.294492+00:00",
+  "timestamp": "2025-12-21T00:58:20.097543+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -2174,6 +2174,22 @@
       "body": "",
       "createdAt": "2025-12-17T17:18:21Z",
       "updatedAt": "2025-12-17T17:18:21Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 140,
+      "id": "I_kwDOKZ8QO87fg7oL",
+      "title": "consider making role_index a u16",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/140",
+      "state": "OPEN",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Currently `role_index` is a u32. We should consider making it a u16. Most rooms have fewer participants than this, but even rooms of 100,000 participants should not have one role per user for performance reasons. Clamping the number of roles to a u16 seems a sensible restriction, and we could even consider an arbitrary limit such as 1k roles or 8k roles.",
+      "createdAt": "2025-12-20T11:06:04Z",
+      "updatedAt": "2025-12-20T11:06:04Z",
       "closedAt": null,
       "comments": []
     }
