@@ -1,3 +1,5 @@
+<!-- regenerate: on (set to off if you edit this file) -->
+
 # More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
 
 This is the working area for the IETF [MIMI Working Group](https://datatracker.ietf.org/group/mimi/documents/) Internet-Draft, "More Instant Messaging Interoperability (MIMI) using HTTPS and MLS".
@@ -13,9 +15,8 @@ This is the working area for the IETF [MIMI Working Group](https://datatracker.i
 See the
 [guidelines for contributions](https://github.com/ietf-wg-mimi/mimi-protocol/blob/main/CONTRIBUTING.md).
 
-Contributions can be made by creating pull requests.
-The GitHub interface supports creating pull requests using the Edit (✏) button.
-
+The contributing file also has tips on how to make contributions, if you
+don't already know how to do that.
 
 ## Command Line Usage
 
