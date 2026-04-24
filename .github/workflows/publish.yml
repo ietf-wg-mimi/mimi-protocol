@@ -50,13 +50,13 @@ jobs:
         make: releases
         token: ${{ github.token }}
 
-    - name: "Upload to Datatracker"
-      uses: martinthomson/i-d-template@v1
-      with:
-        make: upload
-      env:
-        UPLOAD_EMAIL: ${{ inputs.email }}
-        GITHUB_STEP: upload
+#    - name: "Upload to Datatracker"
+#      uses: martinthomson/i-d-template@v1
+#      with:
+#        make: upload
+#      env:
+#        UPLOAD_EMAIL: ${{ inputs.email }}
+#        GITHUB_STEP: upload
 
     - name: "Archive Submitted Drafts"
       uses: actions/upload-artifact@v6
