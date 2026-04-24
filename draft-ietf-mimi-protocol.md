@@ -1687,6 +1687,7 @@ struct {
       case grant:
           KeyPackage clientKeyPackages<V>;
   };
+  AppDataDictionary consent_extensions;
 } ConsentEntry;
 
 struct {
@@ -1735,6 +1736,8 @@ wish to reveal if a user is not found can respond with a 201 Accepted.
 > is the case the target provider does not need to send a `revoke` to inform
 > the requester provider.
 
+The `consent_extensions` field is an AppDataDictionary; it is an extension point that borrows the same syntax as the app_data_dictionary MLS extension in {{Section 4.6 of !I-D.ietf-mls-extensions}}.
+
 ## Find internal address
 
 The identifier query is to find the internal URI for a specific user on a
@@ -1769,6 +1772,8 @@ semantics). For example matching both the OpenID Connect (OIDC) {{OidcCore}}
 `given_name` and `family_name`, or matching the OIDC `given_name` and the
 organization (from the vCard {{!RFC6350}} ORG property).
 
+The `id_request_extensions` field is an extension point using AppDataDictionary-style components.
+
 ~~~ tls
 enum {
   reserved(0),
@@ -1796,6 +1801,7 @@ struct {
 
 struct {
   QueryElement query_elements<V>;
+  AppDataDictionary id_request_extensions;
 } IdentifierRequest;
 ~~~
 
@@ -1838,6 +1844,8 @@ by the provider or that an unspecified field or combination of fields is
 not allowed in an identifier query. `unsupportedField` means that the
 provider does not support queries on one of the fields queried.
 
+The `id_response_extensions` field is an extension point using AppDataDictionary-style components.
+
 ~~~ tls
 enum {
   success(0),
@@ -1870,6 +1878,7 @@ struct {
   IdentifierQueryCode responseCode;
   IdentifierUri uri<V>;
   UserProfile foundProfiles<V>;
+  AppDataDictionary id_response_extensions;
 } IdentifierResponse;
 ~~~
 
@@ -1920,6 +1929,7 @@ struct {
   AbuseType reasonCode;
   opaque note<V>;
   AbusiveMessage messages<V>;
+  AppDataDictionary abuse_extensions;
 } AbuseReport;
 ~~~
 
@@ -1933,6 +1943,7 @@ recalculate the `franking_tag` and `context`. Then the hub selects its relevant
 `franking_integrity_signature` using the signature algorithm embedded in the
 `franking_signature_ciphersuite`.
 
+The `abuse_extensions` field is an extension point using AppDataDictionary-style components.
 
 ## Download Files
 
