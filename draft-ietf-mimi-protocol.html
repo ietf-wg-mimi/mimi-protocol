@@ -22,25 +22,25 @@ integrates the Messaging Layer Security (MLS) protocol to provide end-to-end sec
 assurances, including authentication of protocol participants, confidentiality
 of messages exchanged within a room, and agreement on the state of the room. 
     " name="description">
-<meta content="xml2rfc 3.31.0" name="generator">
+<meta content="xml2rfc 3.33.0" name="generator">
 <meta content="mimi" name="keyword">
 <meta content="interoperable messaging" name="keyword">
 <meta content="chat" name="keyword">
 <meta content="secure messaging" name="keyword">
 <meta content="draft-ietf-mimi-protocol-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.31.0
-    Python 3.12.12
+  xml2rfc 3.33.0
+    Python 3.12.13
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
-    intervaltree 3.1.0
+    intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 5.3.1
-    platformdirs 4.5.0
+    lxml 6.0.2
+    platformdirs 4.9.6
     pycountry 24.6.1
-    PyYAML 6.0.2
+    PyYAML 6.0.3
     requests 2.32.5
-    wcwidth 0.2.14
+    wcwidth 0.6.0
 -->
 <link href="draft-ietf-mimi-protocol.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -181,7 +181,7 @@ of messages exchanged within a room, and agreement on the state of the room.
   font-weight: 400;
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
   font-family: 'Oxygen Mono';
@@ -189,7 +189,8 @@ of messages exchanged within a room, and agreement on the state of the room.
   font-weight: 400;
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 }
 
 @font-face {
@@ -581,6 +582,7 @@ aside, blockquote {
 }
 blockquote {
   margin: 1em 0;
+  border-left: 2px var(--pilcrow-strong) solid;
 }
 cite {
   display: block;
@@ -651,7 +653,7 @@ a.pilcrow {
   }
 }
 @media not print {
-  :hover > a.pilcrow {
+  :hover > a.pilcrow, a.pilcrow:focus {
     opacity: 1;
   }
   a.pilcrow[href]:hover {
@@ -1059,11 +1061,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">MIMI+MLS Protocol</td>
-<td class="right">December 2025</td>
+<td class="right">April 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 18 June 2026</td>
+<td class="center">Expires 26 October 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1076,12 +1078,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-12-15" class="published">15 December 2025</time>
+<time datetime="2026-04-24" class="published">24 April 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-06-18">18 June 2026</time></dd>
+<dd class="expires"><time datetime="2026-10-26">26 October 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1159,7 +1161,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 18 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 26 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1168,7 +1170,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2025 IETF Trust and the persons identified as the
+            Copyright (c) 2026 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -3269,8 +3271,8 @@ learn the content of the message, nor the sender.<a href="#section-5.4.1-1" clas
 franking mechanism is largely motivated by that solution with two
 significant changes as discussed in the final paragraph of this section.<a href="#section-5.4.1-2" class="pilcrow">¶</a></p>
 <p id="section-5.4.1-3">MIMI franking relies on two new MLS application components. The first is the
-<code>frank_aad</code> Safe AAD component <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-08#section-4.9" class="relref">Section 4.9</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>. The
-second is the <code>franking_agent</code> GroupContext component <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-08#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>. The structure of <code>franking_agent</code> mirrors that of
+<code>frank_aad</code> Safe AAD component <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-09#section-4.9" class="relref">Section 4.9</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>. The
+second is the <code>franking_agent</code> GroupContext component <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-09#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>. The structure of <code>franking_agent</code> mirrors that of
 the <code>ExternerSender</code> struct described in <span><a href="https://rfc-editor.org/rfc/rfc9420#section-12.1.8.1" class="relref">Section 12.1.8.1</a> of [<a href="#RFC9420" class="cite xref">RFC9420</a>]</span>. It
 contains a single signature key.<a href="#section-5.4.1-3" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.4.1-4">
@@ -3315,7 +3317,7 @@ generate the salt is discussed in Section 8.2 of <span>[<a href="#I-D.ietf-mimi-
 <p id="section-5.4.1.1-3">The sender of a MIMI content message attaches to the message any fields the
 sender wishes to commit that are not otherwise represented in the content. For a
 MIMI content object, the sender includes the sender's user URI and room URI in
-the MIMI content extensions map (see definitions in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-07#section-8.3" class="relref">Section 8.3</a> of [<a href="#I-D.ietf-mimi-content" class="cite xref">I-D.ietf-mimi-content</a>]</span>).<a href="#section-5.4.1.1-3" class="pilcrow">¶</a></p>
+the MIMI content extensions map (see definitions in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-08#section-8.3" class="relref">Section 8.3</a> of [<a href="#I-D.ietf-mimi-content" class="cite xref">I-D.ietf-mimi-content</a>]</span>).<a href="#section-5.4.1.1-3" class="pilcrow">¶</a></p>
 <div class="lang-cbor-diag sourcecode" id="section-5.4.1.1-4">
 <pre>
 / MIMI content extensions map /
@@ -4439,7 +4441,7 @@ applies to events changing the room state.<a href="#section-7.1-4" class="pilcro
 manages the room also manages the list of group members, i.e. the
 list of clients belonging to users currently in the room. Application state
 that is stored in the MLS GroupContext is stored as application components
-in the <code>app_data_dictionary</code> extension, as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-08#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+in the <code>app_data_dictionary</code> extension, as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-09#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="proposal-commit-paradigm">
@@ -4705,7 +4707,7 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <a href="#section-10" class="section-number selfRef">10. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
 <p id="section-10-1">This document registers the following four MLS application components per
-<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-08#section-7.6" class="relref">Section 7.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>.<a href="#section-10-1" class="pilcrow">¶</a></p>
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-09#section-7.6" class="relref">Section 7.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>.<a href="#section-10-1" class="pilcrow">¶</a></p>
 <div id="iana-frank-aad">
 <section id="section-10.1">
         <h3 id="name-frank_aad-app-component">
@@ -4825,23 +4827,23 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <dd class="break"></dd>
 <dt id="I-D.ietf-mimi-content">[I-D.ietf-mimi-content]</dt>
         <dd>
-<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"More Instant Messaging Interoperability (MIMI) message content"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mimi-content-07</span>, <time datetime="2025-07-07" class="refDate">7 July 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-07">https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-07</a>&gt;</span>. </dd>
+<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"More Instant Messaging Interoperability (MIMI) message content"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mimi-content-08</span>, <time datetime="2026-03-02" class="refDate">2 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-08">https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-08</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-mimi-room-policy">[I-D.ietf-mimi-room-policy]</dt>
         <dd>
-<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Room Policy for the More Instant Messaging Interoperability (MIMI) Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mimi-room-policy-02</span>, <time datetime="2025-10-20" class="refDate">20 October 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-room-policy-02">https://datatracker.ietf.org/doc/html/draft-ietf-mimi-room-policy-02</a>&gt;</span>. </dd>
+<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Room Policy for the More Instant Messaging Interoperability (MIMI) Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mimi-room-policy-03</span>, <time datetime="2025-12-18" class="refDate">18 December 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-room-policy-03">https://datatracker.ietf.org/doc/html/draft-ietf-mimi-room-policy-03</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-mls-extensions">[I-D.ietf-mls-extensions]</dt>
         <dd>
-<span class="refAuthor">Robert, R.</span>, <span class="refTitle">"The Messaging Layer Security (MLS) Extensions"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mls-extensions-08</span>, <time datetime="2025-07-21" class="refDate">21 July 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-08">https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-08</a>&gt;</span>. </dd>
+<span class="refAuthor">Robert, R.</span>, <span class="refTitle">"The Messaging Layer Security (MLS) Extensions"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mls-extensions-09</span>, <time datetime="2026-03-02" class="refDate">2 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-09">https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-09</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.mahy-mls-ratchet-tree-options">[I-D.mahy-mls-ratchet-tree-options]</dt>
         <dd>
-<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Ways to convey the Ratchet Tree in Messaging Layer Security"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-ratchet-tree-options-03</span>, <time datetime="2025-10-16" class="refDate">16 October 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-ratchet-tree-options-03">https://datatracker.ietf.org/doc/html/draft-mahy-mls-ratchet-tree-options-03</a>&gt;</span>. </dd>
+<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Ways to convey the Ratchet Tree in Messaging Layer Security"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-ratchet-tree-options-04</span>, <time datetime="2026-03-02" class="refDate">2 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-ratchet-tree-options-04">https://datatracker.ietf.org/doc/html/draft-mahy-mls-ratchet-tree-options-04</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.mahy-mls-semiprivatemessage">[I-D.mahy-mls-semiprivatemessage]</dt>
         <dd>
-<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Semi-Private Messages in the Messaging Layer Security (MLS) Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-semiprivatemessage-06</span>, <time datetime="2025-10-16" class="refDate">16 October 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-06">https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-06</a>&gt;</span>. </dd>
+<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Semi-Private Messages in the Messaging Layer Security (MLS) Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-semiprivatemessage-07</span>, <time datetime="2026-04-19" class="refDate">19 April 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-07">https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-07</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="OidcCore">[OidcCore]</dt>
         <dd>

@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 18 June 2026                   The Matrix.org Foundation C.I.C.
+Expires: 26 October 2026                The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 18 June 2026                   The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                        15 December 2025
+                                                           24 April 2026
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,11 +66,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 June 2026.
+   This Internet-Draft will expire on 26 October 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -2605,37 +2605,37 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.ietf-mimi-content]
               Mahy, R., "More Instant Messaging Interoperability (MIMI)
               message content", Work in Progress, Internet-Draft, draft-
-              ietf-mimi-content-07, 7 July 2025,
+              ietf-mimi-content-08, 2 March 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mimi-
-              content-07>.
+              content-08>.
 
    [I-D.ietf-mimi-room-policy]
               Mahy, R., "Room Policy for the More Instant Messaging
               Interoperability (MIMI) Protocol", Work in Progress,
-              Internet-Draft, draft-ietf-mimi-room-policy-02, 20 October
-              2025, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              mimi-room-policy-02>.
+              Internet-Draft, draft-ietf-mimi-room-policy-03, 18
+              December 2025, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-mimi-room-policy-03>.
 
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
               Extensions", Work in Progress, Internet-Draft, draft-ietf-
-              mls-extensions-08, 21 July 2025,
+              mls-extensions-09, 2 March 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mls-
-              extensions-08>.
+              extensions-09>.
 
    [I-D.mahy-mls-ratchet-tree-options]
               Mahy, R., "Ways to convey the Ratchet Tree in Messaging
               Layer Security", Work in Progress, Internet-Draft, draft-
-              mahy-mls-ratchet-tree-options-03, 16 October 2025,
+              mahy-mls-ratchet-tree-options-04, 2 March 2026,
               <https://datatracker.ietf.org/doc/html/draft-mahy-mls-
-              ratchet-tree-options-03>.
+              ratchet-tree-options-04>.
 
    [I-D.mahy-mls-semiprivatemessage]
               Mahy, R., "Semi-Private Messages in the Messaging Layer
               Security (MLS) Protocol", Work in Progress, Internet-
-              Draft, draft-mahy-mls-semiprivatemessage-06, 16 October
-              2025, <https://datatracker.ietf.org/doc/html/draft-mahy-
-              mls-semiprivatemessage-06>.
+              Draft, draft-mahy-mls-semiprivatemessage-07, 19 April
+              2026, <https://datatracker.ietf.org/doc/html/draft-mahy-
+              mls-semiprivatemessage-07>.
 
    [OidcCore] Sakimura, N., Bradley, J., Jones, M. B., Medeiros, B. de.,
               and C. Mortimore, "OpenID Connect Core 1.0 incorporating
