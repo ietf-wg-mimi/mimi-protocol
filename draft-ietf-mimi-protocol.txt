@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 26 October 2026                The Matrix.org Foundation C.I.C.
+Expires: 27 October 2026                The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 26 October 2026                The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                           24 April 2026
+                                                           25 April 2026
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 October 2026.
+   This Internet-Draft will expire on 27 October 2026.
 
 Copyright Notice
 
@@ -1763,6 +1763,7 @@ ServerC->ClientC*: [[ Commit ]]
          case grant:
              KeyPackage clientKeyPackages<V>;
      };
+     AppDataDictionary consent_extensions;
    } ConsentEntry;
 
    struct {
@@ -1813,6 +1814,11 @@ ServerC->ClientC*: [[ Commit ]]
       If this is the case the target provider does not need to send a
       revoke to inform the requester provider.
 
+   The consent_extensions field is an AppDataDictionary; it is an
+   extension point that borrows the same syntax as the
+   app_data_dictionary MLS extension in Section 4.6 of
+   [I-D.ietf-mls-extensions].
+
 5.8.  Find internal address
 
    The identifier query is to find the internal URI for a specific user
@@ -1846,6 +1852,9 @@ ServerC->ClientC*: [[ Commit ]]
    given_name and the organization (from the vCard [RFC6350] ORG
    property).
 
+   The id_request_extensions field is an extension point using
+   AppDataDictionary-style components.
+
    enum {
      reserved(0),
      handle(1),
@@ -1872,6 +1881,7 @@ ServerC->ClientC*: [[ Commit ]]
 
    struct {
      QueryElement query_elements<V>;
+     AppDataDictionary id_request_extensions;
    } IdentifierRequest;
 
    The semantics of the SearchIdentifierType values are as follows.
@@ -1916,6 +1926,9 @@ ServerC->ClientC*: [[ Commit ]]
    unsupportedField means that the provider does not support queries on
    one of the fields queried.
 
+   The id_response_extensions field is an extension point using
+   AppDataDictionary-style components.
+
    enum {
      success(0),
      notFound(1),
@@ -1947,6 +1960,7 @@ ServerC->ClientC*: [[ Commit ]]
      IdentifierQueryCode responseCode;
      IdentifierUri uri<V>;
      UserProfile foundProfiles<V>;
+     AppDataDictionary id_response_extensions;
    } IdentifierResponse;
 
       *TODO*: The format of specific identifiers is discussed in
@@ -1995,6 +2009,7 @@ ServerC->ClientC*: [[ Commit ]]
      AbuseType reasonCode;
      opaque note<V>;
      AbusiveMessage messages<V>;
+     AppDataDictionary abuse_extensions;
    } AbuseReport;
 
    There is no response body.  The response code only indicates if the
@@ -2007,6 +2022,9 @@ ServerC->ClientC*: [[ Commit ]]
    the hub selects its relevant hub_key to regenerate the server_frank.
    Finally the hub verifies its franking_integrity_signature using the
    signature algorithm embedded in the franking_signature_ciphersuite.
+
+   The abuse_extensions field is an extension point using
+   AppDataDictionary-style components.
 
 5.10.  Download Files
 
