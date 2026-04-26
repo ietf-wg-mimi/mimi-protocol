@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-15T00:54:01.000900+00:00",
+  "timestamp": "2026-04-26T02:01:41.541278+00:00",
   "repo": "ietf-wg-mimi/mimi-protocol",
   "labels": [
     {
@@ -2208,6 +2208,30 @@
       "updatedAt": "2026-01-13T13:20:02Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 142,
+      "id": "I_kwDOKZ8QO875eN6M",
+      "title": "consider adding extensibility to some endpoints",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/issues/142",
+      "state": "CLOSED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "consider where extensibility is needed among the MIMI protocol endpoints:\n\n- the directory is extensible by definition\n- the keyMaterial, update, notify, submitMessage, and groupInfo endpoints all rely on MLS, which provides a high degree of extensibility for these requests.\n- we could something like an app_data_dictionary at the end of the requestConsent, targetConsent, identifierQuery, and reportAbuse endpoints  to enable extensibility on those endpoint.\n",
+      "createdAt": "2026-04-01T09:19:53Z",
+      "updatedAt": "2026-04-25T19:36:09Z",
+      "closedAt": "2026-04-25T19:36:09Z",
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@kkohbrok ",
+          "createdAt": "2026-04-24T15:29:35Z",
+          "updatedAt": "2026-04-24T15:29:35Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -11183,7 +11207,7 @@
       "labels": [],
       "body": "The MLS group for a room is in epoch <n>. \r\n\r\nValid SelfRemove proposals are received from a member, or Valid AppDataUpdate or AppEphemeral external proposals are received from an external_sender.\r\n\r\nThe hub needs to provide these valid pending proposals which would be included in an external commit.",
       "createdAt": "2025-07-11T17:35:38Z",
-      "updatedAt": "2025-11-15T10:27:42Z",
+      "updatedAt": "2026-04-25T19:45:52Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "a04c365aeb85211760cd160c9f638a183032dd6d",
@@ -11219,7 +11243,7 @@
       "labels": [],
       "body": "- Added an explicit (uint16) lengths for the sender URI and room URI in the franking context. Addresses #122 \r\n- Added a `franking_signature_ciphersuite` to allow the hub to validate a `franking_integrity_signature` even after the MLS ciphersuite has changed in that room. Addresses #129 ",
       "createdAt": "2025-09-12T14:20:44Z",
-      "updatedAt": "2025-10-19T19:05:46Z",
+      "updatedAt": "2026-04-25T19:45:50Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "a04c365aeb85211760cd160c9f638a183032dd6d",
@@ -11346,7 +11370,7 @@
       "labels": [],
       "body": "I don't think we really need this. There can be a single franking_agent per room, as there is only one Hub per room",
       "createdAt": "2025-10-20T12:52:25Z",
-      "updatedAt": "2025-11-03T19:30:19Z",
+      "updatedAt": "2026-04-25T19:45:48Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "8568b5b98770a66dfa4585c9772ec9a41690038f",
@@ -11380,7 +11404,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-10-20T12:56:33Z",
-      "updatedAt": "2025-10-20T12:56:49Z",
+      "updatedAt": "2026-04-25T19:45:47Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "8568b5b98770a66dfa4585c9772ec9a41690038f",
@@ -11408,7 +11432,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-12-15T15:23:17Z",
-      "updatedAt": "2025-12-15T15:25:09Z",
+      "updatedAt": "2026-04-25T19:45:46Z",
       "baseRepository": "ietf-wg-mimi/mimi-protocol",
       "baseRefName": "main",
       "baseRefOid": "2e7a7773c270129ecaace4e69789e6f098eee953",
@@ -11420,6 +11444,194 @@
       "mergedBy": "rohanmahy",
       "mergeCommit": {
         "oid": "0acb5fbe0b86833cb6e50f99e7dc9d29213b4af6"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 143,
+      "id": "PR_kwDOKZ8QO87VVECD",
+      "title": "Add extension points to consent, id query, and abuse endpoints",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/143",
+      "state": "CLOSED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Reuses the structure of a dictionary of components from MLS AppDataDictionary.\r\n\r\nResolves Issue #142 ",
+      "createdAt": "2026-04-24T12:23:45Z",
+      "updatedAt": "2026-04-25T19:45:45Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "0acb5fbe0b86833cb6e50f99e7dc9d29213b4af6",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "extension-points",
+      "headRefOid": "4c85c813c1d2e9fe1cba3ec1e0e7ac2ea32a51ee",
+      "closedAt": "2026-04-24T15:08:54Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "rohanmahy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing in favor of #147 ",
+          "createdAt": "2026-04-24T15:08:54Z",
+          "updatedAt": "2026-04-24T15:08:54Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 144,
+      "id": "PR_kwDOKZ8QO87VXF5N",
+      "title": "Fix CI",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/144",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-04-24T14:09:49Z",
+      "updatedAt": "2026-04-25T19:45:43Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "0acb5fbe0b86833cb6e50f99e7dc9d29213b4af6",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "fix-ci",
+      "headRefOid": "84a68027c018be17a5dc14b7446a59cdd7fca616",
+      "closedAt": "2026-04-24T14:10:22Z",
+      "mergedAt": "2026-04-24T14:10:22Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "fce5a64701d1c2d345e4a69a755976a8e2b60618"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 145,
+      "id": "PR_kwDOKZ8QO87VXPuC",
+      "title": "Add aasvg to packages.json for the CI",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/145",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-04-24T14:17:33Z",
+      "updatedAt": "2026-04-24T14:17:50Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "fce5a64701d1c2d345e4a69a755976a8e2b60618",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "add-aasvg",
+      "headRefOid": "bda6cb6b2162b0a34fcbcdd96607cfec7f0bd6be",
+      "closedAt": "2026-04-24T14:17:49Z",
+      "mergedAt": "2026-04-24T14:17:49Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "5ae942533480dddd26e57d5108b27797db73f3b9"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 146,
+      "id": "PR_kwDOKZ8QO87VYLe4",
+      "title": "package.json now contains known working version of aasvg",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/146",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-04-24T15:06:23Z",
+      "updatedAt": "2026-04-25T19:45:35Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "5ae942533480dddd26e57d5108b27797db73f3b9",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "fix-aasvg",
+      "headRefOid": "19ab3ea4d020dc38b34bf918592d2688a747111a",
+      "closedAt": "2026-04-24T15:06:32Z",
+      "mergedAt": "2026-04-24T15:06:32Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "0b9afc8f33716ce33fe97ca6494aa58e8b982e39"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 147,
+      "id": "PR_kwDOKZ8QO87VYOEm",
+      "title": "Add extension points to consent, id query, and abuse endpoints",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/147",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Reuses the structure of a dictionary of components from MLS AppDataDictionary.\r\n\r\nResolves Issue https://github.com/ietf-wg-mimi/mimi-protocol/issues/142",
+      "createdAt": "2026-04-24T15:08:15Z",
+      "updatedAt": "2026-04-25T19:45:34Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "0b9afc8f33716ce33fe97ca6494aa58e8b982e39",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "ext-points",
+      "headRefOid": "e9f5d35441f3497e5517b1364d810703913e0948",
+      "closedAt": "2026-04-25T19:35:29Z",
+      "mergedAt": "2026-04-25T19:35:29Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "db1dccf1294e419b212f430bc8b5d01d5877b1b2"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKZ8QO8745hHI",
+          "commit": {
+            "abbreviatedOid": "e9f5d35"
+          },
+          "author": "kkohbrok",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-04-25T16:11:31Z",
+          "updatedAt": "2026-04-25T16:11:31Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 148,
+      "id": "PR_kwDOKZ8QO87VovJw",
+      "title": "Ready to submit draft-ietf-mimi-protocol-06",
+      "url": "https://github.com/ietf-wg-mimi/mimi-protocol/pull/148",
+      "state": "MERGED",
+      "author": "rohanmahy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-04-25T19:44:08Z",
+      "updatedAt": "2026-04-25T19:45:33Z",
+      "baseRepository": "ietf-wg-mimi/mimi-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "db1dccf1294e419b212f430bc8b5d01d5877b1b2",
+      "headRepository": "ietf-wg-mimi/mimi-protocol",
+      "headRefName": "submit-06",
+      "headRefOid": "93c63557a88d2d7313948cc09f6b6a57f0da0a9e",
+      "closedAt": "2026-04-25T19:45:01Z",
+      "mergedAt": "2026-04-25T19:45:01Z",
+      "mergedBy": "rohanmahy",
+      "mergeCommit": {
+        "oid": "833394a3703bb06a9e9ce28572c4197b1238be39"
       },
       "comments": [],
       "reviews": []
