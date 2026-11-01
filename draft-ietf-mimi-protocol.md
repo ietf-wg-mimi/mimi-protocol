@@ -1446,7 +1446,10 @@ the message will eventually be distributed to the group. The hub is not
 expected to forward the client's own message to the client or its provider.
 However, the client and its provider need to be prepared to receive the
 client's (effectively duplicate) message. This situation can occur during
-failover in high availability recovery scenarios.
+failover in high availability recovery scenarios. This exemption for the
+client's own message does not apply to a Welcome message, which the hub sends
+to every provider associated with a `KeyPackageRef` in its `secrets` array,
+including the provider of the client that submitted it.
 
 Clients that are being removed SHOULD receive the corresponding
 Commit message, so they can recognize that they have been removed and clean up
