@@ -4571,13 +4571,21 @@ role. Next is the <code>removedIndices</code> list which has a list of users to 
 completely from the participant list. Finally there is a list of
 <code>addedParticipants</code> (which contains a user and role) that is appended to the
 end of the <code>ParticipantListData</code>.<a href="#section-7.5-6" class="pilcrow">¶</a></p>
-<p id="section-7.5-7">Each of these actions (modifying a user's role, removing a user, and adding a
+<p id="section-7.5-7">All indices in <code>changedRoleParticipants</code> and <code>removedIndices</code> refer to the
+<code>participants</code> vector at the end of the epoch in which the proposal is sent,
+as with MLS Remove proposals. This holds even when a commit contains more than
+one ParticipantListUpdate. Removing one entry does not shift the indices of
+the other removals. A ParticipantListUpdate is invalid if any index is out of
+range, if an index appears more than once in <code>changedRoleParticipants</code> or in
+<code>removedIndices</code>, if an index appears in both lists, or if a user in
+<code>addedParticipants</code> is already in the participant list.<a href="#section-7.5-7" class="pilcrow">¶</a></p>
+<p id="section-7.5-8">Each of these actions (modifying a user's role, removing a user, and adding a
 user) is authorized separately according to the rules specified in
 <span>[<a href="#I-D.ietf-mimi-room-policy" class="cite xref">I-D.ietf-mimi-room-policy</a>]</span>. If all the changes are authorized, the
-<code>ParticipantListData</code> is modified accordingly.<a href="#section-7.5-7" class="pilcrow">¶</a></p>
-<p id="section-7.5-8">A single commit is not valid if it contain any combination of Participant list
+<code>ParticipantListData</code> is modified accordingly.<a href="#section-7.5-8" class="pilcrow">¶</a></p>
+<p id="section-7.5-9">A single commit is not valid if it contain any combination of Participant list
 updates that operate on (add, remove, or change the role of) the same user in
-the participant list more than once.<a href="#section-7.5-8" class="pilcrow">¶</a></p>
+the participant list more than once.<a href="#section-7.5-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="room-metadata">
