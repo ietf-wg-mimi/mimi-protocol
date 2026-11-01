@@ -718,6 +718,8 @@ protocol so that different variations of the end-to-end encryption can be used.
 
 The syntax of the MIMI protocol messages are described using the TLS
 presentation language format ({{Section 3 of RFC8446}}).
+Request and response bodies encoded using the structures in this document use
+the media type `application/mimi-protocol` ({{iana-media-type}}).
 
 ~~~ tls
 enum {
@@ -2500,6 +2502,47 @@ This document registers the following four MLS application components per
 - Where: GC
 - Recommended: Y
 - Reference: RFCXXXX
+
+## mimi-protocol-directory well-known URI
+
+This document registers the following well-known URI per {{!RFC8615}}.
+
+- URI suffix: mimi-protocol-directory
+- Change controller: IETF
+- Specification document(s): RFCXXXX, {{directory}}
+- Status: permanent
+- Related information: None
+
+## application/mimi-protocol media type {#iana-media-type}
+
+This document registers the `application/mimi-protocol` media type per
+{{!RFC6838}}. The request and response bodies of the endpoints in
+{{mimi-endpoints-and-framing}} use this media type. The exceptions are the
+directory document, which is `application/json`, and the response to
+`proxyDownload`, which carries the downloaded content.
+
+- Type name: application
+- Subtype name: mimi-protocol
+- Required parameters: none
+- Optional parameters: none
+- Encoding considerations: binary
+- Security considerations: See {{security-considerations}} of RFCXXXX
+- Interoperability considerations: none
+- Published specification: RFCXXXX
+- Applications that use this media type: MIMI providers exchanging messages for
+  rooms that span providers
+- Fragment identifier considerations: N/A
+- Additional information:
+  - Deprecated alias names for this type: N/A
+  - Magic number(s): N/A
+  - File extension(s): N/A
+  - Macintosh file type code(s): N/A
+- Person & email address to contact for further information: IETF MIMI Working
+  Group (mimi@ietf.org)
+- Intended usage: COMMON
+- Restrictions on usage: none
+- Author: See the Authors' Addresses section of RFCXXXX
+- Change controller: Internet Engineering Task Force (iesg@ietf.org)
 
 
 --- back
