@@ -132,6 +132,8 @@ Table of Contents
      10.2.  franking_agent app component
      10.3.  participant_list app component
      10.4.  room_metadata app component
+     10.5.  mimi-protocol-directory well-known URI
+     10.6.  application/mimi-protocol media type
    11. References
      11.1.  Normative References
      11.2.  Informative References
@@ -787,7 +789,9 @@ ServerC->ClientC*: [[ Commit ]]
       MIMI version, e2e protocol version, etc.
 
    The syntax of the MIMI protocol messages are described using the TLS
-   presentation language format (Section 3 of [RFC8446]).
+   presentation language format (Section 3 of [RFC8446]).  Request and
+   response bodies encoded using the structures in this document use the
+   media type application/mimi-protocol (Section 10.6).
 
    enum {
        reserved(0),
@@ -2607,6 +2611,70 @@ ServerC->ClientC*: [[ Commit ]]
 
    *  Reference: RFCXXXX
 
+10.5.  mimi-protocol-directory well-known URI
+
+   This document registers the following well-known URI per [RFC8615].
+
+   *  URI suffix: mimi-protocol-directory
+
+   *  Change controller: IETF
+
+   *  Specification document(s): RFCXXXX, Section 5.1
+
+   *  Status: permanent
+
+   *  Related information: None
+
+10.6.  application/mimi-protocol media type
+
+   This document registers the application/mimi-protocol media type per
+   [RFC6838].  The request and response bodies of the endpoints in
+   Section 5 use this media type.  The exceptions are the directory
+   document, which is application/json, and the response to
+   proxyDownload, which carries the downloaded content.
+
+   *  Type name: application
+
+   *  Subtype name: mimi-protocol
+
+   *  Required parameters: none
+
+   *  Optional parameters: none
+
+   *  Encoding considerations: binary
+
+   *  Security considerations: See Section 9 of RFCXXXX
+
+   *  Interoperability considerations: none
+
+   *  Published specification: RFCXXXX
+
+   *  Applications that use this media type: MIMI providers exchanging
+      messages for rooms that span providers
+
+   *  Fragment identifier considerations: N/A
+
+   *  Additional information:
+
+      -  Deprecated alias names for this type: N/A
+
+      -  Magic number(s): N/A
+
+      -  File extension(s): N/A
+
+      -  Macintosh file type code(s): N/A
+
+   *  Person & email address to contact for further information: IETF
+      MIMI Working Group (mimi@ietf.org)
+
+   *  Intended usage: COMMON
+
+   *  Restrictions on usage: none
+
+   *  Author: See the Authors' Addresses section of RFCXXXX
+
+   *  Change controller: Internet Engineering Task Force (iesg@ietf.org)
+
 11.  References
 
 11.1.  Normative References
@@ -2683,6 +2751,11 @@ ServerC->ClientC*: [[ Commit ]]
               DOI 10.17487/RFC6350, August 2011,
               <https://www.rfc-editor.org/rfc/rfc6350>.
 
+   [RFC6838]  Freed, N., Klensin, J., and T. Hansen, "Media Type
+              Specifications and Registration Procedures", BCP 13,
+              RFC 6838, DOI 10.17487/RFC6838, January 2013,
+              <https://www.rfc-editor.org/rfc/rfc6838>.
+
    [RFC7231]  Fielding, R., Ed. and J. Reschke, Ed., "Hypertext Transfer
               Protocol (HTTP/1.1): Semantics and Content", RFC 7231,
               DOI 10.17487/RFC7231, June 2014,
@@ -2695,6 +2768,10 @@ ServerC->ClientC*: [[ Commit ]]
    [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
               <https://www.rfc-editor.org/rfc/rfc8446>.
+
+   [RFC8615]  Nottingham, M., "Well-Known Uniform Resource Identifiers
+              (URIs)", RFC 8615, DOI 10.17487/RFC8615, May 2019,
+              <https://www.rfc-editor.org/rfc/rfc8615>.
 
    [RFC9110]  Fielding, R., Ed., Nottingham, M., Ed., and J. Reschke,
               Ed., "HTTP Semantics", STD 97, RFC 9110,

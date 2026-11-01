@@ -1350,6 +1350,12 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.4">
                 <p id="section-toc.1-1.10.2.4.1"><a href="#section-10.4" class="auto internal xref">10.4</a>.  <a href="#name-room_metadata-app-component" class="internal xref">room_metadata app component</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.5">
+                <p id="section-toc.1-1.10.2.5.1"><a href="#section-10.5" class="auto internal xref">10.5</a>.  <a href="#name-mimi-protocol-directory-wel" class="internal xref">mimi-protocol-directory well-known URI</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.6">
+                <p id="section-toc.1-1.10.2.6.1"><a href="#section-10.6" class="auto internal xref">10.6</a>.  <a href="#name-application-mimi-protocol-m" class="internal xref">application/mimi-protocol media type</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
@@ -2767,7 +2773,9 @@ protocol so that different variations of the end-to-end encryption can be used.<
 </li>
       </ul>
 <p id="section-5-3">The syntax of the MIMI protocol messages are described using the TLS
-presentation language format (<span><a href="https://rfc-editor.org/rfc/rfc8446#section-3" class="relref">Section 3</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>).<a href="#section-5-3" class="pilcrow">¶</a></p>
+presentation language format (<span><a href="https://rfc-editor.org/rfc/rfc8446#section-3" class="relref">Section 3</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>).
+Request and response bodies encoded using the structures in this document use
+the media type <code>application/mimi-protocol</code> (<a href="#iana-media-type" class="auto internal xref">Section 10.6</a>).<a href="#section-5-3" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5-4">
 <pre>
 enum {
@@ -4811,6 +4819,109 @@ cost is offset by the simplicity of not having multiple policy enforcement point
         </ul>
 </section>
 </div>
+<div id="mimi-protocol-directory-well-known-uri">
+<section id="section-10.5">
+        <h3 id="name-mimi-protocol-directory-wel">
+<a href="#section-10.5" class="section-number selfRef">10.5. </a><a href="#name-mimi-protocol-directory-wel" class="section-name selfRef">mimi-protocol-directory well-known URI</a>
+        </h3>
+<p id="section-10.5-1">This document registers the following well-known URI per <span>[<a href="#RFC8615" class="cite xref">RFC8615</a>]</span>.<a href="#section-10.5-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-10.5-2.1">
+            <p id="section-10.5-2.1.1">URI suffix: mimi-protocol-directory<a href="#section-10.5-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.5-2.2">
+            <p id="section-10.5-2.2.1">Change controller: IETF<a href="#section-10.5-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.5-2.3">
+            <p id="section-10.5-2.3.1">Specification document(s): RFCXXXX, <a href="#directory" class="auto internal xref">Section 5.1</a><a href="#section-10.5-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.5-2.4">
+            <p id="section-10.5-2.4.1">Status: permanent<a href="#section-10.5-2.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.5-2.5">
+            <p id="section-10.5-2.5.1">Related information: None<a href="#section-10.5-2.5.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="iana-media-type">
+<section id="section-10.6">
+        <h3 id="name-application-mimi-protocol-m">
+<a href="#section-10.6" class="section-number selfRef">10.6. </a><a href="#name-application-mimi-protocol-m" class="section-name selfRef">application/mimi-protocol media type</a>
+        </h3>
+<p id="section-10.6-1">This document registers the <code>application/mimi-protocol</code> media type per
+<span>[<a href="#RFC6838" class="cite xref">RFC6838</a>]</span>. The request and response bodies of the endpoints in
+<a href="#mimi-endpoints-and-framing" class="auto internal xref">Section 5</a> use this media type. The exceptions are the
+directory document, which is <code>application/json</code>, and the response to
+<code>proxyDownload</code>, which carries the downloaded content.<a href="#section-10.6-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-10.6-2.1">
+            <p id="section-10.6-2.1.1">Type name: application<a href="#section-10.6-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.6-2.2">
+            <p id="section-10.6-2.2.1">Subtype name: mimi-protocol<a href="#section-10.6-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.6-2.3">
+            <p id="section-10.6-2.3.1">Required parameters: none<a href="#section-10.6-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.6-2.4">
+            <p id="section-10.6-2.4.1">Optional parameters: none<a href="#section-10.6-2.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.6-2.5">
+            <p id="section-10.6-2.5.1">Encoding considerations: binary<a href="#section-10.6-2.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.6-2.6">
+            <p id="section-10.6-2.6.1">Security considerations: See <a href="#security-considerations" class="auto internal xref">Section 9</a> of RFCXXXX<a href="#section-10.6-2.6.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.6-2.7">
+            <p id="section-10.6-2.7.1">Interoperability considerations: none<a href="#section-10.6-2.7.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.6-2.8">
+            <p id="section-10.6-2.8.1">Published specification: RFCXXXX<a href="#section-10.6-2.8.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.6-2.9">
+            <p id="section-10.6-2.9.1">Applications that use this media type: MIMI providers exchanging messages for
+rooms that span providers<a href="#section-10.6-2.9.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.6-2.10">
+            <p id="section-10.6-2.10.1">Fragment identifier considerations: N/A<a href="#section-10.6-2.10.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.6-2.11">
+            <p id="section-10.6-2.11.1">Additional information:<a href="#section-10.6-2.11.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-10.6-2.11.2.1">
+                <p id="section-10.6-2.11.2.1.1">Deprecated alias names for this type: N/A<a href="#section-10.6-2.11.2.1.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-10.6-2.11.2.2">
+                <p id="section-10.6-2.11.2.2.1">Magic number(s): N/A<a href="#section-10.6-2.11.2.2.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-10.6-2.11.2.3">
+                <p id="section-10.6-2.11.2.3.1">File extension(s): N/A<a href="#section-10.6-2.11.2.3.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-10.6-2.11.2.4">
+                <p id="section-10.6-2.11.2.4.1">Macintosh file type code(s): N/A<a href="#section-10.6-2.11.2.4.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+          <li class="normal" id="section-10.6-2.12">
+            <p id="section-10.6-2.12.1">Person &amp; email address to contact for further information: IETF MIMI Working
+Group (mimi@ietf.org)<a href="#section-10.6-2.12.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.6-2.13">
+            <p id="section-10.6-2.13.1">Intended usage: COMMON<a href="#section-10.6-2.13.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.6-2.14">
+            <p id="section-10.6-2.14.1">Restrictions on usage: none<a href="#section-10.6-2.14.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.6-2.15">
+            <p id="section-10.6-2.15.1">Author: See the Authors' Addresses section of RFCXXXX<a href="#section-10.6-2.15.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-10.6-2.16">
+            <p id="section-10.6-2.16.1">Change controller: Internet Engineering Task Force (iesg@ietf.org)<a href="#section-10.6-2.16.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
 </section>
 </div>
 <div id="sec-combined-references">
@@ -4872,6 +4983,10 @@ cost is offset by the simplicity of not having multiple policy enforcement point
         <dd>
 <span class="refAuthor">Perreault, S.</span>, <span class="refTitle">"vCard Format Specification"</span>, <span class="seriesInfo">RFC 6350</span>, <span class="seriesInfo">DOI 10.17487/RFC6350</span>, <time datetime="2011-08" class="refDate">August 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6350">https://www.rfc-editor.org/rfc/rfc6350</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC6838">[RFC6838]</dt>
+        <dd>
+<span class="refAuthor">Freed, N.</span>, <span class="refAuthor">Klensin, J.</span>, and <span class="refAuthor">T. Hansen</span>, <span class="refTitle">"Media Type Specifications and Registration Procedures"</span>, <span class="seriesInfo">BCP 13</span>, <span class="seriesInfo">RFC 6838</span>, <span class="seriesInfo">DOI 10.17487/RFC6838</span>, <time datetime="2013-01" class="refDate">January 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6838">https://www.rfc-editor.org/rfc/rfc6838</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC7231">[RFC7231]</dt>
         <dd>
 <span class="refAuthor">Fielding, R., Ed.</span> and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content"</span>, <span class="seriesInfo">RFC 7231</span>, <span class="seriesInfo">DOI 10.17487/RFC7231</span>, <time datetime="2014-06" class="refDate">June 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7231">https://www.rfc-editor.org/rfc/rfc7231</a>&gt;</span>. </dd>
@@ -4883,6 +4998,10 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <dt id="RFC8446">[RFC8446]</dt>
         <dd>
 <span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="seriesInfo">RFC 8446</span>, <span class="seriesInfo">DOI 10.17487/RFC8446</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8446">https://www.rfc-editor.org/rfc/rfc8446</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8615">[RFC8615]</dt>
+        <dd>
+<span class="refAuthor">Nottingham, M.</span>, <span class="refTitle">"Well-Known Uniform Resource Identifiers (URIs)"</span>, <span class="seriesInfo">RFC 8615</span>, <span class="seriesInfo">DOI 10.17487/RFC8615</span>, <time datetime="2019-05" class="refDate">May 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8615">https://www.rfc-editor.org/rfc/rfc8615</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9110">[RFC9110]</dt>
         <dd>
