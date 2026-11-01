@@ -2330,6 +2330,15 @@ completely from the participant list. Finally there is a list of
 `addedParticipants` (which contains a user and role) that is appended to the
 end of the `ParticipantListData`.
 
+All indices in `changedRoleParticipants` and `removedIndices` refer to the
+`participants` vector at the end of the epoch in which the proposal is sent,
+as with MLS Remove proposals. This holds even when a commit contains more than
+one ParticipantListUpdate. Removing one entry does not shift the indices of
+the other removals. A ParticipantListUpdate is invalid if any index is out of
+range, if an index appears more than once in `changedRoleParticipants` or in
+`removedIndices`, if an index appears in both lists, or if a user in
+`addedParticipants` is already in the participant list.
+
 Each of these actions (modifying a user's role, removing a user, and adding a
 user) is authorized separately according to the rules specified in
 {{!I-D.ietf-mimi-room-policy}}. If all the changes are authorized, the
