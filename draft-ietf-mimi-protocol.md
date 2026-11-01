@@ -216,6 +216,24 @@ proposal type {{!I-D.ietf-mls-extensions}} to efficiently synchronize room state
 across the clients involved in a room. The MIMI transport is based on HTTPS over
 mutually-authenticated TLS.
 
+## MIMI URIs {#mimi-uris}
+
+Inside the protocol, each provider is represented by a domain name in the
+`host` production of the `authority` of a MIMI URI {{!RFC3986}}. Specific
+hosts or servers are represented by domain names, but not by MIMI URIs.
+
+The first path segment in a MIMI URI discriminates the type of identifier, as
+shown in {{mimi-uri-types}}. A MIMI URI that identifies a provider has no path.
+
+| Identifier type | First path segment | Example URI |
+|-+-+-|
+| Provider  | (no path) | `mimi://a.example`             |
+| User      | `u`       | `mimi://a.example/u/alice`     |
+| Client    | `d`       | `mimi://a.example/d/ClientA1`  |
+| Room      | `r`       | `mimi://a.example/r/clubhouse` |
+| MLS group | `g`       | `mimi://a.example/g/clubhouse` |
+{: #mimi-uri-types title="MIMI URI identifier types"}
+
 # Example protocol flow
 
 This section walks through a basic scenario that illustrates how a room works
@@ -229,20 +247,7 @@ in the MIMI protocol.  The scenario involves the following actors:
 * A room `clubhouse` hosted by hub provider `a.example` where the three users
   interact.
 
-Inside the protocol, each provider is represented by a domain name in the
-`host` production of the `authority` of a MIMI URI {{!RFC3986}}. Specific
-hosts or servers are represented by domain names, but not by MIMI URIs.
-Examples of different types of identifiers represented in a MIMI URI are
-shown in the table below:
-
-| Identifier type | Example URI |
-|-+-|
-| Provider  | `mimi://a.example`             |
-| User      | `mimi://a.example/u/alice`     |
-| Client    | `mimi://a.example/d/ClientA1`  |
-| Room      | `mimi://a.example/r/clubhouse` |
-| MLS group | `mimi://a.example/g/clubhouse` |
-{: #mimi-uri-examples title="MIMI URI examples"}
+The MIMI URIs in this example follow the conventions in {{mimi-uris}}.
 
 As noted in {{!I-D.ietf-mimi-arch}}, the MIMI protocol only defines interactions
 between service providers' servers.  Interactions between clients and servers
