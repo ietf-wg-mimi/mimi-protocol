@@ -22,25 +22,26 @@ integrates the Messaging Layer Security (MLS) protocol to provide end-to-end sec
 assurances, including authentication of protocol participants, confidentiality
 of messages exchanged within a room, and agreement on the state of the room. 
     " name="description">
-<meta content="xml2rfc 3.33.0" name="generator">
+<meta content="xml2rfc 3.34.1" name="generator">
 <meta content="mimi" name="keyword">
 <meta content="interoperable messaging" name="keyword">
 <meta content="chat" name="keyword">
 <meta content="secure messaging" name="keyword">
 <meta content="draft-ietf-mimi-protocol-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.33.0
-    Python 3.12.13
-    ConfigArgParse 1.7
+  xml2rfc 3.34.1
+    Python 3.14.8
+    ConfigArgParse 1.8.0
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 6.0.2
-    platformdirs 4.9.6
+    lxml 6.1.1
+    natsort 8.4.0
+    platformdirs 4.13.4
     pycountry 24.6.1
     PyYAML 6.0.3
-    requests 2.32.5
-    wcwidth 0.6.0
+    requests 2.33.1
+    wcwidth 0.9.2
 -->
 <link href="draft-ietf-mimi-protocol.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -76,7 +77,6 @@ of messages exchanged within a room, and agreement on the state of the room.
   src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-
 @font-face {
   font-family: 'Lora';
   font-style: italic;
@@ -125,7 +125,6 @@ of messages exchanged within a room, and agreement on the state of the room.
   src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-
 @font-face {
   font-family: 'Lora';
   font-style: normal;
@@ -190,7 +189,6 @@ of messages exchanged within a room, and agreement on the state of the room.
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
 }
 
 @font-face {
@@ -307,16 +305,19 @@ h1, h2, h3, h4, h5, h6 {
   font-size-adjust: 0.5;
   color: var(--title-color);
 }
-h1#title {
-  font-size: 32px;
-  line-height: 40px;
-  clear: both;
-}
-h1#title, h1#rfcnum {
-  margin: 1.5em 0 0.2em;
-}
-h1#rfcnum + h1#title {
-  margin: 0.2em 0;
+h1 {
+  &#title {
+    font-size: 32px;
+    line-height: 40px;
+    clear: both;
+    margin: 1.5em 0 0.2em;
+  }
+  &#rfcnum {
+    margin: 1.5em 0 0.2em;
+    & + h1#title {
+      margin: 0.2em 0;
+    }
+  }
 }
 
 h1, h2, h3 {
@@ -336,10 +337,10 @@ h4, h5, h6 {
 #abstract+p {
   font-size: 18px;
   line-height: 24px;
-}
-#abstract+p code, #abstract+p samp, #abstract+p tt {
-  font-size: 16px;
-  line-height: 0;
+  & code, & samp, & tt {
+    font-size: 16px;
+    line-height: 0;
+  }
 }
 
 p {
@@ -350,59 +351,59 @@ p {
 div {
   margin: 0;
 }
-.alignRight.art-text {
-  background-color: var(--highlight-color);
-  border: 1px solid var(--line-color);
-  border-radius: 3px;
-  padding: 0.5em 1em 0;
-  margin-bottom: 0.5em;
-}
-.alignRight.art-text pre {
-  padding: 0;
-  width: auto;
-}
 .alignRight {
   margin: 1em 0;
-}
-.alignRight > *:first-child {
-  border: none;
-  margin: 0;
-  float: right;
-  clear: both;
-}
-.alignRight > *:nth-child(2) {
-  clear: both;
-  display: block;
-  border: none;
+  &.art-text {
+    background-color: var(--highlight-color);
+    border: 1px solid var(--line-color);
+    border-radius: 3px;
+    padding: 0.5em 1em 0;
+    margin-bottom: 0.5em;
+    & pre {
+      padding: 0;
+      width: auto;
+    }
+  }
+  & > *:first-child {
+    border: none;
+    margin: 0;
+    float: right;
+    clear: both;
+  }
+  & > *:nth-child(2) {
+    clear: both;
+    display: block;
+    border: none;
+  }
 }
 svg {
   display: block;
-}
-/* font-family isn't space-separated, but =~ will have to do */
-svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
-  font-family: var(--font-mono);
-}
-.alignCenter.art-text {
-  background-color: var(--highlight-color);
-  border: 1px solid var(--line-color);
-  border-radius: 3px;
-  padding: 0.5em 1em 0;
-  margin-bottom: 0.5em;
-}
-.alignCenter.art-text pre {
-  padding: 0;
-  width: auto;
+  /* font-family isn't space-separated, but =~ will have to do */
+  &[font-family~="monospace" i], & [font-family~="monospace" i] {
+    font-family: var(--font-mono);
+  }
 }
 .alignCenter {
   margin: 1em 0;
-}
-.alignCenter > *:first-child {
-  border: none;
-  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
-     support flexbox yet.
-  */
-  display: table;
-  margin: 0 auto;
+  &.art-text {
+    background-color: var(--highlight-color);
+    border: 1px solid var(--line-color);
+    border-radius: 3px;
+    padding: 0.5em 1em 0;
+    margin-bottom: 0.5em;
+    & pre {
+      padding: 0;
+      width: auto;
+    }
+  }
+  & > *:first-child {
+    border: none;
+    /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+       support flexbox yet.
+    */
+    display: table;
+    margin: 0 auto;
+  }
 }
 
 /* lists */
@@ -440,26 +441,25 @@ dl {
     --indent: 5ch;
     & > dt {
       min-width: calc(var(--indent) - 2ch);
+      float: none;
     }
-  }
-  &.olPercent > dt {
-    float: none;
   }
 
   dl > dd > & {
     margin-top: 0.5em;
     margin-bottom: 0;
   }
-}
-dl:not(.dlNewline) > dt {
-  float: left;
-  margin-right: 2ch;
-  min-width: 8ch;
-}
-dl > dd {
-  margin-bottom: .8em;
-  margin-left: var(--indent) !important; /* stupid element overrides */
-  min-height: 2ex;
+
+  &:not(.dlNewline) > dt {
+    float: left;
+    margin-right: 2ch;
+    min-width: 8ch;
+  }
+  & > dd {
+    margin-bottom: .8em;
+    margin-left: var(--indent) !important; /* stupid element overrides */
+    min-height: 2ex;
+  }
 }
 :is(dl.compact, .dlCompact) > dd {
   margin-bottom: 0;
@@ -475,20 +475,22 @@ dl > dd {
 }
 
 /* links */
-a, a[href].selfRef:hover {
+a {
   text-decoration: none;
+  &[href] {
+    color: var(--link-color);
+    &:hover { text-decoration: underline; }
+    &.selfRef {
+      color: var(--text-color);
+      &:hover {
+        text-decoration: none;
+        background-color: var(--highlight-color);
+      }
+    }
+  }
 }
-a[href] {
-  color: var(--link-color);
-}
-a[href].selfRef, .iref + a[href].internal {
+.iref + a[href].internal {
   color: var(--text-color);
-}
-a[href]:hover {
-  text-decoration: underline;
-}
-a[href].selfRef:hover {
-  background-color: var(--highlight-color);
 }
 a.xref:is(.cite, .auto), :is(#status-of-memo, #copyright) a {
   white-space: nowrap;
@@ -524,9 +526,9 @@ img {
 figure {
   margin: 0.5em 0;
   padding: 0;
-}
-figure blockquote {
-  margin: 0.8em 0.4em 0.4em;
+  & blockquote {
+    margin: 0.8em 0.4em 0.4em;
+  }
 }
 figcaption, caption {
   font-style: italic;
@@ -536,17 +538,19 @@ figcaption, caption {
 }
 @media screen {
   /* Auto-collapse boilerplate. */
-  :is(#status-of-memo, #copyright) p {
-    margin: -2px 0;
-    max-height: 0;
-    transition: max-height 2s ease, margin 0.5s ease 0.5s;
-    overflow: hidden;
-  }
-  :is(#status-of-memo, #copyright):hover p,
-  :is(#status-of-memo, #copyright) h2:target ~ p {
-    margin: 0.5em 0;
-    max-height: 500px;
-    overflow: auto;
+  :is(#status-of-memo, #copyright) {
+    & p {
+      margin: -2px 0;
+      max-height: 0;
+      transition: max-height 2s ease, margin 0.5s ease 0.5s;
+      overflow: hidden;
+    }
+    &:hover p,
+    & h2:target ~ p {
+      margin: 0.5em 0;
+      max-height: 500px;
+      overflow: auto;
+    }
   }
   pre, svg {
     display: inline-block;
@@ -596,25 +600,17 @@ table {
   max-width: 100%;
   margin: 0 0 1em;
   border-collapse: collapse;
-}
-table.right {
-  margin-left: auto;
-}
-table.center {
-  margin-left: auto;
-  margin-right: auto;
-}
-table.left {
-  margin-right: auto;
-}
-table .text-left {
-  text-align: left;
-}
-table .text-center {
-  text-align: center;
-}
-table .text-right {
-  text-align: right;
+  &.right { margin-left: auto; }
+  &.center { margin-left: auto; margin-right: auto; }
+  &.left { margin-right: auto; }
+  & .text-left { text-align: left; }
+  & .text-center { text-align: center; }
+  & .text-right { text-align: right; }
+  & caption {
+    margin: 0;
+    padding: 3px 0 3px 1em;
+  }
+  & p { margin: 0; }
 }
 
 thead, tbody {
@@ -634,13 +630,6 @@ th {
 :is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
   background-color: var(--highlight-color);
 }
-table caption {
-  margin: 0;
-  padding: 3px 0 3px 1em;
-}
-table p {
-  margin: 0;
-}
 
 /* pilcrow */
 a.pilcrow {
@@ -651,18 +640,16 @@ a.pilcrow {
     color: var(--pilcrow-weak);
     &:hover { text-decoration: none; }
   }
-}
-@media not print {
-  :hover > a.pilcrow, a.pilcrow:focus {
-    opacity: 1;
+  @media not print {
+    :hover > &, &:focus {
+      opacity: 1;
+    }
+    &[href]:hover {
+      color: var(--pilcrow-strong);
+      background-color: transparent;
+    }
   }
-  a.pilcrow[href]:hover {
-    color: var(--pilcrow-strong);
-    background-color: transparent;
-  }
-}
-@media print {
-  a.pilcrow {
+  @media print {
     display: none;
   }
 }
@@ -721,9 +708,9 @@ sub, sup {
   font-size: 0.9em;
   font-style: italic;
   margin-top: 2em;
-}
-.docInfo .prepared {
-  float: right;
+  & .prepared {
+    float: right;
+  }
 }
 
 /* table of contents */
@@ -813,23 +800,27 @@ hr.addr {
   max-width: calc(100% - 16px);
 }
 @media (min-width: 500px) {
-  #authors-addresses > section {
-    column-count: 2;
-    column-gap: 20px;
-  }
-  #authors-addresses > section > h2 {
-    column-span: all;
-  }
-  /* hack for break-inside: avoid-column */
-  #authors-addresses address {
-    display: inline-block;
-    break-inside: avoid-column;
+  #authors-addresses {
+    & > section {
+      column-count: 2;
+      column-gap: 20px;
+    }
+    & > section > h2 {
+      column-span: all;
+    }
+    /* hack for break-inside: avoid-column */
+    & address {
+      display: inline-block;
+      break-inside: avoid-column;
+    }
   }
 }
 
 /* Comments */
-.rfcEditorRemove p:first-of-type {
-  font-style: italic;
+.rfcEditorRemove {
+  & p:first-of-type {
+    font-style: italic;
+  }
 }
 .cref {
   background-color: rgba(249, 232, 105, 0.3);
@@ -840,19 +831,21 @@ hr.addr {
 }
 
 @media screen {
-  #toc nav {
-    font-family: var(--font-title);
-    font-weight: 360;
-    & > ul { margin-bottom: 2em; }
-    & ul {
-      margin: 0 0 0 4px;
-      & :is(p, li) {
-        margin: 2px 0;
+  #toc {
+    & nav {
+      font-family: var(--font-title);
+      font-weight: 360;
+      & > ul { margin-bottom: 2em; }
+      & ul {
+        margin: 0 0 0 4px;
+        & :is(p, li) {
+          margin: 2px 0;
+        }
       }
     }
-  }
-  #toc a.toplink {
-    float: right;
+    & a.toplink {
+      float: right;
+    }
   }
 }
 @media not screen {
@@ -873,54 +866,54 @@ hr.addr {
     margin: 0;
     border-bottom: 1px solid #ccc;
     opacity: 0.6;
-  }
-  #toc h2 {
-    margin: 0;
-    padding: 2px 0 2px 6px;
-    padding-right: 1em;
-    font-size: 18px;
-    line-height: 24px;
-    min-width: 190px;
-    text-align: right;
-    background-color: #444;
-    color: white;
-    cursor: pointer;
-    &::before { /* css hamburger */
-      float: right;
-      position: relative;
-      width: 1em;
-      height: 1px;
-      left: -164px;
-      margin: 8px 0 0 0;
-      background: white none repeat scroll 0 0;
-      box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
-      content: "";
+    & h2 {
+      margin: 0;
+      padding: 2px 0 2px 6px;
+      padding-right: 1em;
+      font-size: 18px;
+      line-height: 24px;
+      min-width: 190px;
+      text-align: right;
+      background-color: #444;
+      color: white;
+      cursor: pointer;
+      &::before { /* css hamburger */
+        float: right;
+        position: relative;
+        width: 1em;
+        height: 1px;
+        left: -164px;
+        margin: 8px 0 0 0;
+        background: white none repeat scroll 0 0;
+        box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+        content: "";
+      }
     }
-  }
-  #toc nav {
-    display: none;
-    background-color: var(--background-color);
-    padding: 0.5em 1em 1em;
-    overflow: auto;
-    overscroll-behavior: contain;
-    height: calc(100vh - 48px);
-    border-left: 1px solid #ddd;
-  }
-  #toc.active {
-    opacity: 1;
-    & nav { display: block; }
-  }
-  /* Make the collapsed ToC header render white on gray also when it's a link */
-  #toc h2 a,
-  #toc h2 a:is(:link, :focus, :hover),
-  #toc a.toplink,
-  #toc a.toplink:hover {
-    color: white;
-    background-color: #444;
-    text-decoration: none;
-  }
-  #toc a.toplink {
-    margin: 2px 0.5em 0;
+    & nav {
+      display: none;
+      background-color: var(--background-color);
+      padding: 0.5em 1em 1em;
+      overflow: auto;
+      overscroll-behavior: contain;
+      height: calc(100vh - 48px);
+      border-left: 1px solid #ddd;
+    }
+    &.active {
+      opacity: 1;
+      & nav { display: block; }
+    }
+    /* Make the collapsed ToC header render white on gray also when it's a link */
+    & h2 a,
+    & h2 a:is(:link, :focus, :hover),
+    & a.toplink,
+    & a.toplink:hover {
+      color: white;
+      background-color: #444;
+      text-decoration: none;
+    }
+    & a.toplink {
+      margin: 2px 0.5em 0;
+    }
   }
 }
 
@@ -939,26 +932,26 @@ hr.addr {
     margin: 0;
     padding: 0;
     z-index: 1;
-  }
-  #toc h2 {
-    margin: 0;
-    padding: 0.25em 1em 1em 0;
-  }
-  #toc nav {
-    display: block;
-    height: calc(90vh - 84px);
-    bottom: 0;
-    padding: 0.5em 0 2em;
-    overflow: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
+    & h2 {
+      margin: 0;
+      padding: 0.25em 1em 1em 0;
+    }
+    & nav {
+      display: block;
+      height: calc(90vh - 84px);
+      bottom: 0;
+      padding: 0.5em 0 2em;
+      overflow: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+    }
+    & a.toplink {
+      margin: 8px 0.5em 0;
+    }
   }
   img { /* future proofing */
     max-width: 100%;
     height: auto;
-  }
-  #toc a.toplink {
-    margin: 8px 0.5em 0;
   }
 }
 
@@ -974,12 +967,13 @@ hr.addr {
   #n-copyright-notice {
     border-bottom: none;
   }
-  #toc, #n-introduction {
-    page-break-before: always;
-  }
   #toc {
+    page-break-before: always;
     border-top: none;
     padding-top: 0;
+  }
+  #n-introduction {
+    page-break-before: always;
   }
   figure, pre, .vcard {
     page-break-inside: avoid;
@@ -1041,17 +1035,19 @@ hr.addr {
 }
 
 /* SVG Trick: a prefix match works because only black and white are allowed */
-svg :is([stroke="black"], [stroke^="#000"]) {
-  stroke: var(--text-color);
-}
-svg :is([stroke="white"], [stroke^="#fff"]) {
-  stroke: var(--background-color);
-}
-svg :is([fill="black"], [fill^="#000"], :not([fill])) {
-  fill: var(--text-color);
-}
-svg :is([fill="white"], [fill^="#fff"]) {
-  fill: var(--background-color);
+svg {
+  & :is([stroke="black"], [stroke^="#000"]) {
+    stroke: var(--text-color);
+  }
+  & :is([stroke="white"], [stroke^="#fff"]) {
+    stroke: var(--background-color);
+  }
+  & :is([fill="black"], [fill^="#000"], :not([fill])) {
+    fill: var(--text-color);
+  }
+  & :is([fill="white"], [fill^="#fff"]) {
+    fill: var(--background-color);
+  }
 }
 </style>
 
@@ -1061,11 +1057,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">MIMI+MLS Protocol</td>
-<td class="right">April 2026</td>
+<td class="right">November 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Barnes, et al.</td>
-<td class="center">Expires 27 October 2026</td>
+<td class="center">Expires 5 May 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1078,12 +1074,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-mimi-protocol-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-04-25" class="published">25 April 2026</time>
+<time datetime="2026-11-01" class="published">1 November 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-10-27">27 October 2026</time></dd>
+<dd class="expires"><time datetime="2027-05-05">5 May 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1161,7 +1157,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 27 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 5 May 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1346,7 +1342,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
                 <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="auto internal xref">10.1</a>.  <a href="#name-frank_aad-app-component" class="internal xref">frank_aad app component</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2">
-                <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="auto internal xref">10.2</a>.  <a href="#name-franking_signature_key-app-" class="internal xref">franking_signature_key app component</a></p>
+                <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="auto internal xref">10.2</a>.  <a href="#name-franking_agent-app-componen" class="internal xref">franking_agent app component</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.3">
                 <p id="section-toc.1-1.10.2.3.1"><a href="#section-10.3" class="auto internal xref">10.3</a>.  <a href="#name-participant_list-app-compon" class="internal xref">participant_list app component</a></p>
@@ -1384,7 +1380,7 @@ of messages exchanged within a room, and agreement on the state of the room.<a h
       </h2>
 <p id="section-1-1">The More Instant Messaging Interoperability (MIMI) transport protocol enables providers of
 end-to-end encrypted instant messaging to interoperate. As described in the MIMI
-architecture <span>[<a href="#I-D.barnes-mimi-arch" class="cite xref">I-D.barnes-mimi-arch</a>]</span>, group chats and direct messages are
+architecture <span>[<a href="#I-D.ietf-mimi-arch" class="cite xref">I-D.ietf-mimi-arch</a>]</span>, group chats and direct messages are
 described in terms of "rooms".  Each MIMI protocol room is hosted at a single
 provider (the "hub" provider"), but allows users from different providers to
 become participants in the room. The hub provider is responsible for ordering
@@ -1471,7 +1467,7 @@ user's other clients) may also be desirable.<a href="#section-1.1-2.8.1" class="
 "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
 described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
 appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<p id="section-2-2">Terms and definitions are inherited from <span>[<a href="#I-D.barnes-mimi-arch" class="cite xref">I-D.barnes-mimi-arch</a>]</span>.  We also
+<p id="section-2-2">Terms and definitions are inherited from <span>[<a href="#I-D.ietf-mimi-arch" class="cite xref">I-D.ietf-mimi-arch</a>]</span>.  We also
 make use of terms from the MLS protocol <span>[<a href="#RFC9420" class="cite xref">RFC9420</a>]</span>.<a href="#section-2-2" class="pilcrow">¶</a></p>
 <p id="section-2-3">Throughout this document, the examples use the TLS Presentation Language
 <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> and the semantics of HTTP <span>[<a href="#RFC7231" class="cite xref">RFC7231</a>]</span> respectively as
@@ -1525,10 +1521,10 @@ servers.<a href="#section-2-5.3.1" class="pilcrow">¶</a></p>
 <a href="#name-mimi-protocol-layering" class="selfRef">MIMI protocol layering</a>
         </figcaption></figure>
 </div>
-<p id="section-2-7">MIMI uses MLS for end-to-end security, using the MLS AppSync proposal type to
-efficiently synchronize room state across the clients involved in a room
-<span>[<a href="#RFC9420" class="cite xref">RFC9420</a>]</span> <span>[<a href="#I-D.barnes-mls-appsync" class="cite xref">I-D.barnes-mls-appsync</a>]</span>. The MIMI transport is based on HTTPS
-over mutually-authenticated TLS.<a href="#section-2-7" class="pilcrow">¶</a></p>
+<p id="section-2-7">MIMI uses MLS <span>[<a href="#RFC9420" class="cite xref">RFC9420</a>]</span> for end-to-end security, using the MLS AppDataUpdate
+proposal type <span>[<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span> to efficiently synchronize room state
+across the clients involved in a room. The MIMI transport is based on HTTPS over
+mutually-authenticated TLS.<a href="#section-2-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="example-protocol-flow">
@@ -1606,7 +1602,7 @@ shown in the table below:<a href="#section-3-3" class="pilcrow">¶</a></p>
         </tbody>
       </table>
 </div>
-<p id="section-3-5">As noted in <span>[<a href="#I-D.barnes-mimi-arch" class="cite xref">I-D.barnes-mimi-arch</a>]</span>, the MIMI protocol only defines interactions
+<p id="section-3-5">As noted in <span>[<a href="#I-D.ietf-mimi-arch" class="cite xref">I-D.ietf-mimi-arch</a>]</span>, the MIMI protocol only defines interactions
 between service providers' servers.  Interactions between clients and servers
 within a service provider domain are shown here for completeness, but
 surrounded by <code>[[ double brackets ]]</code>.<a href="#section-3-5" class="pilcrow">¶</a></p>
@@ -1619,9 +1615,10 @@ surrounded by <code>[[ double brackets ]]</code>.<a href="#section-3-5" class="p
 This operation is local to the service provider, and does not entail any MIMI
 protocol operations.  However, it must establish the initial state of the room,
 which is then the basis for protocol operations related to the room.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.1-2">For authorization purposes, MIMI uses permissions based on room-defined roles.
-For example, a room might have a role named "admin", which has <code>canAddUser</code>,
-<code>canRemoveUser</code>, and <code>canSetUserRole</code> permisions.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">For authorization purposes, MIMI uses permissions based on room-defined roles
+<span>[<a href="#I-D.ietf-mimi-room-policy" class="cite xref">I-D.ietf-mimi-room-policy</a>]</span>.
+For example, a room might have a role named "admin", which has <code>canAddParticipant</code>,
+<code>canRemoveParticipant</code>, and <code>canChangeUserRole</code> permissions.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
 <p id="section-3.1-3">Here, we assume that Alice uses ClientA1 to create a room with the following
 base policy properties:<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -1629,7 +1626,7 @@ base policy properties:<a href="#section-3.1-3" class="pilcrow">¶</a></p>
             <p id="section-3.1-4.1.1">Room Identifier: <code>mimi://a.example/r/clubhouse</code><a href="#section-3.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.1-4.2">
-            <p id="section-3.1-4.2.1">Roles: <code>admin = [canAddUser, canRemoveUser, canSetUserRole]</code><a href="#section-3.1-4.2.1" class="pilcrow">¶</a></p>
+            <p id="section-3.1-4.2.1">Roles: <code>admin = [canAddParticipant, canRemoveParticipant, canChangeUserRole]</code><a href="#section-3.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-3.1-5">And the following participant list:<a href="#section-3.1-5" class="pilcrow">¶</a></p>
@@ -1656,8 +1653,8 @@ for Bob's clients.  Alice then updates the room by sending an MLS Commit over
 the following proposals:<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.2-3.1">
-            <p id="section-3.2-3.1.1">An AppSync proposal updating the room state by adding Bob to the
-participant list<a href="#section-3.2-3.1.1" class="pilcrow">¶</a></p>
+            <p id="section-3.2-3.1.1">An AppDataUpdate proposal for the <code>participant_list</code> component adding Bob
+to the participant list<a href="#section-3.2-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.2-3.2">
             <p id="section-3.2-3.2.1">Add proposals for Bob's clients<a href="#section-3.2-3.2.1" class="pilcrow">¶</a></p>
@@ -1681,7 +1678,7 @@ the interest of simplicity.<a href="#section-3.2-5.1.1" class="pilcrow">¶</a></
 <figure id="figure-2">
           <div id="section-3.2-6.1">
             <div class="alignLeft art-svg artwork" id="section-3.2-6.1.1">
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="368" width="496" viewBox="0 0 496 368" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="368" width="544" viewBox="0 0 544 368" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
                 <path d="M 24,48 L 24,208" fill="none" stroke="black"></path>
                 <path d="M 152,48 L 152,208" fill="none" stroke="black"></path>
                 <path d="M 280,48 L 280,208" fill="none" stroke="black"></path>
@@ -1725,8 +1722,8 @@ the interest of simplicity.<a href="#section-3.2-5.1.1" class="pilcrow">¶</a></
                   <text x="348" y="260">]]</text>
                   <text x="72" y="276">ServerA-&gt;ServerB:</text>
                   <text x="164" y="276">POST</text>
-                  <text x="236" y="276">/keyMaterial</text>
-                  <text x="364" y="276">KeyMaterialRequest</text>
+                  <text x="288" y="276">/keyMaterial/{targetUser}</text>
+                  <text x="468" y="276">KeyMaterialRequest</text>
                   <text x="36" y="292">ServerB:</text>
                   <text x="100" y="292">Verify</text>
                   <text x="148" y="292">that</text>
@@ -1807,8 +1804,8 @@ the interest of simplicity.<a href="#section-3.2-5.1.1" class="pilcrow">¶</a></
                   <text x="112" y="228">Prepare</text>
                   <text x="172" y="228">Commit</text>
                   <text x="220" y="228">over</text>
-                  <text x="300" y="228">AppSync(+Bob),</text>
-                  <text x="380" y="228">Add*</text>
+                  <text x="324" y="228">AppDataUpdate(+Bob),</text>
+                  <text x="428" y="228">Add*</text>
                   <text x="76" y="244">ClientA1-&gt;ServerA:</text>
                   <text x="164" y="244">[[</text>
                   <text x="208" y="244">Commit,</text>
@@ -1819,12 +1816,12 @@ the interest of simplicity.<a href="#section-3.2-5.1.1" class="pilcrow">¶</a></
                   <text x="36" y="260">ServerA:</text>
                   <text x="100" y="260">Verify</text>
                   <text x="148" y="260">that</text>
-                  <text x="204" y="260">AppSync,</text>
-                  <text x="260" y="260">Adds</text>
-                  <text x="296" y="260">are</text>
-                  <text x="344" y="260">allowed</text>
-                  <text x="388" y="260">by</text>
-                  <text x="428" y="260">policy</text>
+                  <text x="228" y="260">AppDataUpdate,</text>
+                  <text x="308" y="260">Adds</text>
+                  <text x="344" y="260">are</text>
+                  <text x="392" y="260">allowed</text>
+                  <text x="436" y="260">by</text>
+                  <text x="476" y="260">policy</text>
                   <text x="36" y="276">ServerA:</text>
                   <text x="116" y="276">Identifies</text>
                   <text x="192" y="276">Welcome</text>
@@ -1933,12 +1930,12 @@ Cathy's clients to ServerB as well as forwarding the Welcome to ServerC.<a href=
                   <text x="348" y="260">]]</text>
                   <text x="72" y="276">ServerB-&gt;ServerA:</text>
                   <text x="164" y="276">POST</text>
-                  <text x="236" y="276">/keyMaterial</text>
-                  <text x="364" y="276">KeyMaterialRequest</text>
+                  <text x="288" y="276">/keyMaterial/{targetUser}</text>
+                  <text x="468" y="276">KeyMaterialRequest</text>
                   <text x="72" y="292">ServerA-&gt;ServerC:</text>
                   <text x="164" y="292">POST</text>
-                  <text x="236" y="292">/keyMaterial</text>
-                  <text x="364" y="292">KeyMaterialRequest</text>
+                  <text x="288" y="292">/keyMaterial/{targetUser}</text>
+                  <text x="468" y="292">KeyMaterialRequest</text>
                   <text x="36" y="308">ServerB:</text>
                   <text x="100" y="308">Verify</text>
                   <text x="148" y="308">that</text>
@@ -2051,8 +2048,8 @@ Cathy's clients to ServerB as well as forwarding the Welcome to ServerC.<a href=
                   <text x="112" y="308">Prepare</text>
                   <text x="172" y="308">Commit</text>
                   <text x="220" y="308">over</text>
-                  <text x="308" y="308">AppSync(+Cathy),</text>
-                  <text x="396" y="308">Add*</text>
+                  <text x="332" y="308">AppDataUpdate(+Cathy),</text>
+                  <text x="444" y="308">Add*</text>
                   <text x="76" y="324">ClientB1-&gt;ServerB:</text>
                   <text x="164" y="324">[[</text>
                   <text x="208" y="324">Commit,</text>
@@ -2133,7 +2130,7 @@ clients.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
 <figure id="figure-6">
           <div id="section-3.4-2.1">
             <div class="alignLeft art-svg artwork" id="section-3.4-2.1.1">
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="448" width="736" viewBox="0 0 736 448" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="464" width="736" viewBox="0 0 736 464" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
                 <path d="M 24,48 L 24,288" fill="none" stroke="black"></path>
                 <path d="M 152,48 L 152,288" fill="none" stroke="black"></path>
                 <path d="M 280,48 L 280,224" fill="none" stroke="black"></path>
@@ -2189,38 +2186,38 @@ clients.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
                   <text x="404" y="324">]]</text>
                   <text x="72" y="340">ServerC-&gt;ServerA:</text>
                   <text x="164" y="340">POST</text>
-                  <text x="304" y="340">/submit/a.example/r/clubhouse</text>
-                  <text x="532" y="340">MLSMessage(PrivateMessage)</text>
-                  <text x="36" y="356">ServerA:</text>
-                  <text x="108" y="356">Verifies</text>
-                  <text x="164" y="356">that</text>
-                  <text x="216" y="356">message</text>
-                  <text x="260" y="356">is</text>
-                  <text x="304" y="356">allowed</text>
-                  <text x="72" y="372">ServerA-&gt;ServerC:</text>
-                  <text x="164" y="372">POST</text>
-                  <text x="304" y="372">/notify/a.example/r/clubhouse</text>
-                  <text x="460" y="372">Message{</text>
-                  <text x="604" y="372">MLSMessage(PrivateMessage)</text>
-                  <text x="720" y="372">}</text>
-                  <text x="72" y="388">ServerA-&gt;ServerB:</text>
+                  <text x="180" y="356">/submitMessage/a.example/r/clubhouse</text>
+                  <text x="436" y="356">MLSMessage(PrivateMessage)</text>
+                  <text x="36" y="372">ServerA:</text>
+                  <text x="108" y="372">Verifies</text>
+                  <text x="164" y="372">that</text>
+                  <text x="216" y="372">message</text>
+                  <text x="260" y="372">is</text>
+                  <text x="304" y="372">allowed</text>
+                  <text x="72" y="388">ServerA-&gt;ServerC:</text>
                   <text x="164" y="388">POST</text>
                   <text x="304" y="388">/notify/a.example/r/clubhouse</text>
                   <text x="460" y="388">Message{</text>
                   <text x="604" y="388">MLSMessage(PrivateMessage)</text>
                   <text x="720" y="388">}</text>
-                  <text x="76" y="404">ServerA-&gt;ClientA*:</text>
-                  <text x="164" y="404">[[</text>
-                  <text x="284" y="404">MLSMessage(PrivateMessage)</text>
-                  <text x="404" y="404">]]</text>
-                  <text x="76" y="420">ServerB-&gt;ClientB*:</text>
+                  <text x="72" y="404">ServerA-&gt;ServerB:</text>
+                  <text x="164" y="404">POST</text>
+                  <text x="304" y="404">/notify/a.example/r/clubhouse</text>
+                  <text x="460" y="404">Message{</text>
+                  <text x="604" y="404">MLSMessage(PrivateMessage)</text>
+                  <text x="720" y="404">}</text>
+                  <text x="76" y="420">ServerA-&gt;ClientA*:</text>
                   <text x="164" y="420">[[</text>
                   <text x="284" y="420">MLSMessage(PrivateMessage)</text>
                   <text x="404" y="420">]]</text>
-                  <text x="76" y="436">ServerC-&gt;ClientC*:</text>
+                  <text x="76" y="436">ServerB-&gt;ClientB*:</text>
                   <text x="164" y="436">[[</text>
                   <text x="284" y="436">MLSMessage(PrivateMessage)</text>
                   <text x="404" y="436">]]</text>
+                  <text x="76" y="452">ServerC-&gt;ClientC*:</text>
+                  <text x="164" y="452">[[</text>
+                  <text x="284" y="452">MLSMessage(PrivateMessage)</text>
+                  <text x="404" y="452">]]</text>
                 </g>
               </svg><a href="#section-3.4-2.1.1" class="pilcrow">¶</a>
 </div>
@@ -2238,16 +2235,17 @@ clients.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
         </h3>
 <p id="section-3.5-1">A user removing another user follows the same flow as adding the user.  The
 user performing the removal creates an MLS commit covering Remove proposals for
-all of the removed user's devices, and an AppSync proposal updating the room
-state to remove the removed user from the room's participant list.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
+all of the removed user's devices, and an AppDataUpdate proposal updating the
+<code>participant_list</code> component to remove the removed user from the room's
+participant list.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
 <p id="section-3.5-2">One's own user leaving is slightly more complicated than removing another user,
 because the leaving user cannot remove all of their devices from the MLS group.
 Instead, the leave happens in three steps:<a href="#section-3.5-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-3.5-3">
 <li id="section-3.5-3.1">
             <p id="section-3.5-3.1.1">The leaving client constructs MLS Remove proposals for all of the user's
-devices (including the leaving client), and an AppSync proposal that removes
-its user from the participant list.<a href="#section-3.5-3.1.1" class="pilcrow">¶</a></p>
+devices (including the leaving client), and an AppDataUpdate proposal for the
+<code>participant_list</code> component that removes its user from the participant list.<a href="#section-3.5-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.5-3.2">
             <p id="section-3.5-3.2.1">The leaving client sends these proposals to the hub.  The hub caches the proposals.<a href="#section-3.5-3.2.1" class="pilcrow">¶</a></p>
@@ -2326,27 +2324,27 @@ possible.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
                   <text x="40" y="452">ClientB1:</text>
                   <text x="112" y="452">Prepare</text>
                   <text x="180" y="452">Remove*,</text>
-                  <text x="272" y="452">AppSync(-Bob)</text>
+                  <text x="296" y="452">AppDataUpdate(-Bob)</text>
                   <text x="76" y="468">ClientB1-&gt;ServerB:</text>
                   <text x="164" y="468">[[</text>
                   <text x="212" y="468">Remove*,</text>
-                  <text x="280" y="468">AppSync</text>
-                  <text x="324" y="468">]]</text>
+                  <text x="304" y="468">AppDataUpdate</text>
+                  <text x="372" y="468">]]</text>
                   <text x="72" y="484">ServerB-&gt;ServerA:</text>
                   <text x="164" y="484">POST</text>
                   <text x="304" y="484">/update/a.example/r/clubhouse</text>
                   <text x="460" y="484">Remove*,</text>
-                  <text x="528" y="484">AppSync</text>
+                  <text x="552" y="484">AppDataUpdate</text>
                   <text x="36" y="500">ServerA:</text>
                   <text x="100" y="500">Verify</text>
                   <text x="148" y="500">that</text>
                   <text x="204" y="500">Removes,</text>
-                  <text x="272" y="500">AppSync</text>
-                  <text x="320" y="500">are</text>
-                  <text x="368" y="500">allowed</text>
-                  <text x="412" y="500">by</text>
-                  <text x="456" y="500">policy;</text>
-                  <text x="512" y="500">cache</text>
+                  <text x="296" y="500">AppDataUpdate</text>
+                  <text x="368" y="500">are</text>
+                  <text x="416" y="500">allowed</text>
+                  <text x="460" y="500">by</text>
+                  <text x="504" y="500">policy;</text>
+                  <text x="560" y="500">cache</text>
                   <text x="72" y="516">ServerA-&gt;ServerB:</text>
                   <text x="160" y="516">200</text>
                   <text x="188" y="516">OK</text>
@@ -2367,8 +2365,8 @@ possible.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
                   <text x="580" y="564">]]</text>
                   <text x="72" y="580">ServerC-&gt;ServerA:</text>
                   <text x="164" y="580">POST</text>
-                  <text x="308" y="580">/update/a.example/r/clubhousee</text>
-                  <text x="484" y="580">CommitBundle</text>
+                  <text x="304" y="580">/update/a.example/r/clubhouse</text>
+                  <text x="476" y="580">CommitBundle</text>
                   <text x="36" y="596">ServerA:</text>
                   <text x="96" y="596">Check</text>
                   <text x="152" y="596">whether</text>
@@ -2511,7 +2509,7 @@ an /update to the room.<a href="#section-3.6-4" class="pilcrow">¶</a></p>
                   <text x="396" y="484">]]</text>
                   <text x="72" y="500">ServerC-&gt;ServerA:</text>
                   <text x="164" y="500">POST</text>
-                  <text x="308" y="500">/groupInfo/a.example/clubhouse</text>
+                  <text x="316" y="500">/groupInfo/a.example/r/clubhouse</text>
                   <text x="36" y="516">ServerA:</text>
                   <text x="100" y="516">Verify</text>
                   <text x="148" y="516">that</text>
@@ -2549,8 +2547,8 @@ an /update to the room.<a href="#section-3.6-4" class="pilcrow">¶</a></p>
                   <text x="452" y="580">]]</text>
                   <text x="72" y="596">ServerC-&gt;ServerA:</text>
                   <text x="164" y="596">POST</text>
-                  <text x="296" y="596">/update/a.example/clubhouse</text>
-                  <text x="460" y="596">CommitBundle</text>
+                  <text x="304" y="596">/update/a.example/r/clubhouse</text>
+                  <text x="476" y="596">CommitBundle</text>
                   <text x="36" y="612">ServerA:</text>
                   <text x="100" y="612">Verify</text>
                   <text x="148" y="612">that</text>
@@ -2577,16 +2575,16 @@ an /update to the room.<a href="#section-3.6-4" class="pilcrow">¶</a></p>
                   <text x="244" y="660">]]</text>
                   <text x="72" y="676">ServerA-&gt;ServerB:</text>
                   <text x="164" y="676">POST</text>
-                  <text x="296" y="676">/notify/a.example/clubhouse</text>
-                  <text x="436" y="676">Commit</text>
+                  <text x="304" y="676">/notify/a.example/r/clubhouse</text>
+                  <text x="452" y="676">Commit</text>
                   <text x="76" y="692">ServerB-&gt;ClientB*:</text>
                   <text x="164" y="692">[[</text>
                   <text x="204" y="692">Commit</text>
                   <text x="244" y="692">]]</text>
                   <text x="72" y="708">ServerA-&gt;ServerC:</text>
                   <text x="164" y="708">POST</text>
-                  <text x="296" y="708">/notify/a.example/clubhouse</text>
-                  <text x="436" y="708">Commit</text>
+                  <text x="304" y="708">/notify/a.example/r/clubhouse</text>
+                  <text x="452" y="708">Commit</text>
                   <text x="76" y="724">ServerC-&gt;ClientC*:</text>
                   <text x="164" y="724">[[</text>
                   <text x="204" y="724">Commit</text>
@@ -2654,13 +2652,13 @@ membership by sending Commit messages covering Add and Remove proposals.<a href=
 <p id="section-4.2-2">Every application message sent within a room is authenticated and confidentiality-protected
 by virtue of being encapsulated in an MLS PrivateMessage object.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <p id="section-4.2-3">MIMI uses the MLS application state synchronization mechanism
-(<span>[<a href="#I-D.barnes-mls-appsync" class="cite xref">I-D.barnes-mls-appsync</a>]</span>) to ensure that the clients involved
+(<span>[<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>) to ensure that the clients involved
 in a MIMI room agree on the state of the room.  Each MIMI message that changes
-the state of the room is encapsulated in an AppSync proposal and transmitted
+the state of the room is encapsulated in an AppDataUpdate proposal and transmitted
 inside an MLS PublicMessage object.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
 <p id="section-4.2-4">The PublicMessage encapsulation provides sender authentication, including the
 ability for actors outside the group (e.g., servers involved in the room) to
-originate AppSync proposals.  Encoding room state changes in MLS proposals
+originate AppDataUpdate proposals.  Encoding room state changes in MLS proposals
 ensures that a client will not process a commit that confirms a state change
 before processing the state change itself.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
@@ -2799,21 +2797,21 @@ GET /.well-known/mimi-protocol-directory
 {
   "keyMaterial":
      "https://mimi.example.com/v1/keyMaterial/{targetUser}",
-  "update": "https://mimi.example.com/v1/update{roomId}",
+  "update": "https://mimi.example.com/v1/update/{roomId}",
   "notify": "https://mimi.example.com/v1/notify/{roomId}",
   "submitMessage":
      "https://mimi.example.com/v1/submitMessage/{roomId}",
   "groupInfo":
      "https://mimi.example.com/v1/groupInfo/{roomId}",
   "requestConsent":
-     "https://mimi.example.com/v1/requestConsent/{targetUser}",
+     "https://mimi.example.com/v1/requestConsent/{targetDomain}",
   "updateConsent":
-     "https://mimi.example.com/v1/updateConsent/{requesterUser}",
+     "https://mimi.example.com/v1/updateConsent/{requesterDomain}",
   "identifierQuery":
      "https://mimi.example.com/v1/identifierQuery/{domain}",
   "reportAbuse":
      "https://mimi.example.com/v1/reportAbuse/{roomId}",
-  "proxyDownload"
+  "proxyDownload":
      "https://mimi.example.com/v1/proxyDownload/{downloadUrl}"
 }
 </pre><a href="#section-5.1-4" class="pilcrow">¶</a>
@@ -2887,7 +2885,7 @@ struct {
     };
 } KeyMaterialRequestTBS;
 
-key_material_request_signature = SignWithLabel(requesterSignatureKey
+key_material_request_signature = SignWithLabel(requesterSignatureKey,
                       "KeyMaterialRequestTBS", KeyMaterialRequestTBS)
 </pre><a href="#section-5.2-7" class="pilcrow">¶</a>
 </div>
@@ -2911,19 +2909,19 @@ and time).<a href="#section-5.2-10" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.2-11">
 <pre>
 enum {
-    success(0);
-    partialSuccess(1);
-    incompatibleProtocol(2);
-    noCompatibleMaterial(3);
-    userUnknown(4);
-    noConsent(5);
-    noConsentForThisRoom(6);
-    userDeleted(7);
+    success(0),
+    partialSuccess(1),
+    incompatibleProtocol(2),
+    noCompatibleMaterial(3),
+    userUnknown(4),
+    noConsent(5),
+    noConsentForThisRoom(6),
+    userDeleted(7),
     (255)
 } KeyMaterialUserCode;
 
 enum {
-    success(0);
+    success(0),
     keyMaterialExhausted(1),
     nothingCompatible(2),
     (255)
@@ -3033,11 +3031,11 @@ POST /update/{roomId}
 </pre><a href="#section-5.3-2" class="pilcrow">¶</a>
 </div>
 <p id="section-5.3-3">Any change to the participant list or room policy (including
-authorization policy) is communicated via an <code>AppSync</code> proposal type
-with the <code>applicationId</code> of <code>mimiParticipantList</code> or <code>mimiRoomPolicy</code>
-respectively. When adding a user, the proposal containing the participant list
-change <span class="bcp14">MUST</span> be committed either before or simultaneously with the corresponding
-MLS operation.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+authorization policy) is communicated via an <code>AppDataUpdate</code> proposal for the
+<code>participant_list</code> component or the room policy components
+<span>[<a href="#I-D.ietf-mimi-room-policy" class="cite xref">I-D.ietf-mimi-room-policy</a>]</span>, respectively. When adding a user, the proposal
+containing the participant list change <span class="bcp14">MUST</span> be committed either before or
+simultaneously with the corresponding MLS operation.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
 <p id="section-5.3-4">Removing an active user from a participant list or banning an active participant
 likewise also happen simultaneously with any MLS changes made to the commit removing
 the participant.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
@@ -3049,7 +3047,7 @@ and <span class="bcp14">MUST</span> prevent it from sending any proposals except
 <code>SelfRemove</code> <span>[<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span> proposals for its users in that group.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
 <p id="section-5.3-6">The update request body is described below, using the
 <code>RatchetTreeOption</code> and <code>PartialGroupInfo</code> structs defined in
-<span>[<a href="#I-D.mahy-mls-ratchet-tree-options" class="cite xref">I-D.mahy-mls-ratchet-tree-options</a>]</span>:<a href="#section-5.3-6" class="pilcrow">¶</a></p>
+<span>[<a href="#I-D.ietf-mls-ratchet-tree-options" class="cite xref">I-D.ietf-mls-ratchet-tree-options</a>]</span>:<a href="#section-5.3-6" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.3-7">
 <pre>
 struct {
@@ -3066,6 +3064,7 @@ struct {
       /* a list of additional proposals, each represented */
       /* as either PublicMessage or SemiPrivateMessage    */
       MLSMessage moreProposals&lt;V&gt;;
+  };
 } HandshakeBundle;
 
 enum {
@@ -3082,7 +3081,7 @@ struct {
        GroupInfo groupInfo;
      case partial:
        PartialGroupInfo partialGroupInfo;
-   }
+   };
 } GroupInfoOption;
 
 struct {
@@ -3101,14 +3100,14 @@ struct {
           <li class="normal" id="section-5.3-9.2">
             <p id="section-5.3-9.2.1"><code>partial</code> means that a <code>PartialGroupInfo </code> struct will be shared and
  that the Distribution Service is expected to reconstruct the GroupInfo
- as described in <span>[<a href="#I-D.mahy-mls-ratchet-tree-options" class="cite xref">I-D.mahy-mls-ratchet-tree-options</a>]</span>.<a href="#section-5.3-9.2.1" class="pilcrow">¶</a></p>
+ as described in <span>[<a href="#I-D.ietf-mls-ratchet-tree-options" class="cite xref">I-D.ietf-mls-ratchet-tree-options</a>]</span>.<a href="#section-5.3-9.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-5.3-10">For example, in the first use case described in the Protocol Overview, Alice creates a Commit
-containing an AppSync proposal adding Bob (<code>mimi://b.example/b/bob</code>), and Add proposals for all
-Bob's MLS clients.  Alice includes the Welcome message which will be sent for
-Bob, a GroupInfo object for the hub provider, and complete <code>ratchet_tree</code>
-extension.<a href="#section-5.3-10" class="pilcrow">¶</a></p>
+containing an AppDataUpdate proposal adding Bob (<code>mimi://b.example/u/bob</code>), and
+Add proposals for all Bob's MLS clients.  Alice includes the Welcome message
+which will be sent for Bob, a GroupInfo object for the hub provider, and
+complete <code>ratchet_tree</code> extension.<a href="#section-5.3-10" class="pilcrow">¶</a></p>
 <p id="section-5.3-11">A handshake message could be sent by the client as an MLS
 <code>PublicMessage</code> (which is visible to all providers), or as an MLS
 <code>SemiPrivateMessage</code> <span>[<a href="#I-D.mahy-mls-semiprivatemessage" class="cite xref">I-D.mahy-mls-semiprivatemessage</a>]</span> encrypted
@@ -3130,7 +3129,7 @@ enum {
 
 struct {
   UpdateResponseCode responseCode;
-  string errorDescription;
+  UTF8String errorDescription;
   select (responseCode) {
     case success:
       /* the hub acceptance time (in milliseconds from the UNIX epoch) */
@@ -3141,10 +3140,10 @@ struct {
     case invalidProposal:
       ProposalRef invalidProposals&lt;V&gt;;
   };
-} UpdateRoomResponse
+} UpdateRoomResponse;
 </pre><a href="#section-5.3-13" class="pilcrow">¶</a>
 </div>
-<p id="section-5.3-14">The semantics of the <code>UpdatedResponseCode</code> values are as follows:<a href="#section-5.3-14" class="pilcrow">¶</a></p>
+<p id="section-5.3-14">The semantics of the <code>UpdateResponseCode</code> values are as follows:<a href="#section-5.3-14" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5.3-15.1">
             <p id="section-5.3-15.1.1"><code>success</code> indicates the <code>UpdateRequest</code> was accepted and will be distributed.<a href="#section-5.3-15.1.1" class="pilcrow">¶</a></p>
@@ -3185,7 +3184,7 @@ struct {
     case mls10:
       /* PrivateMessage containing an application message */
       MLSMessage appMessage;
-      IdentifierURI sendingUri;
+      IdentifierUri sendingUri;
   };
 } SubmitMessageRequest;
 </pre><a href="#section-5.4-4" class="pilcrow">¶</a>
@@ -3220,11 +3219,11 @@ struct {
     case mls10:
       SubmitResponseCode statusCode;
       select (statusCode) {
-        case success:
+        case accepted:
           /* the hub acceptance time
              (in milliseconds from the UNIX epoch) */
           uint64 accepted_timestamp;
-          optional Frank frank;
+          optional&lt;Frank&gt; frank;
         case epochTooOld:
           /* current MLS epoch for the MLS group */
           uint64 currentEpoch;
@@ -3236,11 +3235,11 @@ struct {
 <p id="section-5.4-8">The semantics of the <code>SubmitResponseCode</code> values are as follows:<a href="#section-5.4-8" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5.4-9.1">
-            <p id="section-5.4-9.1.1"><code>success</code> indicates the <code>SubmitMessageRequest</code> was accepted and will be distributed.<a href="#section-5.4-9.1.1" class="pilcrow">¶</a></p>
+            <p id="section-5.4-9.1.1"><code>accepted</code> indicates the <code>SubmitMessageRequest</code> was accepted and will be distributed.<a href="#section-5.4-9.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-5.4-9.2">
             <p id="section-5.4-9.2.1"><code>notAllowed</code> indicates that some type of policy or authorization prevented the
-hub provider from accepting the <code>UpdateRequest</code>. This could include
+hub provider from accepting the <code>SubmitMessageRequest</code>. This could include
 nonsensical inputs such as an MLS epoch more recent than the hub's.<a href="#section-5.4-9.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-5.4-9.3">
@@ -3271,9 +3270,9 @@ learn the content of the message, nor the sender.<a href="#section-5.4.1-1" clas
 franking mechanism is largely motivated by that solution with two
 significant changes as discussed in the final paragraph of this section.<a href="#section-5.4.1-2" class="pilcrow">¶</a></p>
 <p id="section-5.4.1-3">MIMI franking relies on two new MLS application components. The first is the
-<code>frank_aad</code> Safe AAD component <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-09#section-4.9" class="relref">Section 4.9</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>. The
-second is the <code>franking_agent</code> GroupContext component <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-09#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>. The structure of <code>franking_agent</code> mirrors that of
-the <code>ExternerSender</code> struct described in <span><a href="https://rfc-editor.org/rfc/rfc9420#section-12.1.8.1" class="relref">Section 12.1.8.1</a> of [<a href="#RFC9420" class="cite xref">RFC9420</a>]</span>. It
+<code>frank_aad</code> Safe AAD component <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-10#section-4.9" class="relref">Section 4.9</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>. The
+second is the <code>franking_agent</code> GroupContext component <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-10#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>. The structure of <code>franking_agent</code> mirrors that of
+the <code>ExternalSender</code> struct described in <span><a href="https://rfc-editor.org/rfc/rfc9420#section-12.1.8.1" class="relref">Section 12.1.8.1</a> of [<a href="#RFC9420" class="cite xref">RFC9420</a>]</span>. It
 contains a single signature key.<a href="#section-5.4.1-3" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.4.1-4">
 <pre>
@@ -3317,7 +3316,7 @@ generate the salt is discussed in Section 8.2 of <span>[<a href="#I-D.ietf-mimi-
 <p id="section-5.4.1.1-3">The sender of a MIMI content message attaches to the message any fields the
 sender wishes to commit that are not otherwise represented in the content. For a
 MIMI content object, the sender includes the sender's user URI and room URI in
-the MIMI content extensions map (see definitions in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-08#section-8.3" class="relref">Section 8.3</a> of [<a href="#I-D.ietf-mimi-content" class="cite xref">I-D.ietf-mimi-content</a>]</span>).<a href="#section-5.4.1.1-3" class="pilcrow">¶</a></p>
+the MIMI content extensions map (see definitions in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-09#section-8.3" class="relref">Section 8.3</a> of [<a href="#I-D.ietf-mimi-content" class="cite xref">I-D.ietf-mimi-content</a>]</span>).<a href="#section-5.4.1.1-3" class="pilcrow">¶</a></p>
 <div class="lang-cbor-diag sourcecode" id="section-5.4.1.1-4">
 <pre>
 / MIMI content extensions map /
@@ -3335,8 +3334,8 @@ and cannot later deny to a receiver that it sent them.<a href="#section-5.4.1.1-
 using the <code>salt</code> in the MIMI content format:<a href="#section-5.4.1.1-6" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-5.4.1.1-7.1">
-                <p id="section-5.4.1.1-7.1.1">Note that when the content advertisement mechanism in {Section 6.2 of
-!I-D.ietf-mls-extensions} is used, the <code>application_data</code> includes the
+                <p id="section-5.4.1.1-7.1.1">Note that when the content advertisement mechanism in
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-10#section-6.2" class="relref">Section 6.2</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span> is used, the <code>application_data</code> includes the
 <code>media_type</code> in the <code>ApplicationFraming</code> struct.<a href="#section-5.4.1.1-7.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
@@ -3493,7 +3492,7 @@ message out as presenting an ordered list of MLS-protected events to the next
 <p id="section-5.5-2">An MLS Welcome message is sent to the providers and local users associated with
 the <code>KeyPackageRef</code> values in the <code>secrets</code> array of the Welcome. In the case
 of a Welcome message, a <code>RatchetTreeOption</code>
-(see Section 3 of <span>[<a href="#I-D.mahy-mls-ratchet-tree-options" class="cite xref">I-D.mahy-mls-ratchet-tree-options</a>]</span>) is also included
+(see Section 3 of <span>[<a href="#I-D.ietf-mls-ratchet-tree-options" class="cite xref">I-D.ietf-mls-ratchet-tree-options</a>]</span>) is also included
 in the FanoutMessage.<a href="#section-5.5-2" class="pilcrow">¶</a></p>
 <p id="section-5.5-3">The hub provider also fans out any messages which originate from itself (ex: MLS
 External Proposals).<a href="#section-5.5-3" class="pilcrow">¶</a></p>
@@ -3528,7 +3527,7 @@ struct {
       MLSMessage message;
       select (message.wire_format) {
         case application:
-           optional Frank frank;
+           optional&lt;Frank&gt; frank;
         case welcome:
            RatchetTreeOption ratchetTreeOption;
         case proposal:
@@ -3660,7 +3659,7 @@ struct {
 </div>
 <p id="section-5.6-7">If successful, the response body contains the GroupInfo, a way to get the
 <code>ratchet_tree</code>, and a list of any pending proposals for the epoch, all
-encrypted with the <code>groupInfoPublcKey</code> passed in the request.<a href="#section-5.6-7" class="pilcrow">¶</a></p>
+encrypted with the <code>groupInfoPublicKey</code> passed in the request.<a href="#section-5.6-7" class="pilcrow">¶</a></p>
 <div class="breakable lang-tls sourcecode" id="section-5.6-8">
 <pre>
 enum {
@@ -3693,7 +3692,7 @@ encrypted_groupinfo_and_tree = EncryptWithLabel(
   group_info_ratchet_tree_tbe)
 
 struct {
-  Protocol version;
+  Protocol protocol;
   opaque room_id&lt;V&gt;;
   GroupInfoCode status;
   select (protocol) {
@@ -3705,7 +3704,7 @@ struct {
 } GroupInfoResponseTBS;
 
 struct {
-  Protocol version;
+  Protocol protocol;
   opaque room_id&lt;V&gt;;
   GroupInfoCode status;
   select (status) {
@@ -3785,7 +3784,7 @@ requested for a single room, the requester includes the <code>roomId</code>. The
 combination of the <code>requesterUri</code>, <code>targetUri</code>, and optional <code>roomId</code>
 represents the <code>ConsentScope</code>. A <code>cancel</code> <span class="bcp14">MUST</span> use the same <code>ConsentScope</code>
 as a previous <code>request</code>.<a href="#section-5.7-4" class="pilcrow">¶</a></p>
-<p id="section-5.7-5">For a <code>requestContent</code>, the <code>targetUri</code> needs to be in one of the domains of
+<p id="section-5.7-5">For a <code>requestConsent</code>, the <code>targetUri</code> needs to be in one of the domains of
 the receiving provider, and the <code>requesterUri</code> needs to be in one of the
 domains of the sending provider.<a href="#section-5.7-5" class="pilcrow">¶</a></p>
 <p id="section-5.7-6">The response to a <code>requestConsent</code> request is usually a 201 Accepted
@@ -3809,7 +3808,7 @@ struct {
   ConsentOperation consentOperation;
   IdentifierUri requesterUri;
   IdentifierUri targetUri;
-  optional&lt;RoomId&gt; roomId;
+  optional&lt;IdentifierUri&gt; roomId;
   select (consentOperation) {
       case grant:
           KeyPackage clientKeyPackages&lt;V&gt;;
@@ -3820,7 +3819,7 @@ struct {
 struct {
   IdentifierUri requesterUri;
   IdentifierUri targetUri;
-  optional&lt;RoomId&gt; roomId;
+  optional&lt;IdentifierUri&gt; roomId;
 } ConsentScope;
 </pre><a href="#section-5.7-7" class="pilcrow">¶</a>
 </div>
@@ -3838,7 +3837,7 @@ nor does the <code>ConsentScope</code> need to match a previous <code>request</c
 <p id="section-5.7-10">For example, in some systems there is a notion of a bilateral connection
 request. The party that initiates the connection request (for example Alice)
 would send a <code>requestConsent</code> for the target (ex: Bob), and send an
-unsolicited <code>updateConsent</code> with Bob as the "requestor" and itself (Alice)
+unsolicited <code>updateConsent</code> with Bob as the "requester" and itself (Alice)
 as the target.<a href="#section-5.7-10" class="pilcrow">¶</a></p>
 <p id="section-5.7-11">In a <code>grant</code>, the sender includes a list of <code>clientKeyPackages</code> for the
 target user, which can be empty. For the case of a bilateral connection,
@@ -3860,7 +3859,7 @@ is the case the target provider does not need to send a <code>revoke</code> to i
 the requester provider.<a href="#section-5.7-14.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-5.7-15">The <code>consent_extensions</code> field is an AppDataDictionary; it is an extension point that borrows the same syntax as the app_data_dictionary MLS extension in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-09#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>.<a href="#section-5.7-15" class="pilcrow">¶</a></p>
+<p id="section-5.7-15">The <code>consent_extensions</code> field is an AppDataDictionary; it is an extension point that borrows the same syntax as the app_data_dictionary MLS extension in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-10#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>.<a href="#section-5.7-15" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="find-internal-address">
@@ -3915,7 +3914,7 @@ enum {
 
 struct {
   SearchIdentifierType searchType;
-  select(type) {
+  select(searchType) {
     case oidcStdClaim:
       opaque claimName&lt;V&gt;;
     case vcardField:
@@ -3984,7 +3983,7 @@ enum {
 
 struct {
   FieldSource fieldSource;
-  string fieldName;
+  UTF8String fieldName;
   opaque fieldValue&lt;V&gt;;
 } ProfileField;
 
@@ -4354,7 +4353,7 @@ provider.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 struct {
   IdentifierUri client_pseudonym;
   IdentifierUri user_pseudonym;
-  opaque signature_public_key;
+  opaque signature_public_key&lt;V&gt;;
   opaque identity_link_ciphertext&lt;V&gt;;
 } PseudonymousCredential
 </pre><a href="#section-6.1-3" class="pilcrow">¶</a>
@@ -4383,7 +4382,7 @@ list.<a href="#section-6.1-5" class="pilcrow">¶</a></p>
 struct {
   IdentifierUri client_pseudonym;
   IdentifierUri user_pseudonym;
-  opaque signature_public_key;
+  opaque signature_public_key&lt;V&gt;;
 } PseudonymousCredentialTBS
 
 struct {
@@ -4449,7 +4448,7 @@ applies to events changing the room state.<a href="#section-7.1-4" class="pilcro
 manages the room also manages the list of group members, i.e. the
 list of clients belonging to users currently in the room. Application state
 that is stored in the MLS GroupContext is stored as application components
-in the <code>app_data_dictionary</code> extension, as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-09#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+in the <code>app_data_dictionary</code> extension, as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-10#section-4.6" class="relref">Section 4.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="proposal-commit-paradigm">
@@ -4532,7 +4531,7 @@ struct {
 } UserindexRolePair;
 
 struct {
-  UserindexRolePair changedRoleParticipants&lt;V&gt;
+  UserindexRolePair changedRoleParticipants&lt;V&gt;;
   uint32 removedIndices&lt;V&gt;;
   UserRolePair addedParticipants&lt;V&gt;;
 } ParticipantListUpdate;
@@ -4656,8 +4655,8 @@ since they are strongly linked to specific provider policies.<a href="#section-8
 <p id="section-8-7">Consent requests have sensitive privacy implications. The sender of a
 consent request should receive an acknowledgement that the request was
 received by the provider of the target user. For privacy reasons, the
-requestor should not know if the target user received or viewed the request.
-The original requestor will obviously find out if the target grants consent,
+requester should not know if the target user received or viewed the request.
+The original requester will obviously find out if the target grants consent,
 but a consent revocation/rejection is typically not communicated to the
 revoked/rejected user (again for privacy reasons).<a href="#section-8-7" class="pilcrow">¶</a></p>
 <p id="section-8-8">Consent operations are only sent directly between the acting provider
@@ -4715,7 +4714,7 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <a href="#section-10" class="section-number selfRef">10. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
 <p id="section-10-1">This document registers the following four MLS application components per
-<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-09#section-7.6" class="relref">Section 7.6</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>.<a href="#section-10-1" class="pilcrow">¶</a></p>
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-10#section-7.5" class="relref">Section 7.5</a> of [<a href="#I-D.ietf-mls-extensions" class="cite xref">I-D.ietf-mls-extensions</a>]</span>.<a href="#section-10-1" class="pilcrow">¶</a></p>
 <div id="iana-frank-aad">
 <section id="section-10.1">
         <h3 id="name-frank_aad-app-component">
@@ -4742,15 +4741,15 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 </div>
 <div id="iana-franking-sig-key">
 <section id="section-10.2">
-        <h3 id="name-franking_signature_key-app-">
-<a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-franking_signature_key-app-" class="section-name selfRef">franking_signature_key app component</a>
+        <h3 id="name-franking_agent-app-componen">
+<a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-franking_agent-app-componen" class="section-name selfRef">franking_agent app component</a>
         </h3>
 <ul class="normal">
 <li class="normal" id="section-10.2-1.1">
             <p id="section-10.2-1.1.1">Value: 0x0021<a href="#section-10.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-10.2-1.2">
-            <p id="section-10.2-1.2.1">Name: franking_signature_key<a href="#section-10.2-1.2.1" class="pilcrow">¶</a></p>
+            <p id="section-10.2-1.2.1">Name: franking_agent<a href="#section-10.2-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-10.2-1.3">
             <p id="section-10.2-1.3.1">Where: GC<a href="#section-10.2-1.3.1" class="pilcrow">¶</a></p>
@@ -4825,33 +4824,29 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
-<dt id="I-D.barnes-mimi-arch">[I-D.barnes-mimi-arch]</dt>
+<dt id="I-D.ietf-mimi-arch">[I-D.ietf-mimi-arch]</dt>
         <dd>
-<span class="refAuthor">Barnes, R.</span>, <span class="refTitle">"An Architecture for More Instant Messaging Interoperability (MIMI)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-barnes-mimi-arch-03</span>, <time datetime="2024-03-04" class="refDate">4 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-barnes-mimi-arch-03">https://datatracker.ietf.org/doc/html/draft-barnes-mimi-arch-03</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="I-D.barnes-mls-appsync">[I-D.barnes-mls-appsync]</dt>
-        <dd>
-<span class="refAuthor">Joël</span>, <span class="refAuthor">Barnes, R.</span>, <span class="refAuthor">Mahy, R.</span>, and <span class="refAuthor">M. Mularczyk</span>, <span class="refTitle">"A Safe Application Interface to Messaging Layer Security"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-barnes-mls-appsync-01</span>, <time datetime="2024-12-12" class="refDate">12 December 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-barnes-mls-appsync-01">https://datatracker.ietf.org/doc/html/draft-barnes-mls-appsync-01</a>&gt;</span>. </dd>
+<span class="refAuthor">Barnes, R.</span>, <span class="refTitle">"An Architecture for More Instant Messaging Interoperability (MIMI)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mimi-arch-03</span>, <time datetime="2026-07-06" class="refDate">6 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-arch-03">https://datatracker.ietf.org/doc/html/draft-ietf-mimi-arch-03</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-mimi-content">[I-D.ietf-mimi-content]</dt>
         <dd>
-<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"More Instant Messaging Interoperability (MIMI) message content"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mimi-content-08</span>, <time datetime="2026-03-02" class="refDate">2 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-08">https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-08</a>&gt;</span>. </dd>
+<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"More Instant Messaging Interoperability (MIMI) message content"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mimi-content-09</span>, <time datetime="2026-07-04" class="refDate">4 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-09">https://datatracker.ietf.org/doc/html/draft-ietf-mimi-content-09</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-mimi-room-policy">[I-D.ietf-mimi-room-policy]</dt>
         <dd>
-<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Room Policy for the More Instant Messaging Interoperability (MIMI) Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mimi-room-policy-03</span>, <time datetime="2025-12-18" class="refDate">18 December 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-room-policy-03">https://datatracker.ietf.org/doc/html/draft-ietf-mimi-room-policy-03</a>&gt;</span>. </dd>
+<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Room Policy for the More Instant Messaging Interoperability (MIMI) Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mimi-room-policy-04</span>, <time datetime="2026-07-06" class="refDate">6 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mimi-room-policy-04">https://datatracker.ietf.org/doc/html/draft-ietf-mimi-room-policy-04</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-mls-extensions">[I-D.ietf-mls-extensions]</dt>
         <dd>
-<span class="refAuthor">Robert, R.</span>, <span class="refTitle">"The Messaging Layer Security (MLS) Extensions"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mls-extensions-09</span>, <time datetime="2026-03-02" class="refDate">2 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-09">https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-09</a>&gt;</span>. </dd>
+<span class="refAuthor">Robert, R.</span>, <span class="refTitle">"The Messaging Layer Security (MLS) Extensions"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mls-extensions-10</span>, <time datetime="2026-07-06" class="refDate">6 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-10">https://datatracker.ietf.org/doc/html/draft-ietf-mls-extensions-10</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="I-D.mahy-mls-ratchet-tree-options">[I-D.mahy-mls-ratchet-tree-options]</dt>
+<dt id="I-D.ietf-mls-ratchet-tree-options">[I-D.ietf-mls-ratchet-tree-options]</dt>
         <dd>
-<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Ways to convey the Ratchet Tree in Messaging Layer Security"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-ratchet-tree-options-04</span>, <time datetime="2026-03-02" class="refDate">2 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-ratchet-tree-options-04">https://datatracker.ietf.org/doc/html/draft-mahy-mls-ratchet-tree-options-04</a>&gt;</span>. </dd>
+<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Ways to convey the Ratchet Tree in Messaging Layer Security"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-mls-ratchet-tree-options-02</span>, <time datetime="2026-11-01" class="refDate">1 November 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-mls-ratchet-tree-options-02">https://datatracker.ietf.org/doc/html/draft-ietf-mls-ratchet-tree-options-02</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.mahy-mls-semiprivatemessage">[I-D.mahy-mls-semiprivatemessage]</dt>
         <dd>
-<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Semi-Private Messages in the Messaging Layer Security (MLS) Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-semiprivatemessage-07</span>, <time datetime="2026-04-19" class="refDate">19 April 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-07">https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-07</a>&gt;</span>. </dd>
+<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"Semi-Private Messages in the Messaging Layer Security (MLS) Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mls-semiprivatemessage-08</span>, <time datetime="2026-11-01" class="refDate">1 November 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-08">https://datatracker.ietf.org/doc/html/draft-mahy-mls-semiprivatemessage-08</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="OidcCore">[OidcCore]</dt>
         <dd>
@@ -4916,7 +4911,7 @@ cost is offset by the simplicity of not having multiple policy enforcement point
 <dd class="break"></dd>
 <dt id="I-D.mahy-mimi-identity">[I-D.mahy-mimi-identity]</dt>
         <dd>
-<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"More Instant Messaging Interoperability (MIMI) Identity Concepts"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mimi-identity-04</span>, <time datetime="2025-10-20" class="refDate">20 October 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mimi-identity-04">https://datatracker.ietf.org/doc/html/draft-mahy-mimi-identity-04</a>&gt;</span>. </dd>
+<span class="refAuthor">Mahy, R.</span>, <span class="refTitle">"More Instant Messaging Interoperability (MIMI) Identity Concepts"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mahy-mimi-identity-05</span>, <time datetime="2026-07-06" class="refDate">6 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mahy-mimi-identity-05">https://datatracker.ietf.org/doc/html/draft-mahy-mimi-identity-05</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="InvisibleSalamanders">[InvisibleSalamanders]</dt>
         <dd>
@@ -4940,11 +4935,11 @@ cost is offset by the simplicity of not having multiple policy enforcement point
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="appendix-A-1">Thanks to Paul Grubs, Jon Millican, and Julia Len for their reviews of the
+<p id="appendix-A-1">Thanks to Paul Grubbs, Jon Millican, and Julia Len for their reviews of the
 franking mechanism and suggested changes. Thanks to Felix Linker for his
 preliminary <a href="https://github.com/felixlinker/mimi-franking-tamarin/">formal methods
 analysis</a> of MIMI
-franking.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+franking. Thanks to Mark Atwood for the detailed review.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">

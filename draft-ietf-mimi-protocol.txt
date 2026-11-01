@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 27 October 2026                The Matrix.org Foundation C.I.C.
+Expires: 5 May 2027                     The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 27 October 2026                The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                           25 April 2026
+                                                         1 November 2026
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 October 2026.
+   This Internet-Draft will expire on 5 May 2027.
 
 Copyright Notice
 
@@ -129,7 +129,7 @@ Table of Contents
      9.1.  Franking
    10. IANA Considerations
      10.1.  frank_aad app component
-     10.2.  franking_signature_key app component
+     10.2.  franking_agent app component
      10.3.  participant_list app component
      10.4.  room_metadata app component
    11. References
@@ -143,7 +143,7 @@ Table of Contents
    The More Instant Messaging Interoperability (MIMI) transport protocol
    enables providers of end-to-end encrypted instant messaging to
    interoperate.  As described in the MIMI architecture
-   [I-D.barnes-mimi-arch], group chats and direct messages are described
+   [I-D.ietf-mimi-arch], group chats and direct messages are described
    in terms of "rooms".  Each MIMI protocol room is hosted at a single
    provider (the "hub" provider"), but allows users from different
    providers to become participants in the room.  The hub provider is
@@ -215,7 +215,7 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-   Terms and definitions are inherited from [I-D.barnes-mimi-arch].  We
+   Terms and definitions are inherited from [I-D.ietf-mimi-arch].  We
    also make use of terms from the MLS protocol [RFC9420].
 
    Throughout this document, the examples use the TLS Presentation
@@ -248,10 +248,10 @@ Table of Contents
 
                       Figure 1: MIMI protocol layering
 
-   MIMI uses MLS for end-to-end security, using the MLS AppSync proposal
-   type to efficiently synchronize room state across the clients
-   involved in a room [RFC9420] [I-D.barnes-mls-appsync].  The MIMI
-   transport is based on HTTPS over mutually-authenticated TLS.
+   MIMI uses MLS [RFC9420] for end-to-end security, using the MLS
+   AppDataUpdate proposal type [I-D.ietf-mls-extensions] to efficiently
+   synchronize room state across the clients involved in a room.  The
+   MIMI transport is based on HTTPS over mutually-authenticated TLS.
 
 3.  Example protocol flow
 
@@ -293,7 +293,7 @@ Table of Contents
 
                         Table 1: MIMI URI examples
 
-   As noted in [I-D.barnes-mimi-arch], the MIMI protocol only defines
+   As noted in [I-D.ietf-mimi-arch], the MIMI protocol only defines
    interactions between service providers' servers.  Interactions
    between clients and servers within a service provider domain are
    shown here for completeness, but surrounded by [[ double brackets ]].
@@ -307,15 +307,17 @@ Table of Contents
    protocol operations related to the room.
 
    For authorization purposes, MIMI uses permissions based on room-
-   defined roles.  For example, a room might have a role named "admin",
-   which has canAddUser, canRemoveUser, and canSetUserRole permisions.
+   defined roles [I-D.ietf-mimi-room-policy].  For example, a room might
+   have a role named "admin", which has canAddParticipant,
+   canRemoveParticipant, and canChangeUserRole permissions.
 
    Here, we assume that Alice uses ClientA1 to create a room with the
    following base policy properties:
 
    *  Room Identifier: mimi://a.example/r/clubhouse
 
-   *  Roles: admin = [canAddUser, canRemoveUser, canSetUserRole]
+   *  Roles: admin = [canAddParticipant, canRemoveParticipant,
+      canChangeUserRole]
 
    And the following participant list:
 
@@ -335,8 +337,8 @@ Table of Contents
    key material for Bob's clients.  Alice then updates the room by
    sending an MLS Commit over the following proposals:
 
-   *  An AppSync proposal updating the room state by adding Bob to the
-      participant list
+   *  An AppDataUpdate proposal for the participant_list component
+      adding Bob to the participant list
 
    *  Add proposals for Bob's clients
 
@@ -368,7 +370,7 @@ Table of Contents
 
    ClientB*->ServerB: [[ Store KeyPackages ]]
    ClientA1->ServerA: [[ request KPs for Bob ]]
-   ServerA->ServerB: POST /keyMaterial KeyMaterialRequest
+   ServerA->ServerB: POST /keyMaterial/{targetUser} KeyMaterialRequest
    ServerB: Verify that Alice is authorized to fetch KeyPackages
    ServerB: Mark returned KPs as reserved for Alice's use
    ServerB->ServerA: 200 OK KeyMaterialResponse
@@ -389,9 +391,9 @@ ClientA1       ServerA         ServerB         ClientB*
   |               |               |               |
 
 
-ClientA1: Prepare Commit over AppSync(+Bob), Add*
+ClientA1: Prepare Commit over AppDataUpdate(+Bob), Add*
 ClientA1->ServerA: [[ Commit, Welcome, GroupInfo?, RatchetTree? ]]
-ServerA: Verify that AppSync, Adds are allowed by policy
+ServerA: Verify that AppDataUpdate, Adds are allowed by policy
 ServerA: Identifies Welcome domains based on KP hash in Welcome
 ServerA->ServerB: POST /notify/a.example/r/clubhouse Intro{ Welcome, RatchetTree? }
 ServerB: Recognizes that Welcome is adding Bob to room clubhouse
@@ -425,8 +427,8 @@ ServerB->ClientB*: [[ Welcome, RatchetTree? ]]
 
  ClientC*->ServerC: [[ Store KeyPackages ]]
  ClientB1->ServerB: [[ request KPs for Bob ]]
- ServerB->ServerA: POST /keyMaterial KeyMaterialRequest
- ServerA->ServerC: POST /keyMaterial KeyMaterialRequest
+ ServerB->ServerA: POST /keyMaterial/{targetUser} KeyMaterialRequest
+ ServerA->ServerC: POST /keyMaterial/{targetUser} KeyMaterialRequest
  ServerB: Verify that Bob is authorized to fetch KeyPackages
  ServerB: Mark returned KPs as reserved for Bob's use
  ServerC->ServerA: 200 OK KeyMaterialResponse
@@ -453,7 +455,7 @@ ServerB->ClientB*: [[ Welcome, RatchetTree? ]]
  |             +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>|         |
  |             |           |           |           |         |         |
 
- ClientB1: Prepare Commit over AppSync(+Cathy), Add*
+ ClientB1: Prepare Commit over AppDataUpdate(+Cathy), Add*
  ClientB1->ServerB: [[ Commit, Welcome, GroupInfo?, RatchetTree? ]]
  ServerB->ServerA: POST /update/a.example/r/clubhouse CommitBundle
  ServerA: Verify that Adds are allowed by policy
@@ -497,7 +499,8 @@ ClientC1       ServerC         ServerA         ServerB         ClientB*  ClientC
   |               |               |               |               |         |         |
 
 ClientC1->ServerC: [[ MLSMessage(PrivateMessage) ]]
-ServerC->ServerA: POST /submit/a.example/r/clubhouse MLSMessage(PrivateMessage)
+ServerC->ServerA: POST
+    /submitMessage/a.example/r/clubhouse MLSMessage(PrivateMessage)
 ServerA: Verifies that message is allowed
 ServerA->ServerC: POST /notify/a.example/r/clubhouse Message{ MLSMessage(PrivateMessage) }
 ServerA->ServerB: POST /notify/a.example/r/clubhouse Message{ MLSMessage(PrivateMessage) }
@@ -512,8 +515,8 @@ ServerC->ClientC*: [[ MLSMessage(PrivateMessage) ]]
    A user removing another user follows the same flow as adding the
    user.  The user performing the removal creates an MLS commit covering
    Remove proposals for all of the removed user's devices, and an
-   AppSync proposal updating the room state to remove the removed user
-   from the room's participant list.
+   AppDataUpdate proposal updating the participant_list component to
+   remove the removed user from the room's participant list.
 
    One's own user leaving is slightly more complicated than removing
    another user, because the leaving user cannot remove all of their
@@ -521,8 +524,9 @@ ServerC->ClientC*: [[ MLSMessage(PrivateMessage) ]]
    steps:
 
    1.  The leaving client constructs MLS Remove proposals for all of the
-       user's devices (including the leaving client), and an AppSync
-       proposal that removes its user from the participant list.
+       user's devices (including the leaving client), and an
+       AppDataUpdate proposal for the participant_list component that
+       removes its user from the participant list.
 
    2.  The leaving client sends these proposals to the hub.  The hub
        caches the proposals.
@@ -559,15 +563,15 @@ ClientB1       ServerB         ServerA         ServerC         ClientC1  C2
   |               |               |               +~~~~~~~~~~~~~~>|       |
   |               |               |               |               |       |
 
-ClientB1: Prepare Remove*, AppSync(-Bob)
-ClientB1->ServerB: [[ Remove*, AppSync ]]
-ServerB->ServerA: POST /update/a.example/r/clubhouse Remove*, AppSync
-ServerA: Verify that Removes, AppSync are allowed by policy; cache
+ClientB1: Prepare Remove*, AppDataUpdate(-Bob)
+ClientB1->ServerB: [[ Remove*, AppDataUpdate ]]
+ServerB->ServerA: POST /update/a.example/r/clubhouse Remove*, AppDataUpdate
+ServerA: Verify that Removes, AppDataUpdate are allowed by policy; cache
 ServerA->ServerB: 200 OK
 ServerA->ServerC: POST /notify/a.example/r/clubhouse Proposals
 ServerC1->ClientC1: [[ Proposals ]]
 ClientC1->ServerC: [[ Commit(Props), Welcome, GroupInfo?, RatchetTree? ]]
-ServerC->ServerA: POST /update/a.example/r/clubhousee CommitBundle
+ServerC->ServerA: POST /update/a.example/r/clubhouse CommitBundle
 ServerA: Check whether Commit includes queued proposals; accept
 ServerA->ServerC: 200 OK
 ServerA->ServerB: POST /notify/a.example/r/clubhouse Commit
@@ -627,20 +631,20 @@ ClientC3       ServerC         ServerA         ServerB         ClientB*  ClientC
   |               |               |               |               |         |         |
 
 ClientC3->ServerC: [[ request current GroupInfo ]]
-ServerC->ServerA: POST /groupInfo/a.example/clubhouse
+ServerC->ServerA: POST /groupInfo/a.example/r/clubhouse
 ServerA: Verify that ClientC3 has authorization to join the room
 ServerA->ServerC: 200 OK w/ current GroupInfo and ratchet tree
 ServerC->ClientC3: [[ GroupInfo, tree ]]
 ClientC3: Prepare External Commit Add*
 ClientC3->ServerC: [[ Commit, GroupInfo?, RatchetTree? ]]
-ServerC->ServerA: POST /update/a.example/clubhouse CommitBundle
+ServerC->ServerA: POST /update/a.example/r/clubhouse CommitBundle
 ServerA: Verify that Commit is valid and ClientC3 is authorized
 ServerA->ServerC: 200 OK
 ServerC->ClientC3: [[ External Commit was accepted ]]
 ServerA->ClientA*: [[ Commit ]]
-ServerA->ServerB: POST /notify/a.example/clubhouse Commit
+ServerA->ServerB: POST /notify/a.example/r/clubhouse Commit
 ServerB->ClientB*: [[ Commit ]]
-ServerA->ServerC: POST /notify/a.example/clubhouse Commit
+ServerA->ServerC: POST /notify/a.example/r/clubhouse Commit
 ServerC->ClientC*: [[ Commit ]]
 
                   Figure 8: Cathy Adds a new Client
@@ -689,17 +693,17 @@ ServerC->ClientC*: [[ Commit ]]
    PrivateMessage object.
 
    MIMI uses the MLS application state synchronization mechanism
-   ([I-D.barnes-mls-appsync]) to ensure that the clients involved in a
+   ([I-D.ietf-mls-extensions]) to ensure that the clients involved in a
    MIMI room agree on the state of the room.  Each MIMI message that
-   changes the state of the room is encapsulated in an AppSync proposal
-   and transmitted inside an MLS PublicMessage object.
+   changes the state of the room is encapsulated in an AppDataUpdate
+   proposal and transmitted inside an MLS PublicMessage object.
 
    The PublicMessage encapsulation provides sender authentication,
    including the ability for actors outside the group (e.g., servers
-   involved in the room) to originate AppSync proposals.  Encoding room
-   state changes in MLS proposals ensures that a client will not process
-   a commit that confirms a state change before processing the state
-   change itself.
+   involved in the room) to originate AppDataUpdate proposals.  Encoding
+   room state changes in MLS proposals ensures that a client will not
+   process a commit that confirms a state change before processing the
+   state change itself.
 
       *TODO*: A little more needs to be said here about how MLS is used.
       For example: What types of credential are required / allowed?  If
@@ -806,21 +810,21 @@ ServerC->ClientC*: [[ Commit ]]
    {
      "keyMaterial":
         "https://mimi.example.com/v1/keyMaterial/{targetUser}",
-     "update": "https://mimi.example.com/v1/update{roomId}",
+     "update": "https://mimi.example.com/v1/update/{roomId}",
      "notify": "https://mimi.example.com/v1/notify/{roomId}",
      "submitMessage":
         "https://mimi.example.com/v1/submitMessage/{roomId}",
      "groupInfo":
         "https://mimi.example.com/v1/groupInfo/{roomId}",
      "requestConsent":
-        "https://mimi.example.com/v1/requestConsent/{targetUser}",
+        "https://mimi.example.com/v1/requestConsent/{targetDomain}",
      "updateConsent":
-        "https://mimi.example.com/v1/updateConsent/{requesterUser}",
+        "https://mimi.example.com/v1/updateConsent/{requesterDomain}",
      "identifierQuery":
         "https://mimi.example.com/v1/identifierQuery/{domain}",
      "reportAbuse":
         "https://mimi.example.com/v1/reportAbuse/{roomId}",
-     "proxyDownload"
+     "proxyDownload":
         "https://mimi.example.com/v1/proxyDownload/{downloadUrl}"
    }
 
@@ -892,7 +896,7 @@ ServerC->ClientC*: [[ Commit ]]
        };
    } KeyMaterialRequestTBS;
 
-   key_material_request_signature = SignWithLabel(requesterSignatureKey
+   key_material_request_signature = SignWithLabel(requesterSignatureKey,
                          "KeyMaterialRequestTBS", KeyMaterialRequestTBS)
 
    The response contains a user status code that indicates keying
@@ -916,19 +920,19 @@ ServerC->ClientC*: [[ Commit ]]
    notAfter time past the current date and time).
 
    enum {
-       success(0);
-       partialSuccess(1);
-       incompatibleProtocol(2);
-       noCompatibleMaterial(3);
-       userUnknown(4);
-       noConsent(5);
-       noConsentForThisRoom(6);
-       userDeleted(7);
+       success(0),
+       partialSuccess(1),
+       incompatibleProtocol(2),
+       noCompatibleMaterial(3),
+       userUnknown(4),
+       noConsent(5),
+       noConsentForThisRoom(6),
+       userDeleted(7),
        (255)
    } KeyMaterialUserCode;
 
    enum {
-       success(0);
+       success(0),
        keyMaterialExhausted(1),
        nothingCompatible(2),
        (255)
@@ -1024,11 +1028,11 @@ ServerC->ClientC*: [[ Commit ]]
    POST /update/{roomId}
 
    Any change to the participant list or room policy (including
-   authorization policy) is communicated via an AppSync proposal type
-   with the applicationId of mimiParticipantList or mimiRoomPolicy
-   respectively.  When adding a user, the proposal containing the
-   participant list change MUST be committed either before or
-   simultaneously with the corresponding MLS operation.
+   authorization policy) is communicated via an AppDataUpdate proposal
+   for the participant_list component or the room policy components
+   [I-D.ietf-mimi-room-policy], respectively.  When adding a user, the
+   proposal containing the participant list change MUST be committed
+   either before or simultaneously with the corresponding MLS operation.
 
    Removing an active user from a participant list or banning an active
    participant likewise also happen simultaneously with any MLS changes
@@ -1044,7 +1048,7 @@ ServerC->ClientC*: [[ Commit ]]
 
    The update request body is described below, using the
    RatchetTreeOption and PartialGroupInfo structs defined in
-   [I-D.mahy-mls-ratchet-tree-options]:
+   [I-D.ietf-mls-ratchet-tree-options]:
 
    struct {
      /* A Proposal or Commit which is either a PublicMessage; */
@@ -1060,6 +1064,7 @@ ServerC->ClientC*: [[ Commit ]]
          /* a list of additional proposals, each represented */
          /* as either PublicMessage or SemiPrivateMessage    */
          MLSMessage moreProposals<V>;
+     };
    } HandshakeBundle;
 
    enum {
@@ -1076,7 +1081,7 @@ ServerC->ClientC*: [[ Commit ]]
           GroupInfo groupInfo;
         case partial:
           PartialGroupInfo partialGroupInfo;
-      }
+      };
    } GroupInfoOption;
 
    struct {
@@ -1092,11 +1097,11 @@ ServerC->ClientC*: [[ Commit ]]
 
    *  partial means that a PartialGroupInfo struct will be shared and
       that the Distribution Service is expected to reconstruct the
-      GroupInfo as described in [I-D.mahy-mls-ratchet-tree-options].
+      GroupInfo as described in [I-D.ietf-mls-ratchet-tree-options].
 
    For example, in the first use case described in the Protocol
-   Overview, Alice creates a Commit containing an AppSync proposal
-   adding Bob (mimi://b.example/b/bob), and Add proposals for all Bob's
+   Overview, Alice creates a Commit containing an AppDataUpdate proposal
+   adding Bob (mimi://b.example/u/bob), and Add proposals for all Bob's
    MLS clients.  Alice includes the Welcome message which will be sent
    for Bob, a GroupInfo object for the hub provider, and complete
    ratchet_tree extension.
@@ -1122,7 +1127,7 @@ ServerC->ClientC*: [[ Commit ]]
 
    struct {
      UpdateResponseCode responseCode;
-     string errorDescription;
+     UTF8String errorDescription;
      select (responseCode) {
        case success:
          /* the hub acceptance time (in milliseconds from the UNIX epoch) */
@@ -1133,9 +1138,9 @@ ServerC->ClientC*: [[ Commit ]]
        case invalidProposal:
          ProposalRef invalidProposals<V>;
      };
-   } UpdateRoomResponse
+   } UpdateRoomResponse;
 
-   The semantics of the UpdatedResponseCode values are as follows:
+   The semantics of the UpdateResponseCode values are as follows:
 
    *  success indicates the UpdateRequest was accepted and will be
       distributed.
@@ -1164,7 +1169,7 @@ ServerC->ClientC*: [[ Commit ]]
        case mls10:
          /* PrivateMessage containing an application message */
          MLSMessage appMessage;
-         IdentifierURI sendingUri;
+         IdentifierUri sendingUri;
      };
    } SubmitMessageRequest;
 
@@ -1200,11 +1205,11 @@ ServerC->ClientC*: [[ Commit ]]
        case mls10:
          SubmitResponseCode statusCode;
          select (statusCode) {
-           case success:
+           case accepted:
              /* the hub acceptance time
                 (in milliseconds from the UNIX epoch) */
              uint64 accepted_timestamp;
-             optional Frank frank;
+             optional<Frank> frank;
            case epochTooOld:
              /* current MLS epoch for the MLS group */
              uint64 currentEpoch;
@@ -1214,13 +1219,13 @@ ServerC->ClientC*: [[ Commit ]]
 
    The semantics of the SubmitResponseCode values are as follows:
 
-   *  success indicates the SubmitMessageRequest was accepted and will
+   *  accepted indicates the SubmitMessageRequest was accepted and will
       be distributed.
 
    *  notAllowed indicates that some type of policy or authorization
-      prevented the hub provider from accepting the UpdateRequest.  This
-      could include nonsensical inputs such as an MLS epoch more recent
-      than the hub's.
+      prevented the hub provider from accepting the
+      SubmitMessageRequest.  This could include nonsensical inputs such
+      as an MLS epoch more recent than the hub's.
 
    *  epochTooOld indicates that the hub provider is using a new MLS
       epoch for the group.  The currentEpoch is provided in the
@@ -1251,7 +1256,7 @@ ServerC->ClientC*: [[ Commit ]]
    first is the frank_aad Safe AAD component Section 4.9 of
    [I-D.ietf-mls-extensions].  The second is the franking_agent
    GroupContext component Section 4.6 of [I-D.ietf-mls-extensions].  The
-   structure of franking_agent mirrors that of the ExternerSender struct
+   structure of franking_agent mirrors that of the ExternalSender struct
    described in Section 12.1.8.1 of [RFC9420].  It contains a single
    signature key.
 
@@ -1315,8 +1320,8 @@ ServerC->ClientC*: [[ Commit ]]
    the application_data (which includes the values in the extensions map
    above) using the salt in the MIMI content format:
 
-      Note that when the content advertisement mechanism in {Section 6.2
-      of !I-D.ietf-mls-extensions} is used, the application_data
+      Note that when the content advertisement mechanism in Section 6.2
+      of [I-D.ietf-mls-extensions] is used, the application_data
       includes the media_type in the ApplicationFraming struct.
 
    franking_tag = HMAC_SHA256( salt, application_data)
@@ -1459,7 +1464,7 @@ ServerC->ClientC*: [[ Commit ]]
    An MLS Welcome message is sent to the providers and local users
    associated with the KeyPackageRef values in the secrets array of the
    Welcome.  In the case of a Welcome message, a RatchetTreeOption (see
-   Section 3 of [I-D.mahy-mls-ratchet-tree-options]) is also included in
+   Section 3 of [I-D.ietf-mls-ratchet-tree-options]) is also included in
    the FanoutMessage.
 
    The hub provider also fans out any messages which originate from
@@ -1490,7 +1495,7 @@ ServerC->ClientC*: [[ Commit ]]
          MLSMessage message;
          select (message.wire_format) {
            case application:
-              optional Frank frank;
+              optional<Frank> frank;
            case welcome:
               RatchetTreeOption ratchetTreeOption;
            case proposal:
@@ -1621,7 +1626,7 @@ ServerC->ClientC*: [[ Commit ]]
 
    If successful, the response body contains the GroupInfo, a way to get
    the ratchet_tree, and a list of any pending proposals for the epoch,
-   all encrypted with the groupInfoPublcKey passed in the request.
+   all encrypted with the groupInfoPublicKey passed in the request.
 
    enum {
      reserved(0),
@@ -1653,7 +1658,7 @@ ServerC->ClientC*: [[ Commit ]]
      group_info_ratchet_tree_tbe)
 
    struct {
-     Protocol version;
+     Protocol protocol;
      opaque room_id<V>;
      GroupInfoCode status;
      select (protocol) {
@@ -1665,7 +1670,7 @@ ServerC->ClientC*: [[ Commit ]]
    } GroupInfoResponseTBS;
 
    struct {
-     Protocol version;
+     Protocol protocol;
      opaque room_id<V>;
      GroupInfoCode status;
      select (status) {
@@ -1733,7 +1738,7 @@ ServerC->ClientC*: [[ Commit ]]
    represents the ConsentScope.  A cancel MUST use the same ConsentScope
    as a previous request.
 
-   For a requestContent, the targetUri needs to be in one of the domains
+   For a requestConsent, the targetUri needs to be in one of the domains
    of the receiving provider, and the requesterUri needs to be in one of
    the domains of the sending provider.
 
@@ -1758,7 +1763,7 @@ ServerC->ClientC*: [[ Commit ]]
      ConsentOperation consentOperation;
      IdentifierUri requesterUri;
      IdentifierUri targetUri;
-     optional<RoomId> roomId;
+     optional<IdentifierUri> roomId;
      select (consentOperation) {
          case grant:
              KeyPackage clientKeyPackages<V>;
@@ -1769,7 +1774,7 @@ ServerC->ClientC*: [[ Commit ]]
    struct {
      IdentifierUri requesterUri;
      IdentifierUri targetUri;
-     optional<RoomId> roomId;
+     optional<IdentifierUri> roomId;
    } ConsentScope;
 
    An updateConsent request is used by one provider to provide explicit
@@ -1791,7 +1796,7 @@ ServerC->ClientC*: [[ Commit ]]
    connection request.  The party that initiates the connection request
    (for example Alice) would send a requestConsent for the target (ex:
    Bob), and send an unsolicited updateConsent with Bob as the
-   "requestor" and itself (Alice) as the target.
+   "requester" and itself (Alice) as the target.
 
    In a grant, the sender includes a list of clientKeyPackages for the
    target user, which can be empty.  For the case of a bilateral
@@ -1870,7 +1875,7 @@ ServerC->ClientC*: [[ Commit ]]
 
    struct {
      SearchIdentifierType searchType;
-     select(type) {
+     select(searchType) {
        case oidcStdClaim:
          opaque claimName<V>;
        case vcardField:
@@ -1947,7 +1952,7 @@ ServerC->ClientC*: [[ Commit ]]
 
    struct {
      FieldSource fieldSource;
-     string fieldName;
+     UTF8String fieldName;
      opaque fieldValue<V>;
    } ProfileField;
 
@@ -2225,7 +2230,7 @@ ServerC->ClientC*: [[ Commit ]]
    struct {
      IdentifierUri client_pseudonym;
      IdentifierUri user_pseudonym;
-     opaque signature_public_key;
+     opaque signature_public_key<V>;
      opaque identity_link_ciphertext<V>;
    } PseudonymousCredential
 
@@ -2247,7 +2252,7 @@ ServerC->ClientC*: [[ Commit ]]
    struct {
      IdentifierUri client_pseudonym;
      IdentifierUri user_pseudonym;
-     opaque signature_public_key;
+     opaque signature_public_key<V>;
    } PseudonymousCredentialTBS
 
    struct {
@@ -2375,7 +2380,7 @@ ServerC->ClientC*: [[ Commit ]]
    } UserindexRolePair;
 
    struct {
-     UserindexRolePair changedRoleParticipants<V>
+     UserindexRolePair changedRoleParticipants<V>;
      uint32 removedIndices<V>;
      UserRolePair addedParticipants<V>;
    } ParticipantListUpdate;
@@ -2498,8 +2503,8 @@ ServerC->ClientC*: [[ Commit ]]
    Consent requests have sensitive privacy implications.  The sender of
    a consent request should receive an acknowledgement that the request
    was received by the provider of the target user.  For privacy
-   reasons, the requestor should not know if the target user received or
-   viewed the request.  The original requestor will obviously find out
+   reasons, the requester should not know if the target user received or
+   viewed the request.  The original requester will obviously find out
    if the target grants consent, but a consent revocation/rejection is
    typically not communicated to the revoked/rejected user (again for
    privacy reasons).
@@ -2552,7 +2557,7 @@ ServerC->ClientC*: [[ Commit ]]
 10.  IANA Considerations
 
    This document registers the following four MLS application components
-   per Section 7.6 of [I-D.ietf-mls-extensions].
+   per Section 7.5 of [I-D.ietf-mls-extensions].
 
 10.1.  frank_aad app component
 
@@ -2566,11 +2571,11 @@ ServerC->ClientC*: [[ Commit ]]
 
    *  Reference: RFCXXXX
 
-10.2.  franking_signature_key app component
+10.2.  franking_agent app component
 
    *  Value: 0x0021
 
-   *  Name: franking_signature_key
+   *  Name: franking_agent
 
    *  Where: GC
 
@@ -2606,54 +2611,47 @@ ServerC->ClientC*: [[ Commit ]]
 
 11.1.  Normative References
 
-   [I-D.barnes-mimi-arch]
+   [I-D.ietf-mimi-arch]
               Barnes, R., "An Architecture for More Instant Messaging
               Interoperability (MIMI)", Work in Progress, Internet-
-              Draft, draft-barnes-mimi-arch-03, 4 March 2024,
-              <https://datatracker.ietf.org/doc/html/draft-barnes-mimi-
+              Draft, draft-ietf-mimi-arch-03, 6 July 2026,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-mimi-
               arch-03>.
-
-   [I-D.barnes-mls-appsync]
-              Joël, Barnes, R., Mahy, R., and M. Mularczyk, "A Safe
-              Application Interface to Messaging Layer Security", Work
-              in Progress, Internet-Draft, draft-barnes-mls-appsync-01,
-              12 December 2024, <https://datatracker.ietf.org/doc/html/
-              draft-barnes-mls-appsync-01>.
 
    [I-D.ietf-mimi-content]
               Mahy, R., "More Instant Messaging Interoperability (MIMI)
               message content", Work in Progress, Internet-Draft, draft-
-              ietf-mimi-content-08, 2 March 2026,
+              ietf-mimi-content-09, 4 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mimi-
-              content-08>.
+              content-09>.
 
    [I-D.ietf-mimi-room-policy]
               Mahy, R., "Room Policy for the More Instant Messaging
               Interoperability (MIMI) Protocol", Work in Progress,
-              Internet-Draft, draft-ietf-mimi-room-policy-03, 18
-              December 2025, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-mimi-room-policy-03>.
+              Internet-Draft, draft-ietf-mimi-room-policy-04, 6 July
+              2026, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              mimi-room-policy-04>.
 
    [I-D.ietf-mls-extensions]
               Robert, R., "The Messaging Layer Security (MLS)
               Extensions", Work in Progress, Internet-Draft, draft-ietf-
-              mls-extensions-09, 2 March 2026,
+              mls-extensions-10, 6 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mls-
-              extensions-09>.
+              extensions-10>.
 
-   [I-D.mahy-mls-ratchet-tree-options]
+   [I-D.ietf-mls-ratchet-tree-options]
               Mahy, R., "Ways to convey the Ratchet Tree in Messaging
               Layer Security", Work in Progress, Internet-Draft, draft-
-              mahy-mls-ratchet-tree-options-04, 2 March 2026,
-              <https://datatracker.ietf.org/doc/html/draft-mahy-mls-
-              ratchet-tree-options-04>.
+              ietf-mls-ratchet-tree-options-02, 1 November 2026,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-mls-
+              ratchet-tree-options-02>.
 
    [I-D.mahy-mls-semiprivatemessage]
               Mahy, R., "Semi-Private Messages in the Messaging Layer
               Security (MLS) Protocol", Work in Progress, Internet-
-              Draft, draft-mahy-mls-semiprivatemessage-07, 19 April
+              Draft, draft-mahy-mls-semiprivatemessage-08, 1 November
               2026, <https://datatracker.ietf.org/doc/html/draft-mahy-
-              mls-semiprivatemessage-07>.
+              mls-semiprivatemessage-08>.
 
    [OidcCore] Sakimura, N., Bradley, J., Jones, M. B., Medeiros, B. de.,
               and C. Mortimore, "OpenID Connect Core 1.0 incorporating
@@ -2722,9 +2720,9 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.mahy-mimi-identity]
               Mahy, R., "More Instant Messaging Interoperability (MIMI)
               Identity Concepts", Work in Progress, Internet-Draft,
-              draft-mahy-mimi-identity-04, 20 October 2025,
+              draft-mahy-mimi-identity-05, 6 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-mahy-mimi-
-              identity-04>.
+              identity-05>.
 
    [InvisibleSalamanders]
               Dodis, Y., Grubbs, P., Ristenpart, T., and J. Woodage,
@@ -2745,11 +2743,11 @@ ServerC->ClientC*: [[ Commit ]]
 
 Acknowledgments
 
-   Thanks to Paul Grubs, Jon Millican, and Julia Len for their reviews
+   Thanks to Paul Grubbs, Jon Millican, and Julia Len for their reviews
    of the franking mechanism and suggested changes.  Thanks to Felix
    Linker for his preliminary formal methods analysis
    (https://github.com/felixlinker/mimi-franking-tamarin/) of MIMI
-   franking.
+   franking.  Thanks to Mark Atwood for the detailed review.
 
 Authors' Addresses
 
