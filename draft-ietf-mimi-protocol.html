@@ -3804,7 +3804,15 @@ domains of the sending provider.<a href="#section-5.7-5" class="pilcrow">¶</a><
 201 response code merely indicates that the request was received. A provider
 that does not wish to reveal if a user is not found can respond with a 201
 Accepted. Likewise in response to a <code>cancel</code> which has no <code>request</code> matching the
-<code>ConsentScope</code>, a 201 Accepted is sent and no further action is taken.<a href="#section-5.7-6" class="pilcrow">¶</a></p>
+The response to a <code>requestConsent</code> request is usually a 202 Accepted
+(indicating the <code>requestConsent</code> was received), optionally a 404 Not Found
+(indicating the <code>targetUri</code> is unknown), or a 500-class response. The
+202 response code merely indicates that the request was received. A provider
+that does not wish to reveal if a user is not found can respond with a 202
+Accepted. Likewise in response to a <code>cancel</code> which has no <code>request</code> matching the
+<code>ConsentScope</code>, a 202 Accepted is sent and no further action is taken.
+A <code>requestConsent</code> whose <code>consentOperation</code> is not <code>request</code> or <code>cancel</code> gets a
+422 Unprocessable Content response.<a href="#section-5.7-6" class="pilcrow">¶</a></p>
 <div class="lang-tls sourcecode" id="section-5.7-7">
 <pre>
 enum {
@@ -3862,7 +3870,13 @@ domains of the sending provider.<a href="#section-5.7-12" class="pilcrow">¶</a>
 the <code>updateConsent</code> was received), optionally a 404 Not Found (indicating the
 <code>requesterUri</code> is unknown), or a 500-class response. The response code
 merely indicates that the request was received. A provider that does not
-wish to reveal if a user is not found can respond with a 201 Accepted.<a href="#section-5.7-13" class="pilcrow">¶</a></p>
+The response to an <code>updateConsent</code> is usually a 202 Accepted (indicating
+the <code>updateConsent</code> was received), optionally a 404 Not Found (indicating the
+<code>requesterUri</code> is unknown), or a 500-class response. The response code
+merely indicates that the request was received. A provider that does not
+wish to reveal if a user is not found can respond with a 202 Accepted.
+An <code>updateConsent</code> whose <code>consentOperation</code> is not <code>grant</code> or <code>revoke</code> gets a
+422 Unprocessable Content response.<a href="#section-5.7-13" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-5.7-14.1">
             <p id="section-5.7-14.1.1"><strong>NOTE</strong>: Revoking consent for a user might be privacy sensitive. If this
