@@ -1465,6 +1465,13 @@ The `moreProposals` list in a `FanoutMessage` MUST be the same as the
 corresponding `moreProposals` list in the `HandshakeBundle` of an
 `UpdateRequest`.
 
+The hub of a room is the provider identified by the `authority` of the
+room's MIMI URI. A provider that receives a `/notify/{roomId}` request MUST
+verify that the source provider authenticated by the transport layer (see
+{{transport-layer}}) corresponds to the hub of `roomId`. If it is not, the
+receiving provider MUST reject the request and MUST NOT process, store, or
+forward any FanoutMessage it carries.
+
 The response to a FanoutMessage contains no body. The HTTP response code
 indicates if the messages in the request were accepted (201 response code), or
 if there was an error. The hub need not wait for a response before sending the
