@@ -5,7 +5,7 @@
 More Instant Messaging Interoperability                     R. L. Barnes
 Internet-Draft                                                     Cisco
 Intended status: Standards Track                              M. Hodgson
-Expires: 5 May 2027                     The Matrix.org Foundation C.I.C.
+Expires: 6 May 2027                     The Matrix.org Foundation C.I.C.
                                                               K. Kohbrok
                                                              Phoenix R&D
                                                                  R. Mahy
@@ -14,7 +14,7 @@ Expires: 5 May 2027                     The Matrix.org Foundation C.I.C.
                                         The Matrix.org Foundation C.I.C.
                                                                R. Robert
                                                              Phoenix R&D
-                                                         1 November 2026
+                                                         2 November 2026
 
 
    More Instant Messaging Interoperability (MIMI) using HTTPS and MLS
@@ -66,7 +66,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 May 2027.
+   This Internet-Draft will expire on 6 May 2027.
 
 Copyright Notice
 
@@ -2734,9 +2734,9 @@ ServerC->ClientC*: [[ Commit ]]
    [I-D.ietf-mimi-content]
               Mahy, R., "More Instant Messaging Interoperability (MIMI)
               message content", Work in Progress, Internet-Draft, draft-
-              ietf-mimi-content-09, 4 July 2026,
+              ietf-mimi-content-10, 2 November 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-mimi-
-              content-09>.
+              content-10>.
 
    [I-D.ietf-mimi-room-policy]
               Mahy, R., "Room Policy for the More Instant Messaging
