@@ -806,6 +806,11 @@ struct {
     opaque uri<V>;
 } IdentifierUri;
 
+/* a sequence of valid UTF8 without nulls */
+struct {
+    opaque string<V>;
+} UTF8String;
+
 struct {
     Protocol protocol;
     IdentifierUri requestingUser;
@@ -1285,7 +1290,7 @@ ServerFrankingContext context;
 server_frank = HMAC_SHA256(hub_key, (franking_tag || context) )
 
 struct {
-    opaque server_frank[32];
+    uint8 server_frank[32];
     CipherSuite franking_signature_ciphersuite;
     ServerFrankingContext context;
 } FrankingIntegrityTBS;
@@ -1962,7 +1967,7 @@ struct {
   IdentifierUri reportingUser;
   IdentifierUri allegedAbuserUri;
   AbuseType reasonCode;
-  opaque note<V>;
+  UTF8String note;
   AbusiveMessage messages<V>;
   AppDataDictionary abuse_extensions;
 } AbuseReport;
@@ -2379,11 +2384,6 @@ extension.
 struct {
   opaque uri<V>;
 } Uri;
-
-/* a sequence of valid UTF8 without nulls */
-struct {
-  opaque string<V>;
-} UTF8String;
 
 struct {
   /* an empty media_type is equivalent to text/plain;charset=utf-8 */
