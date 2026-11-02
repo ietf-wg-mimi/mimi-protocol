@@ -810,7 +810,7 @@ struct {
     Protocol protocol;
     IdentifierUri requestingUser;
     IdentifierUri targetUser;
-    IdentifierUri roomId;
+    optional<IdentifierUri> roomId;
     select (protocol) {
         case mls10:
             CipherSuite acceptableCiphersuites<V>;
@@ -827,7 +827,7 @@ struct {
     Protocol protocol;
     IdentifierUri requestingUser;
     IdentifierUri targetUser;
-    IdentifierUri roomId;
+    optional<IdentifierUri> roomId;
     select (protocol) {
         case mls10:
             CipherSuite acceptableCiphersuites<V>;
