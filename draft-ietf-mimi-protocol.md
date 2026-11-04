@@ -2582,6 +2582,52 @@ directory document, which is `application/json`, and the response to
 - Author: See the Authors' Addresses section of RFCXXXX
 - Change controller: Internet Engineering Task Force (iesg@ietf.org)
 
+## MLS Signature Labels {#iana-signature-labels}
+
+This document registers the following labels in the "MLS Signature Labels"
+registry ({{Section 17.6 of !RFC9420}}).
+
+### KeyMaterialRequestTBS
+
+- Label: "KeyMaterialRequestTBS"
+- Recommended: Y
+- Reference: RFCXXXX
+
+### FrankingIntegrityTBS
+
+- Label: "FrankingIntegrityTBS"
+- Recommended: Y
+- Reference: RFCXXXX
+
+### GroupInfoRequestTBS
+
+- Label: "GroupInfoRequestTBS"
+- Recommended: Y
+- Reference: RFCXXXX
+
+### GroupInfoResponseTBS
+
+- Label: "GroupInfoResponseTBS"
+- Recommended: Y
+- Reference: RFCXXXX
+
+### PseudonymousCredentialTBS
+
+- Label: "PseudonymousCredentialTBS"
+- Recommended: Y
+- Reference: RFCXXXX
+
+## MLS Public Key Encryption Labels {#iana-encryption-labels}
+
+This document registers the following label in the "MLS Public Key Encryption
+Labels" registry ({{Section 17.7 of !RFC9420}}).
+
+### GroupInfo and ratchet_tree encryption
+
+- Label: "GroupInfo and ratchet_tree encryption"
+- Recommended: Y
+- Reference: RFCXXXX
+
 
 --- back
 
