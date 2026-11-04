@@ -1682,12 +1682,6 @@ For a `requestConsent`, the `targetUri` needs to be in one of the domains of
 the receiving provider, and the `requesterUri` needs to be in one of the
 domains of the sending provider.
 
-The response to a `requestConsent` request is usually a 201 Accepted
-(indicating the `requestConsent` was received), optionally a 404 Not Found
-(indicating the `targetUri` is unknown), or a 500-class response. The
-201 response code merely indicates that the request was received. A provider
-that does not wish to reveal if a user is not found can respond with a 201
-Accepted. Likewise in response to a `cancel` which has no `request` matching the
 The response to a `requestConsent` request is usually a 202 Accepted
 (indicating the `requestConsent` was received), optionally a 404 Not Found
 (indicating the `targetUri` is unknown), or a 500-class response. The
@@ -1755,10 +1749,6 @@ For `updateConsent` the `requesterUri` needs to be in one of the domains of
 the receiving provider, and the `targetUri` needs to be in one of the
 domains of the sending provider.
 
-The response to an `updateConsent` is usually a 201 Accepted (indicating
-the `updateConsent` was received), optionally a 404 Not Found (indicating the
-`requesterUri` is unknown), or a 500-class response. The response code
-merely indicates that the request was received. A provider that does not
 The response to an `updateConsent` is usually a 202 Accepted (indicating
 the `updateConsent` was received), optionally a 404 Not Found (indicating the
 `requesterUri` is unknown), or a 500-class response. The response code
