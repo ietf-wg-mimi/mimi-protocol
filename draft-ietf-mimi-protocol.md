@@ -741,7 +741,8 @@ to convey the HTTPS URLs used to reach certain endpoints (as opposed to hard
 coding the endpoints).
 
 The directory URL is discovered using the `mimi-protocol-directory` well-known
-URI. The response is a JSON document with URIs for each type of endpoint.
+URI on the provider's host, located as described in {{locating-directory}}.
+The response is a JSON document with URIs for each type of endpoint.
 
 ~~~
 GET /.well-known/mimi-protocol-directory
@@ -769,6 +770,35 @@ GET /.well-known/mimi-protocol-directory
      "https://mimi.example.com/v1/proxyDownload/{downloadUrl}"
 }
 ~~~
+
+### Locating a Provider's Directory {#locating-directory}
+
+A provider is identified by its provider domain, the host of the authority of
+a MIMI URI. A client fetches the provider's directory from
+`https://<provider-domain>/.well-known/mimi-protocol-directory`.
+
+A provider can serve the directory from other hosts without changing its
+provider domain by publishing SVCB records {{!RFC9460}} for the `mimi` scheme.
+The SVCB query name is `_mimi.<provider-domain>` ({{Section 2.3 of RFC9460}}).
+A client performs SVCB resolution as an SVCB-optional client
+({{Section 3 of RFC9460}}): if resolution yields endpoints, the client
+connects to them in priority order to fetch the directory, and otherwise
+connects to the provider domain. In either case the URL and the HTTP Host
+remain the provider domain, and the client validates the server's TLS
+certificate for the provider domain ({{Section 2.3 of RFC9460}}).
+
+The `port`, `ipv4hint`, and `ipv6hint` SvcParams
+({{Section 7.2 of RFC9460}} and {{Section 7.3 of RFC9460}}) apply to the `mimi` scheme, as does
+`alpn` with the ALPN identifiers of HTTP versions the client supports
+({{Section 7.1 of RFC9460}}).
+
+The URLs in the directory are absolute and can name hosts other than the
+provider domain. A client reaches them with ordinary HTTPS resolution, not
+`_mimi` SVCB resolution.
+
+*TODO*: Say whether a client follows HTTP redirects when fetching the
+directory, and which ports an SVCB endpoint may use
+({{Section 12 of RFC9460}}).
 
 ## Fetch Key Material
 
@@ -2550,6 +2580,16 @@ This document registers the following well-known URI per {{!RFC8615}}.
 - Specification document(s): RFCXXXX, {{directory}}
 - Status: permanent
 - Related information: None
+
+## _mimi underscored DNS node name {#iana-mimi-svcb}
+
+This document registers the following entry in the "Underscored and Globally
+Scoped DNS Node Names" registry {{!RFC8552}}, for the SVCB query name of
+{{locating-directory}}.
+
+- RR Type: SVCB
+- _NODE NAME: _mimi
+- Reference: RFCXXXX, {{locating-directory}}
 
 ## application/mimi-protocol media type {#iana-media-type}
 
