@@ -783,9 +783,9 @@ The SVCB query name is `_mimi.<provider-domain>` ({{Section 2.3 of RFC9460}}).
 A client performs SVCB resolution as an SVCB-optional client
 ({{Section 3 of RFC9460}}): if resolution yields endpoints, the client
 connects to them in priority order to fetch the directory, and otherwise
-connects to the provider domain. In either case the URL, the HTTP Host, and
-the name the client validates in the server's TLS certificate remain the
-provider domain ({{Section 2.3 of RFC9460}}).
+connects to the provider domain. In either case the URL and the HTTP Host
+remain the provider domain, and the client validates the server's TLS
+certificate for the provider domain ({{Section 2.3 of RFC9460}}).
 
 The `port`, `ipv4hint`, and `ipv6hint` SvcParams
 ({{Section 7.2 of RFC9460}} and {{Section 7.3 of RFC9460}}) apply to the `mimi` scheme, as does
