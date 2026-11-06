@@ -1325,6 +1325,10 @@ application component in the GroupContext. It verifies the domain name in the
 `franking_agent.credential` corresponds to the domain of the Hub, and extracts
 the `franking_signature_key`.
 
+If the room requires franking and the message has no frank, the client MUST
+discard the message. If only some of the fields of the frank are present, the
+client MUST discard the message.
+
 Next it verifies the integrity of the `server_frank`, `accepted_timestamp`,
 `sender_uri`, and `room_uri` by calculating the `ServerFrankingContext` and
 `FrankingIntegrityTBS`, and verifying the `franking_integrity_signature` as
