@@ -1325,6 +1325,9 @@ application component in the GroupContext. It verifies the domain name in the
 `franking_agent.credential` corresponds to the domain of the Hub, and extracts
 the `franking_signature_key`.
 
+If the `franking_signature_ciphersuite` does not match the MLS cipher suite in
+use, the client treats the message as if it had no frank.
+
 Next it verifies the integrity of the `server_frank`, `accepted_timestamp`,
 `sender_uri`, and `room_uri` by calculating the `ServerFrankingContext` and
 `FrankingIntegrityTBS`, and verifying the `franking_integrity_signature` as
