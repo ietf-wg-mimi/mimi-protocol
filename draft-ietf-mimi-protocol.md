@@ -1806,6 +1806,8 @@ query elements, which all have to match for the request to match (AND
 semantics). For example matching both the OpenID Connect (OIDC) {{OidcCore}}
 `given_name` and `family_name`, or matching the OIDC `given_name` and the
 organization (from the vCard {{!RFC6350}} ORG property).
+`query_elements` MUST contain at least one element; a provider that receives
+an empty `query_elements` responds with `forbidden`.
 
 The `id_request_extensions` field is an extension point using AppDataDictionary-style components.
 
