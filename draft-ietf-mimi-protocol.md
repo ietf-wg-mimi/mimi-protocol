@@ -1534,6 +1534,8 @@ needed only to specify the algorithms used to sign the
 GroupInfoRequest and GroupInfoResponse.
 
 ~~~ tls
+opaque JoiningCode<V>;
+
 struct {
   Protocol protocol;
   select (protocol) {
@@ -1542,7 +1544,7 @@ struct {
       SignaturePublicKey requestingSignatureKey;
       Credential requestingCredential;
       HPKEPublicKey groupInfoPublicKey;
-      optional opaque joiningCode<V>;
+      optional<JoiningCode> joiningCode;
   };
 } GroupInfoRequestTBS;
 
@@ -1554,7 +1556,7 @@ struct {
       SignaturePublicKey requestingSignatureKey;
       Credential requestingCredential;
       HPKEPublicKey groupInfoPublicKey;
-      opaque joiningCode<V>;
+      optional<JoiningCode> joiningCode;
       /* SignWithLabel(requestingSignatureKey,          */
       /*    "GroupInfoRequestTBS", GroupInfoRequestTBS) */
       opaque signature<V>;
@@ -1593,7 +1595,7 @@ GroupInfoRatchetTreeTBE group_info_ratchet_tree_tbe;
 encrypted_groupinfo_and_tree = EncryptWithLabel(
   groupInfoPublicKey,
   "GroupInfo and ratchet_tree encryption",
-  room_id,                         /* context */
+  room_id,       /* context: the room URI octets, no length prefix */
   group_info_ratchet_tree_tbe)
 
 struct {
@@ -1627,6 +1629,11 @@ struct {
   };
 } GroupInfoResponse;
 ~~~
+
+The `context` passed to EncryptWithLabel is the octets of the room URI itself,
+not the TLS encoding of `room_id` with its length prefix. The hub constructs a
+`GroupInfoResponseTBS`, and signs it, only when `status` is `success`; a
+response with any other `status` carries no signature.
 
 The semantics of the `GroupInfoCode` are as follows:
 
