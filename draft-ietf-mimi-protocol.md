@@ -791,7 +791,10 @@ user. When the request is being made in the context of adding the target user to
 a room, the request MUST include the room ID for which the KeyPackage is
 intended, as the target may have only granted consent for a specific room.
 
-For MLS, the request includes a non-empty list of acceptable MLS ciphersuites.
+For MLS, the request includes a non-empty list of acceptable MLS ciphersuites:
+`acceptableCiphersuites` MUST contain at least one entry. A target provider
+that receives a request with an empty list MUST respond with the user code
+`noCompatibleMaterial` and MUST NOT populate the `clients` list.
 Next there is an MLS `RequiredCapabilities` object, which contains (possibly
 empty) lists of required credential types, non-default proposal types, and
 extensions) required by the requesting provider. Next there is a
@@ -890,6 +893,8 @@ struct {
             select (clientStatus) {
                 case success:
                     KeyPackage keyPackage;
+                case keyMaterialExhausted:
+                    struct{};
                 case nothingCompatible:
                     optional<Capabilities> clientCapabilities;
             };
@@ -1715,6 +1720,10 @@ struct {
   select (consentOperation) {
       case grant:
           KeyPackage clientKeyPackages<V>;
+      case cancel:
+      case request:
+      case revoke:
+          struct{};
   };
   AppDataDictionary consent_extensions;
 } ConsentEntry;
