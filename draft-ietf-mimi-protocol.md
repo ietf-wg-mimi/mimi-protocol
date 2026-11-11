@@ -1030,12 +1030,20 @@ struct {
  that the Distribution Service is expected to reconstruct the GroupInfo
  as described in {{!I-D.ietf-mls-ratchet-tree-options}}.
 
+The ratchet tree is conveyed only in `ratchetTreeOption`. The committer MUST
+omit the `ratchet_tree` extension from the GroupInfo in `groupInfoOption` and
+from the GroupInfo encrypted in the Welcome. Consequently, the
+`ratchet_tree_presence` of a `PartialGroupInfo` MUST be `no_ratchet_tree`; the
+values `present`, `removed`, and `added` are not used in MIMI. The hub MUST
+reject an UpdateRequest whose GroupInfo contains a `ratchet_tree` extension or
+whose `PartialGroupInfo` has any other `ratchet_tree_presence`.
+
 
 For example, in the first use case described in the Protocol Overview, Alice creates a Commit
 containing an AppDataUpdate proposal adding Bob (`mimi://b.example/u/bob`), and
 Add proposals for all Bob's MLS clients.  Alice includes the Welcome message
-which will be sent for Bob, a GroupInfo object for the hub provider, and
-complete `ratchet_tree` extension.
+which will be sent for Bob, a GroupInfo object for the hub provider, and the
+ratchet tree in a `RatchetTreeOption`.
 
 A handshake message could be sent by the client as an MLS
 `PublicMessage` (which is visible to all providers), or as an MLS
