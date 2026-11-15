@@ -734,6 +734,18 @@ enum {
 } Protocol;
 ~~~
 
+A variable-length vector (`<V>`) can declare up to 2^30 octets ({{Section 2.1.2
+of !RFC9420}}). So that a value one implementation creates is one another
+accepts, implementations SHOULD accept values of at least these lengths:
+
+- 1024 octets: `room_name`, `room_subject`, `room_mood`, and `searchValue`;
+- 4096 octets: the `description_content` of each of the `room_descriptions`,
+  `errorDescription`, and the AbuseReport `note`;
+- 2048 octets: an `IdentifierUri` or `Uri`.
+
+A receiver MAY refuse a longer value, with the error the operation already
+uses for a malformed request.
+
 ## Directory
 
 Like the ACME protocol (See {{Section 7.1.1 of ?RFC8555}}), the MIMI protocol uses a directory document
@@ -2498,6 +2510,11 @@ their identities to the hub server using the MLS PublicMessage signed object
 format, together with the identity credentials presented in MLS.  This design
 means that the hub is trusted to correctly enforce the room's policy, but this
 cost is offset by the simplicity of not having multiple policy enforcement points.
+
+Variable-length fields with no upper bound can be used to exhaust memory and
+storage at a receiver, and at every client that later displays the value.
+Receivers check a declared length before allocating space for it, and MAY
+refuse values longer than the lengths in {{mimi-endpoints-and-framing}}.
 
 ## Franking
 
