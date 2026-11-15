@@ -234,6 +234,12 @@ shown in {{mimi-uri-types}}. A MIMI URI that identifies a provider has no path.
 | MLS group | `g`       | `mimi://a.example/g/clubhouse` |
 {: #mimi-uri-types title="MIMI URI identifier types"}
 
+When a provider looks up a user or room by its URI, it SHOULD compare URIs
+after the syntax-based normalization of {{Section 6.2.2 of RFC3986}}: case of
+the scheme and host, and percent-encoding. It MUST NOT apply case folding or
+Unicode normalization to the path, since that could make two different users
+or rooms compare equal.
+
 # Example protocol flow
 
 This section walks through a basic scenario that illustrates how a room works
@@ -1841,8 +1847,8 @@ struct {
 ~~~
 
 The semantics of the `SearchIdentifierType` values are as follows. `handle`
-means that the entire handle URI matches exactly (for example:
-`im:alice.smith@a.example`). `nick` means that the nickname or handle
+means that the entire handle URI matches exactly, compared as described in
+{{mimi-uris}} (for example: `im:alice.smith@a.example`). `nick` means that the nickname or handle
 user part matches exactly (for example: `alice.smith`). The same account or
 human user may have multiple values which all match the `nick` field. `email`
 means the `addr-spec` production from {{!RFC5322}} matches the query string
