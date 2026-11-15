@@ -62,6 +62,19 @@ normative:
            - name: Breno de Medeiros
            - name: Chuck Mortimore
 
+    UNICODE:
+        target: https://www.unicode.org/versions/latest/
+        title: The Unicode Standard
+        author:
+           org: The Unicode Consortium
+    UAX15:
+        target: https://www.unicode.org/reports/tr15/
+        title: "Unicode Normalization Forms"
+        seriesinfo:
+           "Unicode Standard Annex": "#15"
+        author:
+           org: The Unicode Consortium
+
 informative:
   SecretConversations:
     target: https://about.fb.com/wp-content/uploads/2016/07/messenger-secret-conversations-technical-whitepaper.pdf
@@ -1853,7 +1866,11 @@ format of a telephone number with the "+" prefix matches exactly (for example:
 `partialName` means that the query string matches a case-insensitive substring
 of any field which contains the name of a (usually human) user. For example,
 `mat` would match first (given) or middle names Matt, Matthew, Mathias, or
-Mathieu and last (family) names of Mather and Matali. `wholeProfile` means that
+Mathieu and last (family) names of Mather and Matali. Before comparing, the
+provider SHOULD apply Unicode default case folding (Section 3.13 of
+{{UNICODE}}) and Normalization Form C {{UAX15}} to both the query string and
+the field, so that two providers return the same matches for the same query.
+`wholeProfile` means that
 the query string matches a substring of any searchable field in
 a user's profile.
 
