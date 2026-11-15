@@ -799,6 +799,10 @@ SignaturePublicKey and a corresponding Credential for the requester. Finally,
 the request includes a signature, using the SignaturePublicKey and covering
 KeyMaterialRequestTBS.
 
+The target provider SHOULD return only key material that satisfies
+`requiredCapabilities`, and SHOULD answer `nothingCompatible` for a client
+that has none.
+
 The request body has the following form.
 
 ~~~ tls
