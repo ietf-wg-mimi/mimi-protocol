@@ -213,8 +213,9 @@ The protocol layering of the MIMI transport protocol is as follows:
 
 MIMI uses MLS {{!RFC9420}} for end-to-end security, using the MLS AppDataUpdate
 proposal type {{!I-D.ietf-mls-extensions}} to efficiently synchronize room state
-across the clients involved in a room. The MIMI transport is based on HTTPS over
-mutually-authenticated TLS.
+across the clients involved in a room. The MIMI transport is based on HTTPS,
+with each request authenticated to its source provider
+({{transport-layer}}).
 
 ## MIMI URIs {#mimi-uris}
 
@@ -620,9 +621,13 @@ source and target providers for the request, in the following way:
   intended use.  The WG should consider whether this is correct, or whether a new
   header field would be better.  Perhaps something like "From-Host" to match Host?
 
-The TLS connection underlying the HTTPS connection MUST be mutually
-authenticated.  The certificates presented in the TLS handshake MUST
-authenticate the source and target provider domains, according to {{!RFC6125}}.
+The TLS connection underlying the HTTPS connection authenticates the target
+provider domain, according to {{!RFC9525}}.  The target provider authenticates
+the source provider domain using one of the mechanisms in
+{{!I-D.atwood-mimi-provider-auth}}.  Every provider implements the DNS key
+mechanism of {{!I-D.atwood-mimi-provider-auth}}; which mechanisms a provider
+accepts is local policy, and providers MAY use other mechanisms they have
+agreed on.
 
 The bodies of HTTP requests and responses are defined by the individual
 endpoints defined in {{application-layer}}.
@@ -2478,9 +2483,11 @@ room.
 
 The MIMI protocol incorporates several layers of security.
 
-Individual protocol actions are protected against network attackers with
-mutually-authenticated TLS, where the TLS certificates authenticate the
-identities that the protocol actors assert at the application layer.
+Individual protocol actions are protected against network attackers with TLS,
+which authenticates the target provider, and with provider authentication
+({{transport-layer}}), which authenticates the source provider.  Together they
+authenticate the identities that the protocol actors assert at the application
+layer.
 
 Messages and room state changes are protected end-to-end using MLS.  The
 protection is "end-to-end" in the sense that messages sent within the group are
