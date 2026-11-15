@@ -2359,6 +2359,9 @@ user) is authorized separately according to the rules specified in
 A single commit is not valid if it contain any combination of Participant list
 updates that operate on (add, remove, or change the role of) the same user in
 the participant list more than once.
+Otherwise, a Commit MAY contain more than one ParticipantListUpdate, and MAY
+contain AppDataUpdate proposals for other components beside them, except where
+{{!I-D.ietf-mimi-room-policy}} forbids it.
 
 ## Room Metadata
 
