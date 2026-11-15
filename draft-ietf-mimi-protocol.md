@@ -743,7 +743,13 @@ accepts, implementations SHOULD accept values of at least these lengths:
   `errorDescription`, and the AbuseReport `note`;
 - 2048 octets: an `IdentifierUri` or `Uri`.
 
-A receiver MAY refuse a longer value, with the error the operation already
+For lists, implementations SHOULD accept at least:
+
+- 1000 entries in `participants` (a ParticipantListData);
+- 32 entries in `room_descriptions`;
+- 16 entries in the AbuseReport `messages` and in `query_elements`.
+
+A receiver MAY refuse a longer value or list, with the error the operation already
 uses for a malformed request.
 
 ## Directory
