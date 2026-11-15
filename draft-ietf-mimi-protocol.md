@@ -1848,7 +1848,10 @@ struct {
 
 The semantics of the `SearchIdentifierType` values are as follows. `handle`
 means that the entire handle URI matches exactly, compared as described in
-{{mimi-uris}} (for example: `im:alice.smith@a.example`). `nick` means that the nickname or handle
+{{mimi-uris}} (for example: `mimi://a.example/u/alice.smith` or
+`im:alice.smith@a.example`). A user's MIMI user URI (see {{mimi-uris}}) is a
+handle URI for that user. A provider MAY also accept handle URIs in other
+schemes, such as `im:`. `nick` means that the nickname or handle
 user part matches exactly (for example: `alice.smith`). The same account or
 human user may have multiple values which all match the `nick` field. `email`
 means the `addr-spec` production from {{!RFC5322}} matches the query string
