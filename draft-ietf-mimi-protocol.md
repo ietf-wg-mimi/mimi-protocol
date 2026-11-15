@@ -821,6 +821,7 @@ struct {
             /*   "KeyMaterialRequestTBS", KeyMaterialRequestTBS) */
             opaque key_material_request_signature<V>;
     };
+    AppDataDictionary key_material_request_extensions;
 } KeyMaterialRequest;
 
 struct {
@@ -885,6 +886,7 @@ enum {
 struct {
     KeyMaterialClientCode clientStatus;
     IdentifierUri clientUri;
+    AppDataDictionary client_key_material_extensions;
     select (protocol) {
         case mls10:
             select (clientStatus) {
@@ -903,6 +905,13 @@ struct {
     ClientKeyMaterial clients<V>;
 } KeyMaterialResponse;
 ~~~
+
+The `key_material_request_extensions` and `client_key_material_extensions`
+fields are extension points using AppDataDictionary-style components, as
+`consent_extensions` is. A receiver ignores any component it does not
+recognize. `key_material_request_extensions` follows the signature and is
+not in `KeyMaterialRequestTBS`, so the requester's provider can add
+components to a request its client signed.
 
 The semantics of the `KeyMaterialUserCode` are as follows:
 
@@ -1021,6 +1030,7 @@ struct {
     case mls10:
       HandshakeBundle bundle;
   };
+  AppDataDictionary update_extensions;
 } UpdateRequest;
 ~~~
  The semantics of `GroupInfoRepresentation` are as follows:
@@ -1060,6 +1070,7 @@ enum {
 struct {
   UpdateResponseCode responseCode;
   UTF8String errorDescription;
+  AppDataDictionary update_response_extensions;
   select (responseCode) {
     case success:
       /* the hub acceptance time (in milliseconds from the UNIX epoch) */
@@ -1082,6 +1093,12 @@ The semantics of the `UpdateResponseCode` values are as follows:
 hub provider from accepting the `UpdateRequest`.
 - `invalidProposal` indicates that at least one proposal is invalid. A list of
 invalidProposals is provided in the response.
+
+The `update_extensions` and `update_response_extensions` fields are extension
+points using AppDataDictionary-style components, as `consent_extensions` is.
+A receiver ignores any component it does not recognize. For example, a hub
+can say in `update_response_extensions` which rule refused an `UpdateRequest`,
+in a form a client can act on, where `errorDescription` is free text.
 
 ## Submit a Message
 
