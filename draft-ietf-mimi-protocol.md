@@ -216,6 +216,12 @@ proposal type {{!I-D.ietf-mls-extensions}} to efficiently synchronize room state
 across the clients involved in a room. The MIMI transport is based on HTTPS over
 mutually-authenticated TLS.
 
+Human-readable strings in this document are `UTF8String`s. A string meant for
+users MAY be accompanied by a language tag {{!BCP47}}; an empty language tag
+means the language is not stated. A string not meant for users, such as
+`errorDescription`, is diagnostic: clients SHOULD NOT display it, and MAY
+display a localized message chosen from the accompanying response code instead.
+
 ## MIMI URIs {#mimi-uris}
 
 Inside the protocol, each provider is represented by a domain name in the
@@ -1831,7 +1837,7 @@ struct {
     case vcardField:
       opaque propertyName<V>;
   };
-  opaque searchValue<V>;  /* a UTF8 string */
+  UTF8String searchValue;
 } QueryElement;
 
 struct {
@@ -1902,6 +1908,8 @@ struct {
   FieldSource fieldSource;
   UTF8String fieldName;
   opaque fieldValue<V>;
+  /* BCP 47 language tag for fieldValue; can be empty */
+  opaque language_tag<V>;
 } ProfileField;
 
 struct {
@@ -2368,7 +2376,9 @@ URL pointing to its room image/avatar.
 
 It can contain a list of `room_descriptions`, each of which can have a specific
 `language_tag` and `media_type` along with the `description_content`. An empty
-`media_type` implies `text/plain;charset=utf-8`.
+`media_type` implies `text/plain;charset=utf-8`. The `language_tag` at the end
+of RoomMetaData applies to `room_name`, `room_subject`, and `room_mood`, and can
+be empty.
 
 RoomMetaData is the format of the `data` field inside the ComponentData struct
 for the Room Metadata component in the `app_data_dictionary` GroupContext
@@ -2400,6 +2410,8 @@ struct {
   Uri room_avatar;
   UTF8String room_subject;
   UTF8String room_mood;
+  /* BCP 47 language tag for room_name, room_subject and room_mood */
+  opaque language_tag<V>;
 } RoomMetaData;
 
 RoomMetaData room_metadata;
