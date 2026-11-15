@@ -1211,6 +1211,11 @@ of AppDataUpdate on the `franking_agent` is RECOMMENDED only when adding a new
 MLS client rotates the `franking_agent`, the client SHOULD create a new MLS
 group by sending a ReInit proposal.
 
+Franking is optional. A room MAY require `frank_aad` as a Safe AAD component.
+A Hub hosting such a room SHOULD frank its application messages. A Hub hosting
+a room that does not require `frank_aad` accepts application messages without
+a frank, and abuse reports for those messages carry no frank.
+
 
 #### Client creation and sending
 
