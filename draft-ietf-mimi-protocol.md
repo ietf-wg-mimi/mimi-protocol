@@ -726,6 +726,12 @@ presentation language format ({{Section 3 of RFC8446}}).
 Request and response bodies encoded using the structures in this document use
 the media type `application/mimi-protocol` ({{iana-media-type}}).
 
+An HTTP error response (a 4xx or 5xx status code) SHOULD carry a problem
+details body {{!RFC9457}} with the media type `application/problem+json`. Its
+`type` member SHOULD be a URI that names the condition, so that a client can
+choose what to show the user from the type alone. The `title` and `detail`
+members are for diagnostics; clients SHOULD NOT display them to users.
+
 ~~~ tls
 enum {
     reserved(0),
