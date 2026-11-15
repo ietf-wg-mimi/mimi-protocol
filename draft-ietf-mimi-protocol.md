@@ -1008,12 +1008,9 @@ enum {
 
 struct {
    GroupInfoRepresentation representation;
-   select (representation) {
-     case full:
-       GroupInfo groupInfo;
-     case partial:
-       PartialGroupInfo partialGroupInfo;
-   };
+   /* full: a serialized GroupInfo           */
+   /* partial: a serialized PartialGroupInfo */
+   opaque payload<V>;
 } GroupInfoOption;
 
 struct {
@@ -1029,6 +1026,10 @@ struct {
  - `partial` means that a `PartialGroupInfo ` struct will be shared and
  that the Distribution Service is expected to reconstruct the GroupInfo
  as described in {{!I-D.ietf-mls-ratchet-tree-options}}.
+
+The `payload` of a `GroupInfoOption` carries the serialized `GroupInfo` or
+`PartialGroupInfo` for the representation. A receiver that does not implement
+a representation MAY skip its `payload` and read the fields that follow.
 
 
 For example, in the first use case described in the Protocol Overview, Alice creates a Commit
