@@ -1083,6 +1083,14 @@ hub provider from accepting the `UpdateRequest`.
 - `invalidProposal` indicates that at least one proposal is invalid. A list of
 invalidProposals is provided in the response.
 
+A hub that refuses a Commit because its proposals break a validity rule of a
+component SHOULD respond with `invalidProposal`, not `notAllowed`. An example
+is a change to the `roles_list` component in the same Commit as a Participant
+List change ({{I-D.ietf-mimi-room-policy}}). `notAllowed` is for a request
+refused because of who sent it. When the fault is in a combination of proposals
+rather than in one proposal, `invalidProposals` MAY list all the proposals
+involved, or MAY be empty.
+
 ## Submit a Message
 
 End-to-end encrypted (application) messages are submitted to the hub for
