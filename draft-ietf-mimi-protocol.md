@@ -915,7 +915,8 @@ protocol requested, or none of the clients of the target user support the
 protocol requested.
 - `noCompatibleMaterial` indicates that none of the clients was able to
 supply key material compatible with the `requiredCapabilities` field in the
-request.
+request. A target provider MAY also use `noCompatibleMaterial`, with its
+clients listed, when none of the clients has key material left.
 - `userUnknown` indicates that the target user is not known to the target
 provider.
 - `noConsent` indicates that the requester does not have consent to fetch
