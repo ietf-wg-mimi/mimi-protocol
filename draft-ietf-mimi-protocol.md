@@ -811,7 +811,6 @@ struct {
     IdentifierUri requestingUser;
     IdentifierUri targetUser;
     IdentifierUri roomId;
-    AppDataDictionary key_material_request_extensions;
     select (protocol) {
         case mls10:
             CipherSuite acceptableCiphersuites<V>;
@@ -822,6 +821,7 @@ struct {
             /*   "KeyMaterialRequestTBS", KeyMaterialRequestTBS) */
             opaque key_material_request_signature<V>;
     };
+    AppDataDictionary key_material_request_extensions;
 } KeyMaterialRequest;
 
 struct {
@@ -829,7 +829,6 @@ struct {
     IdentifierUri requestingUser;
     IdentifierUri targetUser;
     IdentifierUri roomId;
-    AppDataDictionary key_material_request_extensions;
     select (protocol) {
         case mls10:
             CipherSuite acceptableCiphersuites<V>;
@@ -910,8 +909,9 @@ struct {
 The `key_material_request_extensions` and `client_key_material_extensions`
 fields are extension points using AppDataDictionary-style components, as
 `consent_extensions` is. A receiver ignores any component it does not
-recognize. Because `key_material_request_extensions` is in
-`KeyMaterialRequestTBS`, the requester's signature covers it.
+recognize. `key_material_request_extensions` follows the signature and is
+not in `KeyMaterialRequestTBS`, so the requester's provider can add
+components to a request its client signed.
 
 The semantics of the `KeyMaterialUserCode` are as follows:
 
