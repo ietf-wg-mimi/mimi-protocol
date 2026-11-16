@@ -240,6 +240,12 @@ the scheme and host, and percent-encoding. It MUST NOT apply case folding or
 Unicode normalization to the path, since that could make two different users
 or rooms compare equal.
 
+MIMI URIs are sent in URI form: any character outside US-ASCII in the path is
+percent-encoded UTF-8. A provider that receives an identifier with raw
+non-ASCII characters in the path MAY accept it by first mapping it to a URI as
+described in {{Section 3.1 of ?RFC3987}}, then comparing as above. A provider
+that returns such an identifier returns it in URI form.
+
 # Example protocol flow
 
 This section walks through a basic scenario that illustrates how a room works
