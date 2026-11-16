@@ -234,6 +234,18 @@ shown in {{mimi-uri-types}}. A MIMI URI that identifies a provider has no path.
 | MLS group | `g`       | `mimi://a.example/g/clubhouse` |
 {: #mimi-uri-types title="MIMI URI identifier types"}
 
+When a provider looks up a user or room by its URI, it SHOULD compare URIs
+after the syntax-based normalization of {{Section 6.2.2 of RFC3986}}: case of
+the scheme and host, and percent-encoding. It MUST NOT apply case folding or
+Unicode normalization to the path, since that could make two different users
+or rooms compare equal.
+
+MIMI URIs are sent in URI form: any character outside US-ASCII in the path is
+percent-encoded UTF-8. A provider that receives an identifier with raw
+non-ASCII characters in the path MAY accept it by first mapping it to a URI as
+described in {{Section 3.1 of ?RFC3987}}, then comparing as above. A provider
+that returns such an identifier returns it in URI form.
+
 # Example protocol flow
 
 This section walks through a basic scenario that illustrates how a room works
@@ -1841,8 +1853,11 @@ struct {
 ~~~
 
 The semantics of the `SearchIdentifierType` values are as follows. `handle`
-means that the entire handle URI matches exactly (for example:
-`im:alice.smith@a.example`). `nick` means that the nickname or handle
+means that the entire handle URI matches exactly, compared as described in
+{{mimi-uris}} (for example: `mimi://a.example/u/alice.smith` or
+`im:alice.smith@a.example`). A user's MIMI user URI (see {{mimi-uris}}) is a
+handle URI for that user. A provider MAY also accept handle URIs in other
+schemes, such as `im:`. `nick` means that the nickname or handle
 user part matches exactly (for example: `alice.smith`). The same account or
 human user may have multiple values which all match the `nick` field. `email`
 means the `addr-spec` production from {{!RFC5322}} matches the query string
